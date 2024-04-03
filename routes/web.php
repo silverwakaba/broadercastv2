@@ -14,6 +14,8 @@ Route::group(['prefix' => '/'], function(){
     // Index
     Route::get('/', [FrontController::class, 'index'])->name('index');
 
+    Route::get('mail', [FrontController::class, 'mail'])->name('mail');
+
     Route::get('faker', [FrontController::class, 'faker']);
 
     // Auth
@@ -47,11 +49,11 @@ Route::group(['prefix' => '/'], function(){
             Route::post('user-account/add', [MasterUserController::class, 'addPost']);
 
             // Master data user account - Edit
-            Route::get('user-account/{id}/edit', [MasterUserController::class, 'edit'])->name('apps.master.user.edit');
-            Route::post('user-account/{id}/edit', [MasterUserController::class, 'editPost']);
+            Route::get('user-account/edit/{id}', [MasterUserController::class, 'edit'])->name('apps.master.user.edit');
+            Route::post('user-account/edit/{id}', [MasterUserController::class, 'editPost']);
 
-            // Master data user account - Edit
-            Route::get('user-account/{id}/delete', [MasterUserController::class, 'delete'])->name('apps.master.user.delete');
+            // Master data user account - Delete
+            Route::get('user-account/delete/{id}', [MasterUserController::class, 'delete'])->name('apps.master.user.delete');
         });
     });
 });

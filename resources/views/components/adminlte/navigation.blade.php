@@ -6,11 +6,11 @@
             </a>
         </li>
     </ul>
-    <!-- <ul class="navbar-nav mr-auto">
+    <ul class="navbar-nav mr-auto">
         <li class="nav-item">
             <x-adminlte.navlink route="index" value="Home" />
         </li>
-    </ul> -->
+    </ul>
     <ul class="navbar-nav ml-auto">
         @can('canLogin')
             <x-adminlte.navdropdown>
@@ -73,7 +73,6 @@
                         </ul>
                     </x-adminlte.navtree>
                 @endrole
-
             </ul>
         </nav>
     </div>

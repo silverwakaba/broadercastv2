@@ -14,6 +14,11 @@ class FrontController extends Controller{
         return view('pages/index');
     }
 
+    // 
+    public function mail(){
+        return view('mailer/test');
+    }
+
     public function indexPost(Request $request){
         $user = User::create([
             'name'      => $request->name,

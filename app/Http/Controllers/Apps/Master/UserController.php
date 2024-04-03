@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\Apps\Master;
 use App\Http\Controllers\Controller;
+use App\Helpers\BaseHelper;
 
 use App\Events\UserCreated;
 use App\Events\UserModified;
 use App\Http\Requests\Apps\Master\UserRequest;
 use App\Http\Requests\Apps\Master\UserRequestValidated;
 
+use App\Http\Resources\UserResource;
+
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -20,17 +22,12 @@ class UserController extends Controller{
         if(request()->ajax()){
             $datas = User::orderBy('id', 'DESC')->get();
 
-            return DataTables::of($datas)->addColumn('action', function($data){
-                $btn = '<div class="btn-group btn-block" role="group">
-                            <button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
-                            <div class="dropdown-menu">
-                                <a href="'. route('apps.master.user.edit', ['id' => $data->id]) .'" class="dropdown-item"><i class="fas fa-edit"></i> Edit</a>
-                                <a href="'. route('apps.master.user.delete', ['id' => $data->id]) .'" class="dropdown-item"><i class="fas fa-trash"></i> Delete</a>
-                            </div>
-                        </div>';
-            
-                return $btn;
-            })->rawColumns(['action'])->make(true);
+            return DataTables::of($datas)->setTransformer(function($data){
+                return [
+                    'datas'  => UserResource::make($data)->resolve(),
+                    'action' => view('datatable.action')->with('id', BaseHelper::encrypt($data->id))->render(),
+                ];
+            })->toJson();
         }
 
         return view('pages/apps/master-data/user/index');
@@ -55,8 +52,10 @@ class UserController extends Controller{
 
     // Edit
     public function edit($id){
+        $did = BaseHelper::decrypt($id);
+
         $datas = User::where([
-            ['id', '=', $id],
+            ['id', '=', $did],
         ])->firstOrFail();
 
         return view('pages/apps/master-data/user/edit', [
@@ -65,7 +64,9 @@ class UserController extends Controller{
     }
 
     public function editPost(UserRequestValidated $request, $id){
-        $datas = User::where('id', '=', $id)->update([
+        $did = BaseHelper::decrypt($id);
+
+        $datas = User::where('id', '=', $did)->update([
             'name'      => $request->name,
             'email'     => $request->email,
             'password'  => bcrypt($request->new_password),
@@ -78,8 +79,10 @@ class UserController extends Controller{
 
     // Delete
     public function delete($id){
+        $did = BaseHelper::decrypt($id);
+
         $datas = User::where([
-            ['id', '=', $id],
+            ['id', '=', $did],
         ])->delete();
 
         UserModified::dispatch($datas);

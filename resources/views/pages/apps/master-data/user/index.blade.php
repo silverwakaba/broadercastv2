@@ -40,10 +40,10 @@
                     },
                 },
                 {
-                    data: "name",
+                    data: "datas.name",
                 },
                 {
-                    data: "email",
+                    data: "datas.email",
                 },
                 {
                     data: "action",
