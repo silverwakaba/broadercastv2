@@ -3,13 +3,13 @@
 @section('content')
     <x-adminlte.content previous="apps.master.index">
         <x-adminlte.card add="apps.master.user.add">
-            <x-adminlte.table ids="example1">
+            <x-adminlte.table ids="userTable">
                 <thead>
                     <tr>
-                        <th width="5%">No</th>
+                        <th width="5%">No.</th>
                         <th width="65%">Name</th>
                         <th width="20%">Email</th>
-                        <th width="10%">Action</th>
+                        <th width="10%" class="text-center">Action</th>
                     </tr>
                 </thead>
             </x-adminlte.table>
@@ -20,14 +20,14 @@
         var channel = Echo.channel('usersChannel');
         
         channel.listen('.usersCreated', function(data){
-            $('#example1').DataTable().ajax.reload();
+            $('#userTable').DataTable().ajax.reload();
         });
 
         channel.listen('.UserModified', function(data){
-            $('#example1').DataTable().ajax.reload();
+            $('#userTable').DataTable().ajax.reload();
         });
 
-        $("#example1").DataTable({
+        $("#userTable").DataTable({
             "ordering": false,
             "processing": true,
             "serverSide": true,

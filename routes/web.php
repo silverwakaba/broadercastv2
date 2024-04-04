@@ -14,10 +14,6 @@ Route::group(['prefix' => '/'], function(){
     // Index
     Route::get('/', [FrontController::class, 'index'])->name('index');
 
-    Route::get('mail', [FrontController::class, 'mail'])->name('mail');
-
-    Route::get('faker', [FrontController::class, 'faker']);
-
     // Auth
     Route::group(['prefix' => 'auth', 'middleware' => ['guest']], function(){
         // Register
@@ -27,6 +23,9 @@ Route::group(['prefix' => '/'], function(){
         // Login
         Route::get('login', [AuthController::class, 'login'])->name('login');
         Route::post('login', [AuthController::class, 'loginPost'])->middleware(['throttle:5,1']);
+
+        // Login
+        Route::get('verify', [AuthController::class, 'verify'])->name('verify')->withoutMiddleware(['guest']);
 
         // Logout
         Route::get('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware(['guest']);

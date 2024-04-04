@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
+use App\Helpers\BaseHelper;
 
 use App\Events\UserCreated;
+use App\Mail\UserVerifyEmail;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 
@@ -11,6 +13,7 @@ use App\Models\User;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller{
     // Register
@@ -26,6 +29,8 @@ class AuthController extends Controller{
         ])->assignRole('User');
 
         UserCreated::dispatch($datas);
+
+        Mail::to($request->email)->send(new UserVerifyEmail($datas->id));
 
         return redirect()->route('login')->with('class', 'info')->with('message', 'Your account is ready.');
     }
@@ -57,5 +62,27 @@ class AuthController extends Controller{
         $request->session()->regenerateToken();
      
         return redirect()->route('login')->with('class', 'success')->with('message', 'Successfully ended the session safely.');
+    }
+
+    public function verify(Request $request){
+        $email = BaseHelper::decrypt($request->id);
+
+        $user = User::where('email', '=', $email);
+
+        $first = $user->first();
+        
+        $update = $user->update([
+            'email_verified_at' => now(),
+        ]);
+
+        Auth::logout();
+ 
+        $request->session()->invalidate();
+        
+        $request->session()->regenerateToken();
+
+        Auth::loginUsingId($first->id);
+
+        return redirect()->intended(route('apps.front.index'));
     }
 }

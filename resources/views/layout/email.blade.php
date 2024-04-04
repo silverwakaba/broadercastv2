@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
         <title>{{ config('app.name', 'BASE') }} Mailer</title>
     </head>
     <body>
         <div id="content">
+            <p>Greetings from {{ config('app.name', 'BASE') }},</p>
             @yield('content')
-            <p>Thanks,<br />The {{ config('app.name', 'BASE') }} Team</p>
+            <p>Sincerely,<br />The {{ config('app.name', 'BASE') }} Team</p>
         </div>
     </body>
 </html>
