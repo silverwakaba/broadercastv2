@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Models\User;
+use App\Models\UserRequest;
 use App\Helpers\BaseHelper;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -12,7 +12,7 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 // implements ShouldQueue
-class UserVerifyEmail extends Mailable{
+class UserRecoveryEmail extends Mailable{
     use Queueable, SerializesModels;
 
     public $mId;
@@ -29,7 +29,7 @@ class UserVerifyEmail extends Mailable{
      */
     public function envelope() : Envelope{
         return new Envelope(
-            subject: 'Verify your email address',
+            subject: 'Recover Your Account',
         );
     }
 
@@ -37,13 +37,13 @@ class UserVerifyEmail extends Mailable{
      * Get the message content definition.
      */
     public function content() : Content{
-        $datas = User::select('email')->where('id', '=', $this->mId)->first();
+        $datas = UserRequest::select('token')->where('id', '=', $this->mId)->first();
 
         return new Content(
-            view: 'mailer.verify',
+            view: 'mailer.recovery',
             with: [
                 // 'datas' => $datas,
-                'email' => BaseHelper::encrypt($datas->email),
+                'token' => $datas->token,
             ],
         );
     }
@@ -53,7 +53,8 @@ class UserVerifyEmail extends Mailable{
      *
      * @return array<int, \Illuminate\Mail\Mailables\Attachment>
      */
-    public function attachments() : array{
+    public function attachments(): array
+    {
         return [];
     }
 }

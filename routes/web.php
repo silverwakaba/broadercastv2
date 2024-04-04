@@ -26,7 +26,7 @@ Route::group(['prefix' => '/'], function(){
 
         // Recover
         Route::get('recover', [AuthController::class, 'recover'])->name('recover');
-        Route::post('recover', [AuthController::class, 'recoverPost']);
+        Route::post('recover', [AuthController::class, 'recoverPost'])->middleware(['throttle:2,1']);
 
         // Reset
         Route::get('reset', [AuthController::class, 'reset'])->name('reset');

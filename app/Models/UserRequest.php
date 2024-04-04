@@ -11,7 +11,15 @@ class UserRequest extends Model{
 
     protected $fillable = [
         'base_request_id',
-        'users_request_id',
+        'users_id',
         'token',
     ];
+
+    public function belongsToUser(){
+        return $this->belongsTo(User::class, 'users_id', 'id')->select('id', 'name', 'email');
+    }
+
+    public function belongsToBaseRequest(){
+        return $this->belongsTo(BaseRequest::class, 'base_request_id', 'id')->select('id', 'name');
+    }
 }

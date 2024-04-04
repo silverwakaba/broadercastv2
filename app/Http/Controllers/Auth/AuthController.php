@@ -6,11 +6,14 @@ use App\Helpers\BaseHelper;
 
 use App\Events\UserCreated;
 use App\Mail\UserVerifyEmail;
+use App\Mail\UserRecoveryEmail;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\RecoverRequest;
+use App\Http\Requests\Auth\ResetRequest;
 
 use App\Models\User;
+use App\Models\UserRequest;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -66,7 +69,15 @@ class AuthController extends Controller{
         $datas = User::where('email', '=', $request->email)->first();
 
         if($datas){
-            return "Ada";
+            $requests = UserRequest::create([
+                'base_request_id'   => 2,
+                'users_id'          => $datas->id,
+                'token'             => BaseHelper::adler32(),
+            ]);
+
+            Mail::to($request->email)->send(new UserRecoveryEmail($requests->id));
+
+            return redirect()->route('login')->with('class', 'info')->with('message', 'Please check your email to continue.');
         }
         else{
             return back()->withErrors([
@@ -77,15 +88,33 @@ class AuthController extends Controller{
 
     // Reset
     public function reset(Request $request){
-        // return Password::sendResetLink(
-        //     $request->only( 'a@a.a' )
-        // );
+        $datas = UserRequest::where('token', '=', $request->id)->firstOrFail();
 
-        // return view('pages/auth/reset');
+        return view('pages/auth/reset');
     }
 
     public function resetPost(ResetRequest $request){
-        // 
+        $datas = UserRequest::with([
+            'belongsToUser',
+        ])->where('token', '=', $request->id)->first();
+
+        Auth::logout();
+ 
+        $request->session()->invalidate();
+        
+        $request->session()->regenerateToken();
+
+        Auth::loginUsingId($datas->belongsToUser->id);
+
+        $datas->update([
+            'token' => null,
+        ]);
+
+        $datas->belongsToUser()->update([
+            'password' => bcrypt($request->password),
+        ]);
+
+        return redirect()->intended(route('apps.front.index'));
     }
 
     // Verify
