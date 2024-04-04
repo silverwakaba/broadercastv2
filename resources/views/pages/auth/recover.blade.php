@@ -1,20 +1,19 @@
 @extends('layout.app')
-@section('title', 'Login')
+@section('title', 'Recover')
 @section('content')
     <x-adminlte.content>
         <x-adminlte.card>
             <form method="POST">
                 <div class="form-row">
                     <x-form.input name="email" type="email" text="Email" />
-                    <x-form.input name="password" type="password" text="Password" />
                 </div>
                 <div class="row">
                     <div class="col-8">
                         <input class="d-none" name="_token" type="text" value="{{ csrf_token() }}" />
-                        <x-form.checkbox name="remember" value="1">Remember Me</x-form.checkbox>
+                        <x-form.checkbox name="terms" value="1">I agree to <a href="https://www.google.com">Blabla</a></x-form.checkbox>
                     </div>
                     <div class="col-4">
-                        <button class="btn btn-block btn-primary" type="submit">Login</button>
+                        <button class="btn btn-block btn-danger" type="submit">Recover</button>
                     </div>
                 </div>
             </form>
@@ -25,7 +24,7 @@
                         <p><a href="{{ route('register') }}" class="btn btn-block btn-secondary">Register new account</a></p>
                     </div>
                     <div class="col-6">
-                        <p><a href="{{ route('recover') }}" class="btn btn-block btn-danger">Recover lost account</a></p>
+                        <p><a href="{{ route('login') }}" class="btn btn-block btn-success">Login with an existing account</a></p>
                     </div>
                 </div>
             </div>

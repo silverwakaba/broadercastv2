@@ -8,12 +8,16 @@ use App\Events\UserCreated;
 use App\Mail\UserVerifyEmail;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\Auth\RecoverRequest;
 
 use App\Models\User;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+
+//
+use Illuminate\Support\Facades\Password;
 
 class AuthController extends Controller{
     // Register
@@ -53,17 +57,38 @@ class AuthController extends Controller{
         }
     }
 
-    // Logout
-    public function logout(Request $request){
-        Auth::logout();
- 
-        $request->session()->invalidate();
-     
-        $request->session()->regenerateToken();
-     
-        return redirect()->route('login')->with('class', 'success')->with('message', 'Successfully ended the session safely.');
+    // Recover
+    public function recover(){
+        return view('pages/auth/recover');
     }
 
+    public function recoverPost(RecoverRequest $request){
+        $datas = User::where('email', '=', $request->email)->first();
+
+        if($datas){
+            return "Ada";
+        }
+        else{
+            return back()->withErrors([
+                'email' => "Something went wrong. Please try again.",
+            ]);
+        }
+    }
+
+    // Reset
+    public function reset(Request $request){
+        // return Password::sendResetLink(
+        //     $request->only( 'a@a.a' )
+        // );
+
+        // return view('pages/auth/reset');
+    }
+
+    public function resetPost(ResetRequest $request){
+        // 
+    }
+
+    // Verify
     public function verify(Request $request){
         $email = BaseHelper::decrypt($request->id);
 
@@ -84,5 +109,16 @@ class AuthController extends Controller{
         Auth::loginUsingId($first->id);
 
         return redirect()->intended(route('apps.front.index'));
+    }
+
+    // Logout
+    public function logout(Request $request){
+        Auth::logout();
+ 
+        $request->session()->invalidate();
+     
+        $request->session()->regenerateToken();
+     
+        return redirect()->route('login')->with('class', 'success')->with('message', 'Successfully ended the session safely.');
     }
 }

@@ -24,7 +24,15 @@ Route::group(['prefix' => '/'], function(){
         Route::get('login', [AuthController::class, 'login'])->name('login');
         Route::post('login', [AuthController::class, 'loginPost'])->middleware(['throttle:5,1']);
 
-        // Login
+        // Recover
+        Route::get('recover', [AuthController::class, 'recover'])->name('recover');
+        Route::post('recover', [AuthController::class, 'recoverPost']);
+
+        // Reset
+        Route::get('reset', [AuthController::class, 'reset'])->name('reset');
+        Route::post('reset', [AuthController::class, 'resetPost']);
+
+        // Verify
         Route::get('verify', [AuthController::class, 'verify'])->name('verify')->withoutMiddleware(['guest']);
 
         // Logout
