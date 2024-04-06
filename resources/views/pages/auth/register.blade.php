@@ -5,7 +5,6 @@
         <x-adminlte.card>
             <form method="POST">
                 <div class="form-row">
-                    <x-form.input name="name" type="text" text="Name" />
                     <x-form.input name="email" type="email" text="Email" />
                     <x-form.input name="password" type="password" text="Password" />
                     <x-form.input name="password_confirmation" type="password" text="Password Confirmation (Retype)" />

@@ -15,17 +15,19 @@ class UserSeeder extends Seeder{
         $faker = \Faker\Factory::create();
 
         User::create([
-            'name'      => 'Kurokuma Wakaba',
-            'email'     => 'a@a.a',
-            'password'  => bcrypt('123456789'),
-        ])->assignRole('User');
+            'base_status_id'    => '6',
+            'confirmed'         => true,
+            'identifier'        => 'waka',
+            'email'             => 'a@a.a',
+            'password'          => bcrypt('123456789'),
+        ])->assignRole('Admin');
 
-        User::factory(49)->create();
+        // User::factory(49)->create();
 
-        User::factory()->create([
-            'name'      => $faker->name(),
-            'email'     => $faker->email(),
-            'password'  => bcrypt('123456789'),
-        ])->assignRole('User');
+        // User::factory()->create([
+        //     'name'      => $faker->name(),
+        //     'email'     => $faker->email(),
+        //     'password'  => bcrypt('123456789'),
+        // ])->assignRole('User');
     }
 }

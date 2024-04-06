@@ -17,7 +17,7 @@ use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends Controller{
-    // Apps User Account Index
+    // Index
     public function index(){
         if(request()->ajax()){
             $datas = User::orderBy('id', 'DESC')->get();
@@ -25,7 +25,7 @@ class UserController extends Controller{
             return DataTables::of($datas)->setTransformer(function($data){
                 return [
                     'datas'  => UserResource::make($data)->resolve(),
-                    'action' => view('datatable.action')->with('id', BaseHelper::encrypt($data->id))->render(),
+                    'action' => view('datatable.edit-delete')->with('id', BaseHelper::encrypt($data->id))->render(),
                 ];
             })->toJson();
         }

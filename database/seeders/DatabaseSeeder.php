@@ -13,8 +13,18 @@ class DatabaseSeeder extends Seeder{
         $this->call([
             PermissionSeeder::class,
             RoleSeeder::class,
+            BaseDecisionSeeder::class,
+            BaseStatusSeeder::class,
             UserSeeder::class,
             BaseRequestSeeder::class,
+            BaseTypeSeeder::class,
+            BaseContentSeeder::class,
+            BaseLanguageSeeder::class,
+            BaseGenderSeeder::class,
+            BaseRaceSeeder::class,
+            BaseLinkSeeder::class,
+            BaseAPISeeder::class,
+            // BaseActivitySeeder::class,
         ]);
     }
 }

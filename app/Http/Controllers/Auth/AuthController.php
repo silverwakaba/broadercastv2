@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Helpers\BaseHelper;
 
 use App\Events\UserCreated;
+
 use App\Mail\UserVerifyEmail;
 use App\Mail\UserRecoveryEmail;
 use App\Http\Requests\Auth\LoginRequest;
@@ -30,9 +31,10 @@ class AuthController extends Controller{
 
     public function registerPost(RegisterRequest $request){
         $datas = User::create([
-            'name'      => $request->name,
-            'email'     => $request->email,
-            'password'  => bcrypt($request->password),
+            'base_status_id'    => '6',
+            'identifier'        => BaseHelper::adler32(),
+            'email'             => $request->email,
+            'password'          => bcrypt($request->password),
         ])->assignRole('User');
 
         UserCreated::dispatch($datas);

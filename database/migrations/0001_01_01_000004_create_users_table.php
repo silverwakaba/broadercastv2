@@ -11,11 +11,13 @@ return new class extends Migration{
     public function up() : void{
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->foreignId('base_status_id')->references('id')->on('base_status');
+            $table->boolean('confirmed')->default(false);
+            $table->string('identifier')->unique();
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+            $table->timestamp('email_verified_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

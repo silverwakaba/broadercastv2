@@ -18,9 +18,12 @@ class User extends Authenticatable{
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'base_status_id',
+        'confirmed',
+        'identifier',
         'email',
         'password',
+        'email_verified_at',
     ];
 
     /**
@@ -43,6 +46,10 @@ class User extends Authenticatable{
             'email_verified_at' => 'datetime',
             'password'          => 'hashed',
         ];
+    }
+
+    public function belongsToBaseStatus(){
+        return $this->belongsTo(BaseStatus::class, 'base_status_id');
     }
 
     public function hasOneUserRequest(){

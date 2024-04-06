@@ -1,0 +1,60 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+
+use App\Models\BaseAPI;
+
+class BaseAPISeeder extends Seeder{
+    /**
+     * Run the database seeds.
+     */
+    public function run() : void{
+        BaseAPI::insert([
+            [
+                'base_link_id'  => "1",
+                'client_id'     => "7rrc3ifer1dcw4178d5iylqt7k0yzs",
+                'client_key'    => null,
+                'client_secret' => "f9t4j1yitz8vy47lrsa9bfdut1cdah",
+                'bearer'        => "o7nixq1kknpp3csq5ajy9o0dstref3",
+            ],
+            [
+                'base_link_id'  => "1",
+                'client_id'     => "j1sg2t54dwptembv45th3uuzqkgo6e",
+                'client_key'    => null,
+                'client_secret' => "p9t9i4fez9eoicclqif8o04joeggog",
+                'bearer'        => "grbgx3zlr5vbv0ffubusawcp12acy3",
+            ],
+            [
+                'base_link_id'  => "2",
+                'client_id'     => null,
+                'client_key'    => "AIzaSyDOahgrCf-qJi7JHPAl2x1jjEYJmGqrdQ8",
+                'client_secret' => null,
+                'bearer'        => null,
+            ],
+            [
+                'base_link_id'  => "2",
+                'client_id'     => null,
+                'client_key'    => "AIzaSyA5-XF2wJ0RcQCiD1OIgPNDHqn1mFg1fmI",
+                'client_secret' => null,
+                'bearer'        => null,
+            ],
+            [
+                'base_link_id'  => "2",
+                'client_id'     => null,
+                'client_key'    => "AIzaSyAnEyfCfXoM0Mccc2HlpgP8I75tH9YUl3Q",
+                'client_secret' => null,
+                'bearer'        => null,
+            ],
+            [
+                'base_link_id'  => "2",
+                'client_id'     => null,
+                'client_key'    => "AIzaSyDB4uBVeLaw_fXoVL81RBSSHeqcLQcYo8M",
+                'client_secret' => null,
+                'bearer'        => null,
+            ],
+        ]);
+    }
+}

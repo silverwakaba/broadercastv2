@@ -33,14 +33,25 @@
         @endcan
     </ul>
 </nav>
-<aside class="main-sidebar sidebar-dark-primary elevation-4">
+<aside class="main-sidebar main-sidebar-custom sidebar-dark-primary elevation-4">
     <a href="{{ url('/') }}" class="brand-link">
         <img src="https://laravel.com/img/logomark.min.svg" class="brand-image">
         <span class="brand-text">{{ config('app.name', 'Gampangan') }}</span>
     </a>
     <div class="sidebar">
+        @can('canLogin')
+            <div class="user-panel pb-3 mt-3 mb-3 d-flex">
+                <div class="image">
+                    <img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image" />
+                </div>
+                <div class="info">
+                    <a class="d-block">{{ request()->user()->email }}</a>
+                </div>
+            </div>
+        @endcan
         <nav class="my-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <li class="nav-header">Navigation</li>
                 <x-adminlte.navtree route="index">
                     <x-adminlte.navlink icon="1" parent="1" fa="fas fa-home" value="Main Menu" />
                     <ul class="nav nav-treeview">
@@ -49,6 +60,27 @@
                         </li>
                     </ul>
                 </x-adminlte.navtree>
+
+                @can('canLogin')
+                    <li class="nav-header">Base Data</li>
+                    <x-adminlte.navtree route="apps.base.*">
+                        <x-adminlte.navlink icon="1" parent="1" fa="fas fa-cogs" value="Base Data" />
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <x-adminlte.navlink icon="1" route="apps.base.index" value="Summary" />
+                            </li>
+                            <li class="nav-item">
+                                <x-adminlte.navlink icon="1" route="apps.base.content.index" value="Content" />
+                            </li>
+                            <li class="nav-item">
+                                <x-adminlte.navlink icon="1" route="apps.base.gender.index" value="Gender" />
+                            </li>
+                            <li class="nav-item">
+                                <x-adminlte.navlink icon="1" route="apps.base.language.index" value="Language" />
+                            </li>
+                        </ul>
+                    </x-adminlte.navtree>
+                @endcan
 
                 @role('UserXXX')
                     <x-adminlte.navtree route="apps.front.*">
@@ -59,8 +91,8 @@
                             </li>
                         </ul>
                     </x-adminlte.navtree>
-                @elserole('User')
-                <li class="nav-header">Management</li>
+                @elserole('Admin')
+                    <li class="nav-header">Management</li>
                     <x-adminlte.navtree route="apps.master.*">
                         <x-adminlte.navlink icon="1" parent="1" fa="fas fa-cogs" value="Master Data" />
                         <ul class="nav nav-treeview">

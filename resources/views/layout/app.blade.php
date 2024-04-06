@@ -13,7 +13,7 @@
         @vite(['resources/js/app.js'])
         <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     </head>
-    <body class="hold-transition sidebar-mini">
+    <body class="hold-transition sidebar-mini layout-fixed">
         <div class="wrapper"> <!-- hx-boost="true" -->
             <x-adminlte.main />
         </div>

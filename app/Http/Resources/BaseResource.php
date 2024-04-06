@@ -14,7 +14,7 @@ class BaseResource extends JsonResource{
      */
     public function toArray(Request $request) : array{
         return [
-            'id'    => Crypt::encryptString($this->id),
+            'id'    => $this->id,
             'name'  => $this->name,
         ];
     }

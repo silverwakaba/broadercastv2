@@ -7,7 +7,12 @@ use App\Http\Controllers\Auth\AuthController;
 
 use App\Http\Controllers\Apps\AppsController;
 
-use App\Http\Controllers\Apps\MasterdataController;
+// Base Data
+use App\Http\Controllers\Apps\Base\ContentController as BaseContentController;
+use App\Http\Controllers\Apps\Base\GenderController as BaseGenderController;
+use App\Http\Controllers\Apps\Base\LanguageController as BaseLanguageController;
+
+// Master Data
 use App\Http\Controllers\Apps\Master\UserController as MasterUserController;
 
 Route::group(['prefix' => '/'], function(){
@@ -43,8 +48,47 @@ Route::group(['prefix' => '/'], function(){
     Route::group(['prefix' => 'apps', 'middleware' => ['auth']], function(){
         Route::get('/', [AppsController::class, 'index'])->name('apps.front.index');
 
+        // Base Data
+        Route::group(['prefix' => 'base'], function(){
+            // Base data index
+            Route::get('/', [AppsController::class, 'master'])->name('apps.base.index');
+
+            // Base data content
+            Route::get('content', [BaseContentController::class, 'index'])->name('apps.base.content.index');
+
+            // Base data content - Add
+            Route::get('content/add', [BaseContentController::class, 'add'])->name('apps.base.content.add');
+            Route::post('content/add', [BaseContentController::class, 'addPost']);
+
+            // Base data content - Accept & Decline
+            Route::get('content/accept/{id}', [BaseContentController::class, 'accept'])->name('apps.base.content.accept');
+            Route::get('content/decline/{id}', [BaseContentController::class, 'decline'])->name('apps.base.content.decline');
+
+            // Base data gender
+            Route::get('gender', [BaseGenderController::class, 'index'])->name('apps.base.gender.index');
+
+            // Base data gender - Add
+            Route::get('gender/add', [BaseGenderController::class, 'add'])->name('apps.base.gender.add');
+            Route::post('gender/add', [BaseGenderController::class, 'addPost']);
+
+            // Base data gender - Accept & Decline
+            Route::get('gender/accept/{id}', [BaseGenderController::class, 'accept'])->name('apps.base.gender.accept');
+            Route::get('gender/decline/{id}', [BaseGenderController::class, 'decline'])->name('apps.base.gender.decline');
+
+            // Base data language
+            Route::get('language', [BaseLanguageController::class, 'index'])->name('apps.base.language.index');
+
+            // Base data language - Add
+            Route::get('language/add', [BaseLanguageController::class, 'add'])->name('apps.base.language.add');
+            Route::post('language/add', [BaseLanguageController::class, 'addPost']);
+
+            // Base data language - Accept & Decline
+            Route::get('language/accept/{id}', [BaseLanguageController::class, 'accept'])->name('apps.base.language.accept');
+            Route::get('language/decline/{id}', [BaseLanguageController::class, 'decline'])->name('apps.base.language.decline');
+        });
+
         // Master Data
-        Route::group(['prefix' => 'master-data'], function(){
+        Route::group(['prefix' => 'master-data', 'middleware' => ['role:Admin']], function(){
             // Master data index
             Route::get('/', [AppsController::class, 'master'])->name('apps.master.index');
 
