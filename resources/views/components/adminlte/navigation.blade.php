@@ -60,7 +60,6 @@
                         </li>
                     </ul>
                 </x-adminlte.navtree>
-
                 @can('canLogin')
                     <li class="nav-header">Base Data</li>
                     <x-adminlte.navtree route="apps.base.*">
@@ -78,10 +77,16 @@
                             <li class="nav-item">
                                 <x-adminlte.navlink icon="1" route="apps.base.language.index" value="Language" />
                             </li>
+
+                            <li class="nav-item">
+                                <x-adminlte.navlink icon="1" route="apps.base.link.index" value="Link" />
+                            </li>
+                            <li class="nav-item">
+                                <x-adminlte.navlink icon="1" route="apps.base.race.index" value="Race" />
+                            </li>
                         </ul>
                     </x-adminlte.navtree>
                 @endcan
-
                 @role('UserXXX')
                     <x-adminlte.navtree route="apps.front.*">
                         <x-adminlte.navlink icon="1" parent="1" fa="fas fa-tablet-alt" value="Apps" />

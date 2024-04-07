@@ -11,6 +11,8 @@ use App\Http\Controllers\Apps\AppsController;
 use App\Http\Controllers\Apps\Base\ContentController as BaseContentController;
 use App\Http\Controllers\Apps\Base\GenderController as BaseGenderController;
 use App\Http\Controllers\Apps\Base\LanguageController as BaseLanguageController;
+use App\Http\Controllers\Apps\Base\LinkController as BaseLinkController;
+use App\Http\Controllers\Apps\Base\RaceController as BaseRaceController;
 
 // Master Data
 use App\Http\Controllers\Apps\Master\UserController as MasterUserController;
@@ -85,6 +87,28 @@ Route::group(['prefix' => '/'], function(){
             // Base data language - Accept & Decline
             Route::get('language/accept/{id}', [BaseLanguageController::class, 'accept'])->name('apps.base.language.accept');
             Route::get('language/decline/{id}', [BaseLanguageController::class, 'decline'])->name('apps.base.language.decline');
+
+            // Base data link
+            Route::get('link', [BaseLinkController::class, 'index'])->name('apps.base.link.index');
+
+            // Base data link - Add
+            Route::get('link/add', [BaseLinkController::class, 'add'])->name('apps.base.link.add');
+            Route::post('link/add', [BaseLinkController::class, 'addPost']);
+
+            // Base data link - Accept & Decline
+            Route::get('link/accept/{id}', [BaseLinkController::class, 'accept'])->name('apps.base.link.accept');
+            Route::get('link/decline/{id}', [BaseLinkController::class, 'decline'])->name('apps.base.link.decline');
+
+            // Base data race
+            Route::get('race', [BaseRaceController::class, 'index'])->name('apps.base.race.index');
+
+            // Base data race - Add
+            Route::get('race/add', [BaseRaceController::class, 'add'])->name('apps.base.race.add');
+            Route::post('race/add', [BaseRaceController::class, 'addPost']);
+
+            // Base data race - Accept & Decline
+            Route::get('race/accept/{id}', [BaseRaceController::class, 'accept'])->name('apps.base.race.accept');
+            Route::get('race/decline/{id}', [BaseRaceController::class, 'decline'])->name('apps.base.race.decline');
         });
 
         // Master Data
