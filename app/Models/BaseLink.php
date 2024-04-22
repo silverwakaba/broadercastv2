@@ -2,9 +2,15 @@
 
 namespace App\Models;
 
+use App\Observers\BaseLinkObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
+#[ObservedBy([BaseLinkObserver::class])]
 class BaseLink extends Model{
+    // use SoftDeletes;
+
     protected $table = 'base_link';
     protected $primaryKey = 'id';
     public $timestamps = false;

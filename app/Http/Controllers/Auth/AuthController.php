@@ -37,10 +37,6 @@ class AuthController extends Controller{
             'password'          => bcrypt($request->password),
         ])->assignRole('User');
 
-        UserCreated::dispatch($datas);
-
-        Mail::to($request->email)->send(new UserVerifyEmail($datas->id));
-
         return redirect()->route('login')->with('class', 'info')->with('message', 'Your account is ready.');
     }
 

@@ -45,7 +45,7 @@
                     <img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image" />
                 </div>
                 <div class="info">
-                    <a class="d-block">{{ request()->user()->email }}</a>
+                    <a class="d-block text-truncate">{{ request()->user()->email }}</a>
                 </div>
             </div>
         @endcan
@@ -77,7 +77,6 @@
                             <li class="nav-item">
                                 <x-adminlte.navlink icon="1" route="apps.base.language.index" value="Language" />
                             </li>
-
                             <li class="nav-item">
                                 <x-adminlte.navlink icon="1" route="apps.base.link.index" value="Link" />
                             </li>

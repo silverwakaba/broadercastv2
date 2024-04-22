@@ -17,6 +17,7 @@ return new class extends Migration{
             $table->string('icon')->nullable();
             $table->string('color')->nullable();
             $table->boolean('checking')->default(false);
+            $table->softDeletes();
         });
     }
 

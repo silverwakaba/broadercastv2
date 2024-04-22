@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Apps\Base;
 use App\Http\Controllers\Controller;
 use App\Helpers\BaseHelper;
 
-use App\Events\BaseGenderCreated;
-use App\Events\BaseGenderModified;
 use App\Http\Requests\Apps\Base\GenderRequest;
 
 use App\Http\Resources\BaseGenderResource;
@@ -17,7 +15,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 class GenderController extends Controller{
     // Index
-    public function index(Request $request){
+    public function index(){
         if(request()->ajax()){
             $datas = BaseGender::with([
                 'belongsToBaseDecision', 'hasOneUser',
@@ -28,7 +26,10 @@ class GenderController extends Controller{
             return DataTables::of($datas)->setTransformer(function($data){
                 return [
                     'datas'  => BaseGenderResource::make($data)->resolve(),
-                    'action' => view('datatable.accept-decline')->with('id', BaseHelper::encrypt($data->id))->with('decision', $data->base_decision_id)->render(),
+                    'action' => view('datatable.action', ['mode' => 'approval'])
+                            ->with('decision', $data->base_decision_id)
+                            ->with('action', route('apps.base.gender.decision', ['id' => BaseHelper::encrypt($data->id)]))
+                            ->render(),
                 ];
             })->toJson();
         }
@@ -48,34 +49,24 @@ class GenderController extends Controller{
             'name'              => $request->name,
         ]);
 
-        // BaseGenderCreated::dispatch($datas);
-
         return redirect()->route('apps.base.gender.index')->with('class', 'success')->with('message', 'Your base gender suggestion is submitted. Thank you.');
     }
 
-    // Accept
-    public function accept($id){
+    // Decision
+    public function decision(Request $request, $id){
         $did = BaseHelper::decrypt($id);
 
-        $datas = BaseGender::where('id', '=', $did)->update([
-            'base_decision_id' => '2',
-        ]);
+        $datas = BaseGender::findOrFail($did);
 
-        BaseGenderModified::dispatch($datas);
+        if($request->action == 'accept'){
+            $datas->update([
+                'base_decision_id' => '2',
+            ]);
+        }
+        elseif($request->action == 'decline'){
+            $datas->delete();
+        }
 
-        return redirect()->route('apps.base.gender.index')->with('class', 'success')->with('message', 'Your selected base gender suggestion is accepted.');
-    }
-
-    // Decline
-    public function decline($id){
-        $did = BaseHelper::decrypt($id);
-
-        $datas = BaseGender::where('id', '=', $did)->update([
-            'base_decision_id' => '3',
-        ]);
-
-        BaseGenderModified::dispatch($datas);
-
-        return redirect()->route('apps.base.gender.index')->with('class', 'success')->with('message', 'Your selected base gender suggestion is declined.');
+        return back()->with('class', 'success')->with('message', 'Your decision is recorded. Thanks.');
     }
 }

@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Apps\Base;
 use App\Http\Controllers\Controller;
 use App\Helpers\BaseHelper;
 
-use App\Events\BaseContentCreated;
-use App\Events\BaseContentModified;
 use App\Http\Requests\Apps\Base\ContentRequest;
 
 use App\Http\Resources\BaseContentResource;
@@ -17,7 +15,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 class ContentController extends Controller{
     // Index
-    public function index(Request $request){
+    public function index(){
         if(request()->ajax()){
             $datas = BaseContent::with([
                 'belongsToBaseDecision', 'hasOneUser',
@@ -28,7 +26,10 @@ class ContentController extends Controller{
             return DataTables::of($datas)->setTransformer(function($data){
                 return [
                     'datas'  => BaseContentResource::make($data)->resolve(),
-                    'action' => view('datatable.accept-decline')->with('id', BaseHelper::encrypt($data->id))->with('decision', $data->base_decision_id)->render(),
+                    'action' => view('datatable.action', ['mode' => 'approval'])
+                            ->with('decision', $data->base_decision_id)
+                            ->with('action', route('apps.base.content.decision', ['id' => BaseHelper::encrypt($data->id)]))
+                            ->render(),
                 ];
             })->toJson();
         }
@@ -48,34 +49,24 @@ class ContentController extends Controller{
             'name'              => $request->name,
         ]);
 
-        // BaseContentCreated::dispatch($datas);
-
         return redirect()->route('apps.base.content.index')->with('class', 'success')->with('message', 'Your base content suggestion is submitted. Thank you.');
     }
 
-    // Accept
-    public function accept($id){
+    // Decision
+    public function decision(Request $request, $id){
         $did = BaseHelper::decrypt($id);
 
-        $datas = BaseContent::where('id', '=', $did)->update([
-            'base_decision_id' => '2',
-        ]);
+        $datas = BaseContent::findOrFail($did);
 
-        BaseContentModified::dispatch($datas);
+        if($request->action == 'accept'){
+            $datas->update([
+                'base_decision_id' => '2',
+            ]);
+        }
+        elseif($request->action == 'decline'){
+            $datas->delete();
+        }
 
-        return redirect()->route('apps.base.content.index')->with('class', 'success')->with('message', 'Your selected base content suggestion is accepted.');
-    }
-
-    // Decline
-    public function decline($id){
-        $did = BaseHelper::decrypt($id);
-
-        $datas = BaseContent::where('id', '=', $did)->update([
-            'base_decision_id' => '3',
-        ]);
-
-        BaseContentModified::dispatch($datas);
-
-        return redirect()->route('apps.base.content.index')->with('class', 'success')->with('message', 'Your selected base content suggestion is declined.');
+        return back()->with('class', 'success')->with('message', 'Your decision is recorded. Thanks.');
     }
 }

@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
+use App\Observers\UserObserver;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
+#[ObservedBy([UserObserver::class])]
 class User extends Authenticatable{
     use HasFactory, Notifiable, HasRoles, SoftDeletes;
 
@@ -50,6 +53,14 @@ class User extends Authenticatable{
 
     public function belongsToBaseStatus(){
         return $this->belongsTo(BaseStatus::class, 'base_status_id');
+    }
+
+    public function hasOneUserAvatar(){
+        return $this->hasOne(UserAvatar::class, 'users_id');
+    }
+
+    public function hasOneUserBiodata(){
+        return $this->hasOne(UserBiodata::class, 'users_id');
     }
 
     public function hasOneUserRequest(){

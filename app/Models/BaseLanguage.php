@@ -2,9 +2,15 @@
 
 namespace App\Models;
 
+use App\Observers\BaseLanguageObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
+#[ObservedBy([BaseLanguageObserver::class])]
 class BaseLanguage extends Model{
+    // use SoftDeletes;
+
     protected $table = 'base_language';
     protected $primaryKey = 'id';
     public $timestamps = false;

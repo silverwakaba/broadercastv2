@@ -2,9 +2,15 @@
 
 namespace App\Models;
 
+use App\Observers\BaseContentObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
+#[ObservedBy([BaseContentObserver::class])]
 class BaseContent extends Model{
+    use SoftDeletes;
+
     protected $table = 'base_content';
     protected $primaryKey = 'id';
     public $timestamps = false;

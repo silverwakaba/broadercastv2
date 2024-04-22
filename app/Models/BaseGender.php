@@ -2,9 +2,15 @@
 
 namespace App\Models;
 
+use App\Observers\BaseGenderObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
+#[ObservedBy([BaseGenderObserver::class])]
 class BaseGender extends Model{
+    // use SoftDeletes;
+
     protected $table = 'base_gender';
     protected $primaryKey = 'id';
     public $timestamps = false;

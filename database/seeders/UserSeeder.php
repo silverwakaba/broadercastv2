@@ -22,12 +22,14 @@ class UserSeeder extends Seeder{
             'password'          => bcrypt('123456789'),
         ])->assignRole('Admin');
 
-        // User::factory(49)->create();
+        // User::factory(1)->create();
 
-        // User::factory()->create([
-        //     'name'      => $faker->name(),
-        //     'email'     => $faker->email(),
-        //     'password'  => bcrypt('123456789'),
+        // User::create([
+        //     'base_status_id'    => '6',
+        //     'confirmed'         => true,
+        //     'identifier'        => $faker->name(),
+        //     'email'             => $faker->email(),
+        //     'password'          => bcrypt('123456789'),
         // ])->assignRole('User');
     }
 }

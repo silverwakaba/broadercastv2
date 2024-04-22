@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Apps\Base;
 use App\Http\Controllers\Controller;
 use App\Helpers\BaseHelper;
 
-use App\Events\BaseLinkCreated;
-use App\Events\BaseLinkModified;
 use App\Http\Requests\Apps\Base\LinkRequest;
 
 use App\Http\Resources\BaseLinkResource;
@@ -28,7 +26,10 @@ class LinkController extends Controller{
             return DataTables::of($datas)->setTransformer(function($data){
                 return [
                     'datas'  => BaseLinkResource::make($data)->resolve(),
-                    'action' => view('datatable.accept-decline')->with('id', BaseHelper::encrypt($data->id))->with('decision', $data->base_decision_id)->render(),
+                    'action' => view('datatable.action', ['mode' => 'approval'])
+                            ->with('decision', $data->base_decision_id)
+                            ->with('action', route('apps.base.link.decision', ['id' => BaseHelper::encrypt($data->id)]))
+                            ->render(),
                 ];
             })->toJson();
         }
@@ -51,34 +52,24 @@ class LinkController extends Controller{
             'checking'          => $request->checking ? true : false,
         ]);
 
-        // BaseLinkCreated::dispatch($datas);
-
         return redirect()->route('apps.base.link.index')->with('class', 'success')->with('message', 'Your base link suggestion is submitted. Thank you.');
     }
 
-    // Accept
-    public function accept($id){
+    // Decision
+    public function decision(Request $request, $id){
         $did = BaseHelper::decrypt($id);
 
-        $datas = BaseLink::where('id', '=', $did)->update([
-            'base_decision_id' => '2',
-        ]);
+        $datas = BaseLink::findOrFail($did);
 
-        BaseLinkModified::dispatch($datas);
+        if($request->action == 'accept'){
+            $datas->update([
+                'base_decision_id' => '2',
+            ]);
+        }
+        elseif($request->action == 'decline'){
+            $datas->delete();
+        }
 
-        return redirect()->route('apps.base.link.index')->with('class', 'success')->with('message', 'Your selected base link suggestion is accepted.');
-    }
-
-    // Decline
-    public function decline($id){
-        $did = BaseHelper::decrypt($id);
-
-        $datas = BaseLink::where('id', '=', $did)->update([
-            'base_decision_id' => '3',
-        ]);
-
-        BaseLinkModified::dispatch($datas);
-
-        return redirect()->route('apps.base.link.index')->with('class', 'success')->with('message', 'Your selected base link suggestion is declined.');
+        return back()->with('class', 'success')->with('message', 'Your decision is recorded. Thanks.');
     }
 }

@@ -14,6 +14,7 @@ return new class extends Migration{
             $table->foreignId('users_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('base_decision_id')->references('id')->on('base_decision')->onDelete('cascade');
             $table->string('name');
+            $table->softDeletes();
         });
     }
 

@@ -62,9 +62,8 @@ Route::group(['prefix' => '/'], function(){
             Route::get('content/add', [BaseContentController::class, 'add'])->name('apps.base.content.add');
             Route::post('content/add', [BaseContentController::class, 'addPost']);
 
-            // Base data content - Accept & Decline
-            Route::get('content/accept/{id}', [BaseContentController::class, 'accept'])->name('apps.base.content.accept');
-            Route::get('content/decline/{id}', [BaseContentController::class, 'decline'])->name('apps.base.content.decline');
+            // Base data content - Decision
+            Route::get('content/decision/{id}', [BaseContentController::class, 'decision'])->name('apps.base.content.decision');
 
             // Base data gender
             Route::get('gender', [BaseGenderController::class, 'index'])->name('apps.base.gender.index');
@@ -76,6 +75,7 @@ Route::group(['prefix' => '/'], function(){
             // Base data gender - Accept & Decline
             Route::get('gender/accept/{id}', [BaseGenderController::class, 'accept'])->name('apps.base.gender.accept');
             Route::get('gender/decline/{id}', [BaseGenderController::class, 'decline'])->name('apps.base.gender.decline');
+            Route::get('gender/decision/{id}', [BaseGenderController::class, 'decision'])->name('apps.base.gender.decision');
 
             // Base data language
             Route::get('language', [BaseLanguageController::class, 'index'])->name('apps.base.language.index');
@@ -87,6 +87,7 @@ Route::group(['prefix' => '/'], function(){
             // Base data language - Accept & Decline
             Route::get('language/accept/{id}', [BaseLanguageController::class, 'accept'])->name('apps.base.language.accept');
             Route::get('language/decline/{id}', [BaseLanguageController::class, 'decline'])->name('apps.base.language.decline');
+            Route::get('language/decision/{id}', [BaseLanguageController::class, 'decision'])->name('apps.base.language.decision');
 
             // Base data link
             Route::get('link', [BaseLinkController::class, 'index'])->name('apps.base.link.index');
@@ -98,6 +99,7 @@ Route::group(['prefix' => '/'], function(){
             // Base data link - Accept & Decline
             Route::get('link/accept/{id}', [BaseLinkController::class, 'accept'])->name('apps.base.link.accept');
             Route::get('link/decline/{id}', [BaseLinkController::class, 'decline'])->name('apps.base.link.decline');
+            Route::get('link/decision/{id}', [BaseLinkController::class, 'decision'])->name('apps.base.link.decision');
 
             // Base data race
             Route::get('race', [BaseRaceController::class, 'index'])->name('apps.base.race.index');
@@ -109,6 +111,7 @@ Route::group(['prefix' => '/'], function(){
             // Base data race - Accept & Decline
             Route::get('race/accept/{id}', [BaseRaceController::class, 'accept'])->name('apps.base.race.accept');
             Route::get('race/decline/{id}', [BaseRaceController::class, 'decline'])->name('apps.base.race.decline');
+            Route::get('race/decision/{id}', [BaseRaceController::class, 'decision'])->name('apps.base.race.decision');
         });
 
         // Master Data

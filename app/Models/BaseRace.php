@@ -2,9 +2,15 @@
 
 namespace App\Models;
 
+use App\Observers\BaseRaceObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
+#[ObservedBy([BaseRaceObserver::class])]
 class BaseRace extends Model{
+    // use SoftDeletes;
+
     protected $table = 'base_race';
     protected $primaryKey = 'id';
     public $timestamps = false;
