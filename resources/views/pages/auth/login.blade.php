@@ -22,10 +22,10 @@
                 <p>- OR -</p>
                 <div class="row">
                     <div class="col-6">
-                        <p><a href="{{ route('register') }}" class="btn btn-block btn-secondary">Register new account</a></p>
+                        <p><a href="{{ route('register') }}" class="btn btn-block btn-secondary">Join the broaderhood</a></p>
                     </div>
                     <div class="col-6">
-                        <p><a href="{{ route('recover') }}" class="btn btn-block btn-danger">Recover lost account</a></p>
+                        <p><a href="{{ route('recover') }}" class="btn btn-block btn-danger">Recover my broaderhood access</a></p>
                     </div>
                 </div>
             </div>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,6 +21,7 @@ class BaseLinkResource extends JsonResource{
             'name'      => $this->name,
             'icon'      => $this->icon,
             'color'     => $this->color,
+            'logo'      => 'https://cdn.simpleicons.org/' . ($this->icon ? Str::lower($this->icon) : Str::lower($this->name)) . '/' . ($this->color ? Str::lower($this->color) : '000000'),
             'checking'  => $this->checking,
             'user'      => new UserResource($this->whenLoaded('hasOneUser')),
             'decision'  => new BaseDecisionResource($this->whenLoaded('belongsToBaseDecision')),

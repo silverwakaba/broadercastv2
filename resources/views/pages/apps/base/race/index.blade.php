@@ -1,7 +1,7 @@
 @extends('layout.app')
-@section('title', 'Base Race')
+@section('title', 'Content Race')
 @section('content')
-    <x-adminlte.content previous="apps.base.index">
+    <x-adminlte.content previous="apps.master.index">
         <x-adminlte.card add="apps.base.race.add">
             <x-adminlte.table ids="raceTables">
                 <thead>

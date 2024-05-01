@@ -45,8 +45,6 @@ class UserController extends Controller{
             'password'  => bcrypt($request->password),
         ])->assignRole('User');
 
-        UserCreated::dispatch($datas);
-
         return redirect()->route('apps.master.user.index')->with('class', 'success')->with('message', 'Your created account is ready.');
     }
 
@@ -72,8 +70,6 @@ class UserController extends Controller{
             'password'  => bcrypt($request->new_password),
         ]);
 
-        UserModified::dispatch($datas);
-
         return redirect()->route('apps.master.user.index')->with('class', 'success')->with('message', 'Your edited account is ready.');
     }
 
@@ -84,8 +80,6 @@ class UserController extends Controller{
         $datas = User::where([
             ['id', '=', $did],
         ])->delete();
-
-        UserModified::dispatch($datas);
 
         return redirect()->route('apps.master.user.index')->with('class', 'success')->with('message', 'Your selected account is deleted.');
     }

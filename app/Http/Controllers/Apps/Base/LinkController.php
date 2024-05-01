@@ -1,37 +1,29 @@
 <?php
 
 namespace App\Http\Controllers\Apps\Base;
+
 use App\Http\Controllers\Controller;
-use App\Helpers\BaseHelper;
-
 use App\Http\Requests\Apps\Base\LinkRequest;
-
-use App\Http\Resources\BaseLinkResource;
-
-use App\Models\BaseLink;
-
+use App\Repositories\Base\BaseRepositories;
 use Illuminate\Http\Request;
-use Yajra\DataTables\Facades\DataTables;
 
 class LinkController extends Controller{
-    // Index
-    public function index(Request $request){
-        if(request()->ajax()){
-            $datas = BaseLink::with([
-                'belongsToBaseDecision', 'hasOneUser',
-            ])->whereIn(
-                'base_decision_id', [2, 6]
-            )->orderBy('name', 'ASC')->get();
+    // Constructor
+    public function __construct(){
+        $this->back = 'apps.base.link.index';
+        $this->model = 'App\Models\BaseLink';
+        $this->resource = 'App\Http\Resources\BaseLinkResource';
+    }
 
-            return DataTables::of($datas)->setTransformer(function($data){
-                return [
-                    'datas'  => BaseLinkResource::make($data)->resolve(),
-                    'action' => view('datatable.action', ['mode' => 'approval'])
-                            ->with('decision', $data->base_decision_id)
-                            ->with('action', route('apps.base.link.decision', ['id' => BaseHelper::encrypt($data->id)]))
-                            ->render(),
-                ];
-            })->toJson();
+    // Index
+    public function index(){
+        if(request()->ajax()){
+            return BaseRepositories::datatable([
+                'model'     => $this->model,
+                'resource'  => $this->resource,
+                'route'     => 'apps.base.link',
+                'with'      => ['belongsToBaseDecision', 'hasOneUser'],
+            ]);
         }
 
         return view('pages/apps/base/link/index');
@@ -43,33 +35,51 @@ class LinkController extends Controller{
     }
 
     public function addPost(LinkRequest $request){
-        $datas = BaseLink::create([
+        return BaseRepositories::upsert($this->model, [
             'users_id'          => auth()->user()->id,
             'base_decision_id'  => '6',
             'name'              => $request->name,
             'icon'              => $request->icon,
             'color'             => $request->color,
             'checking'          => $request->checking ? true : false,
-        ]);
+        ], $this->back);
+    }
 
-        return redirect()->route('apps.base.link.index')->with('class', 'success')->with('message', 'Your base link suggestion is submitted. Thank you.');
+    // Edit
+    public function edit($id){
+        $datas = BaseRepositories::find([
+            'id'    => $id,
+            'model' => $this->model,
+        ]);
+        
+        return view('pages/apps/base/link/edit', [
+            'data' => $datas,
+        ]);
+    }
+
+    public function editPost(LinkRequest $request, $id){
+        return BaseRepositories::upsert($this->model, [
+            'name'      => $request->name,
+            'icon'      => $request->icon,
+            'color'     => $request->color,
+            'checking'  => $request->checking ? true : false,
+        ], $this->back, $id);
     }
 
     // Decision
     public function decision(Request $request, $id){
-        $did = BaseHelper::decrypt($id);
+        return BaseRepositories::decision([
+            'id'        => $id,
+            'model'     => $this->model,
+            'action'    => $request->action,
+        ], $this->back);
+    }
 
-        $datas = BaseLink::findOrFail($did);
-
-        if($request->action == 'accept'){
-            $datas->update([
-                'base_decision_id' => '2',
-            ]);
-        }
-        elseif($request->action == 'decline'){
-            $datas->delete();
-        }
-
-        return back()->with('class', 'success')->with('message', 'Your decision is recorded. Thanks.');
+    // Delete
+    public function delete($id){
+        return BaseRepositories::delete([
+            'id'    => $id,
+            'model' => $this->model,
+        ], $this->back);
     }
 }

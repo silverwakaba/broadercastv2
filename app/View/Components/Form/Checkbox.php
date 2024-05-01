@@ -10,13 +10,15 @@ class Checkbox extends Component{
     public int $col;
     public string $name;
     public string $value;
+    public string $values;
 
     /**
      * Create a new component instance.
      */
-    public function __construct($name, $value = '', $col = ''){
+    public function __construct($name, $value = '', $values = '', $col = ''){
         $this->name = $name;
         $this->value = $value;
+        $this->values = $values;
         $this->col = $col ? $col : 12;
     }
 

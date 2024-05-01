@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 #[ObservedBy([BaseLanguageObserver::class])]
 class BaseLanguage extends Model{
-    // use SoftDeletes;
+    use SoftDeletes;
 
     protected $table = 'base_language';
     protected $primaryKey = 'id';

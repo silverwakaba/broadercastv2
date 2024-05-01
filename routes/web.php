@@ -50,88 +50,117 @@ Route::group(['prefix' => '/'], function(){
     Route::group(['prefix' => 'apps', 'middleware' => ['auth']], function(){
         Route::get('/', [AppsController::class, 'index'])->name('apps.front.index');
 
-        // Base Data
-        Route::group(['prefix' => 'base'], function(){
-            // Base data index
-            Route::get('/', [AppsController::class, 'master'])->name('apps.base.index');
-
-            // Base data content
-            Route::get('content', [BaseContentController::class, 'index'])->name('apps.base.content.index');
-
-            // Base data content - Add
-            Route::get('content/add', [BaseContentController::class, 'add'])->name('apps.base.content.add');
-            Route::post('content/add', [BaseContentController::class, 'addPost']);
-
-            // Base data content - Decision
-            Route::get('content/decision/{id}', [BaseContentController::class, 'decision'])->name('apps.base.content.decision');
-
-            // Base data gender
-            Route::get('gender', [BaseGenderController::class, 'index'])->name('apps.base.gender.index');
-
-            // Base data gender - Add
-            Route::get('gender/add', [BaseGenderController::class, 'add'])->name('apps.base.gender.add');
-            Route::post('gender/add', [BaseGenderController::class, 'addPost']);
-
-            // Base data gender - Accept & Decline
-            Route::get('gender/accept/{id}', [BaseGenderController::class, 'accept'])->name('apps.base.gender.accept');
-            Route::get('gender/decline/{id}', [BaseGenderController::class, 'decline'])->name('apps.base.gender.decline');
-            Route::get('gender/decision/{id}', [BaseGenderController::class, 'decision'])->name('apps.base.gender.decision');
-
-            // Base data language
-            Route::get('language', [BaseLanguageController::class, 'index'])->name('apps.base.language.index');
-
-            // Base data language - Add
-            Route::get('language/add', [BaseLanguageController::class, 'add'])->name('apps.base.language.add');
-            Route::post('language/add', [BaseLanguageController::class, 'addPost']);
-
-            // Base data language - Accept & Decline
-            Route::get('language/accept/{id}', [BaseLanguageController::class, 'accept'])->name('apps.base.language.accept');
-            Route::get('language/decline/{id}', [BaseLanguageController::class, 'decline'])->name('apps.base.language.decline');
-            Route::get('language/decision/{id}', [BaseLanguageController::class, 'decision'])->name('apps.base.language.decision');
-
-            // Base data link
-            Route::get('link', [BaseLinkController::class, 'index'])->name('apps.base.link.index');
-
-            // Base data link - Add
-            Route::get('link/add', [BaseLinkController::class, 'add'])->name('apps.base.link.add');
-            Route::post('link/add', [BaseLinkController::class, 'addPost']);
-
-            // Base data link - Accept & Decline
-            Route::get('link/accept/{id}', [BaseLinkController::class, 'accept'])->name('apps.base.link.accept');
-            Route::get('link/decline/{id}', [BaseLinkController::class, 'decline'])->name('apps.base.link.decline');
-            Route::get('link/decision/{id}', [BaseLinkController::class, 'decision'])->name('apps.base.link.decision');
-
-            // Base data race
-            Route::get('race', [BaseRaceController::class, 'index'])->name('apps.base.race.index');
-
-            // Base data race - Add
-            Route::get('race/add', [BaseRaceController::class, 'add'])->name('apps.base.race.add');
-            Route::post('race/add', [BaseRaceController::class, 'addPost']);
-
-            // Base data race - Accept & Decline
-            Route::get('race/accept/{id}', [BaseRaceController::class, 'accept'])->name('apps.base.race.accept');
-            Route::get('race/decline/{id}', [BaseRaceController::class, 'decline'])->name('apps.base.race.decline');
-            Route::get('race/decision/{id}', [BaseRaceController::class, 'decision'])->name('apps.base.race.decision');
-        });
-
         // Master Data
-        Route::group(['prefix' => 'master-data', 'middleware' => ['role:Admin']], function(){
+        Route::group(['prefix' => 'master-data', 'middleware' => ['role:Admin|Moderator']], function(){
             // Master data index
             Route::get('/', [AppsController::class, 'master'])->name('apps.master.index');
 
-            // Master data user account
-            Route::get('user-account', [MasterUserController::class, 'index'])->name('apps.master.user.index');
+            // Master data - Base Content Type
+            Route::group(['prefix' => 'content-type'], function(){
+                // Index
+                Route::get('/', [BaseContentController::class, 'index'])->name('apps.base.content.index');
 
-            // Master data user account - Add
-            Route::get('user-account/add', [MasterUserController::class, 'add'])->name('apps.master.user.add');
-            Route::post('user-account/add', [MasterUserController::class, 'addPost']);
+                // Add
+                Route::get('add', [BaseContentController::class, 'add'])->name('apps.base.content.add');
+                Route::post('add', [BaseContentController::class, 'addPost']);
 
-            // Master data user account - Edit
-            Route::get('user-account/edit/{id}', [MasterUserController::class, 'edit'])->name('apps.master.user.edit');
-            Route::post('user-account/edit/{id}', [MasterUserController::class, 'editPost']);
+                // Edit
+                Route::get('edit/{id}', [BaseContentController::class, 'edit'])->name('apps.base.content.edit');
+                Route::post('edit/{id}', [BaseContentController::class, 'editPost']);
 
-            // Master data user account - Delete
-            Route::get('user-account/delete/{id}', [MasterUserController::class, 'delete'])->name('apps.master.user.delete');
+                // Decision
+                Route::get('delete/{id}', [BaseContentController::class, 'delete'])->name('apps.base.content.delete');
+                Route::get('decision/{id}', [BaseContentController::class, 'decision'])->name('apps.base.content.decision');
+            });
+
+            // Master data - Base Gender Type
+            Route::group(['prefix' => 'gender-type'], function(){
+                // Index
+                Route::get('/', [BaseGenderController::class, 'index'])->name('apps.base.gender.index');
+
+                // Add
+                Route::get('add', [BaseGenderController::class, 'add'])->name('apps.base.gender.add');
+                Route::post('add', [BaseGenderController::class, 'addPost']);
+
+                // Edit
+                Route::get('edit/{id}', [BaseGenderController::class, 'edit'])->name('apps.base.gender.edit');
+                Route::post('edit/{id}', [BaseGenderController::class, 'editPost']);
+
+                // Decision
+                Route::get('delete/{id}', [BaseGenderController::class, 'delete'])->name('apps.base.gender.delete');
+                Route::get('gender/decision/{id}', [BaseGenderController::class, 'decision'])->name('apps.base.gender.decision');
+            });
+
+            // Master data - Base Language Type
+            Route::group(['prefix' => 'language-type'], function(){
+                // Index
+                Route::get('/', [BaseLanguageController::class, 'index'])->name('apps.base.language.index');
+
+                // Add
+                Route::get('add', [BaseLanguageController::class, 'add'])->name('apps.base.language.add');
+                Route::post('add', [BaseLanguageController::class, 'addPost']);
+
+                // Edit
+                Route::get('edit/{id}', [BaseLanguageController::class, 'edit'])->name('apps.base.language.edit');
+                Route::post('edit/{id}', [BaseLanguageController::class, 'editPost']);
+
+                // Decision
+                Route::get('delete/{id}', [BaseLanguageController::class, 'delete'])->name('apps.base.language.delete');
+                Route::get('decision/{id}', [BaseLanguageController::class, 'decision'])->name('apps.base.language.decision');
+            });
+
+            // Master data - Base Link Type
+            Route::group(['prefix' => 'link-type'], function(){
+                // Index
+                Route::get('/', [BaseLinkController::class, 'index'])->name('apps.base.link.index');
+
+                // Add
+                Route::get('add', [BaseLinkController::class, 'add'])->name('apps.base.link.add');
+                Route::post('add', [BaseLinkController::class, 'addPost']);
+
+                // Edit
+                Route::get('edit/{id}', [BaseLinkController::class, 'edit'])->name('apps.base.link.edit');
+                Route::post('edit/{id}', [BaseLinkController::class, 'editPost']);
+
+                // Decision
+                Route::get('delete/{id}', [BaseLinkController::class, 'delete'])->name('apps.base.link.delete');
+                Route::get('decision/{id}', [BaseLinkController::class, 'decision'])->name('apps.base.link.decision');
+            });
+
+            // Master data - Base Race Type
+            Route::group(['prefix' => 'race-type'], function(){
+                // Index
+                Route::get('/', [BaseRaceController::class, 'index'])->name('apps.base.race.index');
+
+                // Add
+                Route::get('add', [BaseRaceController::class, 'add'])->name('apps.base.race.add');
+                Route::post('add', [BaseRaceController::class, 'addPost']);
+
+                // Edit
+                Route::get('edit/{id}', [BaseRaceController::class, 'edit'])->name('apps.base.race.edit');
+                Route::post('edit/{id}', [BaseRaceController::class, 'editPost']);
+
+                // Decision
+                Route::get('delete/{id}', [BaseRaceController::class, 'delete'])->name('apps.base.race.delete');
+                Route::get('decision/{id}', [BaseRaceController::class, 'decision'])->name('apps.base.race.decision');
+            });
+
+            // Master data - User
+            Route::group(['prefix' => 'user-account'], function(){
+                // Index
+                Route::get('/', [MasterUserController::class, 'index'])->name('apps.master.user.index');
+
+                // Add
+                Route::get('add', [MasterUserController::class, 'add'])->name('apps.master.user.add');
+                Route::post('add', [MasterUserController::class, 'addPost']);
+
+                // Edit
+                Route::get('edit/{id}', [MasterUserController::class, 'edit'])->name('apps.master.user.edit');
+                Route::post('edit/{id}', [MasterUserController::class, 'editPost']);
+
+                // Delete
+                Route::get('delete/{id}', [MasterUserController::class, 'delete'])->name('apps.master.user.delete');
+            });
         });
     });
 });

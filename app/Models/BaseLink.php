@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 #[ObservedBy([BaseLinkObserver::class])]
 class BaseLink extends Model{
-    // use SoftDeletes;
+    use SoftDeletes;
 
     protected $table = 'base_link';
     protected $primaryKey = 'id';
@@ -18,8 +18,10 @@ class BaseLink extends Model{
     protected $fillable = [
         'users_id',
         'base_decision_id',
-        'checking',
         'name',
+        'icon',
+        'color',
+        'checking',
     ];
 
     public function belongsToBaseDecision(){

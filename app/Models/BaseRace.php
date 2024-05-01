@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 #[ObservedBy([BaseRaceObserver::class])]
 class BaseRace extends Model{
-    // use SoftDeletes;
+    use SoftDeletes;
 
     protected $table = 'base_race';
     protected $primaryKey = 'id';

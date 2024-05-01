@@ -44,16 +44,14 @@ return [
             'throw' => false,
         ],
 
-        's3' => [
-            'driver' => 's3',
-            'key' => env('AWS_ACCESS_KEY_ID'),
-            'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            'region' => env('AWS_DEFAULT_REGION'),
-            'bucket' => env('AWS_BUCKET'),
-            'url' => env('AWS_URL'),
-            'endpoint' => env('AWS_ENDPOINT'),
-            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
-            'throw' => false,
+        's3public' => [
+            'driver'        => 's3',
+            'bucket'        => env('B2_EU_BUCKET_1'),
+            'region'        => env('B2_EU_REGION'),
+            'key'           => env('B2_EU_KEY'),
+            'secret'        => env('B2_EU_SECRET'),
+            'endpoint'      => env('B2_EU_ENDPOINT'),
+            'visibility'    => 'public',
         ],
 
     ],

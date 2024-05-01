@@ -1,7 +1,7 @@
 @extends('layout.app')
-@section('title', 'Base Language')
+@section('title', 'Content Language')
 @section('content')
-    <x-adminlte.content previous="apps.base.index">
+    <x-adminlte.content previous="apps.master.index">
         <x-adminlte.card add="apps.base.language.add">
             <x-adminlte.table ids="languageTables">
                 <thead>
@@ -53,7 +53,6 @@
                     data: "action",
                     bSortable: false,
                     bSearchable: false,
-                    visible: {{ auth()->user()->hasRole('Admin') ? "true" : "false" }},
                 },
             ],
         });

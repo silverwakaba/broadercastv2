@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Events\UserCreated;
 
+use App\Repositories\BaseRepositories;
+
 class FrontController extends Controller{
     // Index
     public function index(){

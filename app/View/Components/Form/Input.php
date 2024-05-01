@@ -11,7 +11,7 @@ class Input extends Component{
     public string $name;
     public string $type;
     public string $text;
-    public string $value;
+    public $value;
 
     /**
      * Create a new component instance.
@@ -20,7 +20,7 @@ class Input extends Component{
         $this->name = $name;
         $this->type = $type;
         $this->text = $text;
-        $this->value = $value;
+        $this->value = $value ? $value : null;
         $this->col = $col ? $col : 12;
     }
 

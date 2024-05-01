@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use App\Models\User;
+
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Crypt;
 
@@ -12,6 +14,14 @@ class BaseHelper {
         }
 
         return hash("adler32", $v);
+    }
+
+    public static function getBotID(){
+        $datas = User::where([
+            ['identifier', '=', 'waka'],
+        ])->first();
+
+        return $datas->id;
     }
 
     public static function encrypt($v){

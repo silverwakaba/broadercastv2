@@ -14,6 +14,8 @@ class UserSeeder extends Seeder{
     public function run() : void{
         $faker = \Faker\Factory::create();
 
+        // User::factory(1)->create();
+
         User::create([
             'base_status_id'    => '6',
             'confirmed'         => true,
@@ -22,14 +24,12 @@ class UserSeeder extends Seeder{
             'password'          => bcrypt('123456789'),
         ])->assignRole('Admin');
 
-        // User::factory(1)->create();
-
-        // User::create([
-        //     'base_status_id'    => '6',
-        //     'confirmed'         => true,
-        //     'identifier'        => $faker->name(),
-        //     'email'             => $faker->email(),
-        //     'password'          => bcrypt('123456789'),
-        // ])->assignRole('User');
+        User::create([
+            'base_status_id'    => '6',
+            'confirmed'         => true,
+            'identifier'        => $faker->name(),
+            'email'             => $faker->email(),
+            'password'          => bcrypt('123456789'),
+        ])->assignRole('User');
     }
 }

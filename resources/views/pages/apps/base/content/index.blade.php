@@ -1,7 +1,7 @@
 @extends('layout.app')
-@section('title', 'Base Content')
+@section('title', 'Content Type')
 @section('content')
-    <x-adminlte.content previous="apps.base.index">
+    <x-adminlte.content previous="apps.master.index">
         <x-adminlte.card add="apps.base.content.add">
             <x-adminlte.table ids="contentTables">
                 <thead>
@@ -53,7 +53,7 @@
                     data: "action",
                     bSortable: false,
                     bSearchable: false,
-                    visible: {{ auth()->user()->hasRole('Admin') ? "true" : "false" }},
+                    // visible: {{ auth()->user()->hasRole('Admin|Moderator') ? "true" : "false" }},
                 },
             ],
         });

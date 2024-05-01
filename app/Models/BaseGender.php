@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 #[ObservedBy([BaseGenderObserver::class])]
 class BaseGender extends Model{
-    // use SoftDeletes;
+    use SoftDeletes;
 
     protected $table = 'base_gender';
     protected $primaryKey = 'id';

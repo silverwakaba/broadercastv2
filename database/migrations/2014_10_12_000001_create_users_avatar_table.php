@@ -12,7 +12,8 @@ return new class extends Migration{
         Schema::create('users_avatar', function (Blueprint $table) {
             $table->id();
             $table->foreignId('users_id')->references('id')->on('users')->onDelete('cascade');
-            $table->string('path');
+            $table->string('path')->nullable();
+            $table->softDeletes();
         });
     }
 

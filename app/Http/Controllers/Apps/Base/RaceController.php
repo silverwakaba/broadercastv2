@@ -1,37 +1,29 @@
 <?php
 
 namespace App\Http\Controllers\Apps\Base;
+
 use App\Http\Controllers\Controller;
-use App\Helpers\BaseHelper;
-
 use App\Http\Requests\Apps\Base\RaceRequest;
-
-use App\Http\Resources\BaseRaceResource;
-
-use App\Models\BaseRace;
-
+use App\Repositories\Base\BaseRepositories;
 use Illuminate\Http\Request;
-use Yajra\DataTables\Facades\DataTables;
 
 class RaceController extends Controller{
+    // Constructor
+    public function __construct(){
+        $this->back = 'apps.base.race.index';
+        $this->model = 'App\Models\BaseRace';
+        $this->resource = 'App\Http\Resources\BaseRaceResource';
+    }
+
     // Index
     public function index(Request $request){
         if(request()->ajax()){
-            $datas = BaseRace::with([
-                'belongsToBaseDecision', 'hasOneUser',
-            ])->whereIn(
-                'base_decision_id', [2, 6]
-            )->orderBy('name', 'ASC')->get();
-
-            return DataTables::of($datas)->setTransformer(function($data){
-                return [
-                    'datas'  => BaseRaceResource::make($data)->resolve(),
-                    'action' => view('datatable.action', ['mode' => 'approval'])
-                            ->with('decision', $data->base_decision_id)
-                            ->with('action', route('apps.base.race.decision', ['id' => BaseHelper::encrypt($data->id)]))
-                            ->render(),
-                ];
-            })->toJson();
+            return BaseRepositories::datatable([
+                'model'     => $this->model,
+                'resource'  => $this->resource,
+                'route'     => 'apps.base.race',
+                'with'      => ['belongsToBaseDecision', 'hasOneUser'],
+            ]);
         }
 
         return view('pages/apps/base/race/index');
@@ -43,30 +35,45 @@ class RaceController extends Controller{
     }
 
     public function addPost(RaceRequest $request){
-        $datas = BaseRace::create([
+        return BaseRepositories::upsert($this->model, [
             'users_id'          => auth()->user()->id,
             'base_decision_id'  => '6',
             'name'              => $request->name,
-        ]);
+        ], $this->back);
+    }
 
-        return redirect()->route('apps.base.race.index')->with('class', 'success')->with('message', 'Your base race suggestion is submitted. Thank you.');
+    // Edit
+    public function edit($id){
+        $datas = BaseRepositories::find([
+            'id'    => $id,
+            'model' => $this->model,
+        ]);
+        
+        return view('pages/apps/base/race/edit', [
+            'data' => $datas,
+        ]);
+    }
+
+    public function editPost(RaceRequest $request, $id){
+        return BaseRepositories::upsert($this->model, [
+            'name' => $request->name,
+        ], $this->back, $id);
     }
 
     // Decision
     public function decision(Request $request, $id){
-        $did = BaseHelper::decrypt($id);
+        return BaseRepositories::decision([
+            'id'        => $id,
+            'model'     => $this->model,
+            'action'    => $request->action,
+        ], $this->back);
+    }
 
-        $datas = BaseRace::findOrFail($did);
-
-        if($request->action == 'accept'){
-            $datas->update([
-                'base_decision_id' => '2',
-            ]);
-        }
-        elseif($request->action == 'decline'){
-            $datas->delete();
-        }
-
-        return back()->with('class', 'success')->with('message', 'Your decision is recorded. Thanks.');
+    // Delete
+    public function delete($id){
+        return BaseRepositories::delete([
+            'id'    => $id,
+            'model' => $this->model,
+        ], $this->back);
     }
 }

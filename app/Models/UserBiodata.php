@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
 class UserBiodata extends Model{
+    use SoftDeletes;
+    
     protected $table = 'users_biodata';
     protected $primaryKey = 'users_biodata_id';
     public $timestamps = false;

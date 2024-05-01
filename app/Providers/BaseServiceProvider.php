@@ -9,7 +9,9 @@ class BaseServiceProvider extends ServiceProvider{
      * Register services.
      */
     public function register() : void{
-        require_once app_path() . '/Helpers/BaseHelper.php';
+        // require_once app_path() . '/Repositories/BaseRepositories.php';
+        
+        // require_once app_path() . '/Helpers/BaseHelper.php';
     }
 
     /**
