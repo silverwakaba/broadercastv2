@@ -14,6 +14,9 @@ use App\Http\Controllers\Apps\Base\LanguageController as BaseLanguageController;
 use App\Http\Controllers\Apps\Base\LinkController as BaseLinkController;
 use App\Http\Controllers\Apps\Base\RaceController as BaseRaceController;
 
+// Manager
+use App\Http\Controllers\Apps\Manager\UserController as ManagerUserController;
+
 // Master Data
 use App\Http\Controllers\Apps\Master\UserController as MasterUserController;
 
@@ -46,9 +49,20 @@ Route::group(['prefix' => '/'], function(){
         Route::get('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware(['guest']);
     });
 
-    // App
+    // Apps
     Route::group(['prefix' => 'apps', 'middleware' => ['auth']], function(){
+        // Apps Index
         Route::get('/', [AppsController::class, 'index'])->name('apps.front.index');
+
+        // Master data - Base Content Type
+        Route::group(['prefix' => 'account-manager'], function(){
+            // Index
+            Route::get('/', [AppsController::class, 'manager'])->name('apps.manager.index');
+
+            // Avatar
+            Route::get('avatar', [ManagerUserController::class, 'avatar'])->name('apps.manager.avatar');
+            Route::post('avatar', [ManagerUserController::class, 'avatarPost']);
+        });
 
         // Master Data
         Route::group(['prefix' => 'master-data', 'middleware' => ['role:Admin|Moderator']], function(){

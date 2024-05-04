@@ -2,6 +2,9 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\UserAvatarResource;
+use App\Http\Resources\UserBiodataResource;
+
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,6 +23,8 @@ class UserResource extends JsonResource{
             'deleted_at'    => $this->deleted_at,
             'created_at'    => $this->created_at,
             'updated_at'    => $this->updated_at,
+            'avatar'        => new UserAvatarResource($this->whenLoaded('hasOneUserAvatar')),
+            'biodata'       => new UserBiodataResource($this->whenLoaded('hasOneUserBiodata')),
         ];
     }
 }

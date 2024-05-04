@@ -42,10 +42,10 @@
         @can('canLogin')
             <div class="user-panel pb-3 mt-3 mb-3 d-flex">
                 <div class="image">
-                    <img src="https://adminlte.io/themes/v3/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image" />
+                    <img src="{{ $avatar['path'] }}" class="img-circle elevation-2" alt="User Image" />
                 </div>
                 <div class="info">
-                    <a class="d-block text-truncate">{{ request()->user()->email }}</a>
+                    <a class="d-block text-truncate">{{ $biodata['name'] ? $biodata['name'] : $user['identifier'] }}</a>
                 </div>
             </div>
         @endcan
@@ -67,6 +67,18 @@
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
                                 <x-adminlte.navlink icon="1" route="apps.front.index" value="Dashboard" />
+                            </li>
+                        </ul>
+                    </x-adminlte.navtree>
+                    <li class="nav-header">Manager</li>
+                    <x-adminlte.navtree route="apps.manager.*">
+                        <x-adminlte.navlink icon="1" parent="1" fa="fas fa-tablet-alt" value="Manager" />
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <x-adminlte.navlink icon="1" route="apps.manager.index" value="Summary" />
+                            </li>
+                            <li class="nav-item">
+                                <x-adminlte.navlink icon="1" route="apps.manager.avatar" value="Avatar" />
                             </li>
                         </ul>
                     </x-adminlte.navtree>
