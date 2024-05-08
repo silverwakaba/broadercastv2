@@ -5,13 +5,14 @@
         <x-adminlte.card>
             <form method="POST">
                 <div class="form-row">
-                    <x-form.input name="token" type="text" text="Token" :value="request()->id" readonly />
+                    <x-form.input name="token" type="text" text="Token" :value="$datas->token" readonly />
                     <x-form.input name="new_password" type="password" text="New Password" />
                     <x-form.input name="new_password_confirmation" type="password" text="New Password Confirmation (Retype)" />
                 </div>
                 <div class="row">
                     <div class="col-8">
-                        <input class="d-none" name="_token" type="text" value="{{ csrf_token() }}" />
+                        <input type="hidden" name="_token" class="d-none" value="{{ csrf_token() }}" readonly />
+                        <input type="hidden" name="email" class="d-none" value="{{ $datas->belongsToUser->email }}" readonly />
                         <x-form.checkbox name="terms" value="1">I agree to <a href="https://www.google.com">Blabla</a></x-form.checkbox>
                     </div>
                     <div class="col-4">

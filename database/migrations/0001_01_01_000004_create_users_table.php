@@ -14,6 +14,7 @@ return new class extends Migration{
             $table->foreignId('base_status_id')->references('id')->on('base_status');
             $table->boolean('confirmed')->default(false);
             $table->string('identifier')->unique();
+            $table->string('name')->nullable();
             $table->string('email')->unique();
             $table->string('password');
             $table->rememberToken();

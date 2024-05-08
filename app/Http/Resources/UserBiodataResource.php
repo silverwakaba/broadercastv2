@@ -15,7 +15,6 @@ class UserBiodataResource extends JsonResource{
         return [
             'id'        => $this->id,
             'users_id'  => $this->users_id,
-            'name'      => $this->name,
             'nickname'  => $this->nickname,
             'dob'       => $this->dob,
             'dod'       => $this->dod,

@@ -40,7 +40,7 @@
                     },
                 },
                 {
-                    data: "datas.name",
+                    data: "datas.biodata.name",
                 },
                 {
                     data: "datas.email",

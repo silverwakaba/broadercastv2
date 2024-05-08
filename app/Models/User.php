@@ -24,6 +24,7 @@ class User extends Authenticatable{
         'base_status_id',
         'confirmed',
         'identifier',
+        'name',
         'email',
         'password',
         'email_verified_at',
@@ -64,6 +65,6 @@ class User extends Authenticatable{
     }
 
     public function hasOneUserRequest(){
-        return $this->hasOne(UserRequest::class, 'user_id');
+        return $this->hasOne(UserRequest::class, 'users_id');
     }
 }

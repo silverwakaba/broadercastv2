@@ -21,18 +21,26 @@ class Navigation extends Component{
      * Get the view / contents that represent the component.
      */
     public function render() : View|Closure|string{
+        $array = [];
+
+        $uid = auth()->user() ? auth()->user()->id : '0';
+
         $datas = User::with([
             'hasOneUserAvatar', 'hasOneUserBiodata'
         ])->where([
-            ['id', '=', auth()->user()->id],
+            ['id', '=', $uid],
         ])->first();
 
-        $user = (new UserResource($datas))->resolve();
+        if($datas){
+            $user = (new UserResource($datas))->resolve();
 
-        return view('components.adminlte.navigation', [
-            'user'      => $user,
-            'avatar'    => ($user['avatar'])->resolve(),
-            'biodata'   => ($user['biodata'])->resolve(),
-        ]);
+            $array = [
+                'user'      => $user,
+                'avatar'    => ($user['avatar'])->resolve(),
+                'biodata'   => ($user['biodata'])->resolve(),
+            ];
+        }
+
+        return view('components.adminlte.navigation', $array);
     }
 }

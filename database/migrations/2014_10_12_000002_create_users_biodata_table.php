@@ -12,12 +12,11 @@ return new class extends Migration{
         Schema::create('users_biodata', function (Blueprint $table) {
             $table->id();
             $table->foreignId('users_id')->references('id')->on('users')->onDelete('cascade');
-            $table->string('name')->nullable();
             $table->mediumText('nickname')->nullable();
             $table->date('dob')->nullable();
             $table->date('dod')->nullable();
             $table->longText('biography')->nullable();
-            $table->softDeletes();
+            // $table->softDeletes();
         });
     }
 

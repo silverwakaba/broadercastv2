@@ -14,23 +14,15 @@ class UserObserver{
      * Handle the User "created" event.
      */
     public function created(User $user) : void{
-        $faker = \Faker\Factory::create();
-
         $user->hasOneUserAvatar()->create([
-            'users_id'  => $user->id,
-            'path'      => 'path',
+            'users_id' => $user->id,
         ]);
 
         $user->hasOneUserBiodata()->create([
-            'users_id'  => $user->id,
-            'name'      => $faker->name(),
-            'nickname'  => 'nnn',
-            'dob'       => $faker->date(),
-            'dod'       => $faker->date(),
-            'biography' => $faker->text(),
+            'users_id' => $user->id,
         ]);
 
-        // Mail::to($user->email)->send(new UserVerifyEmail($user->id));
+        Mail::to($user->email)->send(new UserVerifyEmail($user->id));
 
         UserCreated::dispatch($user);
     }

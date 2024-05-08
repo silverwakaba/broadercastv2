@@ -45,7 +45,7 @@
                     <img src="{{ $avatar['path'] }}" class="img-circle elevation-2" alt="User Image" />
                 </div>
                 <div class="info">
-                    <a class="d-block text-truncate">{{ $biodata['name'] ? $biodata['name'] : $user['identifier'] }}</a>
+                    <a class="d-block text-truncate">{{ $user['name'] ? $user['name'] : $user['identifier'] }}</a>
                 </div>
             </div>
         @endcan
@@ -72,7 +72,7 @@
                     </x-adminlte.navtree>
                     <li class="nav-header">Manager</li>
                     <x-adminlte.navtree route="apps.manager.*">
-                        <x-adminlte.navlink icon="1" parent="1" fa="fas fa-tablet-alt" value="Manager" />
+                        <x-adminlte.navlink icon="1" parent="1" fa="fas fa-tasks" value="Manager" />
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
                                 <x-adminlte.navlink icon="1" route="apps.manager.index" value="Summary" />

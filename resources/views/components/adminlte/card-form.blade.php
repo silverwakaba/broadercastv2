@@ -20,7 +20,7 @@
             <div class="btn-group btn-group-toggle">
                 <button type="reset" class="btn btn-danger">Reset</button>    
                 <button type="submit" class="btn btn-success">{{ $button }}</button>
-                <input type="hidden" name="_token" class="d-none" value="{{ csrf_token() }}" />
+                <input type="hidden" name="_token" class="d-none" value="{{ csrf_token() }}" readonly />
             </div>
         </div>
     </div>

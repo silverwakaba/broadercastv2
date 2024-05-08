@@ -13,7 +13,7 @@ return new class extends Migration{
             $table->id();
             $table->foreignId('users_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('path')->nullable();
-            $table->softDeletes();
+            // $table->softDeletes();
         });
     }
 

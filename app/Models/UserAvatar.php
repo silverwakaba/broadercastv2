@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\SoftDeletes;
+// use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
 class UserAvatar extends Model{
-    use SoftDeletes;
+    // use SoftDeletes;
 
     protected $table = 'users_avatar';
     protected $primaryKey = 'id';

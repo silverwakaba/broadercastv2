@@ -19,6 +19,7 @@ class ResetRequest extends FormRequest{
      */
     public function rules() : array{
         return [
+            'email'                     => ['required', 'email'],
             'new_password'              => ['required', 'string'],
             'new_password_confirmation' => ['required', 'string', 'same:new_password'],
             'terms'                     => ['accepted'],

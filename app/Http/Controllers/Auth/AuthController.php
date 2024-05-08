@@ -8,6 +8,7 @@ use App\Events\UserCreated;
 
 use App\Mail\UserVerifyEmail;
 use App\Mail\UserRecoveryEmail;
+
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\RecoverRequest;
@@ -23,6 +24,9 @@ use Illuminate\Support\Facades\Mail;
 //
 use Illuminate\Support\Facades\Password;
 
+//
+use App\Repositories\Setting\UserRepositories;
+
 class AuthController extends Controller{
     // Register
     public function register(){
@@ -30,14 +34,12 @@ class AuthController extends Controller{
     }
 
     public function registerPost(RegisterRequest $request){
-        $datas = User::create([
+        return UserRepositories::register([
             'base_status_id'    => '6',
             'identifier'        => BaseHelper::adler32(),
             'email'             => $request->email,
             'password'          => bcrypt($request->password),
-        ])->assignRole('User');
-
-        return redirect()->route('login')->with('class', 'info')->with('message', 'Your account is ready.');
+        ], 'login');
     }
 
     // Login
@@ -46,16 +48,11 @@ class AuthController extends Controller{
     }
 
     public function loginPost(LoginRequest $request){
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password], $request->remember)){
-            $request->session()->regenerate();
-
-            return redirect()->intended(route('apps.front.index'));
-        }
-        else{
-            return back()->withErrors([
-                'email' => "Something went wrong. Please try again.",
-            ]);
-        }
+        return UserRepositories::login([
+            'email'     => $request->email,
+            'password'  => $request->password,
+            'remember'  => $request->remember,
+        ]);
     }
 
     // Recover
@@ -64,88 +61,39 @@ class AuthController extends Controller{
     }
 
     public function recoverPost(RecoverRequest $request){
-        $datas = User::where('email', '=', $request->email)->first();
-
-        if($datas){
-            $requests = UserRequest::create([
-                'base_request_id'   => 2,
-                'users_id'          => $datas->id,
-                'token'             => BaseHelper::adler32(),
-            ]);
-
-            Mail::to($request->email)->send(new UserRecoveryEmail($requests->id));
-
-            return redirect()->route('login')->with('class', 'info')->with('message', 'Please check your email to continue.');
-        }
-        else{
-            return back()->withErrors([
-                'email' => "Something went wrong. Please try again.",
-            ]);
-        }
+        return UserRepositories::recover([
+            'email' => $request->email,
+        ], 'login');
     }
 
     // Reset
     public function reset(Request $request){
-        $datas = UserRequest::where('token', '=', $request->id)->firstOrFail();
+        $datas = UserRequest::with([
+            'belongsToUser'
+        ])->where('token', '=', $request->id)->firstOrFail();
 
-        return view('pages/auth/reset');
+        return view('pages/auth/reset', [
+            'datas' => $datas,
+        ]);
     }
 
     public function resetPost(ResetRequest $request){
-        $datas = UserRequest::with([
-            'belongsToUser',
-        ])->where('token', '=', $request->id)->first();
-
-        Auth::logout();
- 
-        $request->session()->invalidate();
-        
-        $request->session()->regenerateToken();
-
-        Auth::loginUsingId($datas->belongsToUser->id);
-
-        $datas->update([
-            'token' => null,
-        ]);
-
-        $datas->belongsToUser()->update([
-            'password' => bcrypt($request->password),
-        ]);
-
-        return redirect()->intended(route('apps.front.index'));
+        return UserRepositories::reset([
+            'token'     => $request->token,
+            'email'     => $request->email,
+            'password'  => $request->password,
+        ], 'apps.front.index');
     }
 
     // Verify
     public function verify(Request $request){
-        $email = BaseHelper::decrypt($request->id);
-
-        $user = User::where('email', '=', $email);
-
-        $first = $user->first();
-        
-        $update = $user->update([
-            'email_verified_at' => now(),
-        ]);
-
-        Auth::logout();
- 
-        $request->session()->invalidate();
-        
-        $request->session()->regenerateToken();
-
-        Auth::loginUsingId($first->id);
-
-        return redirect()->intended(route('apps.front.index'));
+        return UserRepositories::verify([
+            'id' => $request->id,
+        ], 'apps.front.index');
     }
 
     // Logout
     public function logout(Request $request){
-        Auth::logout();
- 
-        $request->session()->invalidate();
-     
-        $request->session()->regenerateToken();
-     
-        return redirect()->route('login')->with('class', 'success')->with('message', 'Successfully ended the session safely.');
+        return UserRepositories::logout();
     }
 }

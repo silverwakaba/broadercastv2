@@ -20,7 +20,9 @@ class UserController extends Controller{
     // Index
     public function index(){
         if(request()->ajax()){
-            $datas = User::orderBy('id', 'DESC')->get();
+            $datas = User::with([
+                'hasOneUserBiodata'
+            ])->orderBy('id', 'DESC')->get();
 
             return DataTables::of($datas)->setTransformer(function($data){
                 return [
