@@ -3,7 +3,6 @@
 namespace App\Helpers;
 
 use App\Models\User;
-
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Crypt;
 

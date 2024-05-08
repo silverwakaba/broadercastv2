@@ -1,31 +1,15 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
-use App\Http\Controllers\Controller;
+
 use App\Helpers\BaseHelper;
-
-use App\Events\UserCreated;
-
-use App\Mail\UserVerifyEmail;
-use App\Mail\UserRecoveryEmail;
-
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\RecoverRequest;
 use App\Http\Requests\Auth\ResetRequest;
-
-use App\Models\User;
-use App\Models\UserRequest;
-
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
-
-//
-use Illuminate\Support\Facades\Password;
-
-//
 use App\Repositories\Setting\UserRepositories;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller{
     // Register
@@ -35,7 +19,7 @@ class AuthController extends Controller{
 
     public function registerPost(RegisterRequest $request){
         return UserRepositories::register([
-            'base_status_id'    => '6',
+            'base_status_id'    => 6,
             'identifier'        => BaseHelper::adler32(),
             'email'             => $request->email,
             'password'          => bcrypt($request->password),
@@ -68,9 +52,9 @@ class AuthController extends Controller{
 
     // Reset
     public function reset(Request $request){
-        $datas = UserRequest::with([
-            'belongsToUser'
-        ])->where('token', '=', $request->id)->firstOrFail();
+        $datas = UserRepositories::getReset([
+            'id' => $request->id,
+        ]);
 
         return view('pages/auth/reset', [
             'datas' => $datas,

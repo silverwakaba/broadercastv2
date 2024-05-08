@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Str;
 
 class UserBiodataResource extends JsonResource{
     /**
@@ -18,7 +19,7 @@ class UserBiodataResource extends JsonResource{
             'nickname'  => $this->nickname,
             'dob'       => $this->dob,
             'dod'       => $this->dod,
-            'biography' => $this->biography,
+            'biography' => Str::markdown($this->biography),
         ];
     }
 }

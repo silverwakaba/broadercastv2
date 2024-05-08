@@ -4,9 +4,12 @@ namespace App\Repositories\Setting;
 
 use App\Helpers\BaseHelper;
 
+use App\Http\Resources\UserResource;
+
 use App\Mail\UserRecoveryEmail;
 
 use App\Models\User;
+use App\Models\UserRequest;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
@@ -15,127 +18,202 @@ use Illuminate\Support\Facades\Storage;
 
 class UserRepositories{
     public static function register(array $data, $back, $role = ''){
-        if(!$role){
-            $role = 'User';
+        try{
+            if(!$role){
+                $role = 'User';
+            }
+    
+            $user = User::create($data)->assignRole($role);
+    
+            $user->hasOneUserRequest()->create([
+                'base_request_id'   => 1,
+                'users_id'          => $user->id,
+            ]);
+            
+            return redirect()->route($back)->with('class', 'info')->with('message', 'The registered account is ready.');
         }
-
-        $user = User::create($data)->assignRole($role);
-
-        $user->hasOneUserRequest()->create([
-            'base_request_id'   => 1,
-            'users_id'          => $user->id,
-        ]);
-        
-        return redirect()->route($back)->with('class', 'info')->with('message', 'The registered account is ready.');
+        catch(\Throwable $th) {
+            return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
+        }
     }
 
     public static function login(array $data){
-        if(Auth::attempt(['email' => $data['email'], 'password' => $data['password']], $data['remember'])){
-            request()->session()->regenerate();
-
-            return redirect()->intended(route('apps.front.index'));
+        try{
+            if(Auth::attempt(['email' => $data['email'], 'password' => $data['password']], $data['remember'])){
+                request()->session()->regenerate();
+    
+                return redirect()->intended(route('apps.front.index'));
+            }
+            else{
+                return back()->withErrors([
+                    'email' => "Something went wrong. Please try again.",
+                ]);
+            }
         }
-        else{
-            return back()->withErrors([
-                'email' => "Something went wrong. Please try again.",
-            ]);
+        catch(\Throwable $th) {
+            return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
         }
     }
 
     public static function recover(array $data, $back){
-        $user = User::where('email', '=', $data['email'])->first();
+        try{
+            $user = User::where('email', '=', $data['email'])->first();
 
-        if($user){
-            $request = $user->hasOneUserRequest()->create([
-                'base_request_id'   => 2,
-                'users_id'          => $user->id,
-                'token'             => BaseHelper::adler32(),
-            ]);
+            if($user){
+                $request = $user->hasOneUserRequest()->create([
+                    'base_request_id'   => 2,
+                    'users_id'          => $user->id,
+                    'token'             => BaseHelper::adler32(),
+                ]);
 
-            Mail::to($data['email'])->send(new UserRecoveryEmail($request->id));
+                Mail::to($data['email'])->send(new UserRecoveryEmail($request->id));
 
-            return redirect()->route($back)->with('class', 'info')->with('message', 'Please check your email to continue.');
+                return redirect()->route($back)->with('class', 'info')->with('message', 'Please check your email to continue.');
+            }
+            else{
+                return back()->withErrors([
+                    'email' => "Something went wrong. Please try again.",
+                ]);
+            }
         }
-        else{
-            return back()->withErrors([
-                'email' => "Something went wrong. Please try again.",
-            ]);
+        catch(\Throwable $th) {
+            return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
         }
+    }
+
+    public static function getReset(array $data){
+        return UserRequest::with([
+            'belongsToUser'
+        ])->where('token', '=', $data['id'])->firstOrFail();
     }
 
     public static function reset(array $data, $back){
-        $user = User::where('email', '=', $data['email'])->first();
+        try{
+            $user = User::where('email', '=', $data['email'])->first();
 
-        Auth::logout();
- 
-        request()->session()->invalidate();
-        
-        request()->session()->regenerateToken();
+            Auth::logout();
+    
+            request()->session()->invalidate();
+            
+            request()->session()->regenerateToken();
 
-        Auth::loginUsingId($user->id);
+            Auth::loginUsingId($user->id);
 
-        if($data['token']){
-            $token = $user->hasOneUserRequest()->where('token', '=', $data['token'])->first();
+            if($data['token']){
+                $token = $user->hasOneUserRequest()->where('token', '=', $data['token'])->first();
 
-            $token->update([
-                'token' => null,
+                $token->update([
+                    'token' => null,
+                ]);
+            }
+
+            $user->update([
+                'password' => bcrypt($data['password']),
             ]);
+
+            return redirect()->route($back)->with('class', 'success')->with('message', 'Your password has been successfully changed.');
         }
-
-        $user->update([
-            'password' => bcrypt($data['password']),
-        ]);
-
-        return redirect()->route($back)->with('class', 'success')->with('message', 'Your password has been successfully changed.');
+        catch(\Throwable $th) {
+            return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
+        }
     }
 
     public static function verify(array $data, $back){
-        $email = BaseHelper::decrypt($data['id']);
+        try{
+            $email = BaseHelper::decrypt($data['id']);
 
-        $user = User::where('email', '=', $email)->first();
-        
-        $user->update([
-            'email_verified_at' => now(),
-        ]);
+            $user = User::where('email', '=', $email)->first();
+            
+            $user->update([
+                'email_verified_at' => now(),
+            ]);
 
-        Auth::logout();
- 
-        request()->session()->invalidate();
-        
-        request()->session()->regenerateToken();
+            Auth::logout();
+    
+            request()->session()->invalidate();
+            
+            request()->session()->regenerateToken();
 
-        Auth::loginUsingId($user->id);
+            Auth::loginUsingId($user->id);
 
-        return redirect()->route($back)->with('class', 'success')->with('message', 'Your email has been successfully verified.');
+            return redirect()->route($back)->with('class', 'success')->with('message', 'Your email has been successfully verified.');
+        }
+        catch(\Throwable $th) {
+            return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
+        }
     }
 
     public static function logout(){
-        Auth::logout();
+        try{
+            Auth::logout();
  
-        request()->session()->invalidate();
+            request()->session()->invalidate();
+            
+            request()->session()->regenerateToken();
         
-        request()->session()->regenerateToken();
-     
-        return redirect()->route('login')->with('class', 'success')->with('message', 'Successfully ended the session safely.');
+            return redirect()->route('login')->with('class', 'success')->with('message', 'Successfully ended the session safely.');
+        }
+        catch(\Throwable $th) {
+            return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
+        }
     }
 
     public static function avatar($data){
-        $dir = 'system/avatar';
+        try{
+            $dir = 'system/avatar';
 
-        $user = User::find(auth()->user()->id);
+            $user = User::find(auth()->user()->id);
 
-        $storage = Storage::disk('s3public');
+            $storage = Storage::disk('s3public');
 
-        if($user->hasOneUserAvatar->path){
-            $storage->delete($dir . '/' . $user->hasOneUserAvatar->path);
+            if($user->hasOneUserAvatar->path){
+                $storage->delete($dir . '/' . $user->hasOneUserAvatar->path);
+            }
+
+            $avatar = $storage->put($dir, $data);
+
+            $user->hasOneUserAvatar()->update([
+                'path' => Str::of($avatar)->basename(),
+            ]);
+
+            return back()->with('class', 'success')->with('message', "Your avatar is changed successfully.");
+        }
+        catch(\Throwable $th) {
+            return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
+        }
+    }
+
+    public static function getProfile(array $data, $resource = false){
+        $user = User::with(isset($data['with']) ? $data['with'] : [])->where([
+            ['id', '=', $data['id']],
+        ])->first();
+
+        if($resource == true){
+            return new UserResource($user);
         }
 
-        $avatar = $storage->put($dir, $data);
+        return $user;
+    }
 
-        $user->hasOneUserAvatar()->update([
-            'path' => Str::of($avatar)->basename(),
-        ]);
+    public static function biodata(array $data){
+        try{
+            $user = User::find(auth()->user()->id);
 
-        return back()->with('class', 'success')->with('message', "Your avatar is changed successfully.");
+            $user->update([
+                'name' => $data['name'],
+            ]);
+
+            $user->hasOneUserBiodata()->update([
+                'nickname'  => $data['nickname'],
+                'dob'       => $data['dob'],
+                'dod'       => $data['dod'],
+                'biography' => $data['biography'],
+            ]);
+
+            return back()->with('class', 'success')->with('message', "Your biodata is changed successfully.");
+        }
+        catch(\Throwable $th) {
+            return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
+        }
     }
 }

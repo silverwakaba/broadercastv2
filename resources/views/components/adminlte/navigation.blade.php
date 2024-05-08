@@ -80,6 +80,9 @@
                             <li class="nav-item">
                                 <x-adminlte.navlink icon="1" route="apps.manager.avatar" value="Avatar" />
                             </li>
+                            <li class="nav-item">
+                                <x-adminlte.navlink icon="1" route="apps.manager.biodata" value="Biodata" />
+                            </li>
                         </ul>
                     </x-adminlte.navtree>
                     @role('Admin')

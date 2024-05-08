@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\Auth\AuthController;
-
 use App\Http\Controllers\Apps\AppsController;
 
 // Base Data
@@ -62,6 +61,10 @@ Route::group(['prefix' => '/'], function(){
             // Avatar
             Route::get('avatar', [ManagerUserController::class, 'avatar'])->name('apps.manager.avatar');
             Route::post('avatar', [ManagerUserController::class, 'avatarPost']);
+
+            // Biodata
+            Route::get('biodata', [ManagerUserController::class, 'biodata'])->name('apps.manager.biodata');
+            Route::post('biodata', [ManagerUserController::class, 'biodataPost']);
         });
 
         // Master Data
