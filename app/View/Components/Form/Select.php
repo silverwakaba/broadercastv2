@@ -11,12 +11,12 @@ class Select extends Component{
     public int $col;
     public string $name;
     public string $text;
-    public string $value;
+    public $value;
 
     /**
      * Create a new component instance.
      */
-    public function __construct($name, $text, $data = '', $value = '', $col = ''){
+    public function __construct($name, $text, $data, $value = '', $col = ''){
         $this->name = $name;
         $this->text = $text;
         $this->data = $data;
@@ -28,6 +28,8 @@ class Select extends Component{
      * Get the view / contents that represent the component.
      */
     public function render() : View|Closure|string{
-        return view('components.form.select');
+        return view('components.form.select', [
+            'data' => $this->data,
+        ]);
     }
 }

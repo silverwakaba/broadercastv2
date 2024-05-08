@@ -65,6 +65,10 @@ Route::group(['prefix' => '/'], function(){
             // Biodata
             Route::get('biodata', [ManagerUserController::class, 'biodata'])->name('apps.manager.biodata');
             Route::post('biodata', [ManagerUserController::class, 'biodataPost']);
+
+            // Content
+            Route::get('content', [ManagerUserController::class, 'content'])->name('apps.manager.content');
+            Route::post('content', [ManagerUserController::class, 'contentPost']);
         });
 
         // Master Data

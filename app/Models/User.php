@@ -64,6 +64,10 @@ class User extends Authenticatable{
         return $this->hasOne(UserBiodata::class, 'users_id');
     }
 
+    public function belongsToManyUserContent(){
+        return $this->belongsToMany(BaseContent::class, 'users_content', 'users_id', 'base_content_id');
+    }
+
     public function hasOneUserRequest(){
         return $this->hasOne(UserRequest::class, 'users_id');
     }

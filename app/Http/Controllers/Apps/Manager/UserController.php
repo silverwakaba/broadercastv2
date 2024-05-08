@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 
 use App\Http\Requests\Apps\Setting\UserAvatarRequest;
 use App\Http\Requests\Apps\Setting\UserBiodataRequest;
+use App\Http\Requests\Apps\Setting\UserContentRequest;
 
 use App\Repositories\Setting\UserRepositories;
 use Illuminate\Http\Request;
+
+use App\Helpers\BasedataHelper;
 
 class UserController extends Controller{
     // Avatar
@@ -40,5 +43,24 @@ class UserController extends Controller{
             'dod'       => $request->dod,
             'biography' => $request->biography,
         ]);
+    }
+
+    // Content
+    public function content(){
+        $datas = UserRepositories::getProfile([
+            'id'    => auth()->user()->id,
+            'with'  => ['belongsToManyUserContent'],
+        ], true);
+
+        $repo = ($datas)->resolve();
+
+        return view('pages/apps/setting/user/content', [
+            'datas' => BasedataHelper::BaseContent(),
+            'value' => ($repo['content'])->pluck('id')->toArray(),
+        ]);
+    }
+
+    public function contentPost(Request $request){
+        return UserRepositories::content($request->content);
     }
 }

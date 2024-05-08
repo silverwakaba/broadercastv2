@@ -216,4 +216,17 @@ class UserRepositories{
             return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
         }
     }
+
+    public static function content($data){
+        try{
+            $user = User::find(auth()->user()->id);
+
+            $user->belongsToManyUserContent()->sync($data);
+
+            return back()->with('class', 'success')->with('message', "Your content is changed successfully.");
+        }
+        catch(\Throwable $th) {
+            return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
+        }
+    }
 }
