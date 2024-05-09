@@ -86,6 +86,18 @@
                             <li class="nav-item">
                                 <x-adminlte.navlink icon="1" route="apps.manager.content" value="Content" />
                             </li>
+                            <li class="nav-item">
+                                <x-adminlte.navlink icon="1" route="apps.manager.gender" value="Gender" />
+                            </li>
+                            <li class="nav-item">
+                                <x-adminlte.navlink icon="1" route="apps.manager.language" value="Language" />
+                            </li>
+                            <li class="nav-item">
+                                <x-adminlte.navlink icon="1" route="apps.manager.index" value="Link" /> <!-- Yea wait bitch -->
+                            </li>
+                            <li class="nav-item">
+                                <x-adminlte.navlink icon="1" route="apps.manager.race" value="Race" />
+                            </li>
                         </ul>
                     </x-adminlte.navtree>
                     @role('Admin')

@@ -5,6 +5,10 @@ namespace App\Http\Resources;
 use App\Http\Resources\UserAvatarResource;
 use App\Http\Resources\UserBiodataResource;
 use App\Http\Resources\UserContentResource;
+use App\Http\Resources\UserGenderResource;
+use App\Http\Resources\UserLanguageResource;
+
+use App\Http\Resources\UserRaceResource;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -27,6 +31,10 @@ class UserResource extends JsonResource{
             'avatar'        => new UserAvatarResource($this->whenLoaded('hasOneUserAvatar')),
             'biodata'       => new UserBiodataResource($this->whenLoaded('hasOneUserBiodata')),
             'content'       => UserContentResource::collection($this->whenLoaded('belongsToManyUserContent')),
+            'gender'        => UserGenderResource::collection($this->whenLoaded('belongsToManyUserGender')),
+            'language'      => UserLanguageResource::collection($this->whenLoaded('belongsToManyUserLanguage')),
+            // Link
+            'race'          => UserRaceResource::collection($this->whenLoaded('belongsToManyUserRace')),
         ];
     }
 }

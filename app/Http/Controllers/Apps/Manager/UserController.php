@@ -55,12 +55,70 @@ class UserController extends Controller{
         $repo = ($datas)->resolve();
 
         return view('pages/apps/setting/user/content', [
-            'datas' => BasedataHelper::BaseContent(),
+            'datas' => BasedataHelper::baseContent(),
             'value' => ($repo['content'])->pluck('id')->toArray(),
         ]);
     }
 
     public function contentPost(Request $request){
         return UserRepositories::content($request->content);
+    }
+
+    // Gender
+    public function gender(){
+        $datas = UserRepositories::getProfile([
+            'id'    => auth()->user()->id,
+            'with'  => ['belongsToManyUserGender'],
+        ], true);
+
+        $repo = ($datas)->resolve();
+
+        return view('pages/apps/setting/user/gender', [
+            'datas' => BasedataHelper::baseGender(),
+            'value' => ($repo['gender'])->pluck('id')->toArray(),
+        ]);
+    }
+
+    public function genderPost(Request $request){
+        return UserRepositories::gender($request->gender);
+    }
+
+    // Language
+    public function language(){
+        $datas = UserRepositories::getProfile([
+            'id'    => auth()->user()->id,
+            'with'  => ['belongsToManyUserLanguage'],
+        ], true);
+
+        $repo = ($datas)->resolve();
+
+        return view('pages/apps/setting/user/language', [
+            'datas' => BasedataHelper::baseLanguage(),
+            'value' => ($repo['language'])->pluck('id')->toArray(),
+        ]);
+    }
+
+    public function languagePost(Request $request){
+        return UserRepositories::language($request->language);
+    }
+
+    // Link
+
+    public function race(){
+        $datas = UserRepositories::getProfile([
+            'id'    => auth()->user()->id,
+            'with'  => ['belongsToManyUserRace'],
+        ], true);
+
+        $repo = ($datas)->resolve();
+
+        return view('pages/apps/setting/user/race', [
+            'datas' => BasedataHelper::baseRace(),
+            'value' => ($repo['race'])->pluck('id')->toArray(),
+        ]);
+    }
+
+    public function racePost(Request $request){
+        return UserRepositories::race($request->race);
     }
 }

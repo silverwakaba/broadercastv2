@@ -69,6 +69,20 @@ Route::group(['prefix' => '/'], function(){
             // Content
             Route::get('content', [ManagerUserController::class, 'content'])->name('apps.manager.content');
             Route::post('content', [ManagerUserController::class, 'contentPost']);
+
+            // Gender
+            Route::get('gender', [ManagerUserController::class, 'gender'])->name('apps.manager.gender');
+            Route::post('gender', [ManagerUserController::class, 'genderPost']);
+
+            // Language
+            Route::get('language', [ManagerUserController::class, 'language'])->name('apps.manager.language');
+            Route::post('language', [ManagerUserController::class, 'languagePost']);
+
+            // Link
+
+            // Race
+            Route::get('race', [ManagerUserController::class, 'race'])->name('apps.manager.race');
+            Route::post('race', [ManagerUserController::class, 'racePost']);
         });
 
         // Master Data

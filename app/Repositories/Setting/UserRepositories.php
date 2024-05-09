@@ -223,7 +223,48 @@ class UserRepositories{
 
             $user->belongsToManyUserContent()->sync($data);
 
-            return back()->with('class', 'success')->with('message', "Your content is changed successfully.");
+            return back()->with('class', 'success')->with('message', "Your focus content is changed successfully.");
+        }
+        catch(\Throwable $th) {
+            return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
+        }
+    }
+
+    public static function gender($data){
+        try{
+            $user = User::find(auth()->user()->id);
+
+            $user->belongsToManyUserGender()->sync($data);
+
+            return back()->with('class', 'success')->with('message', "Your gender representation is changed successfully.");
+        }
+        catch(\Throwable $th) {
+            return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
+        }
+    }
+
+    public static function language($data){
+        try{
+            $user = User::find(auth()->user()->id);
+
+            $user->belongsToManyUserLanguage()->sync($data);
+
+            return back()->with('class', 'success')->with('message', "Your main language is changed successfully.");
+        }
+        catch(\Throwable $th) {
+            return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
+        }
+    }
+
+    // Link
+
+    public static function race($data){
+        try{
+            $user = User::find(auth()->user()->id);
+
+            $user->belongsToManyUserRace()->sync($data);
+
+            return back()->with('class', 'success')->with('message', "Your character race is changed successfully.");
         }
         catch(\Throwable $th) {
             return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');

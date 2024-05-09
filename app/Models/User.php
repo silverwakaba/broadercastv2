@@ -68,6 +68,22 @@ class User extends Authenticatable{
         return $this->belongsToMany(BaseContent::class, 'users_content', 'users_id', 'base_content_id');
     }
 
+    public function belongsToManyUserGender(){
+        return $this->belongsToMany(BaseGender::class, 'users_gender', 'users_id', 'base_gender_id');
+    }
+
+    public function belongsToManyUserLanguage(){
+        return $this->belongsToMany(BaseLanguage::class, 'users_language', 'users_id', 'base_language_id');
+    }
+
+    public function belongsToManyUserLink(){
+        return $this->belongsToMany(BaseLink::class, 'users_link', 'users_id', 'base_link_id');//->withPivot('identifier', 'link');
+    }
+
+    public function belongsToManyUserRace(){
+        return $this->belongsToMany(BaseRace::class, 'users_race', 'users_id', 'base_race_id');
+    }
+
     public function hasOneUserRequest(){
         return $this->hasOne(UserRequest::class, 'users_id');
     }
