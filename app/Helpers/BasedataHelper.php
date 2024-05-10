@@ -5,7 +5,6 @@ namespace App\Helpers;
 use App\Models\BaseContent;
 use App\Models\BaseGender;
 use App\Models\BaseLanguage;
-
 use App\Models\BaseLink;
 use App\Models\BaseRace;
 
@@ -27,8 +26,12 @@ class BasedataHelper{
 
         return $datas;
     }
+    
+    public static function baseLink(){
+        $datas = BaseLink::orderBy('name', 'ASC')->get();
 
-    // Link
+        return $datas;
+    }
 
     public static function baseRace(){
         $datas = BaseRace::orderBy('name', 'ASC')->get();

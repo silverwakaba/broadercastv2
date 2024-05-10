@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Apps\Setting\UserAvatarRequest;
 use App\Http\Requests\Apps\Setting\UserBiodataRequest;
 use App\Http\Requests\Apps\Setting\UserContentRequest;
+use App\Http\Requests\Apps\Setting\UserLinkRequest;
 
 use App\Repositories\Setting\UserRepositories;
 use Illuminate\Http\Request;
@@ -103,7 +104,36 @@ class UserController extends Controller{
     }
 
     // Link
+    public function link(){
+        if(request()->ajax()){
+            return UserRepositories::linkDatatable([
+                'id'    => auth()->user()->id,
+                'route' => 'apps.manager.link',
+            ], true);
+        }
 
+        return view('pages/apps/setting/user/link/index');
+    }
+
+    // Link Add
+    public function linkAdd(){
+        return view('pages/apps/setting/user/link/add', [
+            'datas' => BasedataHelper::baseLink(),
+        ]);
+    }
+
+    public function linkAddPost(Request $request){ // UserLinkRequest
+        return UserRepositories::upsertLink([
+            'users_id'          => auth()->user()->id,
+            'base_link_id'      => $request->service,
+            
+            'base_decision_id'  => '6',
+
+            'link'              => $request->link,
+        ], 'apps.manager.link');
+    }
+
+    // Race
     public function race(){
         $datas = UserRepositories::getProfile([
             'id'    => auth()->user()->id,

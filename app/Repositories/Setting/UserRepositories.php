@@ -5,16 +5,21 @@ namespace App\Repositories\Setting;
 use App\Helpers\BaseHelper;
 
 use App\Http\Resources\UserResource;
+use App\Http\Resources\UserLinkResource;
 
 use App\Mail\UserRecoveryEmail;
 
+use App\Models\BaseLink;
 use App\Models\User;
+use App\Models\UserLink;
 use App\Models\UserRequest;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+
+use Yajra\DataTables\Facades\DataTables;
 
 class UserRepositories{
     public static function register(array $data, $back, $role = ''){
@@ -195,6 +200,25 @@ class UserRepositories{
         return $user;
     }
 
+    public static function linkDatatable(array $data){
+        $datas = UserLink::with([
+            'belongsToBaseDecision', 'belongsToBaseLink'
+        ])->withAggregate('belongsToBaseLink', 'name')->where([
+            ['users_id', '=', '1'],
+        ])->orderBy('belongs_to_base_link_name')->get();
+
+        return DataTables::of($datas)->setTransformer(function($datas) use($data){
+            return [
+                'datas'  => UserLinkResource::make($datas)->resolve(),
+                'action' => view('datatable.action', [
+                    'id'        => BaseHelper::encrypt($datas->id),
+                    'decision'  => $datas->base_decision_id,
+                    'route'     => $data['route'],
+                ])->render(),
+            ];
+        })->toJson();
+    }
+
     public static function biodata(array $data){
         try{
             $user = User::find(auth()->user()->id);
@@ -257,6 +281,35 @@ class UserRepositories{
     }
 
     // Link
+    public static function upsertLink(array $data, $back = '', $id = ''){
+        try{
+            $checking = BaseLink::select('checking')->where([
+                ['id', '=', $data['base_link_id']]
+            ])->first();
+
+            $default = [
+                'base_decision_id' => $checking->checking == true ? 1 : 2,
+            ];
+
+            if($id && $id !== null){
+                $id = BaseHelper::decrypt($id);
+
+                $upsert = $data;
+            }
+            else{
+                $upsert = array_merge($data, $default);
+            }
+    
+            $state = $id ? 'changed' : 'added';
+
+            UserLink::updateOrCreate(['id' => $id], $upsert);
+
+            return redirect()->route($back)->with('class', 'success')->with('message', "Your external link is $state successfully.");
+        }
+        catch(\Throwable $th) {
+            return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
+        }
+    }
 
     public static function race($data){
         try{

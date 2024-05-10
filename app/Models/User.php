@@ -77,7 +77,12 @@ class User extends Authenticatable{
     }
 
     public function belongsToManyUserLink(){
-        return $this->belongsToMany(BaseLink::class, 'users_link', 'users_id', 'base_link_id');//->withPivot('identifier', 'link');
+        return $this->belongsToMany(BaseLink::class, 'users_link', 'users_id', 'base_link_id')->withPivot('link');
+    }
+
+    //
+    public function belongsToManyUserLinkDecision(){
+        return $this->belongsToMany(BaseDecision::class, 'users_link', 'users_id', 'base_decision_id');
     }
 
     public function belongsToManyUserRace(){

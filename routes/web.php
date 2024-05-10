@@ -79,6 +79,14 @@ Route::group(['prefix' => '/'], function(){
             Route::post('language', [ManagerUserController::class, 'languagePost']);
 
             // Link
+            Route::group(['prefix' => 'link'], function(){
+                // Index
+                Route::get('/', [ManagerUserController::class, 'link'])->name('apps.manager.link');
+                
+                // Add
+                Route::get('link/add', [ManagerUserController::class, 'linkAdd'])->name('apps.manager.link.add');
+                Route::post('link/add', [ManagerUserController::class, 'linkAddPost']);
+            });
 
             // Race
             Route::get('race', [ManagerUserController::class, 'race'])->name('apps.manager.race');
