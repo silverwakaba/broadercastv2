@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 class ContentController extends Controller{
     // Constructor
     public function __construct(){
+        $this->title = 'Content Type';
         $this->back = 'apps.base.content.index';
         $this->model = 'App\Models\BaseContent';
         $this->resource = 'App\Http\Resources\BaseContentResource';
@@ -39,7 +40,7 @@ class ContentController extends Controller{
             'users_id'          => auth()->user()->id,
             'base_decision_id'  => '6',
             'name'              => $request->name,
-        ], $this->back);
+        ], $this->back, null, $this->title);
     }
 
     // Edit
@@ -57,7 +58,7 @@ class ContentController extends Controller{
     public function editPost(ContentRequest $request, $id){
         return BaseRepositories::upsert($this->model, [
             'name' => $request->name,
-        ], $this->back, $id);
+        ], $this->back, $id, $this->title);
     }
 
     // Decision
@@ -66,7 +67,7 @@ class ContentController extends Controller{
             'id'        => $id,
             'model'     => $this->model,
             'action'    => $request->action,
-        ], $this->back);
+        ], $this->back, $this->title);
     }
 
     // Delete
@@ -74,6 +75,6 @@ class ContentController extends Controller{
         return BaseRepositories::delete([
             'id'    => $id,
             'model' => $this->model,
-        ], $this->back);
+        ], $this->back, $this->title);
     }
 }

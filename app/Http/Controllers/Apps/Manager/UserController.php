@@ -124,12 +124,9 @@ class UserController extends Controller{
 
     public function linkAddPost(Request $request){ // UserLinkRequest
         return UserRepositories::upsertLink([
-            'users_id'          => auth()->user()->id,
-            'base_link_id'      => $request->service,
-            
-            'base_decision_id'  => '6',
-
-            'link'              => $request->link,
+            'users_id'      => auth()->user()->id,
+            'base_link_id'  => $request->service,
+            'link'          => $request->link,
         ], 'apps.manager.link');
     }
 
