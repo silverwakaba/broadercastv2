@@ -20,7 +20,7 @@ class UserLinkRequest extends FormRequest{
     public function rules() : array{
         return [
             'service'   => ['required'],
-            'link'      => ['required'],
+            'link'      => ['required', 'url'],
         ];
     }
 }

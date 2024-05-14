@@ -10,9 +10,17 @@ use App\Http\Requests\Apps\Setting\UserContentRequest;
 use App\Http\Requests\Apps\Setting\UserLinkRequest;
 
 use App\Repositories\Setting\UserRepositories;
-use Illuminate\Http\Request;
+use App\Repositories\Setting\UserAvatarRepositories;
+use App\Repositories\Setting\UserBiodataRepositories;
+use App\Repositories\Setting\UserContentRepositories;
+use App\Repositories\Setting\UserGenderRepositories;
+use App\Repositories\Setting\UserLanguageRepositories;
+use App\Repositories\Setting\UserLinkRepositories;
+use App\Repositories\Setting\UserProfileRepositories;
+use App\Repositories\Setting\UserRaceRepositories;
 
 use App\Helpers\BasedataHelper;
+use Illuminate\Http\Request;
 
 class UserController extends Controller{
     // Avatar
@@ -21,12 +29,12 @@ class UserController extends Controller{
     }
 
     public function avatarPost(UserAvatarRequest $request){
-        return UserRepositories::avatar($request->avatar);
+        return UserAvatarRepositories::change($request->avatar);
     }
 
     // Biodata
     public function biodata(){
-        $datas = UserRepositories::getProfile([
+        $datas = UserProfileRepositories::getProfile([
             'id'    => auth()->user()->id,
             'with'  => ['hasOneUserBiodata'],
         ]);
@@ -37,7 +45,7 @@ class UserController extends Controller{
     }
 
     public function biodataPost(UserBiodataRequest $request){
-        return UserRepositories::biodata([
+        return UserBiodataRepositories::update([
             'name'      => $request->name,
             'nickname'  => $request->nickname,
             'dob'       => $request->dob,
@@ -48,7 +56,7 @@ class UserController extends Controller{
 
     // Content
     public function content(){
-        $datas = UserRepositories::getProfile([
+        $datas = UserProfileRepositories::getProfile([
             'id'    => auth()->user()->id,
             'with'  => ['belongsToManyUserContent'],
         ], true);
@@ -62,12 +70,12 @@ class UserController extends Controller{
     }
 
     public function contentPost(Request $request){
-        return UserRepositories::content($request->content);
+        return UserContentRepositories::sync($request->content);
     }
 
     // Gender
     public function gender(){
-        $datas = UserRepositories::getProfile([
+        $datas = UserProfileRepositories::getProfile([
             'id'    => auth()->user()->id,
             'with'  => ['belongsToManyUserGender'],
         ], true);
@@ -81,12 +89,12 @@ class UserController extends Controller{
     }
 
     public function genderPost(Request $request){
-        return UserRepositories::gender($request->gender);
+        return UserGenderRepositories::sync($request->gender);
     }
 
     // Language
     public function language(){
-        $datas = UserRepositories::getProfile([
+        $datas = UserProfileRepositories::getProfile([
             'id'    => auth()->user()->id,
             'with'  => ['belongsToManyUserLanguage'],
         ], true);
@@ -100,16 +108,16 @@ class UserController extends Controller{
     }
 
     public function languagePost(Request $request){
-        return UserRepositories::language($request->language);
+        return UserLanguageRepositories::sync($request->language);
     }
 
     // Link
     public function link(){
         if(request()->ajax()){
-            return UserRepositories::linkDatatable([
+            return UserLinkRepositories::datatable([
                 'id'    => auth()->user()->id,
                 'route' => 'apps.manager.link',
-            ], true);
+            ]);
         }
 
         return view('pages/apps/setting/user/link/index');
@@ -118,21 +126,49 @@ class UserController extends Controller{
     // Link Add
     public function linkAdd(){
         return view('pages/apps/setting/user/link/add', [
-            'datas' => BasedataHelper::baseLink(),
+            'services' => BasedataHelper::baseLink(),
         ]);
     }
 
-    public function linkAddPost(Request $request){ // UserLinkRequest
-        return UserRepositories::upsertLink([
+    public function linkAddPost(UserLinkRequest $request){
+        return UserLinkRepositories::upsert([
             'users_id'      => auth()->user()->id,
             'base_link_id'  => $request->service,
             'link'          => $request->link,
         ], 'apps.manager.link');
     }
 
+    // Link Edit
+    public function linkEdit($id){
+        $datas = UserLinkRepositories::getLink([
+            'did'   => $id,
+            'uid'   => auth()->user()->id,
+        ]);
+
+        return view('pages/apps/setting/user/link/edit', [
+            'services'  => BasedataHelper::baseLink(),
+            'datas'     => $datas,
+        ]);
+    }
+
+    public function linkEditPost(UserLinkRequest $request, $id){
+        return UserLinkRepositories::upsert([
+            'base_link_id'  => $request->service,
+            'link'          => $request->link,
+        ], 'apps.manager.link', $id);
+    }
+
+    // Link Delete
+    public function linkDelete($id){
+        return UserLinkRepositories::delete([
+            'did'   => $id,
+            'uid'   => auth()->user()->id,
+        ], 'apps.manager.link');
+    }
+
     // Race
     public function race(){
-        $datas = UserRepositories::getProfile([
+        $datas = UserProfileRepositories::getProfile([
             'id'    => auth()->user()->id,
             'with'  => ['belongsToManyUserRace'],
         ], true);
@@ -146,6 +182,6 @@ class UserController extends Controller{
     }
 
     public function racePost(Request $request){
-        return UserRepositories::race($request->race);
+        return UserRaceRepositories::sync($request->race);
     }
 }

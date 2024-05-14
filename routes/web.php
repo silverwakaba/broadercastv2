@@ -86,6 +86,13 @@ Route::group(['prefix' => '/'], function(){
                 // Add
                 Route::get('link/add', [ManagerUserController::class, 'linkAdd'])->name('apps.manager.link.add');
                 Route::post('link/add', [ManagerUserController::class, 'linkAddPost']);
+
+                // Edit
+                Route::get('link/edit/{id}', [ManagerUserController::class, 'linkEdit'])->name('apps.manager.link.edit');
+                Route::post('link/edit/{id}', [ManagerUserController::class, 'linkEditPost']);
+
+                // Delete
+                Route::get('link/delete/{id}', [ManagerUserController::class, 'linkDelete'])->name('apps.manager.link.delete');
             });
 
             // Race

@@ -8,7 +8,9 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\RecoverRequest;
 use App\Http\Requests\Auth\ResetRequest;
-use App\Repositories\Setting\UserRepositories;
+
+use App\Repositories\Setting\UserAuthRepositories;
+
 use Illuminate\Http\Request;
 
 class AuthController extends Controller{
@@ -18,7 +20,7 @@ class AuthController extends Controller{
     }
 
     public function registerPost(RegisterRequest $request){
-        return UserRepositories::register([
+        return UserAuthRepositories::register([
             'base_status_id'    => 6,
             'identifier'        => BaseHelper::adler32(),
             'email'             => $request->email,
@@ -32,7 +34,7 @@ class AuthController extends Controller{
     }
 
     public function loginPost(LoginRequest $request){
-        return UserRepositories::login([
+        return UserAuthRepositories::login([
             'email'     => $request->email,
             'password'  => $request->password,
             'remember'  => $request->remember,
@@ -45,14 +47,14 @@ class AuthController extends Controller{
     }
 
     public function recoverPost(RecoverRequest $request){
-        return UserRepositories::recover([
+        return UserAuthRepositories::recover([
             'email' => $request->email,
         ], 'login');
     }
 
     // Reset
     public function reset(Request $request){
-        $datas = UserRepositories::getReset([
+        $datas = UserAuthRepositories::getReset([
             'id' => $request->id,
         ]);
 
@@ -62,7 +64,7 @@ class AuthController extends Controller{
     }
 
     public function resetPost(ResetRequest $request){
-        return UserRepositories::reset([
+        return UserAuthRepositories::reset([
             'token'     => $request->token,
             'email'     => $request->email,
             'password'  => $request->password,
@@ -71,13 +73,13 @@ class AuthController extends Controller{
 
     // Verify
     public function verify(Request $request){
-        return UserRepositories::verify([
+        return UserAuthRepositories::verify([
             'id' => $request->id,
         ], 'apps.front.index');
     }
 
     // Logout
     public function logout(Request $request){
-        return UserRepositories::logout();
+        return UserAuthRepositories::logout();
     }
 }

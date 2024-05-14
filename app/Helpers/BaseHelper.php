@@ -28,6 +28,11 @@ class BaseHelper {
     }
 
     public static function decrypt($v){
-        return Crypt::decryptString($v);
+        try{
+            return Crypt::decryptString($v);
+        }
+        catch(\Throwable $th){
+            return abort(404);
+        }
     }
 }

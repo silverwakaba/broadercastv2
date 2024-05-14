@@ -23,66 +23,51 @@ use Yajra\DataTables\Facades\DataTables;
 
 class UserRepositories{
     public static function register(array $data, $back, $role = ''){
-        try{
-            if(!$role){
-                $role = 'User';
-            }
-    
-            $user = User::create($data)->assignRole($role);
-    
-            $user->hasOneUserRequest()->create([
-                'base_request_id'   => 1,
-                'users_id'          => $user->id,
-            ]);
-            
-            return redirect()->route($back)->with('class', 'info')->with('message', 'The registered account is ready.');
+        if(!$role){
+            $role = 'User';
         }
-        catch(\Throwable $th) {
-            return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
-        }
+
+        $user = User::create($data)->assignRole($role);
+
+        $user->hasOneUserRequest()->create([
+            'base_request_id'   => 1,
+            'users_id'          => $user->id,
+        ]);
+        
+        return redirect()->route($back)->with('class', 'info')->with('message', 'The registered account is ready.');
     }
 
     public static function login(array $data){
-        try{
-            if(Auth::attempt(['email' => $data['email'], 'password' => $data['password']], $data['remember'])){
-                request()->session()->regenerate();
-    
-                return redirect()->intended(route('apps.front.index'));
-            }
-            else{
-                return back()->withErrors([
-                    'email' => "Something went wrong. Please try again.",
-                ]);
-            }
+        if(Auth::attempt(['email' => $data['email'], 'password' => $data['password']], $data['remember'])){
+            request()->session()->regenerate();
+
+            return redirect()->intended(route('apps.front.index'));
         }
-        catch(\Throwable $th) {
-            return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
+        else{
+            return back()->withErrors([
+                'email' => "Something went wrong. Please try again.",
+            ]);
         }
     }
 
     public static function recover(array $data, $back){
-        try{
-            $user = User::where('email', '=', $data['email'])->first();
+        $user = User::where('email', '=', $data['email'])->first();
 
-            if($user){
-                $request = $user->hasOneUserRequest()->create([
-                    'base_request_id'   => 2,
-                    'users_id'          => $user->id,
-                    'token'             => BaseHelper::adler32(),
-                ]);
+        if($user){
+            $request = $user->hasOneUserRequest()->create([
+                'base_request_id'   => 2,
+                'users_id'          => $user->id,
+                'token'             => BaseHelper::adler32(),
+            ]);
 
-                Mail::to($data['email'])->send(new UserRecoveryEmail($request->id));
+            Mail::to($data['email'])->send(new UserRecoveryEmail($request->id));
 
-                return redirect()->route($back)->with('class', 'info')->with('message', 'Please check your email to continue.');
-            }
-            else{
-                return back()->withErrors([
-                    'email' => "Something went wrong. Please try again.",
-                ]);
-            }
+            return redirect()->route($back)->with('class', 'info')->with('message', 'Please check your email to continue.');
         }
-        catch(\Throwable $th) {
-            return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
+        else{
+            return back()->withErrors([
+                'email' => "Something went wrong. Please try again.",
+            ]);
         }
     }
 
@@ -93,99 +78,79 @@ class UserRepositories{
     }
 
     public static function reset(array $data, $back){
-        try{
-            $user = User::where('email', '=', $data['email'])->first();
+        $user = User::where('email', '=', $data['email'])->first();
 
-            Auth::logout();
-    
-            request()->session()->invalidate();
-            
-            request()->session()->regenerateToken();
+        Auth::logout();
 
-            Auth::loginUsingId($user->id);
+        request()->session()->invalidate();
+        
+        request()->session()->regenerateToken();
 
-            if($data['token']){
-                $token = $user->hasOneUserRequest()->where('token', '=', $data['token'])->first();
+        Auth::loginUsingId($user->id);
 
-                $token->update([
-                    'token' => null,
-                ]);
-            }
+        if($data['token']){
+            $token = $user->hasOneUserRequest()->where('token', '=', $data['token'])->first();
 
-            $user->update([
-                'password' => bcrypt($data['password']),
+            $token->update([
+                'token' => null,
             ]);
+        }
 
-            return redirect()->route($back)->with('class', 'success')->with('message', 'Your password has been successfully changed.');
-        }
-        catch(\Throwable $th) {
-            return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
-        }
+        $user->update([
+            'password' => bcrypt($data['password']),
+        ]);
+
+        return redirect()->route($back)->with('class', 'success')->with('message', 'Your password has been successfully changed.');
     }
 
     public static function verify(array $data, $back){
-        try{
-            $email = BaseHelper::decrypt($data['id']);
+        $email = BaseHelper::decrypt($data['id']);
 
-            $user = User::where('email', '=', $email)->first();
-            
-            $user->update([
-                'email_verified_at' => now(),
-            ]);
+        $user = User::where('email', '=', $email)->first();
+        
+        $user->update([
+            'email_verified_at' => now(),
+        ]);
 
-            Auth::logout();
-    
-            request()->session()->invalidate();
-            
-            request()->session()->regenerateToken();
+        Auth::logout();
 
-            Auth::loginUsingId($user->id);
+        request()->session()->invalidate();
+        
+        request()->session()->regenerateToken();
 
-            return redirect()->route($back)->with('class', 'success')->with('message', 'Your email has been successfully verified.');
-        }
-        catch(\Throwable $th) {
-            return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
-        }
+        Auth::loginUsingId($user->id);
+
+        return redirect()->route($back)->with('class', 'success')->with('message', 'Your email has been successfully verified.');
     }
 
     public static function logout(){
-        try{
-            Auth::logout();
+        Auth::logout();
  
-            request()->session()->invalidate();
-            
-            request()->session()->regenerateToken();
+        request()->session()->invalidate();
         
-            return redirect()->route('login')->with('class', 'success')->with('message', 'Successfully ended the session safely.');
-        }
-        catch(\Throwable $th) {
-            return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
-        }
+        request()->session()->regenerateToken();
+    
+        return redirect()->route('login')->with('class', 'success')->with('message', 'Successfully ended the session safely.');
     }
 
     public static function avatar($data){
-        try{
-            $dir = 'system/avatar';
+        $dir = 'system/avatar';
 
-            $user = User::find(auth()->user()->id);
+        $user = User::find(auth()->user()->id);
 
-            $storage = Storage::disk('s3public');
+        $storage = Storage::disk('s3public');
 
-            if($user->hasOneUserAvatar->path){
-                $storage->delete($dir . '/' . $user->hasOneUserAvatar->path);
-            }
-
-            $avatar = $storage->put($dir, $data);
-
-            $user->hasOneUserAvatar()->update([
-                'path' => Str::of($avatar)->basename(),
-            ]);
-
-            return back()->with('class', 'success')->with('message', "Your avatar is changed successfully.");
+        if($user->hasOneUserAvatar->path){
+            $storage->delete($dir . '/' . $user->hasOneUserAvatar->path);
         }
-        catch(\Throwable $th) {
-            return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
-        }
+
+        $avatar = $storage->put($dir, $data);
+
+        $user->hasOneUserAvatar()->update([
+            'path' => Str::of($avatar)->basename(),
+        ]);
+
+        return back()->with('class', 'success')->with('message', "Your avatar is changed successfully.");
     }
 
     public static function getProfile(array $data, $resource = false){
@@ -210,7 +175,7 @@ class UserRepositories{
         return DataTables::of($datas)->setTransformer(function($datas) use($data){
             return [
                 'datas'  => UserLinkResource::make($datas)->resolve(),
-                'action' => view('datatable.action', [
+                'action' => view('datatable.action-user', [
                     'id'        => BaseHelper::encrypt($datas->id),
                     'decision'  => $datas->base_decision_id,
                     'route'     => $data['route'],
@@ -220,107 +185,76 @@ class UserRepositories{
     }
 
     public static function biodata(array $data){
-        try{
-            $user = User::find(auth()->user()->id);
+        $user = User::find(auth()->user()->id);
 
-            $user->update([
-                'name' => $data['name'],
-            ]);
+        $user->update([
+            'name' => $data['name'],
+        ]);
 
-            $user->hasOneUserBiodata()->update([
-                'nickname'  => $data['nickname'],
-                'dob'       => $data['dob'],
-                'dod'       => $data['dod'],
-                'biography' => $data['biography'],
-            ]);
+        $user->hasOneUserBiodata()->update([
+            'nickname'  => $data['nickname'],
+            'dob'       => $data['dob'],
+            'dod'       => $data['dod'],
+            'biography' => $data['biography'],
+        ]);
 
-            return back()->with('class', 'success')->with('message', "Your biodata is changed successfully.");
-        }
-        catch(\Throwable $th) {
-            return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
-        }
+        return back()->with('class', 'success')->with('message', "Your biodata is changed successfully.");
     }
 
     public static function content($data){
-        try{
-            $user = User::find(auth()->user()->id);
+        $user = User::find(auth()->user()->id);
 
-            $user->belongsToManyUserContent()->sync($data);
+        $user->belongsToManyUserContent()->sync($data);
 
-            return back()->with('class', 'success')->with('message', "Your focus content is changed successfully.");
-        }
-        catch(\Throwable $th) {
-            return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
-        }
+        return back()->with('class', 'success')->with('message', "Your focus content is changed successfully.");
     }
 
     public static function gender($data){
-        try{
-            $user = User::find(auth()->user()->id);
+        $user = User::find(auth()->user()->id);
 
-            $user->belongsToManyUserGender()->sync($data);
+        $user->belongsToManyUserGender()->sync($data);
 
-            return back()->with('class', 'success')->with('message', "Your gender representation is changed successfully.");
-        }
-        catch(\Throwable $th) {
-            return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
-        }
+        return back()->with('class', 'success')->with('message', "Your gender representation is changed successfully.");
     }
 
     public static function language($data){
-        try{
-            $user = User::find(auth()->user()->id);
+        $user = User::find(auth()->user()->id);
 
-            $user->belongsToManyUserLanguage()->sync($data);
+        $user->belongsToManyUserLanguage()->sync($data);
 
-            return back()->with('class', 'success')->with('message', "Your main language is changed successfully.");
-        }
-        catch(\Throwable $th) {
-            return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
-        }
+        return back()->with('class', 'success')->with('message', "Your main language is changed successfully.");
     }
-
-    // Link
-    public static function upsertLink(array $data, $back = '', $id = ''){
-        try{
-            $checking = BaseLink::select('checking')->where([
-                ['id', '=', $data['base_link_id']]
-            ])->first();
-
-            $default = [
-                'base_decision_id' => $checking->checking == true ? 1 : 2,
-            ];
-
-            if($id && $id !== null){
-                $id = BaseHelper::decrypt($id);
-
-                $upsert = $data;
-            }
-            else{
-                $upsert = array_merge($data, $default);
-            }
     
-            $state = $id ? 'changed' : 'added';
+    public static function upsertLink(array $data, $back = '', $id = ''){
+        $checking = BaseLink::select('checking')->where([
+            ['id', '=', $data['base_link_id']]
+        ])->first();
 
-            UserLink::updateOrCreate(['id' => $id], $upsert);
+        $default = [
+            'base_decision_id' => $checking->checking == true ? 1 : 2,
+        ];
 
-            return redirect()->route($back)->with('class', 'success')->with('message', "Your external link is $state successfully.");
+        if($id && $id !== null){
+            $id = BaseHelper::decrypt($id);
+
+            $upsert = $data;
         }
-        catch(\Throwable $th) {
-            return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
+        else{
+            $upsert = array_merge($data, $default);
         }
+
+        $state = $id ? 'changed' : 'added';
+
+        UserLink::updateOrCreate(['id' => $id], $upsert);
+
+        return redirect()->route($back)->with('class', 'success')->with('message', "Your external link is $state successfully.");
     }
 
     public static function race($data){
-        try{
-            $user = User::find(auth()->user()->id);
+        $user = User::find(auth()->user()->id);
 
-            $user->belongsToManyUserRace()->sync($data);
+        $user->belongsToManyUserRace()->sync($data);
 
-            return back()->with('class', 'success')->with('message', "Your character race is changed successfully.");
-        }
-        catch(\Throwable $th) {
-            return back()->with('class', 'warning')->with('message', 'There is an error. Try again in a moment.');
-        }
+        return back()->with('class', 'success')->with('message', "Your character race is changed successfully.");
     }
 }
