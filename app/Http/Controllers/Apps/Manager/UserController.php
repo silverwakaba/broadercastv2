@@ -23,6 +23,9 @@ use App\Helpers\BaseHelper;
 use App\Helpers\BasedataHelper;
 use Illuminate\Http\Request;
 
+// AA
+use App\Repositories\Base\BaseAPIRepositories;
+
 class UserController extends Controller{
     // Avatar
     public function avatar(){
@@ -174,12 +177,11 @@ class UserController extends Controller{
             'with'  => ['belongsToBaseDecision', 'belongsToBaseLink'],
         ]);
 
-        return $datas;
+        // return $datas;
 
-        // return view('pages/apps/setting/user/link/edit', [
-        //     'services'  => BasedataHelper::baseLink(),
-        //     'datas'     => $datas,
-        // ]);
+        return view('pages/apps/setting/user/link/verify', [
+            'datas' => $datas,
+        ]);
     }
 
     // Link Delete

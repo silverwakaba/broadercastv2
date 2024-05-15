@@ -26,6 +26,7 @@ class UserLinkRepositories{
         $datas = UserLink::with(isset($data['with']) ? $data['with'] : [])->where([
             ['id', '=', BaseHelper::decrypt($data['did'])],
             ['users_id', '=', $data['uid']],
+            ['base_decision_id', '=', 1],
         ])->whereIn('base_link_id', BaseHelper::getCheckedBaseLink())->firstOrFail();
 
         return $datas;
@@ -85,14 +86,5 @@ class UserLinkRepositories{
         $datas->delete();
 
         return RedirectHelper::routeBack($back, 'success', 'External Link', 'delete');
-    }
-
-
-    public static function verifyYouTube(){
-        // 
-    }
-
-    public static function verifyTwitch(){
-        // 
     }
 }
