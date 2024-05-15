@@ -14,10 +14,19 @@ use Yajra\DataTables\Facades\DataTables;
 
 class UserLinkRepositories{
     public static function getLink(array $data){
-        $datas = UserLink::where([
+        $datas = UserLink::with(isset($data['with']) ? $data['with'] : [])->where([
             ['id', '=', BaseHelper::decrypt($data['did'])],
             ['users_id', '=', $data['uid']],
         ])->firstOrFail();
+
+        return $datas;
+    }
+
+    public static function getLinkToVerify(array $data){
+        $datas = UserLink::with(isset($data['with']) ? $data['with'] : [])->where([
+            ['id', '=', BaseHelper::decrypt($data['did'])],
+            ['users_id', '=', $data['uid']],
+        ])->whereIn('base_link_id', BaseHelper::getCheckedBaseLink())->firstOrFail();
 
         return $datas;
     }
@@ -32,9 +41,10 @@ class UserLinkRepositories{
         return DataTables::of($datas)->setTransformer(function($datas) use($data){
             return [
                 'datas'  => UserLinkResource::make($datas)->resolve(),
-                'action' => view('datatable.action-user', [
+                'action' => view('datatable.action-user-link', [
                     'id'        => BaseHelper::encrypt($datas->id),
                     'decision'  => $datas->base_decision_id,
+                    'protected' => in_array($datas->base_link_id, BaseHelper::getCheckedBaseLink()),
                     'route'     => $data['route'],
                 ])->render(),
             ];
@@ -75,5 +85,14 @@ class UserLinkRepositories{
         $datas->delete();
 
         return RedirectHelper::routeBack($back, 'success', 'External Link', 'delete');
+    }
+
+
+    public static function verifyYouTube(){
+        // 
+    }
+
+    public static function verifyTwitch(){
+        // 
     }
 }

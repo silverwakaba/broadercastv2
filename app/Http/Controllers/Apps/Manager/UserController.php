@@ -19,6 +19,7 @@ use App\Repositories\Setting\UserLinkRepositories;
 use App\Repositories\Setting\UserProfileRepositories;
 use App\Repositories\Setting\UserRaceRepositories;
 
+use App\Helpers\BaseHelper;
 use App\Helpers\BasedataHelper;
 use Illuminate\Http\Request;
 
@@ -113,6 +114,11 @@ class UserController extends Controller{
 
     // Link
     public function link(){
+        // return UserLinkRepositories::datatable([
+        //     'id'    => auth()->user()->id,
+        //     'route' => 'apps.manager.link',
+        // ]);
+
         if(request()->ajax()){
             return UserLinkRepositories::datatable([
                 'id'    => auth()->user()->id,
@@ -143,11 +149,13 @@ class UserController extends Controller{
         $datas = UserLinkRepositories::getLink([
             'did'   => $id,
             'uid'   => auth()->user()->id,
+            'with'  => ['belongsToBaseLink'],
         ]);
 
         return view('pages/apps/setting/user/link/edit', [
             'services'  => BasedataHelper::baseLink(),
             'datas'     => $datas,
+            'protected' => in_array($datas->base_link_id, BaseHelper::getCheckedBaseLink()),
         ]);
     }
 
@@ -156,6 +164,22 @@ class UserController extends Controller{
             'base_link_id'  => $request->service,
             'link'          => $request->link,
         ], 'apps.manager.link', $id);
+    }
+
+    // Link Edit
+    public function linkVerify($id){
+        $datas = UserLinkRepositories::getLinkToVerify([
+            'did'   => $id,
+            'uid'   => auth()->user()->id,
+            'with'  => ['belongsToBaseDecision', 'belongsToBaseLink'],
+        ]);
+
+        return $datas;
+
+        // return view('pages/apps/setting/user/link/edit', [
+        //     'services'  => BasedataHelper::baseLink(),
+        //     'datas'     => $datas,
+        // ]);
     }
 
     // Link Delete

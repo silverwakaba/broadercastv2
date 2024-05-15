@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\BaseLink;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Crypt;
@@ -21,6 +22,14 @@ class BaseHelper {
         ])->first();
 
         return $datas->id;
+    }
+
+    public static function getCheckedBaseLink(){
+        $datas = BaseLink::where([
+            ['checking', '=', true],
+        ])->select('id')->get();
+
+        return ($datas)->pluck('id')->toArray();
     }
 
     public static function encrypt($v){

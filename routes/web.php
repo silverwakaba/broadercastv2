@@ -91,6 +91,9 @@ Route::group(['prefix' => '/'], function(){
                 Route::get('link/edit/{id}', [ManagerUserController::class, 'linkEdit'])->name('apps.manager.link.edit');
                 Route::post('link/edit/{id}', [ManagerUserController::class, 'linkEditPost']);
 
+                // Verify
+                Route::get('link/verify/{id}', [ManagerUserController::class, 'linkVerify'])->name('apps.manager.link.verify');
+
                 // Delete
                 Route::get('link/delete/{id}', [ManagerUserController::class, 'linkDelete'])->name('apps.manager.link.delete');
             });
