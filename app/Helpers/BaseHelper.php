@@ -7,13 +7,13 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Crypt;
 
-class BaseHelper {
-    public static function adler32($v = ''){
-        if(!$v){
-            $v = Str::uuid();
+class BaseHelper{
+    public static function adler32($value = ''){
+        if(!$value){
+            $value = Str::uuid();
         }
 
-        return hash("adler32", $v);
+        return hash("adler32", $value);
     }
 
     public static function getBotID(){
@@ -32,13 +32,13 @@ class BaseHelper {
         return ($datas)->pluck('id')->toArray();
     }
 
-    public static function encrypt($v){
-        return Crypt::encryptString($v);
+    public static function encrypt($value){
+        return Crypt::encryptString($value);
     }
 
-    public static function decrypt($v){
+    public static function decrypt($value){
         try{
-            return Crypt::decryptString($v);
+            return Crypt::decryptString($value);
         }
         catch(\Throwable $th){
             return abort(404);

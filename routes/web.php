@@ -93,6 +93,7 @@ Route::group(['prefix' => '/'], function(){
 
                 // Verify
                 Route::get('link/verify/{id}', [ManagerUserController::class, 'linkVerify'])->name('apps.manager.link.verify');
+                Route::post('link/verify/{id}', [ManagerUserController::class, 'linkVerifyPost']);
 
                 // Delete
                 Route::get('link/delete/{id}', [ManagerUserController::class, 'linkDelete'])->name('apps.manager.link.delete');

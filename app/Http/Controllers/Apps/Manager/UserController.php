@@ -23,8 +23,8 @@ use App\Helpers\BaseHelper;
 use App\Helpers\BasedataHelper;
 use Illuminate\Http\Request;
 
-// AA
-use App\Repositories\Base\BaseAPIRepositories;
+// 
+use App\Repositories\Service\YoutubeRepositories;
 
 class UserController extends Controller{
     // Avatar
@@ -117,11 +117,6 @@ class UserController extends Controller{
 
     // Link
     public function link(){
-        // return UserLinkRepositories::datatable([
-        //     'id'    => auth()->user()->id,
-        //     'route' => 'apps.manager.link',
-        // ]);
-
         if(request()->ajax()){
             return UserLinkRepositories::datatable([
                 'id'    => auth()->user()->id,
@@ -177,11 +172,14 @@ class UserController extends Controller{
             'with'  => ['belongsToBaseDecision', 'belongsToBaseLink'],
         ]);
 
-        // return $datas;
-
         return view('pages/apps/setting/user/link/verify', [
-            'datas' => $datas,
+            'secret'    => 'bc#' . BaseHelper::adler32( auth()->user()->id . date('m Y') . 'Youtube'),
+            'datas'     => $datas,
         ]);
+    }
+
+    public function linkVerifyPost(Request $request, $id){
+        return YoutubeRepositories::verifyViaChannel($request->channel, auth()->user()->id);
     }
 
     // Link Delete
