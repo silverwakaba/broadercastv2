@@ -8,6 +8,7 @@ use App\Http\Requests\Apps\Setting\UserAvatarRequest;
 use App\Http\Requests\Apps\Setting\UserBiodataRequest;
 use App\Http\Requests\Apps\Setting\UserContentRequest;
 use App\Http\Requests\Apps\Setting\UserLinkRequest;
+use App\Http\Requests\Apps\Setting\UserLinkVerificationRequest;
 
 use App\Repositories\Setting\UserRepositories;
 use App\Repositories\Setting\UserAvatarRepositories;
@@ -164,7 +165,7 @@ class UserController extends Controller{
         ], 'apps.manager.link', $id);
     }
 
-    // Link Edit
+    // Link Verify
     public function linkVerify($id){
         $datas = UserLinkRepositories::getLinkToVerify([
             'did'   => $id,
@@ -172,14 +173,30 @@ class UserController extends Controller{
             'with'  => ['belongsToBaseDecision', 'belongsToBaseLink'],
         ]);
 
+        if($datas->belongsToBaseLink->name == 'Twitch'){
+            $structure = 'https://www.twitch.tv/wakaba6969';
+        }
+        elseif($datas->belongsToBaseLink->name == 'YouTube'){
+            $structure = 'https://www.youtubes.com/channel/UCIRQxP7jORi6jsLt0HmUmqQ';
+        }
+
         return view('pages/apps/setting/user/link/verify', [
-            'secret'    => 'bc#' . BaseHelper::adler32( auth()->user()->id . date('m Y') . 'Youtube'),
+            'secret'    => 'bc#' . BaseHelper::adler32(auth()->user()->id . date('m Y') . $datas->belongsToBaseLink->name),
+            'structure' => $structure,
             'datas'     => $datas,
         ]);
     }
 
-    public function linkVerifyPost(Request $request, $id){
-        return YoutubeRepositories::verifyViaChannel($request->channel, auth()->user()->id);
+    public function linkVerifyPost(UserLinkVerificationRequest $request, $id){
+        if($request->service == 'Twitch'){
+            return "Twitch";
+        }
+        elseif($request->service == 'YouTube'){
+            return YoutubeRepositories::verifyViaChannel($request->channel, auth()->user()->id, $id);
+        }
+        else{
+            return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. It seems that you are stranded.', 'error');
+        }
     }
 
     // Link Delete
@@ -188,6 +205,16 @@ class UserController extends Controller{
             'did'   => $id,
             'uid'   => auth()->user()->id,
         ], 'apps.manager.link');
+    }
+
+    public function linkDeleteConfirm($id){
+        $datas = UserLinkRepositories::getLinkToConfirm([
+            'did'   => $id,
+            'uid'   => auth()->user()->id,
+            'with'  => ['belongsToBaseLink', 'hasOneUserLinkTracker'],
+        ]);
+
+        return $datas;
     }
 
     // Race

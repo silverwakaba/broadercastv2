@@ -93,7 +93,7 @@
                                 <x-adminlte.navlink icon="1" route="apps.manager.language" value="Language" />
                             </li>
                             <li class="nav-item">
-                                <x-adminlte.navlink icon="1" route="apps.manager.link" value="Link" /> <!-- Yea wait bitch -->
+                                <x-adminlte.navlink icon="1" route="apps.manager.link" value="Link" />
                             </li>
                             <li class="nav-item">
                                 <x-adminlte.navlink icon="1" route="apps.manager.race" value="Race" />

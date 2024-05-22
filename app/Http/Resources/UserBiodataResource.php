@@ -19,7 +19,7 @@ class UserBiodataResource extends JsonResource{
             'nickname'  => $this->nickname,
             'dob'       => $this->dob,
             'dod'       => $this->dod,
-            'biography' => Str::markdown($this->biography),
+            'biography' => $this->biography ? Str::markdown($this->biography) : $this->biography,
         ];
     }
 }

@@ -18,6 +18,8 @@
     </x-adminlte.content>
 
     <script type="module">
+        Pusher.logToConsole = true;
+        
         var channel = Echo.channel('baseChannel');
 
         channel.listen('.baseContentCreated', function(data){

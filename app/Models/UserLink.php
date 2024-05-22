@@ -27,4 +27,12 @@ class UserLink extends Model{
     public function belongsToBaseLink(){
         return $this->belongsTo(BaseLink::class, 'base_link_id');
     }
+
+    public function hasOneUserLinkTracker(){
+        return $this->hasOne(UserLinkTracker::class, 'users_link_id');
+    }
+
+    public function belongsToManyUserLinkTracker(){
+        return $this->belongsToMany(BaseLink::class, 'users_link_tracker', 'users_id', 'base_link_id');
+    }
 }

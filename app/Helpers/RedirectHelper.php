@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use Illuminate\Support\Str;
+
 class RedirectHelper{
     public static function routeBackWithErrors(array $data){
         return back()->withErrors($data);
@@ -35,19 +37,36 @@ class RedirectHelper{
             $guide = "Now you can authenticate using the new credentials.";
         }
         elseif($mode == "verify"){
-            $modeMessage = "email verification";
+            $modeMessage = "verification";
 
             $guide = "Thank you and enjoy the additional features.";
         }
         elseif($mode == "decision"){
             $modeMessage = "making decision for $title";
         }
+        elseif($mode == "error"){
+            $modeMessage = "error";
+        }
         else{
             $modeMessage = "$title";
         }
 
-        if(isset($guide)){
+        if($mode && isset($guide)){
             $message = "Your action in $modeMessage was successful. $guide";
+        }
+        elseif($mode == "error" && !isset($guide)){
+            $str = Str::of($title);
+
+            $before = $str->before('.');
+
+            $after = $str->after('.');
+
+            if($before && !$after){
+                $message = "Your action in $before was unsuccessful.";
+            }
+            else{
+                $message = "Your action in $before was unsuccessful, $after";
+            }
         }
         else{
             $message = "Your action in $modeMessage was successful.";

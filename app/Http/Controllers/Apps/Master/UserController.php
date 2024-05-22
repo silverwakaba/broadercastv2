@@ -20,14 +20,15 @@ class UserController extends Controller{
     // Index
     public function index(){
         if(request()->ajax()){
-            $datas = User::with([
-                'hasOneUserBiodata'
-            ])->orderBy('id', 'DESC')->get();
-
-            return DataTables::of($datas)->setTransformer(function($data){
+            $datas = User::orderBy('id', 'DESC')->get();
+    
+            return DataTables::of($datas)->setTransformer(function($datas){
                 return [
-                    'datas'  => UserResource::make($data)->resolve(),
-                    'action' => view('datatable.edit-delete')->with('id', BaseHelper::encrypt($data->id))->render(),
+                    'datas'  => UserResource::make($datas)->resolve(),
+                    'action' => view('datatable.action-user', [
+                        'id'        => BaseHelper::encrypt($datas->id),
+                        'route'     => 'apps.base.content',
+                    ])->render(),
                 ];
             })->toJson();
         }

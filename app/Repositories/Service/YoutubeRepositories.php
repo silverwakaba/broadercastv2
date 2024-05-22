@@ -2,82 +2,72 @@
 
 namespace App\Repositories\Service;
 
+use App\Helpers\BaseHelper;
+use App\Helpers\RedirectHelper;
+
 use App\Models\BaseAPI;
+use App\Models\UserLink;
+
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 
 class YoutubeRepositories{
-    public static function verifyViaChannel($channelID, $uniqueID){
-        // return $channelID;
+    public static function verifyViaChannel($channelID, $uniqueID, $id){
+        $checkString = Str::contains($channelID, "https://www.youtubes.com/channel/");
 
-        $abc = "https://www.youtubes.com/channel/UCIRQxP7jORi6jsLt0HmUmqQ";
+        $checkChannel = Str::of($channelID)->afterLast('/');
 
-        $checkString = Str::contains($abc, "https://www.youtubes.com/channel/");
+        if(Str::of($checkChannel)->length() == 24){
+            $apiKey = BaseAPI::where('base_link_id', '=', '2')->inRandomOrder()->first()->client_key;
 
-        if($checkString == true){
-            $checkChannel = Str::of($abc)->afterLast('/');
+            $params = [
+                'id'    => $checkChannel,
+                'key'   => $apiKey,
+                'part'  => "snippet,statistics",
+            ];
 
-            if(Str::of($checkChannel)->length() == 24){
-                $apiKey = BaseAPI::where('base_link_id', '=', '2')->inRandomOrder()->first()->client_key;
+            $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/channels', $params)->json();
 
-                $params = [
-                    'id'    => "UCIRQxP7jORi6jsLt0HmUmqQ",
-                    'key'   => $apiKey,
-                    'part'  => "snippet,statistics",
-                ];
+            if($http['pageInfo']['totalResults'] >= 1){
+                foreach($http['items'] AS $data);
 
-                $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/channels', $params)->json();
+                $checkUnique = Str::contains($data['snippet']['description'], $uniqueID);
 
-                if($http['pageInfo']['totalResults'] >= 1){
-                    foreach($http['items'] AS $data);
+                if($checkUnique == true){
+                    $linkID = BaseHelper::decrypt($id);
 
-                    $checkUnique = Str::contains($data['snippet']['description'], $uniqueID);
+                    $userLink = UserLink::find($linkID);
 
-                    if($checkUnique == true){
-                        return "Insert";
-                    }
-                    else{
-                        return "Code not found";
-                    }
+                    $userLink->update([
+                        'base_decision_id' => 2,
+                    ]);
+
+                    $userLink->hasOneUserLinkTracker()->create([
+                        'users_id'          => auth()->user()->id,
+                        'users_link_id'     => $linkID,
+                        'base_status_id'    => 1,
+                        'base_link_id'      => $userLink->base_link_id,
+                        'identifier'        => $data['id'],
+                        'name'              => $data['snippet']['title'],
+                        'avatar'            => $data['snippet']['thumbnails']['medium']['url'],
+                        'view'              => $data['statistics']['viewCount'] ? $data['statistics']['viewCount'] : 0,
+                        'subscriber'        => $data['statistics']['hiddenSubscriberCount'] == false ? $data['statistics']['subscriberCount'] : 0,
+                        'joined'            => Carbon::parse($data['snippet']['publishedAt'])->toIso8601String(),
+                    ]);
+
+                    return RedirectHelper::routeBack('apps.manager.link', 'success', 'Channel Verification', 'verify');
                 }
                 else{
-                    return "Channel not found";
+                    return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. We were able to find your channel but we did not find your unique code.', 'error');
                 }
             }
             else{
-                return "String channel error";
+                return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. It seems we can not find your channel.', 'error');
             }
         }
         else{
-            return "Channel error";
+            return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Please check whether the link structure you submitted complies with the guidelines.', 'error');
         }
-
-        // return Str::of($abc)->afterLast('/');
-
-        // return $http['pageInfo']['totalResults']; // Ok
-
-        // foreach($http['items'] AS $data);
-
-        // $check = Str::contains($data['snippet']['description'], $uniqueID);
-
-        // if($check == true){
-        //     return "Insert";
-        // }
-        // else{
-        //     return "Error";
-        // }
-
-        // if($http->ok()){
-        //     foreach($http['items'] AS $data){
-        //         UserLinkTracker::where([
-        //             ['users_id', '=', $userId],
-        //             ['identifier', '=', $channelId],
-        //         ])->update([
-        //             'name'          => $data['snippet']['title'],
-        //             'avatar'        => $data['snippet']['thumbnails']['medium']['url'],
-        //             'subscriber'    => $data['statistics']['hiddenSubscriberCount'] == false ? $data['statistics']['subscriberCount'] : '0',
-        //         ]);
-        //     }
-        // }
     }
 }

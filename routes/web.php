@@ -84,19 +84,23 @@ Route::group(['prefix' => '/'], function(){
                 Route::get('/', [ManagerUserController::class, 'link'])->name('apps.manager.link');
                 
                 // Add
-                Route::get('link/add', [ManagerUserController::class, 'linkAdd'])->name('apps.manager.link.add');
-                Route::post('link/add', [ManagerUserController::class, 'linkAddPost']);
+                Route::get('add', [ManagerUserController::class, 'linkAdd'])->name('apps.manager.link.add');
+                Route::post('add', [ManagerUserController::class, 'linkAddPost']);
 
                 // Edit
-                Route::get('link/edit/{id}', [ManagerUserController::class, 'linkEdit'])->name('apps.manager.link.edit');
-                Route::post('link/edit/{id}', [ManagerUserController::class, 'linkEditPost']);
+                Route::get('edit/{id}', [ManagerUserController::class, 'linkEdit'])->name('apps.manager.link.edit');
+                Route::post('edit/{id}', [ManagerUserController::class, 'linkEditPost']);
 
                 // Verify
-                Route::get('link/verify/{id}', [ManagerUserController::class, 'linkVerify'])->name('apps.manager.link.verify');
-                Route::post('link/verify/{id}', [ManagerUserController::class, 'linkVerifyPost']);
+                Route::get('verify/{id}', [ManagerUserController::class, 'linkVerify'])->name('apps.manager.link.verify');
+                Route::post('verify/{id}', [ManagerUserController::class, 'linkVerifyPost']);
 
                 // Delete
-                Route::get('link/delete/{id}', [ManagerUserController::class, 'linkDelete'])->name('apps.manager.link.delete');
+                Route::get('delete/{id}', [ManagerUserController::class, 'linkDelete'])->name('apps.manager.link.delete');
+
+                // Delete Confirm
+                Route::get('delete/{id}/confirm', [ManagerUserController::class, 'linkDeleteConfirm'])->name('apps.manager.link.delete.confirm');
+                // Route::post('link/verify/{id}', [ManagerUserController::class, 'linkVerifyPost']);
             });
 
             // Race

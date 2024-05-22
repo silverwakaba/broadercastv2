@@ -4,7 +4,7 @@ namespace App\Http\Requests\Apps\Setting;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserBiodataRequest extends FormRequest{
+class UserLinkVerificationRequest extends FormRequest{
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -19,11 +19,10 @@ class UserBiodataRequest extends FormRequest{
      */
     public function rules() : array{
         return [
-            'name'      => ['required'],
-            'nickname'  => ['nullable'],
-            'dob'       => ['nullable'],
-            'dod'       => ['nullable'],
-            'biography' => ['nullable'],
+            'unique'    => ['required'],
+            'service'   => ['required'],
+            'channel'   => ['required', 'url'],
+            'terms'     => ['accepted'],
         ];
     }
 }

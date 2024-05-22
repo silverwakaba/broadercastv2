@@ -32,6 +32,16 @@ class UserLinkRepositories{
         return $datas;
     }
 
+    public static function getLinkToConfirm(array $data){
+        $datas = UserLink::with(isset($data['with']) ? $data['with'] : [])->where([
+            ['id', '=', BaseHelper::decrypt($data['did'])],
+            ['users_id', '=', $data['uid']],
+            ['base_decision_id', '=', 2],
+        ])->whereIn('base_link_id', BaseHelper::getCheckedBaseLink())->firstOrFail();
+
+        return $datas;
+    }
+
     public static function datatable(array $data){
         $datas = UserLink::with([
             'belongsToBaseDecision', 'belongsToBaseLink'
@@ -81,7 +91,7 @@ class UserLinkRepositories{
         $datas = UserLink::where([
             ['id', '=', BaseHelper::decrypt($data['did'])],
             ['users_id', '=', $data['uid']],
-        ])->firstOrFail();
+        ])->whereNotIn('base_link_id', BaseHelper::getCheckedBaseLink())->firstOrFail();
 
         $datas->delete();
 

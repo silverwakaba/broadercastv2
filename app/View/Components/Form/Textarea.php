@@ -10,7 +10,7 @@ class Textarea extends Component{
     public int $col;
     public string $name;
     public string $text;
-    public string $value;
+    public $value;
 
     /**
      * Create a new component instance.
@@ -18,7 +18,7 @@ class Textarea extends Component{
     public function __construct($name, $text, $value = '', $col = ''){
         $this->name = $name;
         $this->text = $text;
-        $this->value = $value;
+        $this->value = $value ? $value : null;
         $this->col = $col ? $col : 12;
     }
 

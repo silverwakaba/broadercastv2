@@ -7,8 +7,8 @@
                 <thead>
                     <tr>
                         <th width="5%">No.</th>
-                        <th width="65%">Name</th>
-                        <th width="20%">Email</th>
+                        <th width="45%">Name</th>
+                        <th width="40%">Email</th>
                         <th width="10%" class="text-center">Action</th>
                     </tr>
                 </thead>
@@ -40,7 +40,7 @@
                     },
                 },
                 {
-                    data: "datas.biodata.name",
+                    data: "datas.name",
                 },
                 {
                     data: "datas.email",
