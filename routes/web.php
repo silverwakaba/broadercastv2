@@ -23,6 +23,11 @@ Route::group(['prefix' => '/'], function(){
     // Index
     Route::get('/', [FrontController::class, 'index'])->name('index');
 
+    // Creator
+    // Route::group(['prefix' => 'creator'], function(){
+
+    // });
+
     // Auth
     Route::group(['prefix' => 'auth', 'middleware' => ['guest']], function(){
         // Register
@@ -97,10 +102,7 @@ Route::group(['prefix' => '/'], function(){
 
                 // Delete
                 Route::get('delete/{id}', [ManagerUserController::class, 'linkDelete'])->name('apps.manager.link.delete');
-
-                // Delete Confirm
                 Route::get('delete/{id}/confirm', [ManagerUserController::class, 'linkDeleteConfirm'])->name('apps.manager.link.delete.confirm');
-                // Route::post('link/verify/{id}', [ManagerUserController::class, 'linkVerifyPost']);
             });
 
             // Race

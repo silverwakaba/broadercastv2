@@ -19,9 +19,9 @@ class UserLinkVerificationRequest extends FormRequest{
      */
     public function rules() : array{
         return [
-            'unique'    => ['required'],
+            'unique'    => ['nullable'],
             'service'   => ['required'],
-            'channel'   => ['required', 'url'],
+            'channel'   => ['required'],
             'terms'     => ['accepted'],
         ];
     }

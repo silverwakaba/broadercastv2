@@ -13,7 +13,6 @@ return new class extends Migration{
             $table->id();
             $table->foreignId('users_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('users_link_id')->references('id')->on('users_link')->onDelete('cascade');
-            $table->foreignId('base_status_id')->references('id')->on('base_status');
             $table->foreignId('base_link_id')->references('id')->on('base_link')->onDelete('cascade');
             $table->string('identifier');
             $table->string('name');
@@ -21,6 +20,7 @@ return new class extends Migration{
             $table->double('view')->nullable()->default('0');
             $table->double('subscriber')->nullable()->default('0');
             $table->dateTime('joined')->nullable();
+            $table->boolean('streaming')->default(false);
         });
     }
 

@@ -7,7 +7,7 @@ use App\Http\Resources\UserBiodataResource;
 use App\Http\Resources\UserContentResource;
 use App\Http\Resources\UserGenderResource;
 use App\Http\Resources\UserLanguageResource;
-// use App\Http\Resources\UserLinkResource;
+use App\Http\Resources\UserLinkResource;
 use App\Http\Resources\UserRaceResource;
 
 use Illuminate\Http\Request;
@@ -23,7 +23,7 @@ class UserResource extends JsonResource{
         return [
             'id'            => $this->id,
             'identifier'    => $this->identifier,
-            'name'          => $this->name ? $this->name : '-',
+            'name'          => $this->name ? $this->name : $this->identifier,
             'email'         => $this->email,
             'deleted_at'    => $this->deleted_at,
             'created_at'    => $this->created_at,
@@ -33,7 +33,7 @@ class UserResource extends JsonResource{
             'content'       => UserContentResource::collection($this->whenLoaded('belongsToManyUserContent')),
             'gender'        => UserGenderResource::collection($this->whenLoaded('belongsToManyUserGender')),
             'language'      => UserLanguageResource::collection($this->whenLoaded('belongsToManyUserLanguage')),
-            // 'link'          => UserLinkResource::collection($this->whenLoaded('belongsToManyUserLink')), // Ganti Resourcenya
+            'link'          => UserLinkResource::collection($this->whenLoaded('belongsToManyUserLink')),
             'race'          => UserRaceResource::collection($this->whenLoaded('belongsToManyUserRace')),
         ];
     }

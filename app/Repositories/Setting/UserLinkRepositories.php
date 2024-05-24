@@ -91,9 +91,14 @@ class UserLinkRepositories{
         $datas = UserLink::where([
             ['id', '=', BaseHelper::decrypt($data['did'])],
             ['users_id', '=', $data['uid']],
-        ])->whereNotIn('base_link_id', BaseHelper::getCheckedBaseLink())->firstOrFail();
+        ])->first();
 
-        $datas->delete();
+        if(($datas->base_decision_id == 2) && (in_array($datas->base_link_id, BaseHelper::getCheckedBaseLink()))){
+            $datas->delete();
+        }
+        else{
+            $datas->forceDelete();
+        }
 
         return RedirectHelper::routeBack($back, 'success', 'External Link', 'delete');
     }

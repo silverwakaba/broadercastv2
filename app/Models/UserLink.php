@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
 class UserLink extends Model{
+    use SoftDeletes;
+    
     protected $table = 'users_link';
     protected $primaryKey = 'id';
     public $timestamps = false;

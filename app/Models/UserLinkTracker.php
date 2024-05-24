@@ -12,7 +12,6 @@ class UserLinkTracker extends Model{
     protected $fillable = [
         'users_id',
         'users_link_id',
-        'base_status_id',
         'base_link_id',
         'identifier',
         'name',
@@ -20,6 +19,7 @@ class UserLinkTracker extends Model{
         'view',
         'subscriber',
         'joined',
+        'streaming',
     ];
 
     public function belongsToUser(){

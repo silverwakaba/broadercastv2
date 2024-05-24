@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Apps\Manager;
 
 use App\Http\Controllers\Controller;
 
+use App\Helpers\BaseHelper;
+use App\Helpers\BasedataHelper;
+
 use App\Http\Requests\Apps\Setting\UserAvatarRequest;
 use App\Http\Requests\Apps\Setting\UserBiodataRequest;
 use App\Http\Requests\Apps\Setting\UserContentRequest;
@@ -19,13 +22,9 @@ use App\Repositories\Setting\UserLanguageRepositories;
 use App\Repositories\Setting\UserLinkRepositories;
 use App\Repositories\Setting\UserProfileRepositories;
 use App\Repositories\Setting\UserRaceRepositories;
-
-use App\Helpers\BaseHelper;
-use App\Helpers\BasedataHelper;
-use Illuminate\Http\Request;
-
-// 
 use App\Repositories\Service\YoutubeRepositories;
+
+use Illuminate\Http\Request;
 
 class UserController extends Controller{
     // Avatar
@@ -41,8 +40,22 @@ class UserController extends Controller{
     public function biodata(){
         $datas = UserProfileRepositories::getProfile([
             'id'    => auth()->user()->id,
-            'with'  => ['hasOneUserBiodata'],
+            // 'with'  => ['hasOneUserBiodata'],
+
+            'with'  => [
+                'hasOneUserAvatar',
+        
+                'hasOneUserBiodata',
+        
+                'belongsToManyUserContent', 'belongsToManyUserGender', 'belongsToManyUserLanguage', 'belongsToManyUserLink', 'belongsToManyUserRace',
+                
+                'belongsToManyUserLinkTracker',
+                'belongsToManyUserFeed',
+            ],
+
         ]);
+
+        return $datas;
 
         return view('pages/apps/setting/user/biodata', [
             'datas' => $datas,
@@ -207,6 +220,7 @@ class UserController extends Controller{
         ], 'apps.manager.link');
     }
 
+    // Link Delete - For Checked Base Link (Like YouTube, Twitch, etc)
     public function linkDeleteConfirm($id){
         $datas = UserLinkRepositories::getLinkToConfirm([
             'did'   => $id,
@@ -214,7 +228,9 @@ class UserController extends Controller{
             'with'  => ['belongsToBaseLink', 'hasOneUserLinkTracker'],
         ]);
 
-        return $datas;
+        return view('pages/apps/setting/user/link/delete', [
+            'datas' => $datas,
+        ]);
     }
 
     // Race

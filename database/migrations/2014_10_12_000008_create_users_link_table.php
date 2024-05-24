@@ -15,6 +15,7 @@ return new class extends Migration{
             $table->foreignId('base_link_id')->references('id')->on('base_link')->onDelete('cascade');
             $table->foreignId('base_decision_id')->references('id')->on('base_decision')->onDelete('cascade');
             $table->string('link');
+            $table->softDeletes();
         });
     }
 
