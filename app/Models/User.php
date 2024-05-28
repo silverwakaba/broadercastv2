@@ -80,6 +80,10 @@ class User extends Authenticatable{
         return $this->belongsToMany(BaseLink::class, 'users_link', 'users_id', 'base_link_id')->withPivot('link');
     }
 
+    public function belongsToManyUserLinkTracker(){
+        return $this->belongsToMany(BaseLink::class, 'users_link_tracker', 'users_id', 'base_link_id')->withPivot('identifier', 'name', 'avatar', 'view', 'subscriber', 'joined');
+    }
+
     public function belongsToManyUserLinkDecision(){
         return $this->belongsToMany(BaseDecision::class, 'users_link', 'users_id', 'base_decision_id');
     }
@@ -92,14 +96,8 @@ class User extends Authenticatable{
         return $this->hasOne(UserRequest::class, 'users_id');
     }
 
-    public function belongsToManyUserLinkTracker(){
-        // return $this->belongsToMany(BaseLink::class, 'users_link_tracker', 'users_id', 'base_link_id')->withPivot('identifier', 'name', 'avatar', 'view', 'subscriber', 'joined');
-
-        return $this->belongsToMany(BaseLink::class, 'users_link_tracker', 'users_id', 'base_link_id')->withPivot('identifier', 'name', 'avatar', 'view', 'subscriber', 'joined');
-    }
-
     // Gak dipake, gak bisa diakses via datatable
     public function belongsToManyUserFeed(){
-        return $this->belongsToMany(BaseLink::class, 'users_feed', 'users_id', 'base_link_id')->withPivot('identifier', 'title', 'published');//->orderBy('published', 'DESC');
+        return $this->belongsToMany(BaseLink::class, 'users_feed', 'users_id', 'base_link_id')->withPivot('identifier', 'title', 'published');
     }
 }

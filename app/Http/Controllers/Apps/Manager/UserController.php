@@ -43,14 +43,8 @@ class UserController extends Controller{
             // 'with'  => ['hasOneUserBiodata'],
 
             'with'  => [
-                'hasOneUserAvatar',
-        
-                'hasOneUserBiodata',
-        
-                'belongsToManyUserContent', 'belongsToManyUserGender', 'belongsToManyUserLanguage', 'belongsToManyUserLink', 'belongsToManyUserRace',
-                
+                'belongsToManyUserLink',
                 'belongsToManyUserLinkTracker',
-                'belongsToManyUserFeed',
             ],
 
         ]);

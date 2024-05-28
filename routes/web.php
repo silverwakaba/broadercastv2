@@ -19,9 +19,13 @@ use App\Http\Controllers\Apps\Manager\UserController as ManagerUserController;
 // Master Data
 use App\Http\Controllers\Apps\Master\UserController as MasterUserController;
 
+//
+use App\Http\Controllers\Cron\YoutubeCron;
+
 Route::group(['prefix' => '/'], function(){
     // Index
-    Route::get('/', [FrontController::class, 'index'])->name('index');
+    // Route::get('/', [FrontController::class, 'index'])->name('index');
+    Route::get('/', [YoutubeCron::class, 'fetchActivity'])->name('index');
 
     // Creator
     // Route::group(['prefix' => 'creator'], function(){
