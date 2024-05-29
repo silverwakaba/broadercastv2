@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class UserLinkTracker extends Model{
     protected $table = 'users_link_tracker';
     protected $primaryKey = 'id';
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = [
         'users_id',
         'users_link_id',
         'base_link_id',
+        'users_feed_id',
         'identifier',
         'name',
         'avatar',
@@ -20,6 +21,7 @@ class UserLinkTracker extends Model{
         'subscriber',
         'joined',
         'streaming',
+        'concurrent',
     ];
 
     public function belongsToUser(){

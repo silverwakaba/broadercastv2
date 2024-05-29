@@ -166,25 +166,31 @@ class YoutubeRepositories{
             // Tambahan
             // Related Video ID buat referensi Streaming yg aktif | Nullable
             // Concurrent viewers
+            // Timestamp buat ngecek aktifitas channel
 
+            // Beni: UCjXBuHmWkieBApgBhDuJMMQ
             $channelID = "UCjXBuHmWkieBApgBhDuJMMQ";
 
-            $http = Http::get('https://www.youtube.com/channel/' . $channelID . '/live');
+            // Lofi: UC5OStgYPn8_UbILMFNFF_-w
+            // $channelID = "UC5OStgYPn8_UbILMFNFF_-w";
 
-            $body = $http->body();
+            $http = Http::get('https://www.youtube.com/channel/' . $channelID . '/live')->body();
 
-            // $videoID = Str::betweenFirst($body, '{"liveStreamabilityRenderer":{"videoId":"', '",');
-            // $videoConcurrent = Str::betweenFirst($body, '"originalViewCount":"', '"');
+            $videoID = Str::betweenFirst($http, '{"liveStreamabilityRenderer":{"videoId":"', '",');
+            
+            $videoConcurrent = Str::betweenFirst($http, '"originalViewCount":"', '"');
 
-            return strpos($body, '"isLive"');
+            $checkSchedule = Str::betweenFirst($http, '"scheduledStartTime":"', '",');
+            $videoSchedule = Carbon::createFromTimestamp($checkSchedule)->toIso8601String();
 
-            return $viewer;
+            $isOffline = Str::containsAll($http, ['"liveStreamability"', '"liveStreamabilityRenderer"', '"offlineSlate"']);
 
-            if(strpos($body, '"isLive"') == true){
+            if($isOffline == false){
                 return "Live";
             }
             else{
-                return "Offline";
+                return $videoSchedule;
+                // return "Offline";
             }
         }
         catch(\Throwable $th){}
