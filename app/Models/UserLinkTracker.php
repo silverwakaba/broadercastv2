@@ -31,4 +31,12 @@ class UserLinkTracker extends Model{
     public function belongsToBaseLink(){
         return $this->belongsTo(BaseLink::class, 'base_link_id');
     }
+
+    public function belongsToActiveStream(){
+        return $this->belongsTo(UserFeed::class, 'users_feed_id', 'id');
+    }
+
+    public function hasManyUserLinkTracker(){
+        return $this->hasMany(UserFeed::class, 'users_link_tracker_id', 'users_id');
+    }
 }

@@ -12,18 +12,19 @@ class UserFeed extends Model{
     protected $fillable = [
         'users_id',
         'base_link_id',
+        'users_link_tracker_id',
         'identifier',
         'title',
         'published',
     ];
 
-    public function belongsToUser(){
-        return $this->belongsTo(User::class, 'users_id');
-    }
+    // public function belongsToUser(){
+    //     return $this->belongsTo(User::class, 'users_id');
+    // }
 
-    public function hasOneThroughUserAvatar(){
-        return $this->hasOneThrough(UserAvatar::class, User::class, 'users_id', 'users_id', 'users_id', 'users_id');
-    }
+    // public function hasOneThroughUserAvatar(){
+    //     return $this->hasOneThrough(UserAvatar::class, User::class, 'users_id', 'users_id', 'users_id', 'users_id');
+    // }
 
     // public function hasOneThroughUserBiodata(){
     //     return $this->hasOneThrough(UserBiodata::class, User::class, 'users_id', 'users_id', 'users_id', 'users_id');
@@ -31,5 +32,9 @@ class UserFeed extends Model{
 
     public function belongsToBaseLink(){
         return $this->belongsTo(BaseLink::class, 'base_link_id');
+    }
+
+    public function belongsToUserLinkTracker(){
+        return $this->belongsTo(UserLinkTracker::class, 'users_link_tracker_id');
     }
 }

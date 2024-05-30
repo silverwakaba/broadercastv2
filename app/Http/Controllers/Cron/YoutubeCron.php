@@ -40,6 +40,15 @@ class YoutubeCron extends Controller{
     }
 
     public function fetchActivity(){
-        return YoutubeRepositories::fetchActivity();
+        UserLinkTracker::where([
+            ['base_link_id', '=', 2],
+        ])->select('users_id', 'identifier')->chunk(100, function(Collection $chunks){
+            foreach($chunks as $chunk){
+                try{
+                    YoutubeRepositories::fetchActivity($chunk->identifier, $chunk->users_id);
+                }
+                catch(\Throwable $th){}
+            }
+        });
     }
 }

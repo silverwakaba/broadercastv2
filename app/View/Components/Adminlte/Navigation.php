@@ -4,6 +4,7 @@ namespace App\View\Components\Adminlte;
 
 use Closure;
 
+use App\Helpers\BaseHelper;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
@@ -32,12 +33,10 @@ class Navigation extends Component{
         ])->first();
 
         if($datas){
-            $user = (new UserResource($datas))->resolve();
+            $user = (new UserResource($datas));
 
             $array = [
-                'user'      => $user,
-                'avatar'    => ($user['avatar'])->resolve(),
-                'biodata'   => ($user['biodata'])->resolve(),
+                'user' => BaseHelper::resourceToJson($user),
             ];
         }
 

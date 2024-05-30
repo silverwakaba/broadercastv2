@@ -44,4 +44,12 @@ class BaseHelper{
             return abort(404);
         }
     }
+
+    public static function resourceToJson($datas){
+        $encode = json_encode($datas);
+        
+        $decode = json_decode($encode);
+
+        return $decode;
+    }
 }
