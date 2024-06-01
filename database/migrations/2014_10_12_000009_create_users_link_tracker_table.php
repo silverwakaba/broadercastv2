@@ -15,6 +15,7 @@ return new class extends Migration{
             $table->foreignId('users_link_id')->references('id')->on('users_link')->onDelete('cascade');
             $table->foreignId('base_link_id')->references('id')->on('base_link')->onDelete('cascade');
             $table->foreignId('users_feed_id')->nullable();
+            // $table->boolean('initiated')->default(false); // Archive initiated
             $table->string('identifier');
             $table->string('name');
             $table->string('avatar');
