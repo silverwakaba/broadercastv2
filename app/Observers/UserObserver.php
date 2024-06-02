@@ -22,9 +22,9 @@ class UserObserver{
             'users_id' => $user->id,
         ]);
 
-        Mail::to($user->email)->send(new UserVerifyEmail($user->id));
+        // Mail::to($user->email)->send(new UserVerifyEmail($user->id));
 
-        UserCreated::dispatch($user);
+        // UserCreated::dispatch($user);
     }
 
     /**

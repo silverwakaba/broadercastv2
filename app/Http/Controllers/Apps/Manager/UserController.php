@@ -40,16 +40,8 @@ class UserController extends Controller{
     public function biodata(){
         $datas = UserProfileRepositories::getProfile([
             'id'    => auth()->user()->id,
-            // 'with'  => ['hasOneUserBiodata'],
-
-            'with'  => [
-                'belongsToManyUserLink',
-                'belongsToManyUserLinkTracker',
-            ],
-
+            'with'  => ['hasOneUserBiodata'],
         ]);
-
-        return $datas;
 
         return view('pages/apps/setting/user/biodata', [
             'datas' => $datas,
@@ -71,13 +63,11 @@ class UserController extends Controller{
         $datas = UserProfileRepositories::getProfile([
             'id'    => auth()->user()->id,
             'with'  => ['belongsToManyUserContent'],
-        ], true);
-
-        $repo = ($datas)->resolve();
+        ]);
 
         return view('pages/apps/setting/user/content', [
             'datas' => BasedataHelper::baseContent(),
-            'value' => ($repo['content'])->pluck('id')->toArray(),
+            'value' => collect($datas->content)->pluck('id')->toArray(),
         ]);
     }
 
@@ -90,13 +80,11 @@ class UserController extends Controller{
         $datas = UserProfileRepositories::getProfile([
             'id'    => auth()->user()->id,
             'with'  => ['belongsToManyUserGender'],
-        ], true);
-
-        $repo = ($datas)->resolve();
+        ]);
 
         return view('pages/apps/setting/user/gender', [
             'datas' => BasedataHelper::baseGender(),
-            'value' => ($repo['gender'])->pluck('id')->toArray(),
+            'value' => collect($datas->gender)->pluck('id')->toArray(),
         ]);
     }
 
@@ -109,13 +97,11 @@ class UserController extends Controller{
         $datas = UserProfileRepositories::getProfile([
             'id'    => auth()->user()->id,
             'with'  => ['belongsToManyUserLanguage'],
-        ], true);
-
-        $repo = ($datas)->resolve();
+        ]);
 
         return view('pages/apps/setting/user/language', [
             'datas' => BasedataHelper::baseLanguage(),
-            'value' => ($repo['language'])->pluck('id')->toArray(),
+            'value' => collect($datas->language)->pluck('id')->toArray(),
         ]);
     }
 
@@ -199,7 +185,7 @@ class UserController extends Controller{
             return "Twitch";
         }
         elseif($request->service == 'YouTube'){
-            return YoutubeRepositories::verifyViaChannel($request->channel, auth()->user()->id, $id);
+            return YoutubeRepositories::verifyChannel($request->channel, auth()->user()->id, $id);
         }
         else{
             return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. It seems that you are stranded.', 'error');
@@ -232,13 +218,11 @@ class UserController extends Controller{
         $datas = UserProfileRepositories::getProfile([
             'id'    => auth()->user()->id,
             'with'  => ['belongsToManyUserRace'],
-        ], true);
-
-        $repo = ($datas)->resolve();
+        ]);
 
         return view('pages/apps/setting/user/race', [
             'datas' => BasedataHelper::baseRace(),
-            'value' => ($repo['race'])->pluck('id')->toArray(),
+            'value' => collect($datas->race)->pluck('id')->toArray(),
         ]);
     }
 

@@ -19,52 +19,6 @@ use Illuminate\Support\Facades\Http;
 // use App\Repositories\Service\YoutubeRepositories;
 
 class YoutubeRepositories{
-    // Verify Channel - Debug
-    // public static function verifyViaChannelDebug($channelID, $uniqueID, $id){
-    //     try{
-    //         $apiKey = BaseAPI::where('base_link_id', '=', '2')->inRandomOrder()->first()->client_key;
-
-    //         $checkChannel = Str::of($channelID)->afterLast('/');
-
-    //         $params = [
-    //             'id'    => $checkChannel,
-    //             'key'   => $apiKey,
-    //             'part'  => "snippet,statistics",
-    //         ];
-
-    //         $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/channels', $params);
-
-    //         $httpJSON = $http->json();
-
-    //         foreach($httpJSON['items'] AS $data);
-
-    //         $checkUnique = Str::contains($data['snippet']['description'], $uniqueID);
-
-    //         $linkID = BaseHelper::decrypt($id);
-
-    //         $userLink = UserLink::find($linkID);
-
-    //         $userLink->update([
-    //             'base_decision_id' => 2,
-    //         ]);
-
-    //         $userLink->hasOneUserLinkTracker()->create([
-    //             'users_id'      => auth()->user()->id,
-    //             'users_link_id' => $linkID,
-    //             'base_link_id'  => $userLink->base_link_id,
-    //             'identifier'    => $data['id'],
-    //             'name'          => $data['snippet']['title'],
-    //             'avatar'        => $data['snippet']['thumbnails']['medium']['url'],
-    //             'view'          => $data['statistics']['viewCount'] ? $data['statistics']['viewCount'] : 0,
-    //             'subscriber'    => $data['statistics']['hiddenSubscriberCount'] == false ? $data['statistics']['subscriberCount'] : 0,
-    //             'joined'        => Carbon::parse($data['snippet']['publishedAt'])->toIso8601String(),
-    //         ]);
-
-    //         return RedirectHelper::routeBack('apps.manager.link', 'success', 'Channel Verification', 'verify');
-    //     }
-    //     catch(\Throwable $th){}
-    // }
-
     /**
      * ---------------
      * Block Base Data
@@ -97,8 +51,79 @@ class YoutubeRepositories{
      * ------------------
     */
 
-    // Verify Channel
-    public static function verifyViaChannel($channelID, $uniqueID, $id){
+    public static function verifyChannel($channelID, $uniqueID, $id){
+        try{
+            if(auth()->user()->hasRole('Admin|Moderator')){
+                return self::verifyChannelDirectly($channelID, $uniqueID, $id);
+            }
+            else{
+                return self::verifyChannelManually($channelID, $uniqueID, $id);
+            }
+        }
+        catch(\Throwable $th){}
+    }
+
+    // Verify Channel - Direct
+    public static function verifyChannelDirectly($channelID, $uniqueID, $id){
+        try{
+            $checkString = Str::contains($channelID, "https://www.youtube.com/channel/");
+
+            if($checkString){
+                $checkChannel = Str::of($channelID)->afterLast('/');
+
+                if(Str::of($checkChannel)->length() == 24){
+                    $apiKey = self::apiKey();
+
+                    $params = [
+                        'id'    => $checkChannel,
+                        'key'   => $apiKey,
+                        'part'  => "snippet,statistics",
+                    ];
+
+                    $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/channels', $params)->json();
+
+                    if($http['pageInfo']['totalResults'] >= 1){
+                        $linkID = BaseHelper::decrypt($id);
+
+                        $userLink = UserLink::find($linkID);
+
+                        $userLink->update([
+                            'base_decision_id' => 2,
+                        ]);
+
+                        foreach($http['items'] AS $data);
+
+                        $userLink->hasOneUserLinkTracker()->create([
+                            'users_id'      => auth()->user()->id,
+                            'users_link_id' => $linkID,
+                            'base_link_id'  => $userLink->base_link_id,
+                            'identifier'    => $data['id'],
+                            'name'          => $data['snippet']['title'],
+                            'avatar'        => $data['snippet']['thumbnails']['medium']['url'],
+                            'view'          => $data['statistics']['viewCount'] ? $data['statistics']['viewCount'] : 0,
+                            'subscriber'    => $data['statistics']['hiddenSubscriberCount'] == false ? $data['statistics']['subscriberCount'] : 0,
+                            'joined'        => Carbon::parse($data['snippet']['publishedAt'])->toIso8601String(),
+                        ]);
+
+                        return RedirectHelper::routeBack('apps.manager.link', 'success', 'Channel Verification', 'verify');
+                    }
+                    else{
+                        return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. And it seems we can not find your channel.', 'error');
+                    }
+                }
+                else{
+                    return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. So please check again whether the link structure you submitted complies with the guidelines or not.', 'error');
+                }
+            }
+            else{
+                return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. As this link does not looks like YouTube.', 'error');
+            }
+        }
+        catch(\Throwable $th){}
+    }
+
+    // Verify Channel - Manual
+    public static function verifyChannelManually($channelID, $uniqueID, $id){
         try{
             $checkString = Str::contains($channelID, "https://www.youtube.com/channel/");
 

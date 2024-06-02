@@ -14,10 +14,6 @@ class UserProfileRepositories{
             ['id', '=', $data['id']],
         ])->firstOrFail();
 
-        if($resource == true){
-            return new UserResource($user);
-        }
-
-        return $user;
+        return BaseHelper::resourceToJson(new UserResource($user));
     }
 }

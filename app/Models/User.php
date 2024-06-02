@@ -80,6 +80,7 @@ class User extends Authenticatable{
         return $this->belongsToMany(BaseLink::class, 'users_link', 'users_id', 'base_link_id')->withPivot('link');
     }
     
+    // Gak dipake
     public function belongsToManyUserLinkTracker(){
         return $this->belongsToMany(BaseLink::class, 'users_link_tracker', 'users_id', 'base_link_id')->withPivot('id', 'identifier', 'name', 'avatar', 'view', 'subscriber', 'joined');
     }

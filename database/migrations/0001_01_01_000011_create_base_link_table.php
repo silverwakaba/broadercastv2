@@ -16,6 +16,8 @@ return new class extends Migration{
             $table->string('name');
             $table->string('icon')->nullable();
             $table->string('color')->nullable();
+            $table->string('url_content')->nullable();
+            $table->string('url_thumbnail')->nullable();
             $table->boolean('checking')->default(false);
             $table->softDeletes();
         });

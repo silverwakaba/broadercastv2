@@ -19,21 +19,28 @@ use App\Http\Controllers\Apps\Manager\UserController as ManagerUserController;
 // Master Data
 use App\Http\Controllers\Apps\Master\UserController as MasterUserController;
 
-//
-use App\Http\Controllers\Cron\YoutubeCron;
+// Front
+use App\Http\Controllers\Front\CreatorController as FrontCreatorController;
+
+// Debug | Please comment before deployment
+// use App\Http\Controllers\Cron\YoutubeCron;
 
 Route::group(['prefix' => '/'], function(){
     // Index
     Route::get('/', [FrontController::class, 'index'])->name('index');
 
-    // Creator
-    // Route::group(['prefix' => 'creator'], function(){
-
+    // Debug
+    // Route::group(['prefix' => 'debug'], function(){
+    //     Route::get('youtube', [YoutubeCron::class, 'fetchDebug']);
     // });
 
-    // Debug
-    Route::group(['prefix' => 'debug'], function(){
-        Route::get('youtube', [YoutubeCron::class, 'fetchDebug']);
+    // Creator
+    Route::group(['prefix' => 'creator'], function(){
+        // Index
+        Route::get('/', [FrontCreatorController::class, 'index'])->name('creator.index');
+
+        // Profile
+        Route::get('@{id}', [FrontCreatorController::class, 'profile'])->name('creator.profile');
     });
 
     // Auth

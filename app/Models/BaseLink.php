@@ -21,6 +21,8 @@ class BaseLink extends Model{
         'name',
         'icon',
         'color',
+        'url_content',
+        'url_thumbnail',
         'checking',
     ];
 

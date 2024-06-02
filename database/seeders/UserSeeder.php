@@ -12,10 +12,10 @@ class UserSeeder extends Seeder{
      * Run the database seeds.
      */
     public function run() : void{
-        $faker = \Faker\Factory::create();
-
         // User::factory(1)->create();
 
+        $faker = \Faker\Factory::create();
+            
         User::create([
             'base_status_id'    => '6',
             'confirmed'         => true,
