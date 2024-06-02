@@ -24,13 +24,17 @@ use App\Http\Controllers\Cron\YoutubeCron;
 
 Route::group(['prefix' => '/'], function(){
     // Index
-    // Route::get('/', [FrontController::class, 'index'])->name('index');
-    Route::get('/', [YoutubeCron::class, 'fetchDebug'])->name('index');
+    Route::get('/', [FrontController::class, 'index'])->name('index');
 
     // Creator
     // Route::group(['prefix' => 'creator'], function(){
 
     // });
+
+    // Debug
+    Route::group(['prefix' => 'debug'], function(){
+        Route::get('youtube', [YoutubeCron::class, 'fetchDebug']);
+    });
 
     // Auth
     Route::group(['prefix' => 'auth', 'middleware' => ['guest']], function(){

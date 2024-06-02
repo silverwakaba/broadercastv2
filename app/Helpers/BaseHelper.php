@@ -6,6 +6,7 @@ use App\Models\BaseLink;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Http;
 
 class BaseHelper{
     public static function adler32($value = ''){
@@ -51,5 +52,15 @@ class BaseHelper{
         $decode = json_decode($encode);
 
         return $decode;
+    }
+
+    public static function youtubeXMLToJson($channelID){
+        $http = Http::get('https://www.youtube.com/feeds/videos.xml', [
+            'channel_id' => $channelID,
+        ]);
+
+        $xml = simplexml_load_string($http->getBody(), 'SimpleXMLElement', LIBXML_NOCDATA);
+
+        return self::resourceToJson($xml);
     }
 }

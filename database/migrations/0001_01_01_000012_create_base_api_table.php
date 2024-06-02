@@ -11,6 +11,7 @@ return new class extends Migration{
     public function up() : void{
         Schema::create('base_api', function (Blueprint $table) {
             $table->id();
+            // $table->foreignId('users_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('base_link_id')->references('id')->on('base_link')->onDelete('cascade');
             $table->string('client_id')->nullable();
             $table->string('client_key')->nullable();

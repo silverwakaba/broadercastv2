@@ -19,24 +19,9 @@ use Illuminate\Support\Facades\Http;
 
 class YoutubeCron extends Controller{
     public function fetchDebug(){
-        // $videoID = 'Bvj-LQDBqBQ';
-        // $videoLink = "www.youtube.com/watch?v=$videoID";
+        // return YoutubeRepositories::fetchArchiveViaFeed("UCurEA8YoqFwimJcAuSHU0MQ", 1);
 
-        // $http = Http::get('https://web.scraper.workers.dev', [
-        //     'url'       => $videoLink,
-        //     'selector'  => 'title,script',
-        //     'scrape'    => 'text',
-        //     'spaced'    => 'true',
-        //     'pretty'    => 'true',
-        // ])->json();
-
-        // $notFound = "- YouTube";
-
-        // if(($http['result']['title'] == $notFound)){
-        //     return "Not Found and delete";
-        // }
-
-        return YoutubeRepositories::fetchArchiveStatus("ded");
+        // return YoutubeRepositories::fetchActivity("UCIcAj6WkJ8vZ7DeJVgmeqKw", 1);
     }
 
     public function fetchEveryDay(){
@@ -53,7 +38,7 @@ class YoutubeCron extends Controller{
         });
     }
 
-    public function fetchEveryMinuteOne(){
+    public function fetchUserLinkTracker(){
         $tracker = UserLinkTracker::where([
             ['base_link_id', '=', 2],
         ])->select('users_id', 'identifier')->chunk(100, function(Collection $chunks){
@@ -70,13 +55,13 @@ class YoutubeCron extends Controller{
         });
     }
 
-    public function fetchEveryMinuteTwo(){
+    public function fetchUserFeed(){
         $feed = UserFeed::where([
             ['base_link_id', '=', 2],
         ])->select('identifier')->chunk(100, function(Collection $chunks){
             foreach($chunks as $chunk){
                 try{
-                    // Archive Status
+                    // Archive Status (like delete if it isn't on YouTube anymore)
                     YoutubeRepositories::fetchArchiveStatus($chunk->identifier);
                 }
                 catch(\Throwable $th){}

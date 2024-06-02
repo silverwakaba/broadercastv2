@@ -8,5 +8,5 @@ use Illuminate\Support\Facades\Schedule;
  * Fetch every minute: archive > activity
 */
 Schedule::call('App\Http\Controllers\Cron\YoutubeCron@fetchProfile')->daily();
-// Schedule::call('App\Http\Controllers\Cron\YoutubeCron@fetchEveryMinuteOne')->everyMinute();
-Schedule::call('App\Http\Controllers\Cron\YoutubeCron@fetchEveryMinuteTwo')->everyMinute();
+Schedule::call('App\Http\Controllers\Cron\YoutubeCron@fetchUserLinkTracker')->everyMinute();
+// Schedule::call('App\Http\Controllers\Cron\YoutubeCron@fetchUserFeed')->everyMinute();

@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 
+// use App\Repositories\Service\YoutubeRepositories;
+
 class YoutubeRepositories{
     // Verify Channel - Debug
     // public static function verifyViaChannelDebug($channelID, $uniqueID, $id){
@@ -64,6 +66,32 @@ class YoutubeRepositories{
     // }
 
     /**
+     * ---------------
+     * Block Base Data
+     * ---------------
+    */
+
+    // YouTube API Key
+    public static function apiKey(){
+        $apiKey = BaseAPI::where([
+            ['base_link_id', '=', 2],
+        ])->inRandomOrder()->first()->client_key;
+
+        return $apiKey;
+    }
+
+    // User Link Tracker
+    public static function userLinkTracker($channelID, $userID){
+        $userLT = UserLinkTracker::where([
+            ['base_link_id', '=', 2],
+            ['users_id', '=', $userID],
+            ['identifier', '=', $channelID],
+        ])->firstOrFail();
+
+        return $userLT;
+    }
+
+    /**
      * ------------------
      * Block Verify Start
      * ------------------
@@ -78,7 +106,7 @@ class YoutubeRepositories{
                 $checkChannel = Str::of($channelID)->afterLast('/');
 
                 if(Str::of($checkChannel)->length() == 24){
-                    $apiKey = BaseAPI::where('base_link_id', '=', 2)->inRandomOrder()->first()->client_key;
+                    $apiKey = self::apiKey();
 
                     $params = [
                         'id'    => $checkChannel,
@@ -144,7 +172,7 @@ class YoutubeRepositories{
     // Fetch Profile
     public static function fetchProfile($channelID, $userID){
         try{
-            $apiKey = BaseAPI::where('base_link_id', '=', 2)->inRandomOrder()->first()->client_key;
+            $apiKey = self::apiKey();
 
             $params = [
                 'id'    => $channelID,
@@ -152,15 +180,14 @@ class YoutubeRepositories{
                 'part'  => "snippet,statistics",
             ];
 
-            $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/channels', $params);
+            $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/channels', $params)->json();
 
-            $httpJSON = $http->json();
-
-            if($httpJSON['pageInfo']['totalResults'] >= 1){
-                foreach($httpJSON['items'] AS $data){
+            if($http['pageInfo']['totalResults'] >= 1){
+                foreach($http['items'] AS $data){
                     UserLinkTracker::where([
                         ['users_id', '=', $userID],
                         ['identifier', '=', $channelID],
+                        ['base_link_id', '=', 2]
                     ])->update([
                         'name'          => $data['snippet']['title'],
                         'avatar'        => $data['snippet']['thumbnails']['medium']['url'],
@@ -175,28 +202,66 @@ class YoutubeRepositories{
     // Fetch Archive Via Feed
     public static function fetchArchiveViaFeed($channelID, $userID){
         try{
-            $userLT = UserLinkTracker::where([
-                ['base_link_id', '=', 2],
-                ['users_id', '=', $userID],
-                ['identifier', '=', $channelID],
-            ])->first();
+            $userLT = self::userLinkTracker($channelID, $userID);
 
-            $http = Http::get('https://www.toptal.com/developers/feed2json/convert', [
-                'url' => "https://www.youtube.com/feeds/videos.xml?channel_id=" . $channelID,
-            ])->json();
+            $http = BaseHelper::youtubeXMLToJson($channelID);
 
-            if(isset($http['items'])){
-                foreach($http['items'] AS $data){
+            if(isset($http->entry)){
+                foreach($http->entry AS $data){
                     UserFeed::insertOrIgnore([
                         'users_id'              => $userLT->users_id,
                         'base_link_id'          => $userLT->base_link_id,
                         'users_link_tracker_id' => $userLT->id,
-                        'identifier'            => Str::afterLast($data['guid'], ':'),
-                        'title'                 => $data['title'],
-                        'published'             => Carbon::parse($data['date_published'])->toIso8601String(),
+                        'identifier'            => Str::afterLast($data->id, ':'),
+                        'title'                 => $data->title,
+                        'published'             => Carbon::parse($data->published)->toIso8601String(),
                     ]);
                 }
             }
+        }
+        catch(\Throwable $th){}
+    }
+
+    public static function fetchArchiveViaAPI($channelID, $userID, $nextPageToken = ''){
+        try{
+            $userLT = self::userLinkTracker($channelID, $userID);
+
+            $apiKey = self::apiKey();
+
+            $params = [
+                'key'           => $apiKey,
+                'part'          => "snippet,contentDetails",
+                'channelId'     => $channelID,
+                'maxResults'    => 256,
+                // 'pageToken'     => $nextPageToken,
+            ];
+
+            // // Next Page Token Implementation
+            // if(!empty($nextPageToken)){
+            //     $params['pageToken'] = $nextPageToken;
+            // }
+
+            $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/activities', $params)->json();
+
+            if(isset($http['items'])){
+                foreach($http['items'] AS $data){
+                    if(isset($data['contentDetails']['upload']['videoId'])){
+                        UserFeed::insertOrIgnore([
+                            'users_id'              => $userLT->users_id,
+                            'base_link_id'          => $userLT->base_link_id,
+                            'users_link_tracker_id' => $userLT->id,
+                            'identifier'            => $data['contentDetails']['upload']['videoId'],
+                            'title'                 => $data['snippet']['title'],
+                            'published'             => Carbon::parse($data['snippet']['publishedAt'])->toIso8601String(),
+                        ]);
+                    }
+                }
+            }
+
+            // // Next Page Token Implementation
+            // if(isset($http['nextPageToken'])){
+            //     $this->initYoutube($channelID, $userID, $http['nextPageToken']);
+            // }
         }
         catch(\Throwable $th){}
     }
@@ -240,13 +305,9 @@ class YoutubeRepositories{
             $isOffline = true;
             $videoSchedule = null;
 
-            $userLT = UserLinkTracker::where([
-                ['base_link_id', '=', 2],
-                ['users_id', '=', $userID],
-                ['identifier', '=', $channelID],
-            ])->firstOrFail();
+            $userLT = self::userLinkTracker($channelID, $userID);
 
-            // Alt: https://web.sspn.workers.dev
+            // Endpoint Alt: https://web.sspn.workers.dev
             $http = Http::get('https://web.scraper.workers.dev', [
                 'url'       => 'www.youtube.com/channel/' . $channelID . '/live',
                 'selector'  => 'title,script',
@@ -279,7 +340,7 @@ class YoutubeRepositories{
                 $videoConcurrent = (int) Str::betweenFirst($httpResultScript[33], '"originalViewCount":"', '"'); // Cek kalo int berarti oke
             }
 
-            $userF = $userLT->hasManyUserLinkTracker()->where([
+            $userF = $userLT->hasManyUserFeed()->where([
                 ['identifier', '=', $videoIDNew],
             ])->first();
 

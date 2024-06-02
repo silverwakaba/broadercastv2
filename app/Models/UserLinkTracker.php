@@ -36,7 +36,7 @@ class UserLinkTracker extends Model{
         return $this->belongsTo(UserFeed::class, 'users_feed_id', 'id');
     }
 
-    public function hasManyUserLinkTracker(){
+    public function hasManyUserFeed(){
         return $this->hasMany(UserFeed::class, 'users_link_tracker_id', 'users_id');
     }
 }
