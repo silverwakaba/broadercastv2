@@ -13,13 +13,20 @@ class UserBiodataResource extends JsonResource{
      * @return array<string, mixed>
      */
     public function toArray(Request $request) : array{
+        $markdownBio = Str::of($this->biography)->markdown([
+            'html_input'            => 'strip',
+            'allow_unsafe_links'    => false,
+        ]);
+
+        $markdownBioStripped = strip_tags($markdownBio, ['p']);
+
         return [
             'id'        => $this->id,
             'users_id'  => $this->users_id,
             'nickname'  => $this->nickname,
             'dob'       => $this->dob,
             'dod'       => $this->dod,
-            'biography' => $this->biography ? Str::markdown($this->biography) : $this->biography,
+            'biography' => $this->biography ? $markdownBioStripped : $this->biography,
         ];
     }
 }

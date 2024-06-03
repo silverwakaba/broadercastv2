@@ -22,6 +22,7 @@ class UserResource extends JsonResource{
     public function toArray(Request $request) : array{
         return [
             'id'            => $this->id,
+            'confirmed'     => $this->confirmed,
             'identifier'    => $this->identifier,
             'name'          => $this->name ? $this->name : $this->identifier,
             'email'         => $this->email,

@@ -30,7 +30,7 @@ class BaseLinkSeeder extends Seeder{
                 'name'              => "YouTube",
                 'icon'              => null,
                 'url_content'       => "https://www.youtube.com/watch?v=REPLACETHISPLACEHOLDER",
-                'url_thumbnail'     => "https://i.ytimg.com/vi/REPLACETHISPLACEHOLDER/maxresdefault_live.jpg'",
+                'url_thumbnail'     => "https://i.ytimg.com/vi/REPLACETHISPLACEHOLDER/maxresdefault_live.jpg",
             ],
             [
                 'base_decision_id'  => '2',

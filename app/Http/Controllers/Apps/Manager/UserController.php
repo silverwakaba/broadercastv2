@@ -41,7 +41,7 @@ class UserController extends Controller{
         $datas = UserProfileRepositories::getProfile([
             'id'    => auth()->user()->id,
             'with'  => ['hasOneUserBiodata'],
-        ]);
+        ], false);
 
         return view('pages/apps/setting/user/biodata', [
             'datas' => $datas,

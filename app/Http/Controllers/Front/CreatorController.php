@@ -16,7 +16,7 @@ class CreatorController extends Controller{
 
     // Profile
     public function profile($id){
-        $datas = UserProfileRepositories::getProfile([
+        $profile = UserProfileRepositories::getProfile([
             'identifier'    => $id,
             'with'          => [
                 'hasOneUserAvatar',
@@ -30,6 +30,19 @@ class CreatorController extends Controller{
             ],
         ]);
 
-        return $datas;
+        // return $profile;
+
+        $tracker = UserProfileRepositories::getLinkTracker([
+            'id' => $profile->id,
+        ]);
+
+        // $feed = UserProfileRepositories::getFeed([
+        //     'id' => $profile->id,
+        // ], true);
+
+        return view('pages/front/creator/profile', [
+            'profile' => $profile,
+            'tracker' => $tracker,
+        ]);
     }
 }

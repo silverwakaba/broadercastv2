@@ -35,7 +35,7 @@
 </nav>
 <aside class="main-sidebar main-sidebar-custom sidebar-dark-primary elevation-4">
     <a href="{{ url('/') }}" class="brand-link">
-        <img src="https://cdn.broadercast.net/system/logo/50px.png" class="brand-image">
+        <img src="{{ env('ASSET_URL') . '/system/logo/50px.png' }}" class="brand-image">
         <span class="brand-text">{{ config('app.name', 'Broadercast') }}</span>
     </a>
     <div class="sidebar">

@@ -6,6 +6,7 @@ use App\Models\BaseLink;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Str;
 
 class UserChannelActivityResource extends JsonResource{
     /**
@@ -19,8 +20,8 @@ class UserChannelActivityResource extends JsonResource{
         ])->first();
 
         if($data->name == 'YouTube'){
-            $link = 'https://www.youtube.com/watch?v=' . $this->identifier;
-            $thumbnail = 'https://i.ytimg.com/vi/' . $this->identifier . '/maxresdefault_live.jpg';
+            $link = Str::replace('REPLACETHISPLACEHOLDER', $this->identifier, $data->url_content);
+            $thumbnail = Str::replace('REPLACETHISPLACEHOLDER', $this->identifier, $data->url_thumbnail);
         }
         else{
             $link = null;
@@ -32,6 +33,7 @@ class UserChannelActivityResource extends JsonResource{
             'title'         => $this->title,
             'link'          => $link,
             'thumbnail'     => $thumbnail,
+            'service'       => new BaseLinkResource($this->whenLoaded('belongsToBaseLink')),
         ];
     }
 }

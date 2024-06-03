@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\View as ViewFacades;
 use Illuminate\View\Component;
 
 class Content extends Component{
-    public string $title;
+    public $title;
     public string $previous;
 
     /**

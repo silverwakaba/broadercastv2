@@ -12,28 +12,49 @@ use App\Models\User;
 use App\Models\UserFeed;
 use App\Models\UserLinkTracker;
 
+use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
+
 class UserProfileRepositories{
     public static function getProfile(array $data){
-        $user = User::with(isset($data['with']) ? $data['with'] : [])->where([
+        $datas = User::with(isset($data['with']) ? $data['with'] : [])->where([
             ['identifier', '=', $data['identifier']],
         ])->firstOrFail();
 
-        $users = BaseHelper::resourceToJson(new UserResource($user));
+        return BaseHelper::resourceToJson(new UserResource($datas));
+    }
 
-        $tracker = UserLinkTracker::with([
+    public static function getLinkTracker(array $data){
+        $datas = UserLinkTracker::with([
             'belongsToBaseLink',
             'belongsToUserLink',
             'belongsToActiveStream',
         ])->where([
-            ['users_id', '=', $user->id],
+            ['users_id', '=', $data['id']],
         ])->get();
 
-        $trackers = BaseHelper::resourceToJson(UserLinkTrackerResource::collection($tracker));
+        return BaseHelper::resourceToJson(UserLinkTrackerResource::collection($datas));
+    }
 
-        $feed = UserFeed::where([
-            ['users_id', '=', $user->id],
+    public static function getFeed(array $data, $datatable = false){
+        $datas = UserFeed::with([
+            'belongsToBaseLink',
+        ])->where([
+            ['users_id', '=', $data['id']],
         ])->get();
+        
+        if($datatable == true){
+            return DataTables::of($datas)->setTransformer(function($datas){
+                return [
+                    'datas'  => UserChannelActivityResource::make($datas)->resolve(),
+                    // 'action' => view('datatable.action-user', [
+                    //     'id'        => BaseHelper::encrypt($datas->id),
+                    //     'route'     => 'apps.base.content',
+                    // ])->render(),
+                ];
+            })->toJson();
+        }
 
-        return $feed = BaseHelper::resourceToJson(UserChannelActivityResource::collection($feed));
+        return BaseHelper::resourceToJson(UserChannelActivityResource::collection($datas));
     }
 }

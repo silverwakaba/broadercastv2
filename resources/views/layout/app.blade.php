@@ -32,6 +32,8 @@
         <!-- All custom script goes here -->
         <script>
             $(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+                
                 $('.select2bs4').select2({
                     theme: 'bootstrap4',
                 });
