@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Models\BaseLink;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
@@ -33,6 +34,7 @@ class UserChannelActivityResource extends JsonResource{
             'title'         => $this->title,
             'link'          => $link,
             'thumbnail'     => $thumbnail,
+            'published'     => $this->published ? Carbon::parse($this->published)->format('d M Y, g:i A') : null,
             'service'       => new BaseLinkResource($this->whenLoaded('belongsToBaseLink')),
         ];
     }

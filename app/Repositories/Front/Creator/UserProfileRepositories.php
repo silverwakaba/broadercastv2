@@ -13,6 +13,7 @@ use App\Models\UserFeed;
 use App\Models\UserLinkTracker;
 
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 use Yajra\DataTables\Facades\DataTables;
 
 class UserProfileRepositories{
@@ -41,12 +42,15 @@ class UserProfileRepositories{
             'belongsToBaseLink',
         ])->where([
             ['users_id', '=', $data['id']],
-        ])->get();
+        ])
+        ->orderBy('published', 'DESC')
+        ->get();
         
         if($datatable == true){
             return DataTables::of($datas)->setTransformer(function($datas){
                 return [
                     'datas'  => UserChannelActivityResource::make($datas)->resolve(),
+                    
                     // 'action' => view('datatable.action-user', [
                     //     'id'        => BaseHelper::encrypt($datas->id),
                     //     'route'     => 'apps.base.content',

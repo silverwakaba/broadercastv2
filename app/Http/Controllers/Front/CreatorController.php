@@ -26,7 +26,6 @@ class CreatorController extends Controller{
                 'belongsToManyUserLanguage',
                 'belongsToManyUserRace',
                 'belongsToManyUserLink',
-                'belongsToManyUserLinkTracker',
             ],
         ]);
 
@@ -34,11 +33,13 @@ class CreatorController extends Controller{
             'id' => $profile->id,
         ]);
 
-        // return $tracker;
+        if(request()->ajax()){
+            $feed = UserProfileRepositories::getFeed([
+                'id' => $profile->id,
+            ], true);
 
-        // $feed = UserProfileRepositories::getFeed([
-        //     'id' => $profile->id,
-        // ], true);
+            return $feed;
+        }
 
         return view('pages/front/creator/profile', [
             'profile' => $profile,
