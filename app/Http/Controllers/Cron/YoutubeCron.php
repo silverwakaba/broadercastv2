@@ -19,9 +19,9 @@ use Illuminate\Support\Facades\Http;
 
 class YoutubeCron extends Controller{
     public function fetchDebug(){
-        // return YoutubeRepositories::fetchArchiveViaFeed("UCurEA8YoqFwimJcAuSHU0MQ", 1);
+        // return YoutubeRepositories::fetchArchiveViaFeed("UC5OStgYPn8_UbILMFNFF_-w", 1);
 
-        // return YoutubeRepositories::fetchActivity("UCIcAj6WkJ8vZ7DeJVgmeqKw", 1);
+        return YoutubeRepositories::fetchActivity("UCjXBuHmWkieBApgBhDuJMMQ", 1);
     }
 
     public function fetchEveryDay(){

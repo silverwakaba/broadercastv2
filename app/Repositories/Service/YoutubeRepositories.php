@@ -45,6 +45,14 @@ class YoutubeRepositories{
         return $userLT;
     }
 
+    public static function userFeed($archiveID){
+        $userF = UserFeed::where([
+            ['identifier', '=', $archiveID],
+        ])->first();
+
+        return $userF;
+    }
+
     /**
      * ------------------
      * Block Verify Start
@@ -294,9 +302,7 @@ class YoutubeRepositories{
     // Fetch Archive Status
     public static function fetchArchiveStatus($archiveID){
         try{
-            $data = UserFeed::where([
-                ['identifier', '=', $archiveID],
-            ])->firstOrFail();
+            $data = self::userFeed($archiveID);
 
             $videoLink = "www.youtube.com/watch?v=$archiveID";
 
@@ -327,6 +333,7 @@ class YoutubeRepositories{
         try{
             // Default state
             $videoID = null;
+            $videoIDNew = null;
             $isOffline = true;
             $videoSchedule = null;
 
@@ -365,9 +372,7 @@ class YoutubeRepositories{
                 $videoConcurrent = (int) Str::betweenFirst($httpResultScript[33], '"originalViewCount":"', '"'); // Cek kalo int berarti oke
             }
 
-            $userF = $userLT->hasManyUserFeed()->where([
-                ['identifier', '=', $videoIDNew],
-            ])->first();
+            $userF = self::userFeed($videoIDNew);
 
             if(
                 ($isOffline == false) && (Str::length($videoID) === 11) && ($videoSchedule == null)

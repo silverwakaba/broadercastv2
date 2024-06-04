@@ -68,6 +68,76 @@
                         @else
                             <p>Nothing known about this creator yet.</p>
                         @endif
+
+                        <!-- Channel -->
+                        @if($tracker)
+                            <strong>Channel</strong>
+                            @foreach($tracker AS $trackers)
+                                <div class="card card-widget widget-user">
+                                    @if($trackers->activity)
+                                        <div class="ribbon-wrapper">
+                                            <div class="ribbon bg-danger">
+                                                <span data-toggle="tooltip" data-placement="right" title="LIVE NOW">
+                                                    <i class="fas fa-circle"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    @endif
+                                    <div class="widget-user-header bg-secondary">
+                                        <h3 class="widget-user-username" data-toggle="tooltip" data-placement="top" title="{{ $trackers->name }}">{{ \Illuminate\Support\Str::limit($trackers->name, 15, ' (...)') }}</h3>
+                                        <h5 class="widget-user-desc">{{ $trackers->link->name }} Channel</h5>
+                                    </div>
+                                    <div class="widget-user-image">
+                                        <img class="img-circle elevation-2" src="{{ $trackers->avatar }}" alt="User Avatar">
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="row">
+                                            <div class="col-md-4 border-right">
+                                                <div class="description-block">
+                                                    <h5 class="description-header">{{ number_format($trackers->subscriber) }}</h5>
+                                                    <span class="description-text">SUBSCRIBER</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="description-block">
+                                                    <h5 class="description-header">
+                                                        @if(($trackers->concurrent == 0) && ($trackers->activity))
+                                                            <abbr data-toggle="tooltip" data-placement="top" title="The '0 concurrent' incident sometimes happens because we failed to retrieve the data. Sorry for this.">{{ number_format($trackers->concurrent) }} <i class="fas fa-info-circle text-warning"></i></abbr>
+                                                        @else
+                                                            {{ number_format($trackers->concurrent) }}
+                                                        @endif
+                                                    </h5>
+                                                    <span class="description-text">CONCURRENT</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 border-left">
+                                                <div class="description-block">
+                                                    <h5 class="description-header">{{ number_format($trackers->view) }}</h5>
+                                                    <span class="description-text">TOTAL VIEW</span>
+                                                </div>
+                                            </div>
+                                            @if($trackers->activity)
+                                                <div class="col-12 mt-3">
+                                                    <a href="{{ $trackers->activity->link }}" target="_blank">
+                                                        <div class="card m-0">
+                                                            <img src="{{ $trackers->activity->thumbnail }}" class="card-img-top" />
+                                                            <div class="card-body">
+                                                                <h5 class="card-title text-dark">{{ $trackers->activity->title }}</h5>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            @endif
+                                            <div class="col-12 border mt-3">
+                                                <a href="{{ $trackers->channel->link }}" class="btn btn-sm btn-block" target="_blank">VISIT CHANNEL <i class="fas fa-external-link-alt"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endif
+                        <!-- Channel -->
+
                         @if($profile->link)
                             <div class="border p-3 text-center">
                                 <ul class="list-inline m-0">
@@ -83,8 +153,6 @@
                         @endif
                     </div>
                 </div>
-                <!-- Profile -->
-
             </div>
             <div class="col-md-9">
                 <x-adminlte.card>

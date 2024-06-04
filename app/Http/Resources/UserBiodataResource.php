@@ -18,7 +18,7 @@ class UserBiodataResource extends JsonResource{
             'allow_unsafe_links'    => false,
         ]);
 
-        $markdownBioStripped = strip_tags($markdownBio, ['p']);
+        $markdownBioStripped = strip_tags($markdownBio, ['p', 'strong', 'em', 'ol', 'ul', 'li', 'code', 'blockquote']);
 
         return [
             'id'        => $this->id,

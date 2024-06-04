@@ -23,16 +23,16 @@ use App\Http\Controllers\Apps\Master\UserController as MasterUserController;
 use App\Http\Controllers\Front\CreatorController as FrontCreatorController;
 
 // Debug | Please comment before deployment
-// use App\Http\Controllers\Cron\YoutubeCron;
+use App\Http\Controllers\Cron\YoutubeCron;
 
 Route::group(['prefix' => '/'], function(){
     // Index
     Route::get('/', [FrontController::class, 'index'])->name('index');
 
     // Debug
-    // Route::group(['prefix' => 'debug'], function(){
-    //     Route::get('youtube', [YoutubeCron::class, 'fetchDebug']);
-    // });
+    Route::group(['prefix' => 'debug'], function(){
+        Route::get('youtube', [YoutubeCron::class, 'fetchDebug']);
+    });
 
     // Creator
     Route::group(['prefix' => 'creator'], function(){

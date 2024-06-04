@@ -30,11 +30,11 @@ class CreatorController extends Controller{
             ],
         ]);
 
-        // return $profile;
-
         $tracker = UserProfileRepositories::getLinkTracker([
             'id' => $profile->id,
         ]);
+
+        // return $tracker;
 
         // $feed = UserProfileRepositories::getFeed([
         //     'id' => $profile->id,

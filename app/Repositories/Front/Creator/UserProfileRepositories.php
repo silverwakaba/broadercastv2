@@ -31,7 +31,7 @@ class UserProfileRepositories{
             'belongsToActiveStream',
         ])->where([
             ['users_id', '=', $data['id']],
-        ])->get();
+        ])->orderBy('streaming', 'DESC')->orderBy('name', 'ASC')->get();
 
         return BaseHelper::resourceToJson(UserLinkTrackerResource::collection($datas));
     }
