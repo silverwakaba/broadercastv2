@@ -14,11 +14,12 @@ return new class extends Migration{
             $table->foreignId('users_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('users_link_id')->references('id')->on('users_link')->onDelete('cascade');
             $table->foreignId('base_link_id')->references('id')->on('base_link')->onDelete('cascade');
-            $table->foreignId('users_feed_id')->nullable();
-            // $table->boolean('initiated')->default(false); // Archive initiated
+            // $table->foreignId('users_feed_id')->nullable();
+            $table->boolean('initialized')->default(false); // Initializing tracker feed
             $table->string('identifier');
             $table->string('name');
             $table->string('avatar');
+            $table->string('banner');
             $table->double('view')->nullable()->default('0');
             $table->double('subscriber')->nullable()->default('0');
             $table->dateTime('joined')->nullable();

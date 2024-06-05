@@ -16,6 +16,7 @@ class UserFeed extends Model{
         'identifier',
         'title',
         'published',
+        'updated',
     ];
 
     // public function belongsToUser(){

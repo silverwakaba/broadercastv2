@@ -35,8 +35,9 @@ class YoutubeRepositories{
     }
 
     // User Link Tracker
-    public static function userLinkTracker($channelID, $userID){
+    public static function userLinkTracker($channelID, $userID, $initialized){
         $userLT = UserLinkTracker::where([
+            ['initialized', '=', $initialized],
             ['base_link_id', '=', 2],
             ['users_id', '=', $userID],
             ['identifier', '=', $channelID],
@@ -85,7 +86,7 @@ class YoutubeRepositories{
                     $params = [
                         'id'    => $checkChannel,
                         'key'   => $apiKey,
-                        'part'  => "snippet,statistics",
+                        'part'  => "snippet,statistics,brandingSettings",
                     ];
 
                     $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/channels', $params)->json();
@@ -108,6 +109,7 @@ class YoutubeRepositories{
                             'identifier'    => $data['id'],
                             'name'          => $data['snippet']['title'],
                             'avatar'        => $data['snippet']['thumbnails']['medium']['url'],
+                            'banner'        => $data['brandingSettings']['image']['bannerExternalUrl'],
                             'view'          => $data['statistics']['viewCount'] ? $data['statistics']['viewCount'] : 0,
                             'subscriber'    => $data['statistics']['hiddenSubscriberCount'] == false ? $data['statistics']['subscriberCount'] : 0,
                             'joined'        => Carbon::parse($data['snippet']['publishedAt'])->toIso8601String(),
@@ -144,7 +146,7 @@ class YoutubeRepositories{
                     $params = [
                         'id'    => $checkChannel,
                         'key'   => $apiKey,
-                        'part'  => "snippet,statistics",
+                        'part'  => "snippet,statistics,brandingSettings",
                     ];
 
                     $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/channels', $params)->json();
@@ -170,6 +172,7 @@ class YoutubeRepositories{
                                 'identifier'    => $data['id'],
                                 'name'          => $data['snippet']['title'],
                                 'avatar'        => $data['snippet']['thumbnails']['medium']['url'],
+                                'banner'        => $data['brandingSettings']['image']['bannerExternalUrl'],
                                 'view'          => $data['statistics']['viewCount'] ? $data['statistics']['viewCount'] : 0,
                                 'subscriber'    => $data['statistics']['hiddenSubscriberCount'] == false ? $data['statistics']['subscriberCount'] : 0,
                                 'joined'        => Carbon::parse($data['snippet']['publishedAt'])->toIso8601String(),
@@ -210,10 +213,10 @@ class YoutubeRepositories{
             $params = [
                 'id'    => $channelID,
                 'key'   => $apiKey,
-                'part'  => "snippet,statistics",
+                'part'  => "snippet,statistics,brandingSettings",
             ];
 
-            $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/channels', $params)->json();
+            return $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/channels', $params)->json();
 
             if($http['pageInfo']['totalResults'] >= 1){
                 foreach($http['items'] AS $data){
@@ -232,32 +235,9 @@ class YoutubeRepositories{
         catch(\Throwable $th){}
     }
 
-    // Fetch Archive Via Feed
-    public static function fetchArchiveViaFeed($channelID, $userID){
-        try{
-            $userLT = self::userLinkTracker($channelID, $userID);
-
-            $http = BaseHelper::youtubeXMLToJson($channelID);
-
-            if(isset($http->entry)){
-                foreach($http->entry AS $data){
-                    UserFeed::insertOrIgnore([
-                        'users_id'              => $userLT->users_id,
-                        'base_link_id'          => $userLT->base_link_id,
-                        'users_link_tracker_id' => $userLT->id,
-                        'identifier'            => Str::afterLast($data->id, ':'),
-                        'title'                 => $data->title,
-                        'published'             => Carbon::parse($data->published)->toIso8601String(),
-                    ]);
-                }
-            }
-        }
-        catch(\Throwable $th){}
-    }
-
     public static function fetchArchiveViaAPI($channelID, $userID, $nextPageToken = ''){
         try{
-            $userLT = self::userLinkTracker($channelID, $userID);
+            $userLT = self::userLinkTracker($channelID, $userID, false);
 
             $apiKey = self::apiKey();
 
@@ -295,41 +275,40 @@ class YoutubeRepositories{
             // if(isset($http['nextPageToken'])){
             //     $this->initYoutube($channelID, $userID, $http['nextPageToken']);
             // }
+
+            $userLT->update([
+                'initialized' => true,
+            ]);
         }
         catch(\Throwable $th){}
     }
 
-    // Fetch Archive Status
-    public static function fetchArchiveStatus($archiveID){
+    // Fetch Archive Via Feed
+    public static function fetchArchiveViaFeed($channelID, $userID){
         try{
-            $data = self::userFeed($archiveID);
+            $userLT = self::userLinkTracker($channelID, $userID, true);
 
-            $videoLink = "www.youtube.com/watch?v=$archiveID";
+            $http = BaseHelper::youtubeXMLToJson($channelID);
 
-            $http = Http::get('https://web.scraper.workers.dev', [
-                'url'       => $videoLink,
-                'selector'  => 'title',
-                'scrape'    => 'text',
-                'spaced'    => 'true',
-                'pretty'    => 'true',
-            ])->json();
-
-            $notFound = "- YouTube";
-
-            $videoTitle = $http['result']['title'][0];
-
-            if(
-                ($videoTitle == $notFound)
-                && ($videoTitle != $data->title)
-            ){
-                $data->delete();
+            if(isset($http->entry)){
+                foreach($http->entry AS $data){
+                    UserFeed::insertOrIgnore([
+                        'users_id'              => $userLT->users_id,
+                        'base_link_id'          => $userLT->base_link_id,
+                        'users_link_tracker_id' => $userLT->id,
+                        'identifier'            => Str::afterLast($data->id, ':'),
+                        'title'                 => $data->title,
+                        'published'             => Carbon::parse($data->published)->toIso8601String(),
+                        'updated'               => Carbon::parse($data->updated)->toIso8601String(),
+                    ]);
+                }
             }
         }
         catch(\Throwable $th){}
     }
 
     // Fetch Activity
-    public static function fetchActivity($channelID, $userID){
+    public static function fetchActivityViaCrawler($channelID, $userID){
         try{
             // Default state
             $videoID = null;
@@ -337,7 +316,7 @@ class YoutubeRepositories{
             $isOffline = true;
             $videoSchedule = null;
 
-            $userLT = self::userLinkTracker($channelID, $userID);
+            $userLT = self::userLinkTracker($channelID, $userID, true);
 
             // Endpoint Alt: https://web.sspn.workers.dev
             $http = Http::get('https://web.scraper.workers.dev', [
@@ -383,7 +362,11 @@ class YoutubeRepositories{
                         'streaming'     => true,
                         'concurrent'    => $videoConcurrent,
                     ]);
+
+                    // return "Online and updating";
                 }
+
+                // return "Online";
             }
             else{
                 $userLT->update([
@@ -391,6 +374,39 @@ class YoutubeRepositories{
                     'streaming'     => false,
                     'concurrent'    => 0,
                 ]);
+
+                // return "Offline";
+            }
+        }
+        catch(\Throwable $th){
+            // return $th;
+        }
+    }
+
+    // Fetch Archive Status
+    public static function fetchArchiveStatus($archiveID){
+        try{
+            $data = self::userFeed($archiveID);
+
+            $videoLink = "www.youtube.com/watch?v=$archiveID";
+
+            $http = Http::get('https://web.scraper.workers.dev', [
+                'url'       => $videoLink,
+                'selector'  => 'title',
+                'scrape'    => 'text',
+                'spaced'    => 'true',
+                'pretty'    => 'true',
+            ])->json();
+
+            $notFound = "- YouTube";
+
+            $videoTitle = $http['result']['title'][0];
+
+            if(
+                ($videoTitle == $notFound)
+                && ($videoTitle != $data->title)
+            ){
+                $data->delete();
             }
         }
         catch(\Throwable $th){}

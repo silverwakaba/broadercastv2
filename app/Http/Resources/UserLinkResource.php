@@ -25,14 +25,14 @@ class UserLinkResource extends JsonResource{
 
         return [
             'id'            => $this->id,
-            'decision'      => new BaseDecisionResource($this->whenLoaded('belongsToBaseDecision')),
-            'service'       => new BaseLinkResource($this->whenLoaded('belongsToBaseLink')),
             'name'          => $this->name,
             'link'          => $this->link,
             'icon'          => $this->icon,
             'color'         => $this->color,
             'logo'          => 'https://cdn.simpleicons.org/' . ($logo),
             'link_pivot'    => isset($this->pivot->link) ? $this->pivot->link : null,
+            'decision'      => new BaseDecisionResource($this->whenLoaded('belongsToBaseDecision')),
+            'service'       => new BaseLinkResource($this->whenLoaded('belongsToBaseLink')),
         ];
     }
 }

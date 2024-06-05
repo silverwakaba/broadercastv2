@@ -6,10 +6,12 @@ use App\Helpers\BaseHelper;
 
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UserChannelActivityResource;
+use App\Http\Resources\UserLinkResource;
 use App\Http\Resources\UserLinkTrackerResource;
 
 use App\Models\User;
 use App\Models\UserFeed;
+use App\Models\UserLink;
 use App\Models\UserLinkTracker;
 
 use Illuminate\Http\Request;
@@ -23,6 +25,16 @@ class UserProfileRepositories{
         ])->firstOrFail();
 
         return BaseHelper::resourceToJson(new UserResource($datas));
+    }
+
+    public static function getLink(array $data){
+        $datas = UserLink::with([
+            'belongsToBaseLink'
+        ])->withAggregate('belongsToBaseLink', 'name')->where([
+            ['users_id', '=', $data['id']],
+        ])->whereNotIn('base_link_id', BaseHelper::getCheckedBaseLink())->orderBy('belongs_to_base_link_name')->get();
+
+        return BaseHelper::resourceToJson(UserLinkResource::collection($datas));
     }
 
     public static function getLinkTracker(array $data){
@@ -42,20 +54,11 @@ class UserProfileRepositories{
             'belongsToBaseLink',
         ])->where([
             ['users_id', '=', $data['id']],
-        ])
-        ->orderBy('published', 'DESC')
-        ->get();
+        ])->orderBy('published', 'DESC')->get();
         
         if($datatable == true){
             return DataTables::of($datas)->setTransformer(function($datas){
-                return [
-                    'datas'  => UserChannelActivityResource::make($datas)->resolve(),
-                    
-                    // 'action' => view('datatable.action-user', [
-                    //     'id'        => BaseHelper::encrypt($datas->id),
-                    //     'route'     => 'apps.base.content',
-                    // ])->render(),
-                ];
+                return UserChannelActivityResource::make($datas)->resolve();
             })->toJson();
         }
 

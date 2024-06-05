@@ -17,6 +17,7 @@ return new class extends Migration{
             $table->string('identifier')->unique();
             $table->string('title');
             $table->dateTime('published')->nullable();
+            $table->dateTime('updated')->nullable();
         });
     }
 

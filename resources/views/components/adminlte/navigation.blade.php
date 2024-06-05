@@ -45,7 +45,7 @@
                     <img src="{{ $user->avatar->path }}" class="img-circle elevation-2" alt="User Image" />
                 </div>
                 <div class="info">
-                    <a class="d-block text-truncate">{{ $user->name }}</a>
+                    <a href="{{ $user->page }}" class="d-block text-truncate">{{ $user->name }}</a>
                 </div>
             </div>
         @endcan

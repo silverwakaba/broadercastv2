@@ -19,9 +19,9 @@ use Illuminate\Support\Facades\Http;
 
 class YoutubeCron extends Controller{
     public function fetchDebug(){
-        // return YoutubeRepositories::fetchArchiveViaFeed("UC5OStgYPn8_UbILMFNFF_-w", 1);
-
-        return YoutubeRepositories::fetchActivity("UCjXBuHmWkieBApgBhDuJMMQ", 1);
+        // return YoutubeRepositories::fetchArchiveViaAPI("UC5LyYg6cCA4yHEYvtUsir3g", 1);
+        // return YoutubeRepositories::fetchArchiveViaFeed("UC5LyYg6cCA4yHEYvtUsir3g", 1);
+        return YoutubeRepositories::fetchActivityViaCrawler("UC5LyYg6cCA4yHEYvtUsir3g", 1);
     }
 
     public function fetchEveryDay(){
@@ -31,7 +31,7 @@ class YoutubeCron extends Controller{
             foreach($chunks as $chunk){
                 try{
                     // Profile
-                    YoutubeRepositories::fetchProfile($chunk->identifier, $chunk->users_id);
+                    // YoutubeRepositories::fetchProfile($chunk->identifier, $chunk->users_id);
                 }
                 catch(\Throwable $th){}
             }
@@ -44,11 +44,14 @@ class YoutubeCron extends Controller{
         ])->select('users_id', 'identifier')->chunk(100, function(Collection $chunks){
             foreach($chunks as $chunk){
                 try{
-                    // Archive
+                    // Initialization acrhive
+                    YoutubeRepositories::fetchArchiveViaAPI($chunk->identifier, $chunk->users_id);
+                    
+                    // Normal archive
                     YoutubeRepositories::fetchArchiveViaFeed($chunk->identifier, $chunk->users_id);
 
-                    // Activity
-                    YoutubeRepositories::fetchActivity($chunk->identifier, $chunk->users_id);
+                    // Fetch channel activity
+                    YoutubeRepositories::fetchActivityViaCrawler($chunk->identifier, $chunk->users_id);
                 }
                 catch(\Throwable $th){}
             }
@@ -61,8 +64,8 @@ class YoutubeCron extends Controller{
         ])->select('identifier')->chunk(100, function(Collection $chunks){
             foreach($chunks as $chunk){
                 try{
-                    // Archive Status (like delete if it isn't on YouTube anymore)
-                    YoutubeRepositories::fetchArchiveStatus($chunk->identifier);
+                    // Archive Status (like delete the archive from DB if it isn't on YouTube anymore)
+                    // YoutubeRepositories::fetchArchiveStatus($chunk->identifier);
                 }
                 catch(\Throwable $th){}
             }

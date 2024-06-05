@@ -12,6 +12,7 @@ use App\Http\Resources\UserRaceResource;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Str;
 
 class UserResource extends JsonResource{
     /**
@@ -20,11 +21,16 @@ class UserResource extends JsonResource{
      * @return array<string, mixed>
      */
     public function toArray(Request $request) : array{
+        $name = $this->name ? $this->name : strtoupper($this->identifier);
+
         return [
             'id'            => $this->id,
             'confirmed'     => $this->confirmed,
+            'title_temp'    => $this->confirmed == true ? 'Verified Creator' : 'Unverified Creator',
             'identifier'    => $this->identifier,
-            'name'          => $this->name ? $this->name : $this->identifier,
+            'page'          => route('creator.profile', $this->identifier),
+            'name'          => $name,
+            'name_preview'  => Str::limit($name, 15, ' (...)'),
             'email'         => $this->email,
             'deleted_at'    => $this->deleted_at,
             'created_at'    => $this->created_at,

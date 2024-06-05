@@ -29,21 +29,26 @@ class CreatorController extends Controller{
             ],
         ]);
 
+        $link = UserProfileRepositories::getLink([
+            'id' => $profile->id,
+        ]);
+
         $tracker = UserProfileRepositories::getLinkTracker([
             'id' => $profile->id,
         ]);
 
-        if(request()->ajax()){
-            $feed = UserProfileRepositories::getFeed([
-                'id' => $profile->id,
-            ], true);
+        $feed = UserProfileRepositories::getFeed([
+            'id' => $profile->id,
+        ], true);
 
+        if(request()->ajax()){
             return $feed;
         }
 
         return view('pages/front/creator/profile', [
-            'profile' => $profile,
-            'tracker' => $tracker,
+            'profile'   => $profile,
+            'link'      => $link,
+            'tracker'   => $tracker,
         ]);
     }
 }
