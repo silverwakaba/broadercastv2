@@ -117,7 +117,10 @@ Route::group(['prefix' => '/'], function(){
 
                 // Delete
                 Route::get('delete/{id}', [ManagerUserController::class, 'linkDelete'])->name('apps.manager.link.delete');
+
+                // Delete with Confirmation
                 Route::get('delete/{id}/confirm', [ManagerUserController::class, 'linkDeleteConfirm'])->name('apps.manager.link.delete.confirm');
+                Route::post('delete/{id}/confirm', [ManagerUserController::class, 'linkDeleteConfirmPost']);
             });
 
             // Race

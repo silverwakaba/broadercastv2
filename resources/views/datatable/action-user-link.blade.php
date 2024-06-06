@@ -1,5 +1,5 @@
 <div class="btn-group btn-block" role="group">
-    <button type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
+    <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-toggle="dropdown" aria-expanded="false">Action</button>
     <div class="dropdown-menu">
         @if($protected)
             @if($decision == '1')

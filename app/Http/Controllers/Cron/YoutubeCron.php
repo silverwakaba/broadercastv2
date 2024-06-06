@@ -19,9 +19,12 @@ use Illuminate\Support\Facades\Http;
 
 class YoutubeCron extends Controller{
     public function fetchDebug(){
-        // return YoutubeRepositories::fetchArchiveViaAPI("UC5LyYg6cCA4yHEYvtUsir3g", 1);
+        return YoutubeRepositories::fetchArchiveViaAPI("UCQz5mRHdiwt7NrS9tc4D1Dg", 1);
         // return YoutubeRepositories::fetchArchiveViaFeed("UC5LyYg6cCA4yHEYvtUsir3g", 1);
-        return YoutubeRepositories::fetchActivityViaCrawler("UC5LyYg6cCA4yHEYvtUsir3g", 1);
+        
+        // return YoutubeRepositories::fetchActivityViaCrawler("UCuDY3ibSP2MFRgf7eo3cojg", 1);
+
+        // return YoutubeRepositories::fetchVideoStatus("K5p7yGXSP-8");
     }
 
     public function fetchEveryDay(){
@@ -31,7 +34,7 @@ class YoutubeCron extends Controller{
             foreach($chunks as $chunk){
                 try{
                     // Profile
-                    // YoutubeRepositories::fetchProfile($chunk->identifier, $chunk->users_id);
+                    YoutubeRepositories::fetchProfile($chunk->identifier, $chunk->users_id);
                 }
                 catch(\Throwable $th){}
             }

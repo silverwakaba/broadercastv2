@@ -11,6 +11,7 @@ use App\Http\Requests\Apps\Setting\UserAvatarRequest;
 use App\Http\Requests\Apps\Setting\UserBiodataRequest;
 use App\Http\Requests\Apps\Setting\UserContentRequest;
 use App\Http\Requests\Apps\Setting\UserLinkRequest;
+use App\Http\Requests\Apps\Setting\UserLinkDeleteRequest;
 use App\Http\Requests\Apps\Setting\UserLinkVerificationRequest;
 
 use App\Repositories\Setting\UserRepositories;
@@ -174,7 +175,7 @@ class UserController extends Controller{
         }
 
         return view('pages/apps/setting/user/link/verify', [
-            'secret'    => 'bc#' . BaseHelper::adler32(auth()->user()->id . date('m Y') . $datas->belongsToBaseLink->name),
+            'secret'    => 'bc#' . BaseHelper::adler32(auth()->user()->id . date('d m Y') . $datas->belongsToBaseLink->name),
             'structure' => $structure,
             'datas'     => $datas,
         ]);
@@ -211,6 +212,14 @@ class UserController extends Controller{
         return view('pages/apps/setting/user/link/delete', [
             'datas' => $datas,
         ]);
+    }
+
+    public function linkDeleteConfirmPost(UserLinkDeleteRequest $request, $id){
+        return UserLinkRepositories::deleteChannel([
+            'did'           => $id,
+            'uid'           => auth()->user()->id,
+            'identifier'    => $request->identifier,
+        ], 'apps.manager.link');
     }
 
     // Race

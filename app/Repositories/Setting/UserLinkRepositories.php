@@ -91,15 +91,25 @@ class UserLinkRepositories{
         $datas = UserLink::where([
             ['id', '=', BaseHelper::decrypt($data['did'])],
             ['users_id', '=', $data['uid']],
-        ])->first();
+        ])->firstOrFail();
 
-        if(($datas->base_decision_id == 2) && (in_array($datas->base_link_id, BaseHelper::getCheckedBaseLink()))){
-            $datas->delete();
-        }
-        else{
-            $datas->forceDelete();
-        }
+        $datas->forceDelete();
 
         return RedirectHelper::routeBack($back, 'success', 'External Link', 'delete');
+    }
+
+    public static function deleteChannel(array $data, $back){
+        $datas = UserLink::where([
+            ['id', '=', BaseHelper::decrypt($data['did'])],
+            ['users_id', '=', $data['uid']],
+        ])->firstOrFail();
+
+        $datas->hasOneUserLinkTracker()->where('identifier', '=', $data['identifier'])->firstOrFail()->update([
+            'users_feed_id' => null,
+        ]);
+
+        $datas->forceDelete();
+
+        return RedirectHelper::routeBack($back, 'success', 'External Link and Channel', 'delete');
     }
 }

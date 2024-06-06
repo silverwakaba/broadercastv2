@@ -13,10 +13,9 @@ use App\Models\UserLinkTracker;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Client\Pool;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
-
-// use App\Repositories\Service\YoutubeRepositories;
 
 class YoutubeRepositories{
     /**
@@ -34,6 +33,76 @@ class YoutubeRepositories{
         return $apiKey;
     }
 
+    // Live Scrapper
+    public static function liveScrapper($channelID){
+        try{
+            $params = [
+                'url'       => 'www.youtube.com/channel/' . $channelID . '/live',
+                'selector'  => 'title,script,body',
+                'scrape'    => 'text',
+                'spaced'    => 'true',
+                'pretty'    => 'true',
+            ];
+    
+            $responses = Http::pool(fn (Pool $pool) => [
+                $pool->as('first')->get('https://web.scraper.workers.dev', $params),
+                $pool->as('second')->get('https://web.scraper.workers.dev', $params),
+                $pool->as('third')->get('https://web.scraper.workers.dev', $params),
+            ]);
+    
+            $http = [
+                '1stP'  => $responses['first']->json(),
+                '2ndP'  => $responses['second']->json(),
+                '3rdP'  => $responses['third']->json(),
+            ];
+    
+            if(
+                // First
+                (Str::isUrl($http['1stP']['result']['title'][0]) == false)
+                &&
+                (Str::of($http['1stP']['result']['script'][0])->contains(['captcha']) == false)
+                &&
+                (Str::of($http['1stP']['result']['body'][0])->contains(['captcha']) == false)
+            ){
+                // Return
+                return $http['1stP'];
+            }
+            elseif(
+                // Second
+                (Str::isUrl($http['2ndP']['result']['title'][0]) == false)
+                &&
+                (Str::of($http['2ndP']['result']['script'][0])->contains(['captcha']) == false)
+                &&
+                (Str::of($http['2ndP']['result']['body'][0])->contains(['captcha']) == false)
+            ){
+                // Return
+                return $http['2ndP'];
+            }
+            elseif(
+                // Third
+                (Str::isUrl($http['3rdP']['result']['title'][0]) == false)
+                &&
+                (Str::of($http['3rdP']['result']['script'][0])->contains(['captcha']) == false)
+                &&
+                (Str::of($http['3rdP']['result']['body'][0])->contains(['captcha']) == false)
+            ){
+                // Return
+                return $http['3rdP'];
+            }
+            else{
+                return self::liveScrapperAgain($channelID);
+            }
+        }
+        catch(\Throwable $th){}
+    }
+
+    public static function liveScrapperAgain($channelID){
+        try{
+            return self::liveScrapper($channelID);
+        }
+        catch(\Throwable $th){}
+    }
+
     // User Link Tracker
     public static function userLinkTracker($channelID, $userID, $initialized){
         $userLT = UserLinkTracker::where([
@@ -46,6 +115,39 @@ class YoutubeRepositories{
         return $userLT;
     }
 
+    // User Link Tracker - Checker
+    public static function userLinkTrackerChecker($channelID){
+        $userLT = UserLinkTracker::where([
+            ['identifier', '=', $channelID],
+        ])->first();
+
+        if(isset($userLT)){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    // User Link Tracker - Counter
+    public static function userLinkTrackerCounter($userID, $initialized){
+        $userLT = UserLinkTracker::where([
+            ['initialized', '=', $initialized],
+            ['base_link_id', '=', 2],
+            ['users_id', '=', $userID],
+        ])->first();
+
+        // return $userLT->count();
+
+        if(isset($userLT)){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    // User Feed
     public static function userFeed($archiveID){
         $userF = UserFeed::where([
             ['identifier', '=', $archiveID],
@@ -60,16 +162,33 @@ class YoutubeRepositories{
      * ------------------
     */
 
+    // Verify Channel
     public static function verifyChannel($channelID, $uniqueID, $id){
         try{
-            if(auth()->user()->hasRole('Admin|Moderator')){
-                return self::verifyChannelDirectly($channelID, $uniqueID, $id);
+            $checker = self::userLinkTrackerChecker(Str::of($channelID)->afterLast('/'));
+
+            $counter = self::userLinkTrackerCounter(auth()->user()->id, true);
+
+            if(($checker == true)){
+                if(auth()->user()->hasRole('Admin|Moderator')){
+                    return self::verifyChannelDirectly($channelID, $uniqueID, $id);
+                }
+                else{
+                    if($counter == false){
+                        return self::verifyChannelManually($channelID, $uniqueID, $id);
+                    }
+                    else{
+                        return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Because we only allow one YouTube tracker per creator, thus we have to cancel this verification process.', 'error');
+                    }
+                }
             }
             else{
-                return self::verifyChannelManually($channelID, $uniqueID, $id);
+                return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Because we found that this channel has been successfully verified by other users, thus we have to cancel this verification process.', 'error');
             }
         }
-        catch(\Throwable $th){}
+        catch(\Throwable $th){
+            return $th;
+        }
     }
 
     // Verify Channel - Direct
@@ -246,13 +365,13 @@ class YoutubeRepositories{
                 'part'          => "snippet,contentDetails",
                 'channelId'     => $channelID,
                 'maxResults'    => 256,
-                // 'pageToken'     => $nextPageToken,
+                'pageToken'     => $nextPageToken,
             ];
 
-            // // Next Page Token Implementation
-            // if(!empty($nextPageToken)){
-            //     $params['pageToken'] = $nextPageToken;
-            // }
+            // Next Page Token Implementation
+            if(!empty($nextPageToken)){
+                $params['pageToken'] = $nextPageToken;
+            }
 
             $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/activities', $params)->json();
 
@@ -271,14 +390,24 @@ class YoutubeRepositories{
                 }
             }
 
-            // // Next Page Token Implementation
-            // if(isset($http['nextPageToken'])){
-            //     $this->initYoutube($channelID, $userID, $http['nextPageToken']);
-            // }
+            // Next Page Token Implementation
+            if(isset($http['nextPageToken'])){
+                self::fetchArchiveViaAPINextPage($channelID, $userID, $http['nextPageToken']);
+            }
+            else{
+                $userLT->update([
+                    'initialized' => true,
+                ]);
+            }
+        }
+        catch(\Throwable $th){
+            return $th;
+        }
+    }
 
-            $userLT->update([
-                'initialized' => true,
-            ]);
+    public static function fetchArchiveViaAPINextPage($channelID, $userID, $nextPageToken){
+        try{
+            self::fetchArchiveViaAPI($channelID, $userID, $nextPageToken);
         }
         catch(\Throwable $th){}
     }
@@ -318,16 +447,9 @@ class YoutubeRepositories{
 
             $userLT = self::userLinkTracker($channelID, $userID, true);
 
-            // Endpoint Alt: https://web.sspn.workers.dev
-            $http = Http::get('https://web.scraper.workers.dev', [
-                'url'       => 'www.youtube.com/channel/' . $channelID . '/live',
-                'selector'  => 'title,script',
-                'scrape'    => 'text',
-                'spaced'    => 'true',
-                'pretty'    => 'true',
-            ])->json();
+            $http = self::liveScrapper($channelID);
 
-            // $httpResultTitle = Str::remove(' - YouTube', $http['result']['title'][0]);
+            $httpResultTitle = Str::remove(' - YouTube', $http['result']['title'][0]);
 
             /**
              * Array key reference (Patch 30 May 2024)
@@ -362,24 +484,27 @@ class YoutubeRepositories{
                         'streaming'     => true,
                         'concurrent'    => $videoConcurrent,
                     ]);
-
-                    // return "Online and updating";
+            
+                    return "Online and updating";
                 }
-
-                // return "Online";
+            
+                return "Online";
             }
             else{
-                $userLT->update([
-                    'users_feed_id' => null,
-                    'streaming'     => false,
-                    'concurrent'    => 0,
-                ]);
-
-                // return "Offline";
+                if(isset($userLT->users_feed_id)){
+                    $userLT->update([
+                        'users_feed_id' => null,
+                        'streaming'     => false,
+                        'concurrent'    => 0,
+                    ]);
+                }
+            
+                return "Offline";
             }
+
         }
         catch(\Throwable $th){
-            // return $th;
+            return $th;
         }
     }
 
@@ -410,5 +535,19 @@ class YoutubeRepositories{
             }
         }
         catch(\Throwable $th){}
+    }
+
+    public static function fetchVideoStatus($videoID){
+        $apiKey = self::apiKey();
+
+        $params = [
+            'key'           => $apiKey, 
+            'id'            => $videoID,
+            'part'          => "contentDetails,liveStreamingDetails,snippet,statistics,status",
+        ];
+
+        $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/videos', $params)->json();
+
+        return $http;
     }
 }

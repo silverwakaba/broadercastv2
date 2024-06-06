@@ -69,7 +69,6 @@
                                     <p class="m-0">No character race yet.</p>
                                 @endif
                             </li>
-                            <!-- External Link -->
                             <li class="list-group-item">
                                 <strong>External Link</strong>
                                 @if($link)
@@ -86,80 +85,83 @@
                                     <p class="m-0">No external link yet.</p>
                                 @endif
                             </li>
+                            <li class="list-group-item">
+                                <strong>User Channel</strong>
+                                @if($tracker)
+                                    @foreach($tracker AS $trackers)
+                                        <div class="card card-widget widget-user">
+                                            @if($trackers->activity)
+                                                <div class="ribbon-wrapper">
+                                                    <div class="ribbon bg-danger">
+                                                        <span data-toggle="tooltip" data-placement="right" title="LIVE NOW">
+                                                            <i class="fas fa-circle"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                            <div class="widget-user-header" style="background: url('{{ $trackers->banner }}') center center;">
+                                                <h3 class="widget-user-username">
+                                                    <span class="badge badge-dark text-light" data-toggle="tooltip" data-placement="top" title="{{ $trackers->name }}">{{ $trackers->name_preview }}</span>
+                                                </h3>
+                                                <h5 class="widget-user-desc">
+                                                    <span class="badge badge-dark text-light">{{ $trackers->link->name }} Channel</span>
+                                                </h5>
+                                            </div>
+                                            <div class="widget-user-image">
+                                                <img class="img-circle elevation-2" src="{{ $trackers->avatar }}" alt="User Avatar">
+                                            </div>
+                                            <div class="card-footer">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="description-block">
+                                                            <h5 class="description-header">{{ number_format($trackers->subscriber) }}</h5>
+                                                            <span class="description-text">SUBSCRIBER</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="description-block">
+                                                            <h5 class="description-header">
+                                                                @if(($trackers->concurrent == 0) && ($trackers->activity))
+                                                                    <abbr data-toggle="tooltip" data-placement="top" title="The '0 concurrent' incident sometimes happens because we failed to retrieve the data correctly.">{{ number_format($trackers->concurrent) }} <i class="fas fa-info-circle text-warning"></i></abbr>
+                                                                @else
+                                                                    {{ number_format($trackers->concurrent) }}
+                                                                @endif
+                                                            </h5>
+                                                            <span class="description-text">CONCURRENT</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="description-block">
+                                                            <h5 class="description-header">{{ number_format($trackers->view) }}</h5>
+                                                            <span class="description-text">TOTAL VIEW</span>
+                                                        </div>
+                                                    </div>
+                                                    @if($trackers->activity)
+                                                        <div class="col-12 mt-3">
+                                                            <a href="{{ $trackers->activity->link }}" target="_blank">
+                                                                <div class="card m-0">
+                                                                    <img src="{{ $trackers->activity->thumbnail }}" class="card-img-top" />
+                                                                    <div class="card-body">
+                                                                        <h5 class="card-header text-truncate h5" data-toggle="tooltip" data-placement="top" title="{{ $trackers->activity->title }}">{{ $trackers->activity->title }}</h5>
+                                                                    </div>
+                                                                </div>
+                                                            </a>
+                                                        </div>
+                                                    @endif
+                                                    <div class="col-12 border mt-3">
+                                                        <a href="{{ $trackers->channel->link }}" class="btn btn-sm btn-block text-light" target="_blank">VISIT CHANNEL <i class="fas fa-external-link-alt"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <p class="m-0">No user channel yet.</p>
+                                @endif
+                            </li>
                         </ul>
                     </div>
                 </div>
-                @if($tracker)
-                    <x-adminlte.card>
-                        @foreach($tracker AS $trackers)
-                            <div class="card card-widget widget-user">
-                                @if($trackers->activity)
-                                    <div class="ribbon-wrapper">
-                                        <div class="ribbon bg-danger">
-                                            <span data-toggle="tooltip" data-placement="right" title="LIVE NOW">
-                                                <i class="fas fa-circle"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                @endif
-                                <div class="widget-user-header" style="background: url('{{ $trackers->banner }}') center center;">
-                                    <h3 class="widget-user-username">
-                                        <span class="badge badge-dark text-light" data-toggle="tooltip" data-placement="top" title="{{ $trackers->name }}">{{ $trackers->name_preview }}</span>
-                                    </h3>
-                                    <h5 class="widget-user-desc">
-                                        <span class="badge badge-dark text-light">{{ $trackers->link->name }} Channel</span>
-                                    </h5>
-                                </div>
-                                <div class="widget-user-image">
-                                    <img class="img-circle elevation-2" src="{{ $trackers->avatar }}" alt="User Avatar">
-                                </div>
-                                <div class="card-footer">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="description-block">
-                                                <h5 class="description-header">{{ number_format($trackers->subscriber) }}</h5>
-                                                <span class="description-text">SUBSCRIBER</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="description-block">
-                                                <h5 class="description-header">
-                                                    @if(($trackers->concurrent == 0) && ($trackers->activity))
-                                                        <abbr data-toggle="tooltip" data-placement="top" title="The '0 concurrent' incident sometimes happens because we failed to retrieve the data. Sorry for this.">{{ number_format($trackers->concurrent) }} <i class="fas fa-info-circle text-warning"></i></abbr>
-                                                    @else
-                                                        {{ number_format($trackers->concurrent) }}
-                                                    @endif
-                                                </h5>
-                                                <span class="description-text">CONCURRENT</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="description-block">
-                                                <h5 class="description-header">{{ number_format($trackers->view) }}</h5>
-                                                <span class="description-text">TOTAL VIEW</span>
-                                            </div>
-                                        </div>
-                                        @if($trackers->activity)
-                                            <div class="col-12 mt-3">
-                                                <a href="{{ $trackers->activity->link }}" target="_blank">
-                                                    <div class="card m-0">
-                                                        <img src="{{ $trackers->activity->thumbnail }}" class="card-img-top" />
-                                                        <div class="card-body">
-                                                            <h5 class="card-header text-dark text-truncate h5" data-toggle="tooltip" data-placement="top" title="{{ $trackers->activity->title }}">{{ $trackers->activity->title }}</h5>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            </div>
-                                        @endif
-                                        <div class="col-12 border mt-3">
-                                            <a href="{{ $trackers->channel->link }}" class="btn btn-sm btn-block" target="_blank">VISIT CHANNEL <i class="fas fa-external-link-alt"></i></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </x-adminlte.card>
-                @endif
             </div>
             <div class="col-lg-8">
                 <x-adminlte.card title="About">
