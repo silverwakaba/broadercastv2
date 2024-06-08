@@ -19,15 +19,17 @@ use Illuminate\Support\Facades\Http;
 
 class YoutubeCron extends Controller{
     public function fetchDebug(){
-        return YoutubeRepositories::fetchArchiveViaAPI("UCQz5mRHdiwt7NrS9tc4D1Dg", 1);
+        // return YoutubeRepositories::fetchArchiveViaAPI("UCQz5mRHdiwt7NrS9tc4D1Dg", 1);
         // return YoutubeRepositories::fetchArchiveViaFeed("UC5LyYg6cCA4yHEYvtUsir3g", 1);
-        
         // return YoutubeRepositories::fetchActivityViaCrawler("UCuDY3ibSP2MFRgf7eo3cojg", 1);
-
         // return YoutubeRepositories::fetchVideoStatus("K5p7yGXSP-8");
+
+        // return YoutubeRepositories::fetchProfile("UCDe3iqZiVXIXQbgIR36mF6w", 1);
+
+        // return Str::before('https://yt3.ggpht.com/ytc/AIdro_mvJ0zhhC7vgXEJseDjYOdazDv_WBC42buVLpbACh0', '=');
     }
 
-    public function fetchEveryDay(){
+    public function fetchUserLinkTrackerDaily(){
         UserLinkTracker::where([
             ['base_link_id', '=', 2],
         ])->select('users_id', 'identifier')->chunk(100, function(Collection $chunks){
@@ -41,7 +43,7 @@ class YoutubeCron extends Controller{
         });
     }
 
-    public function fetchUserLinkTracker(){
+    public function fetchUserLinkTrackerMinutely(){
         $tracker = UserLinkTracker::where([
             ['base_link_id', '=', 2],
         ])->select('users_id', 'identifier')->chunk(100, function(Collection $chunks){
@@ -61,14 +63,14 @@ class YoutubeCron extends Controller{
         });
     }
 
-    public function fetchUserFeed(){
+    public function fetchUserFeedMinutely(){
         $feed = UserFeed::where([
             ['base_link_id', '=', 2],
         ])->select('identifier')->chunk(100, function(Collection $chunks){
             foreach($chunks as $chunk){
                 try{
                     // Archive Status (like delete the archive from DB if it isn't on YouTube anymore)
-                    // YoutubeRepositories::fetchArchiveStatus($chunk->identifier);
+                    YoutubeRepositories::fetchArchiveStatus($chunk->identifier);
                 }
                 catch(\Throwable $th){}
             }

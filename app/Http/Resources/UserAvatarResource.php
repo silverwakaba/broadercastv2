@@ -15,7 +15,7 @@ class UserAvatarResource extends JsonResource{
         return [
             'id'        => $this->id,
             'users_id'  => $this->users_id,
-            'path'      => $this->path ? env('ASSET_URL') . "/system/avatar/$this->path" : env('ASSET_URL') . "/system/avatar/default.webp",
+            'path'      => $this->path ? env('CDN_URL_PUBLIC') . "/system/avatar/$this->path" : env('CDN_URL_PUBLIC') . "/system/avatar/default.webp",
         ];
     }
 }

@@ -19,13 +19,13 @@ class UserFeed extends Model{
         'updated',
     ];
 
-    // public function belongsToUser(){
-    //     return $this->belongsTo(User::class, 'users_id');
-    // }
+    public function belongsToUser(){
+        return $this->belongsTo(User::class, 'users_id');
+    }
 
-    // public function hasOneThroughUserAvatar(){
-    //     return $this->hasOneThrough(UserAvatar::class, User::class, 'users_id', 'users_id', 'users_id', 'users_id');
-    // }
+    public function hasOneThroughUserAvatar(){
+        return $this->hasOneThrough(UserAvatar::class, User::class, 'id', 'users_id', 'users_id', 'id');
+    }
 
     // public function hasOneThroughUserBiodata(){
     //     return $this->hasOneThrough(UserBiodata::class, User::class, 'users_id', 'users_id', 'users_id', 'users_id');

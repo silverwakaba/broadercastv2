@@ -19,7 +19,7 @@ return new class extends Migration{
             $table->string('identifier');
             $table->string('name');
             $table->string('avatar');
-            $table->string('banner');
+            $table->string('banner')->nullable();
             $table->double('view')->nullable()->default('0');
             $table->double('subscriber')->nullable()->default('0');
             $table->dateTime('joined')->nullable();

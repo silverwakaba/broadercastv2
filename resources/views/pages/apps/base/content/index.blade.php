@@ -18,17 +18,17 @@
     </x-adminlte.content>
 
     <script type="module">
-        Pusher.logToConsole = true;
+        // Pusher.logToConsole = true;
         
-        var channel = Echo.channel('baseChannel');
+        // var channel = Echo.channel('baseChannel');
 
-        channel.listen('.baseContentCreated', function(data){
-            $('#contentTables').DataTable().ajax.reload();
-        });
+        // channel.listen('.baseContentCreated', function(data){
+        //     $('#contentTables').DataTable().ajax.reload();
+        // });
 
-        channel.listen('.baseContentModified', function(data){
-            $('#contentTables').DataTable().ajax.reload();
-        });
+        // channel.listen('.baseContentModified', function(data){
+        //     $('#contentTables').DataTable().ajax.reload();
+        // });
 
         $("#contentTables").DataTable({
             "ordering": false,

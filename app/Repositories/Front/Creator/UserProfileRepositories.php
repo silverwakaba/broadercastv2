@@ -50,11 +50,16 @@ class UserProfileRepositories{
     }
 
     public static function getFeed(array $data, $datatable = false){
-        $datas = UserFeed::with([
-            'belongsToBaseLink',
-        ])->where([
-            ['users_id', '=', $data['id']],
-        ])->orderBy('published', 'DESC')->get();
+        if(isset($data['id'])){
+            $query = [
+                ['users_id', '=', $data['id']],
+            ];
+        }
+        else{
+            $query = [];
+        }
+
+        $datas = UserFeed::with(isset($data['with']) ? $data['with'] : [])->where($query)->orderBy('published', 'DESC')->get();
         
         if($datatable == true){
             return DataTables::of($datas)->setTransformer(function($datas){

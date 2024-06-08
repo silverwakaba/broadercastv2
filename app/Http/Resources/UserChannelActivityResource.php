@@ -29,13 +29,16 @@ class UserChannelActivityResource extends JsonResource{
         }
 
         return [
-            'id'            => $this->id,
-            'identifier'    => $this->identifier,
-            'title'         => $this->title,
-            'link'          => $link,
-            'thumbnail'     => $thumbnail,
-            'published'     => $this->published ? Carbon::parse($this->published)->format('d M Y, g:i A') : null,
-            'service'       => new BaseLinkResource($this->whenLoaded('belongsToBaseLink')),
+            'id'                    => $this->id,
+            'identifier'            => $this->identifier,
+            'title'                 => $this->title,
+            'link'                  => $link,
+            'thumbnail'             => $thumbnail,
+            'published'             => $this->published ? Carbon::parse($this->published)->format('d M Y, g:i A') : null,
+            'published_for_human'   => $this->published ? Carbon::parse($this->published)->diffForHumans() : null,
+            'user'                  => new UserResource($this->whenLoaded('belongsToUser')),
+            'avatar'                => new UserAvatarResource($this->whenLoaded('hasOneThroughUserAvatar')),
+            'service'               => new BaseLinkResource($this->whenLoaded('belongsToBaseLink')),
         ];
     }
 }

@@ -38,7 +38,10 @@ class CreatorController extends Controller{
         ]);
 
         $feed = UserProfileRepositories::getFeed([
-            'id' => $profile->id,
+            'id'    => $profile->id,
+            'with'  => [
+                'belongsToBaseLink',
+            ],
         ], true);
 
         if(request()->ajax()){

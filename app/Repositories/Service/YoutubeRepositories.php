@@ -227,8 +227,8 @@ class YoutubeRepositories{
                             'base_link_id'  => $userLink->base_link_id,
                             'identifier'    => $data['id'],
                             'name'          => $data['snippet']['title'],
-                            'avatar'        => $data['snippet']['thumbnails']['medium']['url'],
-                            'banner'        => $data['brandingSettings']['image']['bannerExternalUrl'],
+                            'avatar'        => Str::before($data['snippet']['thumbnails']['medium']['url'], '='),
+                            'banner'        => isset($data['brandingSettings']['image']['bannerExternalUrl']) ? Str::before($data['brandingSettings']['image']['bannerExternalUrl'], '=') : null,
                             'view'          => $data['statistics']['viewCount'] ? $data['statistics']['viewCount'] : 0,
                             'subscriber'    => $data['statistics']['hiddenSubscriberCount'] == false ? $data['statistics']['subscriberCount'] : 0,
                             'joined'        => Carbon::parse($data['snippet']['publishedAt'])->toIso8601String(),
@@ -290,8 +290,8 @@ class YoutubeRepositories{
                                 'base_link_id'  => $userLink->base_link_id,
                                 'identifier'    => $data['id'],
                                 'name'          => $data['snippet']['title'],
-                                'avatar'        => $data['snippet']['thumbnails']['medium']['url'],
-                                'banner'        => $data['brandingSettings']['image']['bannerExternalUrl'],
+                                'avatar'        => Str::before($data['snippet']['thumbnails']['medium']['url'], '='),
+                                'banner'        => isset($data['brandingSettings']['image']['bannerExternalUrl']) ? Str::before($data['brandingSettings']['image']['bannerExternalUrl'], '=') : null,
                                 'view'          => $data['statistics']['viewCount'] ? $data['statistics']['viewCount'] : 0,
                                 'subscriber'    => $data['statistics']['hiddenSubscriberCount'] == false ? $data['statistics']['subscriberCount'] : 0,
                                 'joined'        => Carbon::parse($data['snippet']['publishedAt'])->toIso8601String(),
@@ -335,7 +335,7 @@ class YoutubeRepositories{
                 'part'  => "snippet,statistics,brandingSettings",
             ];
 
-            return $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/channels', $params)->json();
+            $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/channels', $params)->json();
 
             if($http['pageInfo']['totalResults'] >= 1){
                 foreach($http['items'] AS $data){
@@ -345,7 +345,8 @@ class YoutubeRepositories{
                         ['base_link_id', '=', 2]
                     ])->update([
                         'name'          => $data['snippet']['title'],
-                        'avatar'        => $data['snippet']['thumbnails']['medium']['url'],
+                        'avatar'        => Str::before($data['snippet']['thumbnails']['medium']['url'], '='),
+                        'banner'        => isset($data['brandingSettings']['image']['bannerExternalUrl']) ? Str::before($data['brandingSettings']['image']['bannerExternalUrl'], '=') : null,
                         'subscriber'    => $data['statistics']['hiddenSubscriberCount'] == false ? $data['statistics']['subscriberCount'] : 0,
                     ]);
                 }
