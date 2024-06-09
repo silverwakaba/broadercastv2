@@ -30,36 +30,42 @@ class UserProfileRepositories{
     public static function getLink(array $data){
         $datas = UserLink::with([
             'belongsToBaseLink'
-        ])->withAggregate('belongsToBaseLink', 'name')->where([
-            ['users_id', '=', $data['id']],
-        ])->whereNotIn('base_link_id', BaseHelper::getCheckedBaseLink())->orderBy('belongs_to_base_link_name')->get();
+        ])->withAggregate('belongsToBaseLink', 'name')->where(
+            isset($data['query']) ? $data['query'] : []
+        )->whereNotIn('base_link_id', BaseHelper::getCheckedBaseLink())->orderBy('belongs_to_base_link_name')->get();
 
         return BaseHelper::resourceToJson(UserLinkResource::collection($datas));
     }
 
     public static function getLinkTracker(array $data){
-        $datas = UserLinkTracker::with([
-            'belongsToBaseLink',
-            'belongsToUserLink',
-            'belongsToActiveStream',
-        ])->where([
-            ['users_id', '=', $data['id']],
-        ])->orderBy('streaming', 'DESC')->orderBy('name', 'ASC')->get();
+        $datas = UserLinkTracker::with(
+            isset($data['with']) ? $data['with'] : []
+        )->where(
+            isset($data['query']) ? $data['query'] : []
+        )->whereIn('base_link_id', BaseHelper::getCheckedBaseLink())->orderBy('streaming', 'DESC');
+        
 
-        return BaseHelper::resourceToJson(UserLinkTrackerResource::collection($datas));
+        if(isset($data['option'])){
+            if(isset($data['option']['take'])){
+                $datas->take($data['option']['take']);
+            }
+
+            if(isset($data['option']['aggregate'])){
+                $datas->withAggregate('belongsToActiveStream', 'published')->orderBy('belongs_to_active_stream_published', 'DESC');
+            }
+        }
+
+        $newData = $datas->get();
+
+        return BaseHelper::resourceToJson(UserLinkTrackerResource::collection($newData));
     }
 
     public static function getFeed(array $data, $datatable = false){
-        if(isset($data['id'])){
-            $query = [
-                ['users_id', '=', $data['id']],
-            ];
-        }
-        else{
-            $query = [];
-        }
-
-        $datas = UserFeed::with(isset($data['with']) ? $data['with'] : [])->where($query)->orderBy('published', 'DESC')->get();
+        $datas = UserFeed::with(
+            isset($data['with']) ? $data['with'] : []
+        )->where(
+            isset($data['query']) ? $data['query'] : []
+        )->orderBy('published', 'DESC')->get();
         
         if($datatable == true){
             return DataTables::of($datas)->setTransformer(function($datas){

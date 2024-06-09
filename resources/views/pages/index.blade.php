@@ -5,11 +5,10 @@
     <x-adminlte.content title="Home">
         <div class="row">
             <div class="col-lg-9">
-                <x-adminlte.card title="Live">
-                    <!--  -->
+                <x-adminlte.card title="Currently Live">
+                    <x-adminlte.card-channel-live col="3" :channels="$tracker" />
                 </x-adminlte.card>
-
-                <x-adminlte.card title="Archive">
+                <x-adminlte.card title="Latest Archive">
                     <x-adminlte.table ids="archiveTable">
                         <thead>
                             <tr>
@@ -22,7 +21,7 @@
                 </x-adminlte.card>
             </div>
             <div class="col-lg-3">
-                <x-adminlte.card></x-adminlte.card>
+                <x-adminlte.card title="Information Board"></x-adminlte.card>
             </div>
         </div>
     </x-adminlte.content>

@@ -16,6 +16,7 @@ class CreatorController extends Controller{
 
     // Profile
     public function profile($id){
+        // Profile
         $profile = UserProfileRepositories::getProfile([
             'identifier'    => $id,
             'with'          => [
@@ -29,18 +30,32 @@ class CreatorController extends Controller{
             ],
         ]);
 
+        // Link
         $link = UserProfileRepositories::getLink([
-            'id' => $profile->id,
+            'query' => [
+                ['users_id', '=', $profile->id],
+            ],
         ]);
 
+        // Tracker Channel
         $tracker = UserProfileRepositories::getLinkTracker([
-            'id' => $profile->id,
-        ]);
-
-        $feed = UserProfileRepositories::getFeed([
-            'id'    => $profile->id,
             'with'  => [
                 'belongsToBaseLink',
+                'belongsToUserLink',
+                'belongsToActiveStream',
+            ],
+            'query' => [
+                ['users_id', '=', $profile->id],
+            ],
+        ]);
+
+        // Feed
+        $feed = UserProfileRepositories::getFeed([
+            'with'  => [
+                'belongsToBaseLink',
+            ],
+            'query' => [
+                ['users_id', '=', $profile->id],
             ],
         ], true);
 

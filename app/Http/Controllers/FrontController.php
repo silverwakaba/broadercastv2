@@ -11,6 +11,25 @@ use Illuminate\Http\Request;
 class FrontController extends Controller{
     // Index
     public function index(){
+        // Tracker Channel
+        return $tracker = UserProfileRepositories::getLinkTracker([
+            'with'       => [
+                'belongsToBaseLink',
+                'belongsToUserLink',
+                'belongsToActiveStream',
+            ],
+            'query'      => [
+                // ['id', '=', 'xray'],
+                ['streaming', '=', true],
+            ],
+            'option'     => [
+                'take'      => 6,
+                'aggregate' => true,
+            ],
+            'pagination' => true,
+        ]);
+
+        // Feed
         $feed = UserProfileRepositories::getFeed([
             'with'  => [
                 'belongsToUser',
@@ -25,6 +44,8 @@ class FrontController extends Controller{
             return $feed;
         }
 
-        return view('pages/index');
+        return view('pages/index', [
+            'tracker' => $tracker,
+        ]);
     }
 }
