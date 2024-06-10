@@ -11,8 +11,10 @@ use Illuminate\Http\Request;
 class FrontController extends Controller{
     // Index
     public function index(){
+        return view('pages/blank');
+
         // Tracker Channel
-        return $tracker = UserProfileRepositories::getLinkTracker([
+        $tracker = UserProfileRepositories::getLinkTracker([
             'with'       => [
                 'belongsToBaseLink',
                 'belongsToUserLink',
