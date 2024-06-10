@@ -44,9 +44,9 @@ class UserProfileRepositories{
             isset($data['query']) ? $data['query'] : []
         )->whereIn('base_link_id', BaseHelper::getCheckedBaseLink())->orderBy('streaming', 'DESC');
         
-
+        // Additional query
         if(isset($data['option'])){
-            if(isset($data['option']['take'])){
+            if(isset($data['option']['take']) && !isset($data['option']['pagination'])){
                 $datas->take($data['option']['take']);
             }
 
@@ -55,9 +55,23 @@ class UserProfileRepositories{
             }
         }
 
-        $newData = $datas->get();
+        // Data retrieval
+        if(isset($data['option']['pagination'])){
+            if($data['option']['pagination']['type'] == 'normal'){
+                $newData = $datas->paginate($data['option']['take']);
+            }
+            elseif($data['option']['pagination']['type'] == 'cursor'){
+                $newData = $datas->cursorPaginate($data['option']['take']);
+            }
+            else{
+                $newData = $datas->paginate($data['option']['take']);
+            }
+        }
+        else{
+            $newData = $datas->get();
+        }
 
-        return BaseHelper::resourceToJson(UserLinkTrackerResource::collection($newData));
+        return BaseHelper::resourceToJson(UserLinkTrackerResource::collection($newData)->response()->getData());
     }
 
     public static function getFeed(array $data, $datatable = false){

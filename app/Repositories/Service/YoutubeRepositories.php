@@ -464,10 +464,10 @@ class YoutubeRepositories{
                 $isOffline = false;
 
                 $videoID = Str::betweenFirst($httpResultScript[12], '{"liveStreamabilityRenderer":{"videoId":"', '",'); // Cek kalo ada 11 char berarti valid
-                $videoIDNew = Str::length($videoID) === 11 ? $videoID : "B-Bakaa~Kyun~";
+                $videoIDNew = Str::length($videoID) === 11 ? $videoID : "B-Bakaa~Kyun~Its~Not~Like~I~Dont~Want~To~Give~You~Any~Result~You~Know";
 
-                // $videoTitle = Str::betweenFirst($httpResultScript[12], '"title":"', '",');
-                // $videoTitleNew = $httpResultTitle == $videoTitle ? $httpResultTitle : 'Recheck';
+                $videoTitle = Str::betweenFirst($httpResultScript[12], '"title":"', '",');
+                $videoTitleNew = $httpResultTitle == $videoTitle ? $httpResultTitle : 'Recheck';
 
                 $videoSchedule = (int) Str::betweenFirst($httpResultScript[12], '"scheduledStartTime":"', '",'); // Cek kalo 0 artinya lagi live dan/atau gak ada next schedule
 
@@ -480,16 +480,24 @@ class YoutubeRepositories{
                 ($isOffline == false) && (Str::length($videoID) === 11) && ($videoSchedule == null)
             ){
                 if(isset($userF)){
+                    if(
+                        ($videoTitleNew !== 'Recheck') && ($videoTitleNew !== $userF->title)
+                    ){
+                        $userF->update([
+                            'title' => $videoTitleNew,
+                        ]);
+                    }
+
                     $userLT->update([
                         'users_feed_id' => $userF->id,
                         'streaming'     => true,
                         'concurrent'    => $videoConcurrent,
                     ]);
             
-                    return "Online and updating";
+                    // return "Online and updating";
                 }
             
-                return "Online";
+                // return "Online";
             }
             else{
                 if(isset($userLT->users_feed_id)){
@@ -500,13 +508,10 @@ class YoutubeRepositories{
                     ]);
                 }
             
-                return "Offline";
+                // return "Offline";
             }
-
         }
-        catch(\Throwable $th){
-            return $th;
-        }
+        catch(\Throwable $th){}
     }
 
     // Fetch Archive Status
@@ -529,8 +534,7 @@ class YoutubeRepositories{
             $videoTitle = $http['result']['title'][0];
 
             if(
-                ($videoTitle == $notFound)
-                && ($videoTitle != $data->title)
+                ($videoTitle == $notFound) && ($videoTitle != $data->title)
             ){
                 $data->delete();
             }

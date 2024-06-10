@@ -47,7 +47,7 @@
                     bSearchable: true,
                     render: function(data, type, row){
                         return `
-                            <a href="${ row['link'] }" class="text-dark" target="_blank">
+                            <a href="${ row['link'] }" class="text-light" target="_blank">
                                 <div class="attachment-block clearfix m-0">
                                     <img class="attachment-img" src="${ row['thumbnail'] }" />
                                     <div class="attachment-pushed">

@@ -1,11 +1,10 @@
-
 @extends('layout.app')
 @section('title', 'Aggregator of Content Creator')
 @section('content')
     <x-adminlte.content title="Home">
         <div class="row">
             <div class="col-lg-9">
-                <x-adminlte.card title="Currently Live">
+                <x-adminlte.card title="Latest Activity">
                     <x-adminlte.card-channel-live col="3" :channels="$tracker" />
                 </x-adminlte.card>
                 <x-adminlte.card title="Latest Archive">

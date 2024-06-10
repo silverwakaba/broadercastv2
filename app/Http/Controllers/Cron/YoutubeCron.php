@@ -21,12 +21,9 @@ class YoutubeCron extends Controller{
     public function fetchDebug(){
         // return YoutubeRepositories::fetchArchiveViaAPI("UCQz5mRHdiwt7NrS9tc4D1Dg", 1);
         // return YoutubeRepositories::fetchArchiveViaFeed("UC5LyYg6cCA4yHEYvtUsir3g", 1);
-        // return YoutubeRepositories::fetchActivityViaCrawler("UCuDY3ibSP2MFRgf7eo3cojg", 1);
+        // return YoutubeRepositories::fetchActivityViaCrawler("UCurEA8YoqFwimJcAuSHU0MQ", 1);
         // return YoutubeRepositories::fetchVideoStatus("K5p7yGXSP-8");
-
         // return YoutubeRepositories::fetchProfile("UCDe3iqZiVXIXQbgIR36mF6w", 1);
-
-        // return Str::before('https://yt3.ggpht.com/ytc/AIdro_mvJ0zhhC7vgXEJseDjYOdazDv_WBC42buVLpbACh0', '=');
     }
 
     public function fetchUserLinkTrackerDaily(){

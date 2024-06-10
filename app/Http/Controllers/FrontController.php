@@ -8,11 +8,12 @@ use App\Repositories\Front\Creator\UserProfileRepositories;
 
 use Illuminate\Http\Request;
 
+// Hapus
+use App\Models\UserLinkTracker;
+
 class FrontController extends Controller{
     // Index
     public function index(){
-        return view('pages/blank');
-
         // Tracker Channel
         $tracker = UserProfileRepositories::getLinkTracker([
             'with'       => [
@@ -21,14 +22,15 @@ class FrontController extends Controller{
                 'belongsToActiveStream',
             ],
             'query'      => [
-                // ['id', '=', 'xray'],
                 ['streaming', '=', true],
             ],
             'option'     => [
-                'take'      => 6,
-                'aggregate' => true,
+                // 'take'       => 6,
+                'aggregate'  => true,
+                // 'pagination' => [
+                //     'type' => 'normal',
+                // ],
             ],
-            'pagination' => true,
         ]);
 
         // Feed
@@ -39,8 +41,6 @@ class FrontController extends Controller{
                 'belongsToBaseLink'
             ],
         ], true);
-
-        // return $feed;
 
         if(request()->ajax()){
             return $feed;

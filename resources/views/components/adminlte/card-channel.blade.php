@@ -1,5 +1,5 @@
 <div class="row row-cols-1 row-cols-lg-{{ $col }}">
-    @foreach($channels AS $data)
+    @foreach($channels->data AS $data)
         <div class="col text-truncate">
             <div class="card card-widget widget-user">
                 @if($data->activity)
@@ -57,7 +57,7 @@
                                     <div class="card m-0">
                                         <img src="{{ $data->activity->thumbnail }}" class="card-img-top" />
                                         <div class="card-body">
-                                            <h5 class="text-truncate h5" data-toggle="tooltip" data-placement="top" title="{{ $data->activity->title }}">{{ $data->activity->title }}</h5>
+                                            <h5 class="text-truncate h5 m-0" data-toggle="tooltip" data-placement="top" title="{{ $data->activity->title }}">{{ $data->activity->title }}</h5>
                                         </div>
                                     </div>
                                 </a>

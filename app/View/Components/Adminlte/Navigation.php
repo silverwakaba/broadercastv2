@@ -24,21 +24,21 @@ class Navigation extends Component{
     public function render() : View|Closure|string{
         $array = [];
 
-        // $uid = auth()->user() ? auth()->user()->id : '0';
+        $uid = auth()->user() ? auth()->user()->id : '0';
 
-        // $datas = User::with([
-        //     'hasOneUserAvatar', 'hasOneUserBiodata'
-        // ])->where([
-        //     ['id', '=', $uid],
-        // ])->first();
+        $datas = User::with([
+            'hasOneUserAvatar', 'hasOneUserBiodata'
+        ])->where([
+            ['id', '=', $uid],
+        ])->first();
 
-        // if($datas){
-        //     $user = (new UserResource($datas));
+        if($datas){
+            $user = (new UserResource($datas));
 
-        //     $array = [
-        //         'user' => BaseHelper::resourceToJson($user),
-        //     ];
-        // }
+            $array = [
+                'user' => BaseHelper::resourceToJson($user),
+            ];
+        }
 
         return view('components.adminlte.navigation', $array);
     }
