@@ -1,6 +1,6 @@
 {
     "version": 2,
-    "buildCommand": "npm run prod",
+    "buildCommand": "npm run build",
     "outputDirectory": "public",
     "installCommand": "npm install",
     "regions": ["fra1"],
@@ -26,7 +26,7 @@
     ],
     "env": {
         "APP_ENV": "production",
-        "APP_DEBUG": "false",
+        "APP_DEBUG": "true",
         "APP_NAME": "Broadercast",
         "APP_URL": "https://www.broadercast.net",
         "APP_CONFIG_CACHE": "/tmp/config.php",
