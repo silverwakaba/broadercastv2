@@ -28,7 +28,7 @@
         "APP_ENV": "local",
         "APP_DEBUG": "true",
         "APP_NAME": "Broadercast",
-        "APP_URL": "https://www.broadercast.net",
+        "APP_URL": "https://broadercast.vercel.app",
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
         "APP_PACKAGES_CACHE": "/tmp/packages.php",
