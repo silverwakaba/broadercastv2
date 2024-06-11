@@ -1,5 +1,5 @@
 <div class="row row-cols-1 row-cols-lg-{{ $col }}">
-    @foreach($channels->data AS $data)
+    @foreach($channels AS $data)
         <div class="col text-truncate">
             <div class="card card-widget widget-user">
                 @if($data->activity)

@@ -1,6 +1,6 @@
 <div @class(["row row-cols-1", "row-cols-lg-$col" => $channels])>
     @if($channels)
-        @foreach($channels->data AS $data)
+        @foreach($channels AS $data)
             <div class="col">
                 <div class="card card-widget">
                     <a href="{{ $data->activity->link }}" target="_blank">
