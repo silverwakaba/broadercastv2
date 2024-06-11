@@ -9,7 +9,7 @@
                 </div>
                 <div class="row">
                     <div class="col-8">
-                        <input class="d-none" name="_token" type="text" value="{{ csrf_token() }}" />
+                        <input type="hidden" name="_token" class="d-none" value="{{ csrf_token() }}" readonly />
                         <x-form.checkbox name="terms" value="1">I agree to <a href="https://www.google.com">Blabla</a></x-form.checkbox>
                     </div>
                     <div class="col-4">

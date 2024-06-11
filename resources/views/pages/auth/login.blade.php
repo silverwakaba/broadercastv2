@@ -10,7 +10,7 @@
                 </div>
                 <div class="row">
                     <div class="col-8">
-                        {{ csrf_field() }}
+                        <input type="hidden" name="_token" class="d-none" value="{{ csrf_token() }}" readonly />
                         <x-form.checkbox name="remember" value="1">Remember Me</x-form.checkbox>
                     </div>
                     <div class="col-4">
