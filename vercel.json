@@ -10,14 +10,14 @@
             "use": "vercel-php@0.6.2"
         },
         {
-            "src": "/public/**",
+            "src": "/public/build/**",
             "use": "@vercel/static"
         }
     ],
     "routes": [
         {
-            "src": "/(css|js)/(.*)",
-            "dest": "public/$1/$2"
+            "src": "/build/assets/(.*)",
+            "dest": "public/build/assets/$1"
         },
         {
             "src": "/(.*)",
@@ -25,20 +25,23 @@
         }
     ],
     "env": {
+        "APP_NAME": "Broadercast",
         "APP_ENV": "local",
         "APP_DEBUG": "true",
-        "APP_NAME": "Broadercast",
         "APP_URL": "https://broadercast.vercel.app",
+        "APP_KEY": "base64:HsufxIfGwKO5PQH04w2l/iokmsHgY/X7hTvIO1ELvWI=",
+        
+        "VERCEL_DEMO_MODE": "true",
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
         "APP_PACKAGES_CACHE": "/tmp/packages.php",
         "APP_ROUTES_CACHE": "/tmp/routes.php",
         "APP_SERVICES_CACHE": "/tmp/services.php",
-        "VIEW_COMPILED_PATH": "/tmp/views",
-        "SSR_TEMP_PATH": "/tmp/ssr",
-        "NODE_PATH": "node",
         "CACHE_DRIVER": "array",
         "LOG_CHANNEL": "stderr",
-        "SESSION_DRIVER": "cookie"
+        "SESSION_DRIVER": "array",
+        "VIEW_COMPILED_PATH": "/tmp/views",
+        "SSR_TEMP_PATH": "/tmp/ssr",
+        "NODE_PATH": "node"
     }
 }
