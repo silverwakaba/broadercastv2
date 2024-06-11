@@ -1,10 +1,10 @@
 @extends('layout.app')
 @section('title', $profile->name)
 @section('content')
-    <x-Adminlte.content>
+    <x-Adminlte.Content>
         <div class="row">
             <div class="col-lg-4">
-                <x-adminlte.card-profile :profile="$profile" :links="$link" :channels="$tracker" />
+                <x-Adminlte.CardProfile :profile="$profile" :links="$link" :channels="$tracker->data" />
             </div>
             <div class="col-lg-8">
                 <x-Adminlte.Card title="About">
@@ -26,7 +26,7 @@
                 </x-Adminlte.Card>
             </div>
         </div>
-    </x-Adminlte.content>
+    </x-Adminlte.Content>
 
     <script type="module">
         $("#feedTable").DataTable({

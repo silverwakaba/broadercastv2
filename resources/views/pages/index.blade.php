@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-lg-9">
                 <x-Adminlte.Card title="Latest Activity">
-                    <x-Adminlte.CardChannelLive col="3" :channels="$tracker" />
+                    <x-Adminlte.CardChannelLive col="3" :channels="$tracker->data" />
                 </x-Adminlte.Card>
                 <x-Adminlte.Card title="Latest Archive">
                     <x-Adminlte.Table ids="archiveTable">
