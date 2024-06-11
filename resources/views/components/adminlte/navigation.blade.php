@@ -8,7 +8,7 @@
     </ul>
     <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-            <x-adminlte.navlinks route="index" value="Home" />
+            <x-Adminlte.NavLinks route="index" value="Home" />
         </li>
     </ul>
 </nav>
