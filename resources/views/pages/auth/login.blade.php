@@ -3,7 +3,7 @@
 @section('content')
     <x-adminlte.content>
         <x-adminlte.card>
-            <form method="POST">
+            <form action="{{ url()->current() }}" method="POST">
                 <div class="form-row">
                     <x-form.input name="email" type="email" text="Email" />
                     <x-form.input name="password" type="password" text="Password" />
