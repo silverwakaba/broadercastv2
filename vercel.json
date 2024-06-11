@@ -42,6 +42,25 @@
         "SESSION_DRIVER": "array",
         "VIEW_COMPILED_PATH": "/tmp/views",
         "SSR_TEMP_PATH": "/tmp/ssr",
-        "NODE_PATH": "node"
+        "NODE_PATH": "node",
+
+        "MAIL_MAILER": "smtp",
+        "MAIL_HOST": "sandbox.smtp.mailtrap.io",
+        "MAIL_PORT": "2525",
+        "MAIL_USERNAME": "e60ab3519cfcfb",
+        "MAIL_PASSWORD": "3d0c2a2ccc6726",
+        "MAIL_ENCRYPTION":"tls",
+        "MAIL_FROM_ADDRESS": "test@test.com",
+        "MAIL_FROM_NAME": "Broadercaster Mailer",
+        
+        "DB_CONNECTION": "pgsql",
+        "CLOUDFLARE_TOKEN": "postgres://postgres.kgedpkathsxrwdorrdqy:PasswordKuat123-AFK@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres",
+
+        "B2_EU_BUCKET_1": "broadercast",
+        "B2_EU_BUCKET_2": "broadercastpvt",
+        "B2_EU_REGION": "eu-central-003",
+        "B2_EU_KEY": "0037ab08f2835d60000000001",
+        "B2_EU_SECRET": "K003FPddkd9PI14biIRcqw/WwDdMolU",
+        "B2_EU_ENDPOINT": "https://s3.eu-central-003.backblazeb2.com"
     }
 }
