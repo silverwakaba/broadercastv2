@@ -6,6 +6,10 @@
             </a>
         </li>
     </ul>
+    <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+            <x-adminlte.navlinks route="index" value="Home" />
+        </li>
     </ul>
 </nav>
 <aside class="main-sidebar main-sidebar-custom sidebar-dark-primary elevation-4">
