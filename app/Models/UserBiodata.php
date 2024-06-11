@@ -9,7 +9,7 @@ class UserBiodata extends Model{
     // use SoftDeletes;
     
     protected $table = 'users_biodata';
-    protected $primaryKey = 'users_biodata_id';
+    protected $primaryKey = 'id';
     public $timestamps = false;
 
     protected $fillable = [

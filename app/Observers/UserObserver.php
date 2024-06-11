@@ -14,13 +14,13 @@ class UserObserver{
      * Handle the User "created" event.
      */
     public function created(User $user) : void{
-        // $user->hasOneUserAvatar()->create([
-        //     'users_id' => $user->id,
-        // ]);
+        $user->hasOneUserAvatar()->create([
+            'users_id' => $user->id,
+        ]);
 
-        // $user->hasOneUserBiodata()->create([
-        //     'users_id' => $user->id,
-        // ]);
+        $user->hasOneUserBiodata()->create([
+            'users_id' => $user->id,
+        ]);
 
         // Mail::to($user->email)->send(new UserVerifyEmail($user->id));
 
