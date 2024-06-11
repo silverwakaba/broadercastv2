@@ -11,7 +11,7 @@
             <x-Adminlte.NavLink route="index" value="Home" />
         </li>
     </ul>
-    ul class="navbar-nav ml-auto">
+    <ul class="navbar-nav ml-auto">
         @can('canLogin')
             <x-Adminlte.NavDropdown>
                 <a id="dropdownSubMenuAccountMenu" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">
