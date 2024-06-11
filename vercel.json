@@ -26,7 +26,7 @@
     ],
     "env": {
         "APP_NAME": "Broadercast!!!",
-        "APP_ENV": "local",
+        "APP_ENV": "production",
         "APP_DEBUG": "true",
         "APP_URL": "https://broadercast.vercel.app",
         "APP_KEY": "base64:HsufxIfGwKO5PQH04w2l/iokmsHgY/X7hTvIO1ELvWI=",
