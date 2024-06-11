@@ -1,9 +1,9 @@
 @extends('layout.app')
 @section('title', 'My External Link')
 @section('content')
-    <x-adminlte.content previous="apps.manager.index">
-        <x-adminlte.card add="apps.manager.link.add">
-            <x-adminlte.table ids="extLinkTables">
+    <x-Adminlte.Content previous="apps.manager.index">
+        <x-Adminlte.Card add="apps.manager.link.add">
+            <x-Adminlte.Table ids="extLinkTables">
                 <thead>
                     <tr>
                         <th width="5%">No.</th>
@@ -13,9 +13,9 @@
                         <th width="10%" class="text-center">Action</th>
                     </tr>
                 </thead>
-            </x-adminlte.table>
-        </x-adminlte.card>
-    </x-adminlte.content>
+            </x-Adminlte.Table>
+        </x-Adminlte.Card>
+    </x-Adminlte.Content>
 
     <script type="module">
         $("#extLinkTables").DataTable({

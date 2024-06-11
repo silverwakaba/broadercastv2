@@ -1,8 +1,8 @@
 @extends('layout.app')
 @section('title', 'Verify ' . $datas->belongsToBaseLink->name . ' Link')
 @section('content')
-    <x-adminlte.content previous="apps.manager.link">
-        <x-adminlte.card title="Guideline">
+    <x-Adminlte.Content previous="apps.manager.link">
+        <x-Adminlte.Card title="Guideline">
             <div class="lead">
                 <p>Please read the guidelines and requirements regarding the process of verifying the {{ $datas->belongsToBaseLink->name }} link that you have added, so that it can be included in our future crawler distribution:</p>
                 <ol>
@@ -19,12 +19,12 @@
                 </ol>
                 <p>If you have further questions, please let us know. We thank you for your attention and cooperation.</p>
             </div>
-        </x-adminlte.card>
-        <x-adminlte.cardform title="Verify" button="Submit">  
-            <x-form.input name="unique" type="text" text="Unique Detail" :value="$secret" readonly />
-            <x-form.input name="service" type="text" text="Service" :value="$datas->belongsToBaseLink->name" readonly />
-            <x-form.input name="channel" type="text" text="Channel" :value="$datas->link" readonly />
-            <x-form.checkbox name="terms" value="1">I have read and understand this validation process</x-form.checkbox>
-        </x-adminlte.cardform>
-    </x-adminlte.content>
+        </x-Adminlte.Card>
+        <x-Adminlte.CardForm title="Verify" button="Submit">  
+            <x-Form.Input name="unique" type="text" text="Unique Detail" :value="$secret" readonly />
+            <x-Form.Input name="service" type="text" text="Service" :value="$datas->belongsToBaseLink->name" readonly />
+            <x-Form.Input name="channel" type="text" text="Channel" :value="$datas->link" readonly />
+            <x-Form.Checkbox name="terms" value="1">I have read and understand this validation process</x-Form.Checkbox>
+        </x-Adminlte.CardForm>
+    </x-Adminlte.Content>
 @endsection

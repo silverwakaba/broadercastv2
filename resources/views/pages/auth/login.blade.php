@@ -1,8 +1,8 @@
 @extends('layout.app')
 @section('title', 'Login')
 @section('content')
-    <x-adminlte.content>
-        <x-adminlte.card>
+    <x-Adminlte.Content>
+        <x-Adminlte.Card>
             <form action="{{ url()->current() }}" method="POST">
                 <div class="form-row">
                     <x-form.input name="email" type="email" text="Email" />
@@ -29,6 +29,6 @@
                     </div>
                 </div>
             </div>
-        </x-adminlte.card>
-    </x-adminlte.content>
+        </x-Adminlte.Card>
+    </x-Adminlte.Content>
 @endsection

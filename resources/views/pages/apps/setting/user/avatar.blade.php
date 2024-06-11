@@ -1,9 +1,9 @@
 @extends('layout.app')
 @section('title', 'Change Avatar')
 @section('content')
-    <x-adminlte.content previous="apps.manager.index">
-        <x-adminlte.cardform button="Change" encode="upload">
-            <x-form.file name="avatar" text="Avatar" />
-        </x-adminlte.cardform>
-    </x-adminlte.content>
+    <x-Adminlte.Content previous="apps.manager.index">
+        <x-Adminlte.CardForm button="Change" encode="upload">
+            <x-Form.File name="avatar" text="Avatar" />
+        </x-Adminlte.CardForm>
+    </x-Adminlte.Content>
 @endsection

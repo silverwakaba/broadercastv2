@@ -1,9 +1,9 @@
 @extends('layout.app')
 @section('title', 'Change Your Character Race')
 @section('content')
-    <x-adminlte.content previous="apps.manager.index">
-        <x-adminlte.cardform button="Change">
-            <x-form.select2m name="race[]" text="Race" :data="$datas" :value="$value" />
-        </x-adminlte.cardform>
-    </x-adminlte.content>
+    <x-Adminlte.Content previous="apps.manager.index">
+        <x-Adminlte.CardForm button="Change">
+            <x-Form.Select2m name="race[]" text="Race" :data="$datas" :value="$value" />
+        </x-Adminlte.CardForm>
+    </x-Adminlte.Content>
 @endsection

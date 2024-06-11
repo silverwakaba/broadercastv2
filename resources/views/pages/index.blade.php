@@ -1,14 +1,14 @@
 @extends('layout.app')
 @section('title', 'Aggregator of Content Creator')
 @section('content')
-    <x-adminlte.content title="Home">
+    <x-Adminlte.Content title="Home">
         <div class="row">
             <div class="col-lg-9">
-                <x-adminlte.card title="Latest Activity">
-                    <x-adminlte.card-channel-live col="3" :channels="$tracker" />
-                </x-adminlte.card>
-                <x-adminlte.card title="Latest Archive">
-                    <x-adminlte.table ids="archiveTable">
+                <x-Adminlte.Card title="Latest Activity">
+                    <x-Adminlte.CardChannelLive col="3" :channels="$tracker" />
+                </x-Adminlte.Card>
+                <x-Adminlte.Card title="Latest Archive">
+                    <x-Adminlte.Table ids="archiveTable">
                         <thead>
                             <tr>
                                 <th width="5%">No.</th>
@@ -16,14 +16,16 @@
                                 <th width="70%">Content</th>
                             </tr>
                         </thead>
-                    </x-adminlte.table>
-                </x-adminlte.card>
+                    </x-Adminlte.Table>
+                </x-Adminlte.Card>
             </div>
             <div class="col-lg-3">
-                <x-adminlte.card title="Information Board"></x-adminlte.card>
+                <x-Adminlte.Card title="Information Board">
+                    <!--  -->
+                </x-Adminlte.Card>
             </div>
         </div>
-    </x-adminlte.content>
+    </x-Adminlte.Content>
 
     <script type="module">
         $("#archiveTable").DataTable({

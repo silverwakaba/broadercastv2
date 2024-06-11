@@ -82,7 +82,7 @@
             <li class="list-group-item">
                 <strong>User Channel</strong>
                 @if($channels)
-                    <x-adminlte.card-channel :channels="$channels" />
+                    <x-Adminlte.CardChannel :channels="$channels" />
                 @else
                     <p class="m-0">No user channel yet.</p>
                 @endif

@@ -19,7 +19,6 @@
                         <span class="badge badge-dark">{{ $data->link->name }} Channel</span>
                     </h5>
                 </div>
-
                 <div class="widget-user-image">
                     <img class="img-circle elevation-2" src="{{ $data->avatar }}" />
                 </div>

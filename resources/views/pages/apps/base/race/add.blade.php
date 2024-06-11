@@ -1,9 +1,9 @@
 @extends('layout.app')
 @section('title', 'Add New Race Type')
 @section('content')
-    <x-adminlte.content previous="apps.base.race.index">
-        <x-adminlte.cardform button="Add">
-            <x-form.input name="name" type="text" text="Name" />
-        </x-adminlte.cardform>
-    </x-adminlte.content>
+    <x-Adminlte.Content previous="apps.base.race.index">
+        <x-Adminlte.CardForm button="Add">
+            <x-form.Input name="name" type="text" text="Name" />
+        </x-Adminlte.CardForm>
+    </x-Adminlte.Content>
 @endsection

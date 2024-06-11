@@ -1,12 +1,12 @@
 @extends('layout.app')
 @section('title', 'Add New Link Type')
 @section('content')
-    <x-adminlte.content previous="apps.base.link.index">
-        <x-adminlte.cardform button="Add">
-            <x-form.input name="name" type="text" text="Name" />
-            <x-form.input name="icon" type="text" text="Icon" />
-            <x-form.input name="color" type="text" text="Color" />
-            <x-form.checkbox name="checking" value="1">Need to be checked</x-form.checkbox>
-        </x-adminlte.cardform>
-    </x-adminlte.content>
+    <x-Adminlte.Content previous="apps.base.link.index">
+        <x-Adminlte.CardForm button="Add">
+            <x-Form.Input name="name" type="text" text="Name" />
+            <x-Form.Input name="icon" type="text" text="Icon" />
+            <x-Form.Input name="color" type="text" text="Color" />
+            <x-Form.Checkbox name="checking" value="1">Need to be checked</x-Form.Checkbox>
+        </x-Adminlte.CardForm>
+    </x-Adminlte.Content>
 @endsection

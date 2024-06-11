@@ -1,5 +1,5 @@
-<x-adminlte.navigation />
+<x-Adminlte.Navigation />
 <main role="main">
     @yield('content')
 </main>
-<x-adminlte.footer />
+<x-Adminlte.Footer />

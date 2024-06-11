@@ -1,32 +1,32 @@
 @extends('layout.app')
 @section('title', $profile->name)
 @section('content')
-    <x-adminlte.content>
+    <x-Adminlte.content>
         <div class="row">
             <div class="col-lg-4">
                 <x-adminlte.card-profile :profile="$profile" :links="$link" :channels="$tracker" />
             </div>
             <div class="col-lg-8">
-                <x-adminlte.card title="About">
+                <x-Adminlte.Card title="About">
                     @if($profile->biodata->biography)
                         {!! $profile->biodata->biography !!}
                     @else
                         <p>Nothing known about this creator yet.</p>
                     @endif
-                </x-adminlte.card>
-                <x-adminlte.card title="Archive">
-                    <x-adminlte.table ids="feedTable">
+                </x-Adminlte.Card>
+                <x-Adminlte.Card title="Archive">
+                    <x-Adminlte.Table ids="feedTable">
                         <thead>
                             <tr>
                                 <th width="5%">No.</th>
                                 <th width="95%">Content</th>
                             </tr>
                         </thead>
-                    </x-adminlte.table>
-                </x-adminlte.card>
+                    </x-Adminlte.Table>
+                </x-Adminlte.Card>
             </div>
         </div>
-    </x-adminlte.content>
+    </x-Adminlte.content>
 
     <script type="module">
         $("#feedTable").DataTable({

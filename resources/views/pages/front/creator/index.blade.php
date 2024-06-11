@@ -1,9 +1,9 @@
 @extends('layout.app')
 @section('title', 'Another basic scaffolding')
 @section('content')
-    <x-adminlte.content title="Homepage">
-        <x-adminlte.card>
+    <x-Adminlte.Content title="Homepage">
+        <x-Adminlte.Card>
             ABC
-        </x-adminlte.card>
-    </x-adminlte.content>
+        </x-Adminlte.Card>
+    </x-Adminlte.Content>
 @endsection

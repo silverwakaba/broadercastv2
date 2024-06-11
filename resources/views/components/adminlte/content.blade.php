@@ -16,9 +16,9 @@
             <div class="row">
                 <div class="col-12">
                     @if(session()->has('class') && session()->has('message'))
-                        <x-adminlte.callout class="{{ session()->get('class') }}">
+                        <x-Adminlte.Callout class="{{ session()->get('class') }}">
                             {{ session()->get('message') }}
-                        </x-adminlte.callout>
+                        </x-Adminlte.Callout>
                     @endif
                     {{ $slot }}
                 </div>

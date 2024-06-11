@@ -1,9 +1,9 @@
 @extends('layout.app')
 @section('title', 'Content Language')
 @section('content')
-    <x-adminlte.content previous="apps.master.index">
-        <x-adminlte.card add="apps.base.language.add">
-            <x-adminlte.table ids="languageTables">
+    <x-Adminlte.Content previous="apps.master.index">
+        <x-Adminlte.Card add="apps.base.language.add">
+            <x-Adminlte.Table ids="languageTables">
                 <thead>
                     <tr>
                         <th width="5%">No.</th>
@@ -13,20 +13,20 @@
                         <th width="10%" class="text-center">Action</th>
                     </tr>
                 </thead>
-            </x-adminlte.table>
-        </x-adminlte.card>
-    </x-adminlte.content>
+            </x-Adminlte.Table>
+        </x-Adminlte.Card>
+    </x-Adminlte.Content>
 
     <script type="module">
-        var channel = Echo.channel('baseChannel');
+        // var channel = Echo.channel('baseChannel');
 
-        channel.listen('.baseLanguageCreated', function(data){
-            $('#languageTables').DataTable().ajax.reload();
-        });
+        // channel.listen('.baseLanguageCreated', function(data){
+        //     $('#languageTables').DataTable().ajax.reload();
+        // });
 
-        channel.listen('.baseLanguageModified', function(data){
-            $('#languageTables').DataTable().ajax.reload();
-        });
+        // channel.listen('.baseLanguageModified', function(data){
+        //     $('#languageTables').DataTable().ajax.reload();
+        // });
 
         $("#languageTables").DataTable({
             "ordering": false,
