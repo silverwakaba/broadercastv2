@@ -20,7 +20,7 @@
                                 </div>
                             </div>
                         </div>
-                    </a>                
+                    </a>
                     <div class="card-body">
                         <h5 class="text-truncate h5 m-0" data-toggle="tooltip" data-placement="top" title="{{ $data->activity->title }}">{{ $data->activity->title }}</h5>
                     </div>

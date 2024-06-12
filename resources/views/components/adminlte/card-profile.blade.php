@@ -14,18 +14,32 @@
             <h3 class="profile-username" data-toggle="tooltip" data-placement="top" title="{{ $profile->name }}">{{ $profile->name_preview }}</h3>
             <p class="text-muted text-center">{{ $profile->title_temp }}</p>
         </div>
-        <ul class="list-group list-group-unbordered">
+        <ul class="list-group">
+            <li class="list-group-item text-center bg-secondary">
+                <strong>Basic Details</strong>
+            </li>
             <li class="list-group-item">
-                <strong>Content</strong>
-                @if($profile->content)
-                    <ul class="list-inline m-0">
-                        @foreach($profile->content AS $content)
-                            <li class="list-inline-item">{{ $content->name }}</li>
-                        @endforeach
-                    </ul>
+                <strong>Nickname</strong>
+                <p class="m-0">{{ $profile->biodata->nickname }}</p>
+            </li>
+            <li class="list-group-item">
+                <strong>Debut Date</strong>
+                @if($profile->biodata->dod)
+                    <p class="m-0">{{ $profile->biodata->dod }}</p>
                 @else
-                    <p class="m-0">No focus content yet.</p>
+                    <p class="m-0">Unknown</p>
                 @endif
+            </li>
+            <li class="list-group-item">
+                <strong>About</strong>
+                @if($profile->biodata->biography)
+                    {!! $profile->biodata->biography !!}
+                @else
+                    <p class="m-0">Nothing known about this creator</p>
+                @endif
+            </li>
+            <li class="list-group-item text-center bg-secondary">
+                <strong>Personal Details</strong>
             </li>
             <li class="list-group-item">
                 <strong>Gender</strong>
@@ -36,7 +50,27 @@
                         @endforeach
                     </ul>
                 @else
-                    <p class="m-0">No gender representation yet.</p>
+                    <p class="m-0">No gender representation</p>
+                @endif
+            </li>
+            <li class="list-group-item">
+                <strong>Birthday</strong>
+                @if($profile->biodata->dob)
+                    <p class="m-0">{{ $profile->biodata->dob }}</p>
+                @else
+                    <p class="m-0">Unknown</p>
+                @endif
+            </li>
+            <li class="list-group-item">
+                <strong>Content</strong>
+                @if($profile->content)
+                    <ul class="list-inline m-0">
+                        @foreach($profile->content AS $content)
+                            <li class="list-inline-item">{{ $content->name }}</li>
+                        @endforeach
+                    </ul>
+                @else
+                    <p class="m-0">No focus content</p>
                 @endif
             </li>
             <li class="list-group-item">
@@ -48,11 +82,11 @@
                         @endforeach
                     </ul>
                 @else
-                    <p class="m-0">No main language yet.</p>
+                    <p class="m-0">No main language</p>
                 @endif
             </li>
             <li class="list-group-item">
-                <strong>Race</strong>
+                <strong>Lore</strong>
                 @if($profile->race)
                     <ul class="list-inline m-0">
                         @foreach($profile->race AS $race)
@@ -60,8 +94,11 @@
                         @endforeach
                     </ul>
                 @else
-                    <p class="m-0">No character race yet.</p>
+                    <p class="m-0">No character race</p>
                 @endif
+            </li>
+            <li class="list-group-item text-center bg-secondary">
+                <strong>Resource</strong>
             </li>
             <li class="list-group-item">
                 <strong>External Link</strong>
@@ -76,16 +113,15 @@
                         @endforeach
                     </ul>
                 @else
-                    <p class="m-0">No external link yet.</p>
+                    <p class="m-0">No external link</p>
                 @endif
             </li>
             <li class="list-group-item">
-                <strong>User Channel</strong>
+                <p><strong>Channel</strong></p>
                 @if($channels)
-                Ada
                     <x-Adminlte.CardChannel :channels="$channels" />
                 @else
-                    <p class="m-0">No user channel yet.</p>
+                    <p class="m-0">No channel</p>
                 @endif
             </li>
         </ul>

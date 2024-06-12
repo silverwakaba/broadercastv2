@@ -36,18 +36,16 @@ class FrontController extends Controller{
         // Feed
         $feed = UserProfileRepositories::getFeed([
             'with'  => [
-                'belongsToUser',
-                'hasOneThroughUserAvatar',
-                'belongsToBaseLink'
+                // 'belongsToBaseLink',
+                // 'belongsToUser',
+                'hasOneThroughUserLink',
+                'belongsToUserLinkTracker',
             ],
-        ], true);
-
-        if(request()->ajax()){
-            return $feed;
-        }
+        ]);
 
         return view('pages/index', [
-            'tracker' => $tracker,
+            'tracker'   => $tracker,
+            'feed'      => $feed,
         ]);
     }
 }

@@ -38,4 +38,8 @@ class UserFeed extends Model{
     public function belongsToUserLinkTracker(){
         return $this->belongsTo(UserLinkTracker::class, 'users_link_tracker_id');
     }
+
+    public function hasOneThroughUserLink(){
+        return $this->hasOneThrough(UserLink::class, UserLinkTracker::class, 'id', 'id', 'users_link_tracker_id', 'users_link_id');
+    }
 }

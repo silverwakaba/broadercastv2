@@ -87,6 +87,6 @@ class UserProfileRepositories{
             })->toJson();
         }
 
-        return BaseHelper::resourceToJson(UserChannelActivityResource::collection($datas));
+        return BaseHelper::resourceToJson(UserChannelActivityResource::collection($datas)->response()->getData());
     }
 }

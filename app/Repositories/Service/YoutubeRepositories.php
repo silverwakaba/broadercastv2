@@ -171,11 +171,13 @@ class YoutubeRepositories{
 
             if(($checker == true)){
                 if(auth()->user()->hasRole('Admin|Moderator')){
+                    // return "Atas";
                     return self::verifyChannelDirectly($channelID, $uniqueID, $id);
                 }
                 else{
                     if($counter == false){
-                        return self::verifyChannelManually($channelID, $uniqueID, $id);
+                        return "Bawah";
+                        // return self::verifyChannelManually($channelID, $uniqueID, $id);
                     }
                     else{
                         return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Because we only allow one YouTube tracker per creator, thus we have to cancel this verification process.', 'error');
@@ -231,7 +233,7 @@ class YoutubeRepositories{
                             'banner'        => isset($data['brandingSettings']['image']['bannerExternalUrl']) ? Str::before($data['brandingSettings']['image']['bannerExternalUrl'], '=') : null,
                             'view'          => $data['statistics']['viewCount'] ? $data['statistics']['viewCount'] : 0,
                             'subscriber'    => $data['statistics']['hiddenSubscriberCount'] == false ? $data['statistics']['subscriberCount'] : 0,
-                            'joined'        => Carbon::parse($data['snippet']['publishedAt'])->toIso8601String(),
+                            'joined'        => Carbon::parse($data['snippet']['publishedAt'])->timezone("Asia/Jakarta")->toDateTimeString(),
                         ]);
 
                         return RedirectHelper::routeBack('apps.manager.link', 'success', 'Channel Verification', 'verify');
@@ -248,7 +250,9 @@ class YoutubeRepositories{
                 return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. As this link does not looks like YouTube.', 'error');
             }
         }
-        catch(\Throwable $th){}
+        catch(\Throwable $th){
+            return $th;
+        }
     }
 
     // Verify Channel - Manual
@@ -294,7 +298,7 @@ class YoutubeRepositories{
                                 'banner'        => isset($data['brandingSettings']['image']['bannerExternalUrl']) ? Str::before($data['brandingSettings']['image']['bannerExternalUrl'], '=') : null,
                                 'view'          => $data['statistics']['viewCount'] ? $data['statistics']['viewCount'] : 0,
                                 'subscriber'    => $data['statistics']['hiddenSubscriberCount'] == false ? $data['statistics']['subscriberCount'] : 0,
-                                'joined'        => Carbon::parse($data['snippet']['publishedAt'])->toIso8601String(),
+                                'joined'        => Carbon::parse($data['snippet']['publishedAt'])->timezone("Asia/Jakarta")->toDateTimeString(),
                             ]);
 
                             return RedirectHelper::routeBack('apps.manager.link', 'success', 'Channel Verification', 'verify');
@@ -357,7 +361,7 @@ class YoutubeRepositories{
 
     public static function fetchArchiveViaAPI($channelID, $userID, $nextPageToken = ''){
         try{
-            $userLT = self::userLinkTracker($channelID, $userID, false);
+            // $userLT = self::userLinkTracker($channelID, $userID, false);
 
             $apiKey = self::apiKey();
 
@@ -374,7 +378,7 @@ class YoutubeRepositories{
                 $params['pageToken'] = $nextPageToken;
             }
 
-            $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/activities', $params)->json();
+            return $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/activities', $params)->json();
 
             if(isset($http['items'])){
                 foreach($http['items'] AS $data){
@@ -385,7 +389,7 @@ class YoutubeRepositories{
                             'users_link_tracker_id' => $userLT->id,
                             'identifier'            => $data['contentDetails']['upload']['videoId'],
                             'title'                 => $data['snippet']['title'],
-                            'published'             => Carbon::parse($data['snippet']['publishedAt'])->toIso8601String(),
+                            'published'             => Carbon::parse($data['snippet']['publishedAt'])->timezone("Asia/Jakarta")->toDateTimeString(),
                         ]);
                     }
                 }
@@ -428,8 +432,8 @@ class YoutubeRepositories{
                         'users_link_tracker_id' => $userLT->id,
                         'identifier'            => Str::afterLast($data->id, ':'),
                         'title'                 => $data->title,
-                        'published'             => Carbon::parse($data->published)->toIso8601String(),
-                        'updated'               => Carbon::parse($data->updated)->toIso8601String(),
+                        'published'             => Carbon::parse($data->published)->timezone("Asia/Jakarta")->toDateTimeString(),
+                        'updated'               => Carbon::parse($data->updated)->timezone("Asia/Jakarta")->toDateTimeString(),
                     ]);
                 }
             }

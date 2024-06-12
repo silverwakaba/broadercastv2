@@ -39,6 +39,8 @@ class UserChannelActivityResource extends JsonResource{
             'user'                  => new UserResource($this->whenLoaded('belongsToUser')),
             'avatar'                => new UserAvatarResource($this->whenLoaded('hasOneThroughUserAvatar')),
             'service'               => new BaseLinkResource($this->whenLoaded('belongsToBaseLink')),
+            'channel'               => new UserChannelResource($this->whenLoaded('hasOneThroughUserLink')),
+            'profile'               => new UserChannelProfileResource($this->whenLoaded('belongsToUserLinkTracker')),
         ];
     }
 }

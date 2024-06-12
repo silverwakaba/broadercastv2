@@ -7,13 +7,6 @@
                 <x-Adminlte.CardProfile :profile="$profile" :links="$link" :channels="$tracker->data" />
             </div>
             <div class="col-lg-8">
-                <x-Adminlte.Card title="About">
-                    @if($profile->biodata->biography)
-                        {!! $profile->biodata->biography !!}
-                    @else
-                        <p>Nothing known about this creator yet.</p>
-                    @endif
-                </x-Adminlte.Card>
                 <x-Adminlte.Card title="Archive">
                     <x-Adminlte.Table ids="feedTable">
                         <thead>

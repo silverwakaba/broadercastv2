@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
@@ -27,8 +28,8 @@ class UserBiodataResource extends JsonResource{
             'users_id'          => $this->users_id,
             'nickname'          => $nickname,
             'nickname_preview'  => Str::limit($nickname, 15, ' (...)'),
-            'dob'               => $this->dob,
-            'dod'               => $this->dod,
+            'dob'               => $this->dob ? Carbon::parse($this->dob)->format('d M Y') : null,
+            'dod'               => $this->dod ? Carbon::parse($this->dod)->format('d M Y') : null,
             'biography'         => $this->biography ? $markdownBioStripped : $this->biography,
         ];
     }

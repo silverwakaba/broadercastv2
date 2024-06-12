@@ -17,13 +17,18 @@ use App\Repositories\Service\YoutubeRepositories;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 
+use Carbon\Carbon;
+
 class YoutubeCron extends Controller{
     public function fetchDebug(){
-        // return YoutubeRepositories::fetchArchiveViaAPI("UCQz5mRHdiwt7NrS9tc4D1Dg", 1);
-        // return YoutubeRepositories::fetchArchiveViaFeed("UC5LyYg6cCA4yHEYvtUsir3g", 1);
         // return YoutubeRepositories::fetchActivityViaCrawler("UCurEA8YoqFwimJcAuSHU0MQ", 1);
-        // return YoutubeRepositories::fetchVideoStatus("K5p7yGXSP-8");
         // return YoutubeRepositories::fetchProfile("UCDe3iqZiVXIXQbgIR36mF6w", 1);
+
+        // Via API
+        return YoutubeRepositories::fetchVideoStatus("0Zr2l5ACFoU");
+
+        // return YoutubeRepositories::fetchArchiveViaAPI("UC1tRqQTI3Bchs8XvUnj8yvQ", 1);
+        // return YoutubeRepositories::fetchArchiveViaFeed("UCjXBuHmWkieBApgBhDuJMMQ", 1);
     }
 
     public function fetchUserLinkTrackerDaily(){

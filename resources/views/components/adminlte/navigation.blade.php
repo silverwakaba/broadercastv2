@@ -6,11 +6,6 @@
             </a>
         </li>
     </ul>
-    <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-            <x-Adminlte.NavLink route="index" value="Home" />
-        </li>
-    </ul>
     <ul class="navbar-nav ml-auto">
         @can('canLogin')
             <x-Adminlte.NavDropdown>
