@@ -52,12 +52,12 @@
         "MAIL_ENCRYPTION":"tls",
         "MAIL_FROM_ADDRESS": "test@test.com",
         "MAIL_FROM_NAME": "Broadercaster Mailer",
-        
-        "DB_CONNECTION": "pgsql",
-        "DB_HOST": "aws-0-ap-southeast-1.pooler.supabase.com",
-        "DB_PORT": "6543",
-        "DB_DATABASE": "postgres",
-        "DB_USERNAME": "postgres.kgedpkathsxrwdorrdqy",
+
+        "DB_CONNECTION": "mysql",
+        "DB_HOST": "103.76.129.3",
+        "DB_PORT": "3306",
+        "DB_DATABASE": "broadercast",
+        "DB_USERNAME": "kurowaka",
         "DB_PASSWORD": "PasswordKuat123-AFK",
 
         "B2_EU_BUCKET_1": "broadercast",
