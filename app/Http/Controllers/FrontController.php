@@ -36,10 +36,18 @@ class FrontController extends Controller{
         // Feed
         $feed = UserProfileRepositories::getFeed([
             'with'  => [
-                // 'belongsToBaseLink',
-                // 'belongsToUser',
                 'hasOneThroughUserLink',
                 'belongsToUserLinkTracker',
+            ],
+            // 'query'      => [
+            //     // ['streaming', '=', true],
+            // ],
+
+            'option'     => [
+                'take'       => 6,
+                'pagination' => [
+                    'type' => 'cursor',
+                ],
             ],
         ]);
 

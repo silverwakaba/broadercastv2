@@ -79,14 +79,41 @@ class UserProfileRepositories{
             isset($data['with']) ? $data['with'] : []
         )->where(
             isset($data['query']) ? $data['query'] : []
-        )->orderBy('published', 'DESC')->get();
+        )->orderBy('published', 'DESC');
+
+        // Additional query
+        if(isset($data['option'])){
+            if(isset($data['option']['take']) && !isset($data['option']['pagination'])){
+                $datas->take($data['option']['take']);
+            }
+
+            if(isset($data['option']['aggregate'])){
+                $datas->withAggregate('belongsToActiveStream', 'published')->orderBy('belongs_to_active_stream_published', 'DESC');
+            }
+        }
+
+        // Data retrieval
+        if(isset($data['option']['pagination'])){
+            if($data['option']['pagination']['type'] == 'normal'){
+                $newData = $datas->paginate($data['option']['take']);
+            }
+            elseif($data['option']['pagination']['type'] == 'cursor'){
+                $newData = $datas->cursorPaginate($data['option']['take']);
+            }
+            else{
+                $newData = $datas->paginate($data['option']['take']);
+            }
+        }
+        else{
+            $newData = $datas->get();
+        }
         
         if($datatable == true){
-            return DataTables::of($datas)->setTransformer(function($datas){
-                return UserChannelActivityResource::make($datas)->resolve();
+            return DataTables::of($newData)->setTransformer(function($newData){
+                return UserChannelActivityResource::make($newData)->resolve();
             })->toJson();
         }
 
-        return BaseHelper::resourceToJson(UserChannelActivityResource::collection($datas)->response()->getData());
+        return BaseHelper::resourceToJson(UserChannelActivityResource::collection($newData)->response()->getData());
     }
 }
