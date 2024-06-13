@@ -1,4 +1,6 @@
 $(function () {
+    Pusher.logToConsole = true;
+    
     $('span.pagination').hide();
 
     $('[data-toggle="tooltip"]').tooltip();
