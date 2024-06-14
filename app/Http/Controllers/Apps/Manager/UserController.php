@@ -203,7 +203,7 @@ class UserController extends Controller{
 
     // Link Delete - For Checked Base Link (Like YouTube, Twitch, etc)
     public function linkDeleteConfirm($id){
-        return $datas = UserLinkRepositories::getLinkToConfirm([
+        $datas = UserLinkRepositories::getLinkToConfirm([
             'did'   => $id,
             'uid'   => auth()->user()->id,
             'with'  => ['belongsToBaseLink', 'hasOneUserLinkTracker'],

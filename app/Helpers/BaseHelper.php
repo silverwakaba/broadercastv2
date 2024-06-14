@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use Carbon\Carbon;
 use App\Models\BaseLink;
 use App\Models\User;
 use Illuminate\Support\Str;
@@ -15,6 +16,13 @@ class BaseHelper{
         }
 
         return hash("adler32", $value);
+    }
+
+    public static function diffInDays($day, $compared){
+        $now = Carbon::now()->timezone(config('app.timezone'))->toDateTimeString();
+        $parse = Carbon::parse($compared)->timezone(config('app.timezone'))->toDateTimeString();
+
+        return Carbon::parse($now)->diffInDays($parse);
     }
 
     public static function getBotID(){

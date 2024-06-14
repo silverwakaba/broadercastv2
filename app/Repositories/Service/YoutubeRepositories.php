@@ -233,7 +233,7 @@ class YoutubeRepositories{
                             'banner'        => isset($data['brandingSettings']['image']['bannerExternalUrl']) ? Str::before($data['brandingSettings']['image']['bannerExternalUrl'], '=') : null,
                             'view'          => $data['statistics']['viewCount'] ? $data['statistics']['viewCount'] : 0,
                             'subscriber'    => $data['statistics']['hiddenSubscriberCount'] == false ? $data['statistics']['subscriberCount'] : 0,
-                            'joined'        => Carbon::parse($data['snippet']['publishedAt'])->timezone("Asia/Jakarta")->toDateTimeString(),
+                            'joined'        => Carbon::parse($data['snippet']['publishedAt'])->timezone(config('app.timezone'))->toDateTimeString(),
                         ]);
 
                         return RedirectHelper::routeBack('apps.manager.link', 'success', 'Channel Verification', 'verify');
@@ -298,7 +298,7 @@ class YoutubeRepositories{
                                 'banner'        => isset($data['brandingSettings']['image']['bannerExternalUrl']) ? Str::before($data['brandingSettings']['image']['bannerExternalUrl'], '=') : null,
                                 'view'          => $data['statistics']['viewCount'] ? $data['statistics']['viewCount'] : 0,
                                 'subscriber'    => $data['statistics']['hiddenSubscriberCount'] == false ? $data['statistics']['subscriberCount'] : 0,
-                                'joined'        => Carbon::parse($data['snippet']['publishedAt'])->timezone("Asia/Jakarta")->toDateTimeString(),
+                                'joined'        => Carbon::parse($data['snippet']['publishedAt'])->timezone(config('app.timezone'))->toDateTimeString(),
                             ]);
 
                             return RedirectHelper::routeBack('apps.manager.link', 'success', 'Channel Verification', 'verify');
@@ -361,7 +361,7 @@ class YoutubeRepositories{
 
     public static function fetchArchiveViaAPI($channelID, $userID, $nextPageToken = ''){
         try{
-            // $userLT = self::userLinkTracker($channelID, $userID, false);
+            $userLT = self::userLinkTracker($channelID, $userID, false);
 
             $apiKey = self::apiKey();
 
@@ -380,30 +380,30 @@ class YoutubeRepositories{
 
             return $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/activities', $params)->json();
 
-            if(isset($http['items'])){
-                foreach($http['items'] AS $data){
-                    if(isset($data['contentDetails']['upload']['videoId'])){
-                        UserFeed::insertOrIgnore([
-                            'users_id'              => $userLT->users_id,
-                            'base_link_id'          => $userLT->base_link_id,
-                            'users_link_tracker_id' => $userLT->id,
-                            'identifier'            => $data['contentDetails']['upload']['videoId'],
-                            'title'                 => $data['snippet']['title'],
-                            'published'             => Carbon::parse($data['snippet']['publishedAt'])->timezone("Asia/Jakarta")->toDateTimeString(),
-                        ]);
-                    }
-                }
-            }
+            // if(isset($http['items'])){
+            //     foreach($http['items'] AS $data){
+            //         if(isset($data['contentDetails']['upload']['videoId'])){
+            //             UserFeed::insertOrIgnore([
+            //                 'users_id'              => $userLT->users_id,
+            //                 'base_link_id'          => $userLT->base_link_id,
+            //                 'users_link_tracker_id' => $userLT->id,
+            //                 'identifier'            => $data['contentDetails']['upload']['videoId'],
+            //                 'title'                 => $data['snippet']['title'],
+            //                 'published'             => Carbon::parse($data['snippet']['publishedAt'])->timezone(config('app.timezone'))->toDateTimeString(),
+            //             ]);
+            //         }
+            //     }
+            // }
 
-            // Next Page Token Implementation
-            if(isset($http['nextPageToken'])){
-                self::fetchArchiveViaAPINextPage($channelID, $userID, $http['nextPageToken']);
-            }
-            else{
-                $userLT->update([
-                    'initialized' => true,
-                ]);
-            }
+            // // Next Page Token Implementation
+            // if(isset($http['nextPageToken'])){
+            //     self::fetchArchiveViaAPINextPage($channelID, $userID, $http['nextPageToken']);
+            // }
+            // else{
+            //     $userLT->update([
+            //         'initialized' => true,
+            //     ]);
+            // }
         }
         catch(\Throwable $th){
             return $th;
@@ -420,25 +420,38 @@ class YoutubeRepositories{
     // Fetch Archive Via Feed
     public static function fetchArchiveViaFeed($channelID, $userID){
         try{
-            $userLT = self::userLinkTracker($channelID, $userID, true);
+            $userLT = self::userLinkTracker($channelID, $userID, false); // setelah debug nanti ganti lagi jadi "true"
+
+            $userLTs = [
+                'users_id'              => $userLT->users_id,
+                'base_link_id'          => $userLT->base_link_id,
+                'users_link_tracker_id' => $userLT->id,
+            ];
 
             $http = BaseHelper::youtubeXMLToJson($channelID);
 
             if(isset($http->entry)){
                 foreach($http->entry AS $data){
-                    UserFeed::insertOrIgnore([
-                        'users_id'              => $userLT->users_id,
-                        'base_link_id'          => $userLT->base_link_id,
-                        'users_link_tracker_id' => $userLT->id,
-                        'identifier'            => Str::afterLast($data->id, ':'),
-                        'title'                 => $data->title,
-                        'published'             => Carbon::parse($data->published)->timezone("Asia/Jakarta")->toDateTimeString(),
-                        'updated'               => Carbon::parse($data->updated)->timezone("Asia/Jakarta")->toDateTimeString(),
-                    ]);
+                    $count = BaseHelper::diffInDays(7, $data->published);
+
+                    if(($count <= 3) && ($count >= -3)){
+                        UserFeed::insertOrIgnore(
+                            array_merge($userLTs, [
+                                'identifier'    => Str::afterLast($data->id, ':'),
+                                'title'         => $data->title,
+                                'published'     => Carbon::parse($data->published)->timezone(config('app.timezone'))->toDateTimeString(),
+                            ])
+                        );
+                    }
+                    else{
+                        // 
+                    }
                 }
             }
         }
-        catch(\Throwable $th){}
+        catch(\Throwable $th){
+            return $th;
+        }
     }
 
     // Fetch Activity

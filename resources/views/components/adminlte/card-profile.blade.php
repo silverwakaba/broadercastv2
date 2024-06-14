@@ -101,6 +101,14 @@
                 <strong>Resource</strong>
             </li>
             <li class="list-group-item">
+                <strong><p>Channel</p></strong>
+                @if($channels)
+                    <x-Adminlte.CardChannel :channels="$channels" />
+                @else
+                    <p class="m-0">No channel</p>
+                @endif
+            </li>
+            <li class="list-group-item">
                 <strong>External Link</strong>
                 @if($links)
                     <ul class="list-inline text-center m-0">
@@ -114,14 +122,6 @@
                     </ul>
                 @else
                     <p class="m-0">No external link</p>
-                @endif
-            </li>
-            <li class="list-group-item">
-                <p><strong>Channel</strong></p>
-                @if($channels)
-                    <x-Adminlte.CardChannel :channels="$channels" />
-                @else
-                    <p class="m-0">No channel</p>
                 @endif
             </li>
         </ul>

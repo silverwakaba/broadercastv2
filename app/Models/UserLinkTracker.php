@@ -13,7 +13,7 @@ class UserLinkTracker extends Model{
         'users_id',
         'users_link_id',
         'base_link_id',
-        'users_feed_id',
+        // 'users_feed_id',
         'initialized',
         'identifier',
         'name',
@@ -22,8 +22,8 @@ class UserLinkTracker extends Model{
         'view',
         'subscriber',
         'joined',
-        'streaming',
-        'concurrent',
+        // 'streaming',
+        // 'concurrent',
     ];
 
     public function belongsToUser(){

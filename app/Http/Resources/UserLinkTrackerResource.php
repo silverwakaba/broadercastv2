@@ -37,7 +37,7 @@ class UserLinkTrackerResource extends JsonResource{
             'banner'        => $banner,
             'view'          => $this->view,
             'subscriber'    => $this->subscriber,
-            'streaming'     => $this->streaming,
+            // 'streaming'     => $this->streaming,
             'concurrent'    => $this->concurrent,
             'link'          => new UserLinkResource($this->whenLoaded('belongsToBaseLink')),
             'channel'       => new UserChannelResource($this->whenLoaded('belongsToUserLink')),

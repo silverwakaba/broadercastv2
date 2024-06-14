@@ -42,7 +42,7 @@ class UserProfileRepositories{
             isset($data['with']) ? $data['with'] : []
         )->where(
             isset($data['query']) ? $data['query'] : []
-        )->whereIn('base_link_id', BaseHelper::getCheckedBaseLink())->orderBy('streaming', 'DESC');
+        )->whereIn('base_link_id', BaseHelper::getCheckedBaseLink());//->orderBy('streaming', 'DESC');
         
         // Additional query
         if(isset($data['option'])){
@@ -50,9 +50,9 @@ class UserProfileRepositories{
                 $datas->take($data['option']['take']);
             }
 
-            if(isset($data['option']['aggregate'])){
-                $datas->withAggregate('belongsToActiveStream', 'published')->orderBy('belongs_to_active_stream_published', 'DESC');
-            }
+            // if(isset($data['option']['aggregate'])){
+            //     $datas->withAggregate('belongsToActiveStream', 'published')->orderBy('belongs_to_active_stream_published', 'DESC');
+            // }
         }
 
         // Data retrieval

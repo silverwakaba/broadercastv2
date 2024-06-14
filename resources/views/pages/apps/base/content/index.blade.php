@@ -18,8 +18,6 @@
     </x-Adminlte.Content>
 
     <script type="module">
-        // Full websocket config ada di \resources\js\function\websocket.js
-
         $("#contentTables").DataTable({
             "ordering": false,
             "processing": true,

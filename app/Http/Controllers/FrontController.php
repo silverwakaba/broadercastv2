@@ -21,9 +21,9 @@ class FrontController extends Controller{
                 'belongsToUserLink',
                 'belongsToActiveStream',
             ],
-            'query'      => [
-                ['streaming', '=', true],
-            ],
+            // 'query'      => [
+            //     ['streaming', '=', true],
+            // ],
             'option'     => [
                 // 'take'       => 6,
                 'aggregate'  => true,
