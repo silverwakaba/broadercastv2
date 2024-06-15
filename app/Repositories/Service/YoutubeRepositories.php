@@ -34,10 +34,15 @@ class YoutubeRepositories{
     }
 
     // Live Scrapper
-    public static function liveScrapper($channelID){
+    public static function videoScrapper($videoID){
         try{
+            $endpoint = [
+                '1st' => 'https://web.scraper.workers.dev',
+                '2nd' => 'https://scraper.sspn.workers.dev',
+            ];
+
             $params = [
-                'url'       => 'www.youtube.com/channel/' . $channelID . '/live',
+                'url'       => "https://www.youtube.com/watch?v=$videoID",
                 'selector'  => 'title,script,body',
                 'scrape'    => 'text',
                 'spaced'    => 'true',
@@ -45,60 +50,50 @@ class YoutubeRepositories{
             ];
     
             $responses = Http::pool(fn (Pool $pool) => [
-                $pool->as('first')->get('https://web.scraper.workers.dev', $params),
-                $pool->as('second')->get('https://web.scraper.workers.dev', $params),
-                $pool->as('third')->get('https://web.scraper.workers.dev', $params),
+                $pool->as('first')->get($endpoint['1st'], $params),
+                $pool->as('second')->get($endpoint['2nd'], $params),
             ]);
     
             $http = [
                 '1stP'  => $responses['first']->json(),
                 '2ndP'  => $responses['second']->json(),
-                '3rdP'  => $responses['third']->json(),
             ];
-    
+
+            // First
             if(
-                // First
                 (Str::isUrl($http['1stP']['result']['title'][0]) == false)
                 &&
                 (Str::of($http['1stP']['result']['script'][0])->contains(['captcha']) == false)
                 &&
                 (Str::of($http['1stP']['result']['body'][0])->contains(['captcha']) == false)
             ){
-                // Return
                 return $http['1stP'];
             }
+
+            // Second
             elseif(
-                // Second
                 (Str::isUrl($http['2ndP']['result']['title'][0]) == false)
                 &&
                 (Str::of($http['2ndP']['result']['script'][0])->contains(['captcha']) == false)
                 &&
                 (Str::of($http['2ndP']['result']['body'][0])->contains(['captcha']) == false)
             ){
-                // Return
                 return $http['2ndP'];
             }
-            elseif(
-                // Third
-                (Str::isUrl($http['3rdP']['result']['title'][0]) == false)
-                &&
-                (Str::of($http['3rdP']['result']['script'][0])->contains(['captcha']) == false)
-                &&
-                (Str::of($http['3rdP']['result']['body'][0])->contains(['captcha']) == false)
-            ){
-                // Return
-                return $http['3rdP'];
-            }
+
+            // Get another result
             else{
-                return self::liveScrapperAgain($channelID);
+                return self::videoScrapperAgain($videoID);
             }
         }
-        catch(\Throwable $th){}
+        catch(\Throwable $th){
+            return $th;
+        }
     }
 
-    public static function liveScrapperAgain($channelID){
+    public static function videoScrapperAgain($videoID){
         try{
-            return self::liveScrapper($channelID);
+            return self::videoScrapper($videoID);
         }
         catch(\Throwable $th){}
     }
@@ -359,9 +354,16 @@ class YoutubeRepositories{
         catch(\Throwable $th){}
     }
 
+    // Fetch Archive Via API
     public static function fetchArchiveViaAPI($channelID, $userID, $nextPageToken = ''){
         try{
             $userLT = self::userLinkTracker($channelID, $userID, false);
+
+            $userLTs = [
+                'users_id'              => $userLT->users_id,
+                'base_link_id'          => $userLT->base_link_id,
+                'users_link_tracker_id' => $userLT->id,
+            ];
 
             $apiKey = self::apiKey();
 
@@ -378,32 +380,31 @@ class YoutubeRepositories{
                 $params['pageToken'] = $nextPageToken;
             }
 
-            return $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/activities', $params)->json();
+            $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/activities', $params)->json();
 
-            // if(isset($http['items'])){
-            //     foreach($http['items'] AS $data){
-            //         if(isset($data['contentDetails']['upload']['videoId'])){
-            //             UserFeed::insertOrIgnore([
-            //                 'users_id'              => $userLT->users_id,
-            //                 'base_link_id'          => $userLT->base_link_id,
-            //                 'users_link_tracker_id' => $userLT->id,
-            //                 'identifier'            => $data['contentDetails']['upload']['videoId'],
-            //                 'title'                 => $data['snippet']['title'],
-            //                 'published'             => Carbon::parse($data['snippet']['publishedAt'])->timezone(config('app.timezone'))->toDateTimeString(),
-            //             ]);
-            //         }
-            //     }
-            // }
+            if(isset($http['items'])){
+                foreach($http['items'] AS $data){
+                    if(isset($data['contentDetails']['upload']['videoId'])){
+                        UserFeed::insertOrIgnore(
+                            array_merge($userLTs, [
+                                'identifier'    => $data['contentDetails']['upload']['videoId'],
+                                'title'         => $data['snippet']['title'],
+                                'published'     => Carbon::parse($data['snippet']['publishedAt'])->timezone(config('app.timezone'))->toDateTimeString(),
+                            ])
+                        );
+                    }
+                }
+            }
 
-            // // Next Page Token Implementation
-            // if(isset($http['nextPageToken'])){
-            //     self::fetchArchiveViaAPINextPage($channelID, $userID, $http['nextPageToken']);
-            // }
-            // else{
-            //     $userLT->update([
-            //         'initialized' => true,
-            //     ]);
-            // }
+            // Next Page Token Implementation
+            if(isset($http['nextPageToken'])){
+                self::fetchArchiveViaAPINextPage($channelID, $userID, $http['nextPageToken']);
+            }
+            else{
+                $userLT->update([
+                    'initialized' => true,
+                ]);
+            }
         }
         catch(\Throwable $th){
             return $th;
@@ -420,7 +421,7 @@ class YoutubeRepositories{
     // Fetch Archive Via Feed
     public static function fetchArchiveViaFeed($channelID, $userID){
         try{
-            $userLT = self::userLinkTracker($channelID, $userID, false); // setelah debug nanti ganti lagi jadi "true"
+            $userLT = self::userLinkTracker($channelID, $userID, true);
 
             $userLTs = [
                 'users_id'              => $userLT->users_id,
@@ -432,20 +433,13 @@ class YoutubeRepositories{
 
             if(isset($http->entry)){
                 foreach($http->entry AS $data){
-                    $count = BaseHelper::diffInDays(7, $data->published);
-
-                    if(($count <= 3) && ($count >= -3)){
-                        UserFeed::insertOrIgnore(
-                            array_merge($userLTs, [
-                                'identifier'    => Str::afterLast($data->id, ':'),
-                                'title'         => $data->title,
-                                'published'     => Carbon::parse($data->published)->timezone(config('app.timezone'))->toDateTimeString(),
-                            ])
-                        );
-                    }
-                    else{
-                        // 
-                    }
+                    UserFeed::insertOrIgnore(
+                        array_merge($userLTs, [
+                            'identifier'    => Str::afterLast($data->id, ':'),
+                            'title'         => $data->title,
+                            'published'     => Carbon::parse($data->published)->timezone(config('app.timezone'))->toDateTimeString(),
+                        ])
+                    );
                 }
             }
         }
@@ -455,81 +449,81 @@ class YoutubeRepositories{
     }
 
     // Fetch Activity
-    public static function fetchActivityViaCrawler($channelID, $userID){
-        try{
-            // Default state
-            $videoID = null;
-            $videoIDNew = null;
-            $isOffline = true;
-            $videoSchedule = null;
+    // public static function fetchActivityViaCrawler($channelID, $userID){
+    //     try{
+    //         // Default state
+    //         $videoID = null;
+    //         $videoIDNew = null;
+    //         $isOffline = true;
+    //         $videoSchedule = null;
 
-            $userLT = self::userLinkTracker($channelID, $userID, true);
+    //         $userLT = self::userLinkTracker($channelID, $userID, true);
 
-            $http = self::liveScrapper($channelID);
+    //         $http = self::liveScrapper($channelID);
 
-            $httpResultTitle = Str::remove(' - YouTube', $http['result']['title'][0]);
+    //         $httpResultTitle = Str::remove(' - YouTube', $http['result']['title'][0]);
 
-            /**
-             * Array key reference (Patch 30 May 2024)
-             * 12: Streaming status (id, title, next stream schedule)
-             * 33: Streaming statistic (concurrent viewers)
-            */
-            $httpResultScript = $http['result']['script'];
+    //         /**
+    //          * Array key reference (Patch 30 May 2024)
+    //          * 12: Streaming status (id, title, next stream schedule)
+    //          * 33: Streaming statistic (concurrent viewers)
+    //         */
+    //         $httpResultScript = $http['result']['script'];
 
-            // Streaming statistic
-            if(isset($httpResultScript[33])){
-                $isOffline = false;
+    //         // Streaming statistic
+    //         if(isset($httpResultScript[33])){
+    //             $isOffline = false;
 
-                $videoID = Str::betweenFirst($httpResultScript[12], '{"liveStreamabilityRenderer":{"videoId":"', '",'); // Cek kalo ada 11 char berarti valid
-                $videoIDNew = Str::length($videoID) === 11 ? $videoID : "B-Bakaa~Kyun~Its~Not~Like~I~Dont~Want~To~Give~You~Any~Result~You~Know";
+    //             $videoID = Str::betweenFirst($httpResultScript[12], '{"liveStreamabilityRenderer":{"videoId":"', '",'); // Cek kalo ada 11 char berarti valid
+    //             $videoIDNew = Str::length($videoID) === 11 ? $videoID : "B-Bakaa~Kyun~Its~Not~Like~I~Dont~Want~To~Give~You~Any~Result~You~Know";
 
-                $videoTitle = Str::betweenFirst($httpResultScript[12], '"title":"', '",');
-                $videoTitleNew = $httpResultTitle == $videoTitle ? $httpResultTitle : 'Recheck';
+    //             $videoTitle = Str::betweenFirst($httpResultScript[12], '"title":"', '",');
+    //             $videoTitleNew = $httpResultTitle == $videoTitle ? $httpResultTitle : 'Recheck';
 
-                $videoSchedule = (int) Str::betweenFirst($httpResultScript[12], '"scheduledStartTime":"', '",'); // Cek kalo 0 artinya lagi live dan/atau gak ada next schedule
+    //             $videoSchedule = (int) Str::betweenFirst($httpResultScript[12], '"scheduledStartTime":"', '",'); // Cek kalo 0 artinya lagi live dan/atau gak ada next schedule
 
-                $videoConcurrent = (int) Str::betweenFirst($httpResultScript[33], '"originalViewCount":"', '"'); // Cek kalo int berarti oke
-            }
+    //             $videoConcurrent = (int) Str::betweenFirst($httpResultScript[33], '"originalViewCount":"', '"'); // Cek kalo int berarti oke
+    //         }
 
-            $userF = self::userFeed($videoIDNew);
+    //         $userF = self::userFeed($videoIDNew);
 
-            if(
-                ($isOffline == false) && (Str::length($videoID) === 11) && ($videoSchedule == null)
-            ){
-                if(isset($userF)){
-                    if(
-                        ($videoTitleNew !== 'Recheck') && ($videoTitleNew !== $userF->title)
-                    ){
-                        $userF->update([
-                            'title' => $videoTitleNew,
-                        ]);
-                    }
+    //         if(
+    //             ($isOffline == false) && (Str::length($videoID) === 11) && ($videoSchedule == null)
+    //         ){
+    //             if(isset($userF)){
+    //                 if(
+    //                     ($videoTitleNew !== 'Recheck') && ($videoTitleNew !== $userF->title)
+    //                 ){
+    //                     $userF->update([
+    //                         'title' => $videoTitleNew,
+    //                     ]);
+    //                 }
 
-                    $userLT->update([
-                        'users_feed_id' => $userF->id,
-                        'streaming'     => true,
-                        'concurrent'    => $videoConcurrent,
-                    ]);
+    //                 $userLT->update([
+    //                     'users_feed_id' => $userF->id,
+    //                     'streaming'     => true,
+    //                     'concurrent'    => $videoConcurrent,
+    //                 ]);
             
-                    // return "Online and updating";
-                }
+    //                 // return "Online and updating";
+    //             }
             
-                // return "Online";
-            }
-            else{
-                if(isset($userLT->users_feed_id)){
-                    $userLT->update([
-                        'users_feed_id' => null,
-                        'streaming'     => false,
-                        'concurrent'    => 0,
-                    ]);
-                }
+    //             // return "Online";
+    //         }
+    //         else{
+    //             if(isset($userLT->users_feed_id)){
+    //                 $userLT->update([
+    //                     'users_feed_id' => null,
+    //                     'streaming'     => false,
+    //                     'concurrent'    => 0,
+    //                 ]);
+    //             }
             
-                // return "Offline";
-            }
-        }
-        catch(\Throwable $th){}
-    }
+    //             // return "Offline";
+    //         }
+    //     }
+    //     catch(\Throwable $th){}
+    // }
 
     // Fetch Archive Status
     public static function fetchArchiveStatus($archiveID){
@@ -564,12 +558,81 @@ class YoutubeRepositories{
 
         $params = [
             'key'           => $apiKey, 
-            'id'            => $videoID,
+            'id'            => "$videoID",
             'part'          => "contentDetails,liveStreamingDetails,snippet,statistics,status",
         ];
 
-        $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/videos', $params)->json();
+        return $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/videos', $params)->json();
+    }
 
-        return $http;
+    // Init
+    public static function poolUserFeedInit(){
+        $datas = UserFeed::where([
+            ['base_link_id', '=', 2],
+            ['base_feed_type_id', '=', null],
+            ['schedule', '=', null],
+            ['actual_start', '=', null],
+            ['actual_end', '=', null],
+            ['duration', '=', null],
+        ])->select('identifier')->take(50)->get();
+
+        if(isset($datas)){
+            $videoID = implode(',', ($datas)->pluck('identifier')->toArray());
+
+            $http = self::fetchVideoStatus($videoID);
+
+            if($http['pageInfo']['totalResults'] >= 1){
+                foreach($http['items'] AS $data){
+                    UserFeed::where([
+                        ['identifier', '=', $data['id']],
+                    ])->update([
+                        'schedule'      => isset($data['liveStreamingDetails']['scheduledStartTime']) ? Carbon::parse($data['liveStreamingDetails']['scheduledStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
+                        'actual_start'  => isset($data['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($data['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
+                        'actual_end'    => isset($data['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString()  : null,
+                        'duration'      => $data['contentDetails']['duration'],
+                    ]);
+                }
+            }
+        }
+    }
+
+    public static function fetchVideoViaScraper($vID, $uID){
+        try{
+            // Default state
+            $videoID = null;
+            $videoIDNew = null;
+            $isOffline = true;
+            $videoSchedule = null;
+
+            $http = self::videoScrapper($vID);
+
+            $httpResultTitle = Str::remove(' - YouTube', $http['result']['title'][0]);
+
+            /**
+             * Array key reference (Patch 30 May 2024)
+             * 14: Streaming status (id, title, next stream schedule)
+             * 33: Streaming statistic (concurrent viewers)
+            */
+            $httpResultScript = $http['result']['script'];
+
+            if(isset($httpResultScript[33])){
+                $isOffline = false;
+
+                $videoID = Str::betweenFirst($httpResultScript[14], '{"liveStreamabilityRenderer":{"videoId":"', '",'); // Cek kalo ada 11 char berarti valid
+                $videoIDNew = Str::length($videoID) === 11 ? $videoID : "B-Bakaa~Kyun~Its~Not~Like~I~Dont~Want~To~Give~You~Any~Result~You~Know";
+
+                $videoTitle = Str::betweenFirst($httpResultScript[14], '"title":"', '",');
+                $videoTitleNew = $httpResultTitle == $videoTitle ? $httpResultTitle : 'Recheck';
+
+                $videoSchedule = (int) Str::betweenFirst($httpResultScript[14], '"scheduledStartTime":"', '",'); // Cek kalo 0 artinya lagi live dan/atau gak ada next schedule
+
+                $videoConcurrent = (int) Str::betweenFirst($httpResultScript[35], '"originalViewCount":"', '"'); // Cek kalo int berarti oke
+            }
+
+            $userF = self::userFeed($videoIDNew);
+
+            return $userF;
+        }
+        catch(\Throwable $th){}
     }
 }

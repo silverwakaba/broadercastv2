@@ -13,7 +13,6 @@ class UserLinkTracker extends Model{
         'users_id',
         'users_link_id',
         'base_link_id',
-        // 'users_feed_id',
         'initialized',
         'identifier',
         'name',
@@ -22,8 +21,6 @@ class UserLinkTracker extends Model{
         'view',
         'subscriber',
         'joined',
-        // 'streaming',
-        // 'concurrent',
     ];
 
     public function belongsToUser(){
@@ -38,11 +35,11 @@ class UserLinkTracker extends Model{
         return $this->belongsTo(UserLink::class, 'users_link_id');
     }
 
-    public function belongsToActiveStream(){
-        return $this->belongsTo(UserFeed::class, 'users_feed_id', 'id');
-    }
+    // public function belongsToActiveStream(){
+    //     return $this->belongsTo(UserFeed::class, 'users_feed_id', 'id');
+    // }
 
-    public function hasManyUserFeed(){
-        return $this->hasMany(UserFeed::class, 'users_link_tracker_id', 'users_id');
-    }
+    // public function hasManyUserFeed(){
+    //     return $this->hasMany(UserFeed::class, 'users_link_tracker_id', 'users_id');
+    // }
 }

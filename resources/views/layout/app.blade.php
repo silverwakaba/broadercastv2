@@ -13,7 +13,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2.0/dist/css/adminlte.min.css">
     </head>
-    <body class="hold-transition sidebar-mini sidebar-collapse dark-mode">
+    <body class="hold-transition sidebar-mini dark-mode">
         <div class="wrapper">
             <x-adminlte.main />
         </div>

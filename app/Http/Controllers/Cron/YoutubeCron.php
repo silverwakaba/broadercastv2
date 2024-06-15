@@ -19,11 +19,19 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 
+use Carbon\CarbonInterval;
+// CarbonInterval::create("PT28M15S")->format('%H:%M:%S');
+
 class YoutubeCron extends Controller{
     public function fetchDebug(){
+        // return YoutubeRepositories::videoScrapper('oO7XZ86ePq0');
+
+        // return CarbonInterval::create("PT28M15S")->format('%H:%M:%S');
+        // return Carbon::createFromTimeStamp("PT4H28M15S")->toDateTimeString();
+
         // $now = Carbon::now()->timezone("Asia/Jakarta")->toDateTimeString();
         
-        // $published = Carbon::parse("2024-06-17T13:00:57+00:00")->timezone("Asia/Jakarta")->toDateTimeString();
+        // return $published = Carbon::parse("2024-06-14T13:00:00Z")->timezone("Asia/Jakarta")->diffForHumans();//->toDateTimeString();
 
         // $count = Carbon::parse($now)->diffInDays($published);
 
@@ -37,10 +45,12 @@ class YoutubeCron extends Controller{
         // return YoutubeRepositories::fetchProfile("UCDe3iqZiVXIXQbgIR36mF6w", 1);
 
         // Via API
-        // return YoutubeRepositories::fetchVideoStatus("0Zr2l5ACFoU");
+        // return YoutubeRepositories::fetchVideoStatus("H0Gz1LOUp2s");
 
         // return YoutubeRepositories::fetchArchiveViaAPI("UCNkj7b0jncXROUeIeROZ4Og", 1);
-        return YoutubeRepositories::fetchArchiveViaFeed("UCNkj7b0jncXROUeIeROZ4Og", 1);
+        // return YoutubeRepositories::fetchArchiveViaFeed("UCNkj7b0jncXROUeIeROZ4Og", 1);
+
+        return YoutubeRepositories::fetchVideoViaScraper("oO7XZ86ePq0", 1);
     }
 
     public function fetchUserLinkTrackerDaily(){
@@ -63,14 +73,14 @@ class YoutubeCron extends Controller{
         ])->select('users_id', 'identifier')->chunk(100, function(Collection $chunks){
             foreach($chunks as $chunk){
                 try{
-                    // Initialization acrhive
+                    // Init acrhive (via Youtube API)
                     YoutubeRepositories::fetchArchiveViaAPI($chunk->identifier, $chunk->users_id);
                     
-                    // Normal archive
+                    // Normal archive (via Scraper)
                     YoutubeRepositories::fetchArchiveViaFeed($chunk->identifier, $chunk->users_id);
 
                     // Fetch channel activity
-                    YoutubeRepositories::fetchActivityViaCrawler($chunk->identifier, $chunk->users_id);
+                    // YoutubeRepositories::fetchActivityViaCrawler($chunk->identifier, $chunk->users_id);
                 }
                 catch(\Throwable $th){}
             }
@@ -80,14 +90,16 @@ class YoutubeCron extends Controller{
     public function fetchUserFeedMinutely(){
         $feed = UserFeed::where([
             ['base_link_id', '=', 2],
-        ])->select('identifier')->chunk(100, function(Collection $chunks){
+        ])->select('identifier')->chunk(50, function(Collection $chunks){
             foreach($chunks as $chunk){
                 try{
                     // Archive Status (like delete the archive from DB if it isn't on YouTube anymore)
-                    YoutubeRepositories::fetchArchiveStatus($chunk->identifier);
+                    // YoutubeRepositories::fetchArchiveStatus($chunk->identifier);
                 }
                 catch(\Throwable $th){}
             }
-        });   
+        });
+
+        $feedPool = YoutubeRepositories::poolUserFeedInit();
     }
 }

@@ -13,17 +13,16 @@ class UserFeed extends Model{
         'users_id',
         'base_link_id',
         'users_link_tracker_id',
-
         'base_feed_type_id',
         'concurrent',
         'streaming',
-        'streamable',
-
         'identifier',
         'title',
         'published',
         'schedule',
-        'actual_live',
+        'actual_start',
+        'actual_end',
+        'duration',
     ];
 
     public function belongsToUser(){

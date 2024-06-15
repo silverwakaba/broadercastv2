@@ -42,7 +42,7 @@ class CreatorController extends Controller{
             'with'  => [
                 'belongsToBaseLink',
                 'belongsToUserLink',
-                'belongsToActiveStream',
+                // 'belongsToActiveStream',
             ],
             'query' => [
                 ['users_id', '=', $profile->id],
