@@ -50,7 +50,7 @@ class YoutubeCron extends Controller{
         // return YoutubeRepositories::fetchArchiveViaAPI("UCNkj7b0jncXROUeIeROZ4Og", 1);
         // return YoutubeRepositories::fetchArchiveViaFeed("UCNkj7b0jncXROUeIeROZ4Og", 1);
 
-        return YoutubeRepositories::fetchVideoViaScraper("oO7XZ86ePq0", 1);
+        return YoutubeRepositories::userFeedInit("2");
     }
 
     public function fetchUserLinkTrackerDaily(){
@@ -73,16 +73,21 @@ class YoutubeCron extends Controller{
         ])->select('users_id', 'identifier')->chunk(100, function(Collection $chunks){
             foreach($chunks as $chunk){
                 try{
-                    // Init acrhive (via Youtube API)
-                    YoutubeRepositories::fetchArchiveViaAPI($chunk->identifier, $chunk->users_id);
+                    // // Init acrhive (via Youtube API)
+                    // YoutubeRepositories::fetchArchiveViaAPI($chunk->identifier, $chunk->users_id);
                     
-                    // Normal archive (via Scraper)
-                    YoutubeRepositories::fetchArchiveViaFeed($chunk->identifier, $chunk->users_id);
+                    // // Normal archive (via Scraper)
+                    // YoutubeRepositories::fetchArchiveViaFeed($chunk->identifier, $chunk->users_id);
 
-                    // Fetch channel activity
+                    // Init archive metadata
+                    YoutubeRepositories::userFeedInit();
+
+                    // // Fetch channel activity
                     // YoutubeRepositories::fetchActivityViaCrawler($chunk->identifier, $chunk->users_id);
                 }
-                catch(\Throwable $th){}
+                catch(\Throwable $th){
+                    return $th;
+                }
             }
         });
     }

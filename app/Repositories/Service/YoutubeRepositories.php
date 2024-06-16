@@ -566,7 +566,7 @@ class YoutubeRepositories{
     }
 
     // Init
-    public static function poolUserFeedInit(){
+    public static function userFeedInit(){
         $datas = UserFeed::where([
             ['base_link_id', '=', 2],
             ['base_feed_type_id', '=', null],
@@ -576,7 +576,7 @@ class YoutubeRepositories{
             ['duration', '=', null],
         ])->select('identifier')->take(50)->get();
 
-        if(isset($datas)){
+        if(($datas) && isset($datas) && ($datas->count() >= 1)){
             $videoID = implode(',', ($datas)->pluck('identifier')->toArray());
 
             $http = self::fetchVideoStatus($videoID);
@@ -593,7 +593,13 @@ class YoutubeRepositories{
                     ]);
                 }
             }
+
+            return self::userFeedInitAgain();
         }
+    }
+
+    public static function userFeedInitAgain(){
+        return self::userFeedInit();
     }
 
     public static function fetchVideoViaScraper($vID, $uID){
@@ -611,7 +617,7 @@ class YoutubeRepositories{
             /**
              * Array key reference (Patch 30 May 2024)
              * 14: Streaming status (id, title, next stream schedule)
-             * 33: Streaming statistic (concurrent viewers)
+             * 35: Streaming statistic (concurrent viewers)
             */
             $httpResultScript = $http['result']['script'];
 
@@ -631,7 +637,28 @@ class YoutubeRepositories{
 
             $userF = self::userFeed($videoIDNew);
 
-            return $userF;
+            if(
+                ($isOffline == false) && (Str::length($videoID) === 11) && ($videoSchedule == null)
+            ){
+                if(isset($userF)){
+                    if(
+                        ($videoTitleNew !== 'Recheck') && ($videoTitleNew == $userF->title)
+                    ){
+                        $userF->update([
+                            'concurrent'    => $videoConcurrent,
+                            'streaming'     => true,
+                            'title'         => $videoTitleNew,
+                        ]);
+                    }
+            
+                    return "Online and updating";
+                }
+            
+                return "Just online";
+            }
+            else{
+                return "Offline";
+            }
         }
         catch(\Throwable $th){}
     }
