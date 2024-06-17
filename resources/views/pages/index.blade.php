@@ -5,8 +5,6 @@
         <div class="row">
             <div class="col-lg-9">
                 <x-Adminlte.Card title="Latest Activity">
-                    <!-- <x-Adminlte.CardChannelLive col="3" :channels="$tracker->data" /> -->
-
                     <x-Adminlte.CardFeed col="3" :feeds="$feed" />
                 </x-Adminlte.Card>
             </div>

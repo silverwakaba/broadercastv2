@@ -17,6 +17,7 @@ return new class extends Migration{
             $table->foreignId('base_feed_type_id')->nullable()->constrained()->references('id')->on('base_feed_type')->onDelete('cascade');
             $table->double('concurrent')->nullable()->default('0');
             $table->boolean('streaming')->default(false);
+            $table->boolean('streaming_archive')->nullable()->default(null);
             $table->string('identifier')->unique();
             $table->string('title');
             $table->dateTime('published')->nullable();

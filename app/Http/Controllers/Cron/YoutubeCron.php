@@ -19,9 +19,6 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 
-use Carbon\CarbonInterval;
-// CarbonInterval::create("PT28M15S")->format('%H:%M:%S');
-
 class YoutubeCron extends Controller{
     public function fetchDebug(){
         // return YoutubeRepositories::videoScrapper('oO7XZ86ePq0');
@@ -50,7 +47,9 @@ class YoutubeCron extends Controller{
         // return YoutubeRepositories::fetchArchiveViaAPI("UCNkj7b0jncXROUeIeROZ4Og", 1);
         // return YoutubeRepositories::fetchArchiveViaFeed("UCNkj7b0jncXROUeIeROZ4Og", 1);
 
-        return YoutubeRepositories::userFeedInit("2");
+        return YoutubeRepositories::fetchVideoViaScraper("oeVMFASXbgg", 1);
+
+        // return YoutubeRepositories::userFeedInit();
     }
 
     public function fetchUserLinkTrackerDaily(){
@@ -73,38 +72,38 @@ class YoutubeCron extends Controller{
         ])->select('users_id', 'identifier')->chunk(100, function(Collection $chunks){
             foreach($chunks as $chunk){
                 try{
-                    // // Init acrhive (via Youtube API)
-                    // YoutubeRepositories::fetchArchiveViaAPI($chunk->identifier, $chunk->users_id);
-                    
-                    // // Normal archive (via Scraper)
-                    // YoutubeRepositories::fetchArchiveViaFeed($chunk->identifier, $chunk->users_id);
+                    // Init acrhive (via Youtube API)
+                    YoutubeRepositories::fetchArchiveViaAPI($chunk->identifier, $chunk->users_id);
+
+                    // Init acrhive (via Youtube Feed XML)
+                    YoutubeRepositories::fetchArchiveViaFeed($chunk->identifier, $chunk->users_id);
 
                     // Init archive metadata
                     YoutubeRepositories::userFeedInit();
 
-                    // // Fetch channel activity
-                    // YoutubeRepositories::fetchActivityViaCrawler($chunk->identifier, $chunk->users_id);
+                    // Update archive metadata after streaming goes offline
+                    YoutubeRepositories::userFeedArchived();
                 }
-                catch(\Throwable $th){
-                    return $th;
-                }
+                catch(\Throwable $th){}
             }
         });
     }
 
     public function fetchUserFeedMinutely(){
-        $feed = UserFeed::where([
+        $onlineFeed = UserFeed::where([
             ['base_link_id', '=', 2],
-        ])->select('identifier')->chunk(50, function(Collection $chunks){
+            ['streaming', '=', true],
+            ['streaming_archive', '=', null],
+            ['actual_end', '=', null],
+            ['duration', '=', "P0D"],
+        ])->select('users_id', 'identifier')->chunk(100, function(Collection $chunks){
             foreach($chunks as $chunk){
                 try{
-                    // Archive Status (like delete the archive from DB if it isn't on YouTube anymore)
-                    // YoutubeRepositories::fetchArchiveStatus($chunk->identifier);
+                    // Fetch stream activity
+                    YoutubeRepositories::fetchVideoViaScraper($chunk->identifier, $chunk->users_id);
                 }
                 catch(\Throwable $th){}
             }
         });
-
-        $feedPool = YoutubeRepositories::poolUserFeedInit();
     }
 }

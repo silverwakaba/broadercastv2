@@ -448,82 +448,73 @@ class YoutubeRepositories{
         }
     }
 
-    // Fetch Activity
-    // public static function fetchActivityViaCrawler($channelID, $userID){
-    //     try{
-    //         // Default state
-    //         $videoID = null;
-    //         $videoIDNew = null;
-    //         $isOffline = true;
-    //         $videoSchedule = null;
+    // Fetch Video Via Scraper
+    public static function fetchVideoViaScraper($vID, $uID){
+        try{
+            $userF = self::userFeed($vID);
 
-    //         $userLT = self::userLinkTracker($channelID, $userID, true);
+            // Default state
+            $videoID = null;
+            $videoIDNew = null;
+            $isOffline = true;
+            $videoSchedule = null;
 
-    //         $http = self::liveScrapper($channelID);
+            $http = self::videoScrapper($vID);
 
-    //         $httpResultTitle = Str::remove(' - YouTube', $http['result']['title'][0]);
+            $httpResultTitle = Str::remove(' - YouTube', $http['result']['title'][0]);
 
-    //         /**
-    //          * Array key reference (Patch 30 May 2024)
-    //          * 12: Streaming status (id, title, next stream schedule)
-    //          * 33: Streaming statistic (concurrent viewers)
-    //         */
-    //         $httpResultScript = $http['result']['script'];
+            /**
+             * Array key reference (Patch 15 June 2024)
+             * 14: Streaming status (id, title, next stream schedule)
+             * 35: Streaming statistic (concurrent viewers)
+            */
+            $httpResultScript = $http['result']['script'];
 
-    //         // Streaming statistic
-    //         if(isset($httpResultScript[33])){
-    //             $isOffline = false;
+            if(isset($httpResultScript[33])){
+                $isOffline = false;
 
-    //             $videoID = Str::betweenFirst($httpResultScript[12], '{"liveStreamabilityRenderer":{"videoId":"', '",'); // Cek kalo ada 11 char berarti valid
-    //             $videoIDNew = Str::length($videoID) === 11 ? $videoID : "B-Bakaa~Kyun~Its~Not~Like~I~Dont~Want~To~Give~You~Any~Result~You~Know";
+                $videoID = Str::betweenFirst($httpResultScript[14], '{"liveStreamabilityRenderer":{"videoId":"', '",'); // Cek kalo ada 11 char berarti valid
+                $videoIDNew = Str::length($videoID) === 11 ? $videoID : "B-Bakaa~Kyun~Its~Not~Like~I~Dont~Want~To~Give~You~Any~Result~You~Know";
 
-    //             $videoTitle = Str::betweenFirst($httpResultScript[12], '"title":"', '",');
-    //             $videoTitleNew = $httpResultTitle == $videoTitle ? $httpResultTitle : 'Recheck';
+                $videoTitle = Str::betweenFirst($httpResultScript[14], '"title":"', '",');
+                $videoTitleNew = $httpResultTitle == $videoTitle ? $httpResultTitle : 'Recheck';
 
-    //             $videoSchedule = (int) Str::betweenFirst($httpResultScript[12], '"scheduledStartTime":"', '",'); // Cek kalo 0 artinya lagi live dan/atau gak ada next schedule
+                $videoSchedule = (int) Str::betweenFirst($httpResultScript[14], '"scheduledStartTime":"', '",'); // Cek kalo 0 artinya lagi live dan/atau gak ada next schedule
 
-    //             $videoConcurrent = (int) Str::betweenFirst($httpResultScript[33], '"originalViewCount":"', '"'); // Cek kalo int berarti oke
-    //         }
+                $videoConcurrent = (int) Str::betweenFirst($httpResultScript[35], '"originalViewCount":"', '"'); // Cek kalo int berarti oke
+            }
 
-    //         $userF = self::userFeed($videoIDNew);
+            if(
+                ($isOffline == false) && (Str::length($videoID) === 11) && ($videoSchedule == null)
+            ){
+                if(isset($userF)){
+                    if(
+                        ($videoTitleNew !== 'Recheck')
+                    ){
+                        $userF->update([
+                            'concurrent'    => $videoConcurrent,
+                            'streaming'     => true,
+                            'title'         => $videoTitleNew,
+                        ]);
 
-    //         if(
-    //             ($isOffline == false) && (Str::length($videoID) === 11) && ($videoSchedule == null)
-    //         ){
-    //             if(isset($userF)){
-    //                 if(
-    //                     ($videoTitleNew !== 'Recheck') && ($videoTitleNew !== $userF->title)
-    //                 ){
-    //                     $userF->update([
-    //                         'title' => $videoTitleNew,
-    //                     ]);
-    //                 }
+                        return "Online and updating";
+                    }
+                }
 
-    //                 $userLT->update([
-    //                     'users_feed_id' => $userF->id,
-    //                     'streaming'     => true,
-    //                     'concurrent'    => $videoConcurrent,
-    //                 ]);
-            
-    //                 // return "Online and updating";
-    //             }
-            
-    //             // return "Online";
-    //         }
-    //         else{
-    //             if(isset($userLT->users_feed_id)){
-    //                 $userLT->update([
-    //                     'users_feed_id' => null,
-    //                     'streaming'     => false,
-    //                     'concurrent'    => 0,
-    //                 ]);
-    //             }
-            
-    //             // return "Offline";
-    //         }
-    //     }
-    //     catch(\Throwable $th){}
-    // }
+                return "Just online";
+            }
+            else{
+                $userFU->update([
+                    'concurrent'        => 0,
+                    'streaming'         => false,
+                    'streaming_archive' => true,
+                ]);
+
+                return "Offline";
+            }
+        }
+        catch(\Throwable $th){}
+    }
 
     // Fetch Archive Status
     public static function fetchArchiveStatus($archiveID){
@@ -565,7 +556,7 @@ class YoutubeRepositories{
         return $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/videos', $params)->json();
     }
 
-    // Init
+    // User feed init
     public static function userFeedInit(){
         $datas = UserFeed::where([
             ['base_link_id', '=', 2],
@@ -602,64 +593,35 @@ class YoutubeRepositories{
         return self::userFeedInit();
     }
 
-    public static function fetchVideoViaScraper($vID, $uID){
-        try{
-            // Default state
-            $videoID = null;
-            $videoIDNew = null;
-            $isOffline = true;
-            $videoSchedule = null;
+    // User feed stream archive
+    public static function userFeedArchived(){
+        $datas = UserFeed::where([
+            ['base_link_id', '=', 2],
+            ['streaming', '=', false],
+            ['streaming_archive', '=', true],
+        ])->select('identifier')->take(50)->get();
 
-            $http = self::videoScrapper($vID);
+        if(($datas) && isset($datas) && ($datas->count() >= 1)){
+            $videoID = implode(',', ($datas)->pluck('identifier')->toArray());
 
-            $httpResultTitle = Str::remove(' - YouTube', $http['result']['title'][0]);
+            $http = self::fetchVideoStatus($videoID);
 
-            /**
-             * Array key reference (Patch 30 May 2024)
-             * 14: Streaming status (id, title, next stream schedule)
-             * 35: Streaming statistic (concurrent viewers)
-            */
-            $httpResultScript = $http['result']['script'];
-
-            if(isset($httpResultScript[33])){
-                $isOffline = false;
-
-                $videoID = Str::betweenFirst($httpResultScript[14], '{"liveStreamabilityRenderer":{"videoId":"', '",'); // Cek kalo ada 11 char berarti valid
-                $videoIDNew = Str::length($videoID) === 11 ? $videoID : "B-Bakaa~Kyun~Its~Not~Like~I~Dont~Want~To~Give~You~Any~Result~You~Know";
-
-                $videoTitle = Str::betweenFirst($httpResultScript[14], '"title":"', '",');
-                $videoTitleNew = $httpResultTitle == $videoTitle ? $httpResultTitle : 'Recheck';
-
-                $videoSchedule = (int) Str::betweenFirst($httpResultScript[14], '"scheduledStartTime":"', '",'); // Cek kalo 0 artinya lagi live dan/atau gak ada next schedule
-
-                $videoConcurrent = (int) Str::betweenFirst($httpResultScript[35], '"originalViewCount":"', '"'); // Cek kalo int berarti oke
-            }
-
-            $userF = self::userFeed($videoIDNew);
-
-            if(
-                ($isOffline == false) && (Str::length($videoID) === 11) && ($videoSchedule == null)
-            ){
-                if(isset($userF)){
-                    if(
-                        ($videoTitleNew !== 'Recheck') && ($videoTitleNew == $userF->title)
-                    ){
-                        $userF->update([
-                            'concurrent'    => $videoConcurrent,
-                            'streaming'     => true,
-                            'title'         => $videoTitleNew,
-                        ]);
-                    }
-            
-                    return "Online and updating";
+            if($http['pageInfo']['totalResults'] >= 1){
+                foreach($http['items'] AS $data){
+                    UserFeed::where([
+                        ['identifier', '=', $data['id']],
+                    ])->update([
+                        'actual_end'    => isset($data['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
+                        'duration'      => $data['contentDetails']['duration'],
+                    ]);
                 }
-            
-                return "Just online";
             }
-            else{
-                return "Offline";
-            }
+
+            return self::userFeedArchivedAgain();
         }
-        catch(\Throwable $th){}
+    }
+
+    public static function userFeedArchivedAgain(){
+        return self::userFeedArchived();
     }
 }

@@ -86,10 +86,6 @@ class UserProfileRepositories{
             if(isset($data['option']['take']) && !isset($data['option']['pagination'])){
                 $datas->take($data['option']['take']);
             }
-
-            if(isset($data['option']['aggregate'])){
-                $datas->withAggregate('belongsToActiveStream', 'published')->orderBy('belongs_to_active_stream_published', 'DESC');
-            }
         }
 
         // Data retrieval

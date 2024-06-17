@@ -16,6 +16,7 @@ class UserFeed extends Model{
         'base_feed_type_id',
         'concurrent',
         'streaming',
+        'streaming_archive',
         'identifier',
         'title',
         'published',
