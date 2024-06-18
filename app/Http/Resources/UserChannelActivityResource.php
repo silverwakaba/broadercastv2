@@ -37,20 +37,45 @@ class UserChannelActivityResource extends JsonResource{
             'title'                     => $this->title,
             'link'                      => $link,
             'thumbnail'                 => $thumbnail,
+
+            // 
             'published'                 => $this->published ? Carbon::parse($this->published)->format('d M Y, g:i A') : null,
             'published_for_human'       => $this->published ? Carbon::parse($this->published)->diffForHumans() : null,
+
+            // 
             'schedule'                  => $this->schedule ? Carbon::parse($this->schedule)->format('d M Y, g:i A') : null,
             'schedule_for_human'        => $this->schedule ? Carbon::parse($this->schedule)->diffForHumans() : null,
+
+            // 
             'actual_start'              => $this->actual_start ? Carbon::parse($this->actual_start)->format('d M Y, g:i A') : null,
             'actual_start_for_human'    => $this->actual_start ? Carbon::parse($this->actual_start)->diffForHumans() : null,
+
+            // Gak terlalu butuh
             'actual_end'                => $this->actual_end ? Carbon::parse($this->actual_end)->format('d M Y, g:i A') : null,
             'actual_end_for_human'      => $this->actual_end ? Carbon::parse($this->actual_end)->diffForHumans() : null,
             'duration'                  => $this->duration ? CarbonInterval::create($this->duration)->format('%H:%M:%S') : null,
+
+            'timestamp_for_human'         => $this->timestampForHuman(),
+
             'user'                      => new UserResource($this->whenLoaded('belongsToUser')),
             'avatar'                    => new UserAvatarResource($this->whenLoaded('hasOneThroughUserAvatar')),
             'service'                   => new BaseLinkResource($this->whenLoaded('belongsToBaseLink')),
             'channel'                   => new UserChannelResource($this->whenLoaded('hasOneThroughUserLink')),
             'profile'                   => new UserChannelProfileResource($this->whenLoaded('belongsToUserLinkTracker')),
         ];
+    }
+
+    public function timestampForHuman(){
+        // For streaming content
+        if(
+            (($this->streaming == true) && ($this->schedule == null) && ($this->actual_start != null) && ($this->actual_end == null) && ($this->duration == "P0D"))
+            ||
+            (($this->streaming == false) && ($this->schedule == null) && ($this->actual_start != null) && ($this->actual_end != null) && ($this->duration != "P0D"))
+        ){
+            return Carbon::parse($this->actual_start)->diffForHumans();
+        }
+        else{
+            return Carbon::parse($this->published)->diffForHumans();
+        }
     }
 }

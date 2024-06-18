@@ -47,9 +47,9 @@ class YoutubeCron extends Controller{
         // return YoutubeRepositories::fetchArchiveViaAPI("UCNkj7b0jncXROUeIeROZ4Og", 1);
         // return YoutubeRepositories::fetchArchiveViaFeed("UCNkj7b0jncXROUeIeROZ4Og", 1);
 
-        return YoutubeRepositories::fetchVideoViaScraper("oeVMFASXbgg", 1);
+        // return YoutubeRepositories::fetchVideoViaScraper("yWAfDWHzRz4", 1);
 
-        // return YoutubeRepositories::userFeedInit();
+        return YoutubeRepositories::fetchArchiveViaAPI("UCZLZ8Jjx_RN2CXloOmgTHVg", 1, "CDIQAQ");
     }
 
     public function fetchUserLinkTrackerDaily(){
@@ -67,22 +67,30 @@ class YoutubeCron extends Controller{
     }
 
     public function fetchUserLinkTrackerMinutely(){
-        $tracker = UserLinkTracker::where([
+        $trackerUninitialized = UserLinkTracker::where([
             ['base_link_id', '=', 2],
+            ['initialized', '=', false],
         ])->select('users_id', 'identifier')->chunk(100, function(Collection $chunks){
             foreach($chunks as $chunk){
                 try{
-                    // Init acrhive (via Youtube API)
+                    // Fetch acrhive (via Youtube API)
                     YoutubeRepositories::fetchArchiveViaAPI($chunk->identifier, $chunk->users_id);
-
-                    // Init acrhive (via Youtube Feed XML)
-                    YoutubeRepositories::fetchArchiveViaFeed($chunk->identifier, $chunk->users_id);
 
                     // Init archive metadata
                     YoutubeRepositories::userFeedInit();
+                }
+                catch(\Throwable $th){}
+            }
+        });
 
-                    // Update archive metadata after streaming goes offline
-                    YoutubeRepositories::userFeedArchived();
+        $trackerInitialized = UserLinkTracker::where([
+            ['base_link_id', '=', 2],
+            ['initialized', '=', true],
+        ])->select('users_id', 'identifier')->chunk(100, function(Collection $chunks){
+            foreach($chunks as $chunk){
+                try{
+                    // Fetch acrhive (via Youtube Feed XML)
+                    YoutubeRepositories::fetchArchiveViaFeed($chunk->identifier, $chunk->users_id);
                 }
                 catch(\Throwable $th){}
             }
@@ -92,7 +100,6 @@ class YoutubeCron extends Controller{
     public function fetchUserFeedMinutely(){
         $onlineFeed = UserFeed::where([
             ['base_link_id', '=', 2],
-            ['streaming', '=', true],
             ['streaming_archive', '=', null],
             ['actual_end', '=', null],
             ['duration', '=', "P0D"],
@@ -101,6 +108,22 @@ class YoutubeCron extends Controller{
                 try{
                     // Fetch stream activity
                     YoutubeRepositories::fetchVideoViaScraper($chunk->identifier, $chunk->users_id);
+                }
+                catch(\Throwable $th){}
+            }
+        });
+
+        $offlineFeed = UserFeed::where([
+            ['base_link_id', '=', 2],
+            ['streaming', '=', false],
+            ['streaming_archive', '=', true],
+            ['actual_end', '=', null],
+            ['duration', '=', "P0D"],
+        ])->select('users_id', 'identifier')->chunk(100, function(Collection $chunks){
+            foreach($chunks as $chunk){
+                try{
+                    // Update archive metadata after streaming goes offline
+                    YoutubeRepositories::userFeedArchived();
                 }
                 catch(\Throwable $th){}
             }

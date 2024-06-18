@@ -355,15 +355,42 @@ class YoutubeRepositories{
     }
 
     // Fetch Archive Via API
-    public static function fetchArchiveViaAPI($channelID, $userID, $nextPageToken = ''){
+    public static function fetchArchiveViaAPI($channelID, $userID, $pageToken = null){
         try{
-            $userLT = self::userLinkTracker($channelID, $userID, false);
 
-            $userLTs = [
-                'users_id'              => $userLT->users_id,
-                'base_link_id'          => $userLT->base_link_id,
-                'users_link_tracker_id' => $userLT->id,
+            // Dari Sini Hapus
+            $apiKey = self::apiKey();
+
+            // $params1 = [
+            //     'id'    => $channelID,
+            //     'key'   => $apiKey,
+            //     'part'  => "snippet,contentDetails",
+            // ];
+
+            // $http1 = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/channels', $params1)->json();
+
+            // foreach($http1['items'] AS $data){
+            //     return $data['contentDetails']['relatedPlaylists']['uploads'];
+            // }
+
+            $params2 = [
+                'key'           => $apiKey,
+                'part'          => "snippet,contentDetails,status",
+                'playlistId'    => "UUZLZ8Jjx_RN2CXloOmgTHVg",
+                'maxResults'    => 50,
+                "pageToken"     => null,
             ];
+
+            return $http2 = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/playlistItems', $params2)->json();
+            // Hapus Sampai Sini
+
+            // $userLT = self::userLinkTracker($channelID, $userID, false);
+
+            // $userLTs = [
+            //     'users_id'              => $userLT->users_id,
+            //     'base_link_id'          => $userLT->base_link_id,
+            //     'users_link_tracker_id' => $userLT->id,
+            // ];
 
             $apiKey = self::apiKey();
 
@@ -371,13 +398,12 @@ class YoutubeRepositories{
                 'key'           => $apiKey,
                 'part'          => "snippet,contentDetails",
                 'channelId'     => $channelID,
-                'maxResults'    => 256,
-                'pageToken'     => $nextPageToken,
+                'maxResults'    => 50,
+                'pageToken'     => $pageToken,
             ];
 
-            // Next Page Token Implementation
-            if(!empty($nextPageToken)){
-                $params['pageToken'] = $nextPageToken;
+            if(!empty($pageToken)){
+                $params['pageToken'] = $pageToken;
             }
 
             $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/activities', $params)->json();
@@ -398,7 +424,7 @@ class YoutubeRepositories{
 
             // Next Page Token Implementation
             if(isset($http['nextPageToken'])){
-                self::fetchArchiveViaAPINextPage($channelID, $userID, $http['nextPageToken']);
+                self::fetchArchiveViaAPIRepeater($channelID, $userID, $http['nextPageToken']);
             }
             else{
                 $userLT->update([
@@ -411,9 +437,9 @@ class YoutubeRepositories{
         }
     }
 
-    public static function fetchArchiveViaAPINextPage($channelID, $userID, $nextPageToken){
+    public static function fetchArchiveViaAPIRepeater($channelID, $userID, $pageToken){
         try{
-            self::fetchArchiveViaAPI($channelID, $userID, $nextPageToken);
+            self::fetchArchiveViaAPI($channelID, $userID, $pageToken);
         }
         catch(\Throwable $th){}
     }
@@ -461,16 +487,15 @@ class YoutubeRepositories{
 
             $http = self::videoScrapper($vID);
 
-            $httpResultTitle = Str::remove(' - YouTube', $http['result']['title'][0]);
-
             /**
              * Array key reference (Patch 15 June 2024)
              * 14: Streaming status (id, title, next stream schedule)
              * 35: Streaming statistic (concurrent viewers)
             */
             $httpResultScript = $http['result']['script'];
+            $httpResultTitle = Str::remove(' - YouTube', $http['result']['title'][0]);
 
-            if(isset($httpResultScript[33])){
+            if(isset($httpResultScript[35]) && (Str::contains($httpResultScript[35], ['originalViewCount']) == true)){
                 $isOffline = false;
 
                 $videoID = Str::betweenFirst($httpResultScript[14], '{"liveStreamabilityRenderer":{"videoId":"', '",'); // Cek kalo ada 11 char berarti valid
@@ -485,7 +510,7 @@ class YoutubeRepositories{
             }
 
             if(
-                ($isOffline == false) && (Str::length($videoID) === 11) && ($videoSchedule == null)
+                ($isOffline == false) && (Str::length($videoID) === 11) && ($videoID == $userF->identifier)
             ){
                 if(isset($userF)){
                     if(
@@ -503,8 +528,9 @@ class YoutubeRepositories{
 
                 return "Just online";
             }
+
             else{
-                $userFU->update([
+                $userF->update([
                     'concurrent'        => 0,
                     'streaming'         => false,
                     'streaming_archive' => true,
@@ -513,7 +539,9 @@ class YoutubeRepositories{
                 return "Offline";
             }
         }
-        catch(\Throwable $th){}
+        catch(\Throwable $th){
+            return $th;
+        }
     }
 
     // Fetch Archive Status
@@ -599,6 +627,8 @@ class YoutubeRepositories{
             ['base_link_id', '=', 2],
             ['streaming', '=', false],
             ['streaming_archive', '=', true],
+            ['actual_end', '=', null],
+            ['duration', '=', "P0D"],
         ])->select('identifier')->take(50)->get();
 
         if(($datas) && isset($datas) && ($datas->count() >= 1)){
@@ -612,7 +642,7 @@ class YoutubeRepositories{
                         ['identifier', '=', $data['id']],
                     ])->update([
                         'actual_end'    => isset($data['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
-                        'duration'      => $data['contentDetails']['duration'],
+                        'duration'      => isset($data['contentDetails']['duration']) ? $data['contentDetails']['duration'] : "P0D",
                     ]);
                 }
             }
