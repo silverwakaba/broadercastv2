@@ -15,7 +15,13 @@ class UserAvatarResource extends JsonResource{
         return [
             'id'        => $this->id,
             'users_id'  => $this->users_id,
-            'path'      => $this->path ? "https://public-cdn.broadercast.net/system/avatar/$this->path" : "https://public-cdn.broadercast.net/system/avatar/default.webp",
+            'path'      => $this->path ? "https://pub.silverspoon.me/project/broadercast/system/avatar/$this->path" : "https://pub.silverspoon.me/system/image/avatar/avatar-" . $this->randomAvatar() . ".png",
         ];
     }
+	
+	public function randomAvatar(){
+		$faker = \Faker\Factory::create();
+		
+		return $faker->numberBetween(1, 5);
+	}
 }

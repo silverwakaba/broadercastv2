@@ -16,10 +16,10 @@
                                         <ul class="list-inline m-0">
                                             @if($data->streaming == true)
                                                 <li class="list-inline-item">{{ number_format($data->concurrent) }} watching</li>
-                                                <li class="list-inline-item">{{ $data->actual_start_for_human }}</li>
                                             @else
-                                                NOOOO
+                                                <li class="list-inline-item">{{ $data->timestamp }}</li>
                                             @endif
+                                            <li class="list-inline-item">{{ $data->timestamp_for_human }}</li>
                                         </ul>
                                     </div>
                                 </div>

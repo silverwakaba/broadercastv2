@@ -13,9 +13,9 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2.0/dist/css/adminlte.min.css">
     </head>
-    <body class="hold-transition sidebar-mini dark-mode">
+    <body class="hold-transition sidebar-mini sidebar-collapse dark-mode">
         <div class="wrapper">
-            <x-adminlte.main />
+            <x-Adminlte.Main />
         </div>
         <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/jscroll@2.4.1/jquery.jscroll.min.js"></script>

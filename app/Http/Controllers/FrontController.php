@@ -8,9 +8,6 @@ use App\Repositories\Front\Creator\UserProfileRepositories;
 
 use Illuminate\Http\Request;
 
-// Hapus
-use App\Models\UserLinkTracker;
-
 class FrontController extends Controller{
     // Index
     public function index(){
@@ -30,8 +27,6 @@ class FrontController extends Controller{
                 ],
             ],
         ]);
-
-        // return $feed;
 
         return view('pages/index', [
             'feed' => $feed,

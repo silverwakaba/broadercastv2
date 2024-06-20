@@ -18,7 +18,7 @@ class BaseHelper{
         return hash("adler32", $value);
     }
 
-    public static function diffInDays($day, $compared){
+    public static function diffInDays($compared){
         $now = Carbon::now()->timezone(config('app.timezone'))->toDateTimeString();
         $parse = Carbon::parse($compared)->timezone(config('app.timezone'))->toDateTimeString();
 

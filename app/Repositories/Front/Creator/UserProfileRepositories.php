@@ -79,7 +79,9 @@ class UserProfileRepositories{
             isset($data['with']) ? $data['with'] : []
         )->where(
             isset($data['query']) ? $data['query'] : []
-        )->orderBy('published', 'DESC');
+        )
+
+        ->orderBy('published', 'DESC');
 
         // Additional query
         if(isset($data['option'])){
@@ -91,25 +93,25 @@ class UserProfileRepositories{
         // Data retrieval
         if(isset($data['option']['pagination'])){
             if($data['option']['pagination']['type'] == 'normal'){
-                $newData = $datas->paginate($data['option']['take']);
+                $newDatas = $datas->paginate($data['option']['take']);
             }
             elseif($data['option']['pagination']['type'] == 'cursor'){
-                $newData = $datas->cursorPaginate($data['option']['take']);
+                $newDatas = $datas->cursorPaginate($data['option']['take']);
             }
             else{
-                $newData = $datas->paginate($data['option']['take']);
+                $newDatas = $datas->paginate($data['option']['take']);
             }
         }
         else{
-            $newData = $datas->get();
+            $newDatas = $datas->get();
         }
         
         if($datatable == true){
-            return DataTables::of($newData)->setTransformer(function($newData){
-                return UserChannelActivityResource::make($newData)->resolve();
+            return DataTables::of($newDatas)->setTransformer(function($newDatas){
+                return UserChannelActivityResource::make($newDatas)->resolve();
             })->toJson();
         }
 
-        return BaseHelper::resourceToJson(UserChannelActivityResource::collection($newData)->response()->getData());
+        return BaseHelper::resourceToJson(UserChannelActivityResource::collection($newDatas)->response()->getData());
     }
 }

@@ -16,6 +16,7 @@ return new class extends Migration{
             $table->foreignId('base_link_id')->references('id')->on('base_link')->onDelete('cascade');
             $table->boolean('initialized')->default(false); // Initializing tracker feed
             $table->string('identifier');
+            $table->string('playlist');
             $table->string('name');
             $table->string('avatar');
             $table->string('banner')->nullable();

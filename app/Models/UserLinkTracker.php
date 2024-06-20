@@ -15,6 +15,7 @@ class UserLinkTracker extends Model{
         'base_link_id',
         'initialized',
         'identifier',
+        'playlist',
         'name',
         'avatar',
         'banner',

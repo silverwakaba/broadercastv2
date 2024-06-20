@@ -49,7 +49,7 @@ class YoutubeCron extends Controller{
 
         // return YoutubeRepositories::fetchVideoViaScraper("yWAfDWHzRz4", 1);
 
-        return YoutubeRepositories::fetchArchiveViaAPI("UCZLZ8Jjx_RN2CXloOmgTHVg", 1, "CDIQAQ");
+        return YoutubeRepositories::fetchVideoViaScraper("9hXdKjstrjY", 1);
     }
 
     public function fetchUserLinkTrackerDaily(){

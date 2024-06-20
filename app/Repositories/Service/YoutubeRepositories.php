@@ -59,7 +59,7 @@ class YoutubeRepositories{
                 '2ndP'  => $responses['second']->json(),
             ];
 
-            // First
+            // First result
             if(
                 (Str::isUrl($http['1stP']['result']['title'][0]) == false)
                 &&
@@ -70,7 +70,7 @@ class YoutubeRepositories{
                 return $http['1stP'];
             }
 
-            // Second
+            // Second result
             elseif(
                 (Str::isUrl($http['2ndP']['result']['title'][0]) == false)
                 &&
@@ -81,14 +81,12 @@ class YoutubeRepositories{
                 return $http['2ndP'];
             }
 
-            // Get another result
+            // Get another result by repooling, if both is being blocked
             else{
                 return self::videoScrapperAgain($videoID);
             }
         }
-        catch(\Throwable $th){
-            return $th;
-        }
+        catch(\Throwable $th){}
     }
 
     public static function videoScrapperAgain($videoID){
@@ -166,13 +164,11 @@ class YoutubeRepositories{
 
             if(($checker == true)){
                 if(auth()->user()->hasRole('Admin|Moderator')){
-                    // return "Atas";
                     return self::verifyChannelDirectly($channelID, $uniqueID, $id);
                 }
                 else{
                     if($counter == false){
-                        return "Bawah";
-                        // return self::verifyChannelManually($channelID, $uniqueID, $id);
+                        return self::verifyChannelManually($channelID, $uniqueID, $id);
                     }
                     else{
                         return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Because we only allow one YouTube tracker per creator, thus we have to cancel this verification process.', 'error');
@@ -202,7 +198,7 @@ class YoutubeRepositories{
                     $params = [
                         'id'    => $checkChannel,
                         'key'   => $apiKey,
-                        'part'  => "snippet,statistics,brandingSettings",
+                        'part'  => "snippet,statistics,brandingSettings,contentDetails",
                     ];
 
                     $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/channels', $params)->json();
@@ -223,6 +219,7 @@ class YoutubeRepositories{
                             'users_link_id' => $linkID,
                             'base_link_id'  => $userLink->base_link_id,
                             'identifier'    => $data['id'],
+                            'playlist'      => $data['contentDetails']['relatedPlaylists']['uploads'],
                             'name'          => $data['snippet']['title'],
                             'avatar'        => Str::before($data['snippet']['thumbnails']['medium']['url'], '='),
                             'banner'        => isset($data['brandingSettings']['image']['bannerExternalUrl']) ? Str::before($data['brandingSettings']['image']['bannerExternalUrl'], '=') : null,
@@ -264,7 +261,7 @@ class YoutubeRepositories{
                     $params = [
                         'id'    => $checkChannel,
                         'key'   => $apiKey,
-                        'part'  => "snippet,statistics,brandingSettings",
+                        'part'  => "snippet,statistics,brandingSettings,contentDetails",
                     ];
 
                     $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/channels', $params)->json();
@@ -288,6 +285,7 @@ class YoutubeRepositories{
                                 'users_link_id' => $linkID,
                                 'base_link_id'  => $userLink->base_link_id,
                                 'identifier'    => $data['id'],
+                                'playlist'      => $data['contentDetails']['relatedPlaylists']['uploads'],
                                 'name'          => $data['snippet']['title'],
                                 'avatar'        => Str::before($data['snippet']['thumbnails']['medium']['url'], '='),
                                 'banner'        => isset($data['brandingSettings']['image']['bannerExternalUrl']) ? Str::before($data['brandingSettings']['image']['bannerExternalUrl'], '=') : null,
@@ -331,7 +329,7 @@ class YoutubeRepositories{
             $params = [
                 'id'    => $channelID,
                 'key'   => $apiKey,
-                'part'  => "snippet,statistics,brandingSettings",
+                'part'  => "snippet,statistics,brandingSettings,contentDetails",
             ];
 
             $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/channels', $params)->json();
@@ -343,6 +341,7 @@ class YoutubeRepositories{
                         ['identifier', '=', $channelID],
                         ['base_link_id', '=', 2]
                     ])->update([
+                        'playlist'      => $data['contentDetails']['relatedPlaylists']['uploads'],
                         'name'          => $data['snippet']['title'],
                         'avatar'        => Str::before($data['snippet']['thumbnails']['medium']['url'], '='),
                         'banner'        => isset($data['brandingSettings']['image']['bannerExternalUrl']) ? Str::before($data['brandingSettings']['image']['bannerExternalUrl'], '=') : null,
@@ -357,47 +356,20 @@ class YoutubeRepositories{
     // Fetch Archive Via API
     public static function fetchArchiveViaAPI($channelID, $userID, $pageToken = null){
         try{
+            $userLT = self::userLinkTracker($channelID, $userID, false);
 
-            // Dari Sini Hapus
-            $apiKey = self::apiKey();
-
-            // $params1 = [
-            //     'id'    => $channelID,
-            //     'key'   => $apiKey,
-            //     'part'  => "snippet,contentDetails",
-            // ];
-
-            // $http1 = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/channels', $params1)->json();
-
-            // foreach($http1['items'] AS $data){
-            //     return $data['contentDetails']['relatedPlaylists']['uploads'];
-            // }
-
-            $params2 = [
-                'key'           => $apiKey,
-                'part'          => "snippet,contentDetails,status",
-                'playlistId'    => "UUZLZ8Jjx_RN2CXloOmgTHVg",
-                'maxResults'    => 50,
-                "pageToken"     => null,
+            $userLTs = [
+                'users_id'              => $userLT->users_id,
+                'base_link_id'          => $userLT->base_link_id,
+                'users_link_tracker_id' => $userLT->id,
             ];
-
-            return $http2 = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/playlistItems', $params2)->json();
-            // Hapus Sampai Sini
-
-            // $userLT = self::userLinkTracker($channelID, $userID, false);
-
-            // $userLTs = [
-            //     'users_id'              => $userLT->users_id,
-            //     'base_link_id'          => $userLT->base_link_id,
-            //     'users_link_tracker_id' => $userLT->id,
-            // ];
 
             $apiKey = self::apiKey();
 
             $params = [
                 'key'           => $apiKey,
-                'part'          => "snippet,contentDetails",
-                'channelId'     => $channelID,
+                'part'          => "snippet,contentDetails,status",
+                'playlistId'    => $userLT->playlist,
                 'maxResults'    => 50,
                 'pageToken'     => $pageToken,
             ];
@@ -406,14 +378,14 @@ class YoutubeRepositories{
                 $params['pageToken'] = $pageToken;
             }
 
-            $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/activities', $params)->json();
+            $http = Http::acceptJson()->get('https://www.googleapis.com/youtube/v3/playlistItems', $params)->json();
 
             if(isset($http['items'])){
                 foreach($http['items'] AS $data){
-                    if(isset($data['contentDetails']['upload']['videoId'])){
+                    if(isset($data['contentDetails']['videoId'])){
                         UserFeed::insertOrIgnore(
                             array_merge($userLTs, [
-                                'identifier'    => $data['contentDetails']['upload']['videoId'],
+                                'identifier'    => $data['contentDetails']['videoId'],
                                 'title'         => $data['snippet']['title'],
                                 'published'     => Carbon::parse($data['snippet']['publishedAt'])->timezone(config('app.timezone'))->toDateTimeString(),
                             ])
@@ -485,7 +457,7 @@ class YoutubeRepositories{
             $isOffline = true;
             $videoSchedule = null;
 
-            $http = self::videoScrapper($vID);
+            return $http = self::videoScrapper($vID);
 
             /**
              * Array key reference (Patch 15 June 2024)
@@ -499,7 +471,6 @@ class YoutubeRepositories{
                 $isOffline = false;
 
                 $videoID = Str::betweenFirst($httpResultScript[14], '{"liveStreamabilityRenderer":{"videoId":"', '",'); // Cek kalo ada 11 char berarti valid
-                $videoIDNew = Str::length($videoID) === 11 ? $videoID : "B-Bakaa~Kyun~Its~Not~Like~I~Dont~Want~To~Give~You~Any~Result~You~Know";
 
                 $videoTitle = Str::betweenFirst($httpResultScript[14], '"title":"', '",');
                 $videoTitleNew = $httpResultTitle == $videoTitle ? $httpResultTitle : 'Recheck';
@@ -510,7 +481,9 @@ class YoutubeRepositories{
             }
 
             if(
-                ($isOffline == false) && (Str::length($videoID) === 11) && ($videoID == $userF->identifier)
+                (($isOffline == false) && (Str::length($videoID) === 11) && ($videoID == $userF->identifier))
+                &&
+                (($videoSchedule == null) || (BaseHelper::diffInDays($userF->schedule) <= 0))
             ){
                 if(isset($userF)){
                     if(
@@ -528,7 +501,6 @@ class YoutubeRepositories{
 
                 return "Just online";
             }
-
             else{
                 $userF->update([
                     'concurrent'        => 0,
@@ -539,9 +511,7 @@ class YoutubeRepositories{
                 return "Offline";
             }
         }
-        catch(\Throwable $th){
-            return $th;
-        }
+        catch(\Throwable $th){}
     }
 
     // Fetch Archive Status
