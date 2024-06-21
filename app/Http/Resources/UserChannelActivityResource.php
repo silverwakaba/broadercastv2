@@ -90,25 +90,6 @@ class UserChannelActivityResource extends JsonResource{
     }
 
     public function timestampForHuman(){
-        // For streaming
-        if(
-            (($this->streaming == true) && ($this->schedule == null) && ($this->actual_start != null) && ($this->actual_end == null) && ($this->duration == "P0D"))
-            ||
-            (($this->streaming == false) && ($this->schedule == null) && ($this->actual_start != null) && ($this->actual_end != null) && ($this->duration != "P0D"))
-        ){
-            return Carbon::parse($this->actual_start)->diffForHumans();
-        }
-
-        // For scheduled streaming
-        elseif(
-            (($this->streaming == false) && ($this->schedule != null) && ($this->actual_start == null) && ($this->actual_end == null) && ($this->duration == "P0D"))
-        ){
-            return Carbon::parse($this->schedule)->diffForHumans();
-        }
-
-        // Another
-        else{
-            return Carbon::parse($this->published)->diffForHumans();
-        }
+        return "Loli kami";
     }
 }

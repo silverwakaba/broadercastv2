@@ -28,6 +28,8 @@ class FrontController extends Controller{
             ],
         ]);
 
+        return $feed;
+
         return view('pages/index', [
             'feed' => $feed,
         ]);

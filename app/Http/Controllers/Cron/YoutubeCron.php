@@ -42,14 +42,14 @@ class YoutubeCron extends Controller{
         // return YoutubeRepositories::fetchProfile("UCDe3iqZiVXIXQbgIR36mF6w", 1);
 
         // Via API
-        // return YoutubeRepositories::fetchVideoStatus("H0Gz1LOUp2s");
+        // return YoutubeRepositories::fetchVideoStatus("1WhsM61BUfk");
 
         // return YoutubeRepositories::fetchArchiveViaAPI("UCNkj7b0jncXROUeIeROZ4Og", 1);
         // return YoutubeRepositories::fetchArchiveViaFeed("UCNkj7b0jncXROUeIeROZ4Og", 1);
 
-        // return YoutubeRepositories::fetchVideoViaScraper("yWAfDWHzRz4", 1);
+        return YoutubeRepositories::fetchVideoViaScraper("1WhsM61BUfk", 1);
 
-        return YoutubeRepositories::fetchVideoViaScraper("9hXdKjstrjY", 1);
+        // return YoutubeRepositories::userFeedArchived();
     }
 
     public function fetchUserLinkTrackerDaily(){
