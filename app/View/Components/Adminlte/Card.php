@@ -7,6 +7,8 @@ use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class Card extends Component{
+    public $tab;
+    public $tabContent;
     public string $add;
     public string $title;
     public string $outline;
@@ -14,7 +16,10 @@ class Card extends Component{
     /**
      * Create a new component instance.
      */
-    public function __construct($add = '', $title = '', $outline = ''){
+    public function __construct($tab = '', $tabContent = '', $add = '', $title = '', $outline = ''){
+        $this->tab = $tab ? explode(', ', $tab) : null;
+        $this->tabContent = $tabContent;
+        
         $this->add = $add;
         $this->title = $title;
         $this->outline = $outline;

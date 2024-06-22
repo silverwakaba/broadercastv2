@@ -1,7 +1,5 @@
 $(function () {
     Pusher.logToConsole = true;
-    
-    $('span.pagination').hide();
 
     $('[data-toggle="tooltip"]').tooltip();
     
@@ -12,9 +10,7 @@ $(function () {
     $('.scrolling-pagination').jscroll({
         autoTrigger: true,
         padding: 0,
+        pagingSelector: 'div.scrolling-paging',
         contentSelector: 'div.scrolling-pagination',
-        callback: function() {
-            $('span.pagination').remove();
-        }
     });
 });

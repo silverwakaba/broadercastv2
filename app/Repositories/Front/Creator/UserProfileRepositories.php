@@ -15,10 +15,12 @@ use App\Models\UserLink;
 use App\Models\UserLinkTracker;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Builder;
 use Yajra\DataTables\Facades\DataTables;
 
 class UserProfileRepositories{
+    // Profile
     public static function getProfile(array $data){
         $datas = User::with(isset($data['with']) ? $data['with'] : [])->where([
             ['identifier', '=', $data['identifier']],
@@ -27,6 +29,7 @@ class UserProfileRepositories{
         return BaseHelper::resourceToJson(new UserResource($datas));
     }
 
+    // Link
     public static function getLink(array $data){
         $datas = UserLink::with([
             'belongsToBaseLink'
@@ -37,6 +40,7 @@ class UserProfileRepositories{
         return BaseHelper::resourceToJson(UserLinkResource::collection($datas));
     }
 
+    // Tracker
     public static function getLinkTracker(array $data){
         $datas = UserLinkTracker::with(
             isset($data['with']) ? $data['with'] : []
@@ -74,16 +78,34 @@ class UserProfileRepositories{
         return BaseHelper::resourceToJson(UserLinkTrackerResource::collection($newData)->response()->getData());
     }
 
+    // Feed
     public static function getFeed(array $data, $datatable = false){
         $datas = UserFeed::with(
             isset($data['with']) ? $data['with'] : []
         )->where(
             isset($data['query']) ? $data['query'] : []
-        )
+        );
 
-        ->orderBy('published', 'DESC');
+        // Order By
+        if(
+            (isset($data['option']['orderType']))
+            &&
+            (Str::contains($data['option']['orderType'], ['live', 'archive']))
+        ){
+            $datas->orderBy('actual_start', 'DESC');
+        }
+        elseif(
+            (isset($data['option']['orderType']))
+            &&
+            (Str::contains($data['option']['orderType'], ['upcoming']))
+        ){
+            $datas->orderBy('schedule', 'DESC');
+        }
+        else{
+            $datas->orderBy('published', 'DESC');
+        }
 
-        // Additional query
+        // Pagination
         if(isset($data['option'])){
             if(isset($data['option']['take']) && !isset($data['option']['pagination'])){
                 $datas->take($data['option']['take']);

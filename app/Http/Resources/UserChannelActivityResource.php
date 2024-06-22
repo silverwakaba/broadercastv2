@@ -37,27 +37,17 @@ class UserChannelActivityResource extends JsonResource{
             'title'                     => $this->title,
             'link'                      => $link,
             'thumbnail'                 => $thumbnail,
-
-            // 
             'published'                 => $this->published ? Carbon::parse($this->published)->format('d M Y, g:i A') : null,
             'published_for_human'       => $this->published ? Carbon::parse($this->published)->diffForHumans() : null,
-
-            // 
             'schedule'                  => $this->schedule ? Carbon::parse($this->schedule)->format('d M Y, g:i A') : null,
             'schedule_for_human'        => $this->schedule ? Carbon::parse($this->schedule)->diffForHumans() : null,
-
-            // 
             'actual_start'              => $this->actual_start ? Carbon::parse($this->actual_start)->format('d M Y, g:i A') : null,
             'actual_start_for_human'    => $this->actual_start ? Carbon::parse($this->actual_start)->diffForHumans() : null,
-
-            // Gak terlalu butuh
             'actual_end'                => $this->actual_end ? Carbon::parse($this->actual_end)->format('d M Y, g:i A') : null,
             'actual_end_for_human'      => $this->actual_end ? Carbon::parse($this->actual_end)->diffForHumans() : null,
-            'duration'                  => $this->duration ? CarbonInterval::create($this->duration)->format('%H:%M:%S') : null,
-
+            'duration'                  => $this->streaming == false ? CarbonInterval::create($this->duration)->format('%H:%I:%S') : null,
             'timestamp'                 => $this->timestamp(),
             'timestamp_for_human'       => $this->timestampForHuman(),
-
             'user'                      => new UserResource($this->whenLoaded('belongsToUser')),
             'avatar'                    => new UserAvatarResource($this->whenLoaded('hasOneThroughUserAvatar')),
             'service'                   => new BaseLinkResource($this->whenLoaded('belongsToBaseLink')),
@@ -67,29 +57,46 @@ class UserChannelActivityResource extends JsonResource{
     }
 
     public function timestamp(){
-        // For streaming
         if(
+            (($this->streaming == true) && ($this->schedule != null) && ($this->actual_start != null) && ($this->actual_end == null) && ($this->duration == "P0D"))
+            ||
             (($this->streaming == true) && ($this->schedule == null) && ($this->actual_start != null) && ($this->actual_end == null) && ($this->duration == "P0D"))
+            ||
+            (($this->streaming == false) && ($this->schedule != null) && ($this->actual_start != null) && ($this->actual_end != null) && ($this->duration != "P0D"))
             ||
             (($this->streaming == false) && ($this->schedule == null) && ($this->actual_start != null) && ($this->actual_end != null) && ($this->duration != "P0D"))
         ){
             return Carbon::parse($this->actual_start)->format('d M Y, g:i A');
         }
-
-        // For scheduled streaming
         elseif(
             (($this->streaming == false) && ($this->schedule != null) && ($this->actual_start == null) && ($this->actual_end == null) && ($this->duration == "P0D"))
         ){
             return Carbon::parse($this->schedule)->format('d M Y, g:i A');
         }
-
-        // Another
         else{
             return Carbon::parse($this->published)->format('d M Y, g:i A');
         }
     }
 
     public function timestampForHuman(){
-        return "Loli kami";
+        if(
+            (($this->streaming == true) && ($this->schedule != null) && ($this->actual_start != null) && ($this->actual_end == null) && ($this->duration == "P0D"))
+            ||
+            (($this->streaming == true) && ($this->schedule == null) && ($this->actual_start != null) && ($this->actual_end == null) && ($this->duration == "P0D"))
+            ||
+            (($this->streaming == false) && ($this->schedule != null) && ($this->actual_start != null) && ($this->actual_end != null) && ($this->duration != "P0D"))
+            ||
+            (($this->streaming == false) && ($this->schedule == null) && ($this->actual_start != null) && ($this->actual_end != null) && ($this->duration != "P0D"))
+        ){
+            return Carbon::parse($this->actual_start)->diffForHumans();
+        }
+        elseif(
+            (($this->streaming == false) && ($this->schedule != null) && ($this->actual_start == null) && ($this->actual_end == null) && ($this->duration == "P0D"))
+        ){
+            return Carbon::parse($this->schedule)->diffForHumans();
+        }
+        else{
+            return Carbon::parse($this->published)->diffForHumans();
+        }
     }
 }

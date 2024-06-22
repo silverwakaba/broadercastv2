@@ -11,27 +11,71 @@ use Illuminate\Http\Request;
 class FrontController extends Controller{
     // Index
     public function index(){
-        // Feed
-        $feed = UserProfileRepositories::getFeed([
+        // Feed Live
+        $feedLive = UserProfileRepositories::getFeed([
+            'with'      => [
+                'hasOneThroughUserLink',
+                'belongsToUserLinkTracker',
+            ],
+            'query'     => [
+                ['streaming', '=', true],
+                ['streaming_archive', '=', null],
+                ['actual_end', '=', null],
+                ['duration', '=', "P0D"],
+            ],
+            'option'    => [
+                'take'       => 15,
+                'orderType' => 'live',
+                // 'pagination' => [
+                //     'type' => 'cursor',
+                // ],
+            ],
+        ]);
+
+        // Feed Upcoming
+        $feedUpcoming = UserProfileRepositories::getFeed([
+            'with'      => [
+                'hasOneThroughUserLink',
+                'belongsToUserLinkTracker',
+            ],
+            'query'     => [
+                ['streaming', '=', false],
+                ['schedule', '!=', null],
+                ['actual_end', '=', null],
+                ['duration', '=', "P0D"],
+            ],
+            'option'    => [
+                'take'       => 15,
+                'orderType' => 'upcoming',
+                // 'pagination' => [
+                //     'type' => 'cursor',
+                // ],
+            ],
+        ]);
+
+        // Feed Archive
+        $feedArchive = UserProfileRepositories::getFeed([
             'with'  => [
                 'hasOneThroughUserLink',
                 'belongsToUserLinkTracker',
             ],
-            // 'query'      => [
-            //     // ['streaming', '=', true],
-            // ],
+            'query'      => [
+                ['streaming', '=', false],
+                ['actual_end', '!=', null],
+                ['duration', '!=', "P0D"],
+            ],
             'option'     => [
-                'take'       => 6,
-                'pagination' => [
-                    'type' => 'cursor',
-                ],
+                'take'      => 15,
+                'orderType' => 'archive',
+                // 'pagination' => [
+                //     'type' => 'cursor',
+                // ],
             ],
         ]);
 
-        return $feed;
-
         return view('pages/index', [
-            'feed' => $feed,
+            'feedLive' => $feedLive,
+            'feedArchive' => $feedArchive,
         ]);
     }
 }

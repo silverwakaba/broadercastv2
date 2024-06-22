@@ -382,7 +382,7 @@ class YoutubeRepositories{
     // Fetch Archive Via API
     public static function fetchArchiveViaAPI($channelID, $userID, $pageToken = null){
         try{
-            return $userLT = self::userLinkTracker($channelID, $userID, false);
+            $userLT = self::userLinkTracker($channelID, $userID, false);
 
             $userLTs = [
                 'users_id'              => $userLT->users_id,
@@ -512,11 +512,11 @@ class YoutubeRepositories{
                     if(
                         ($videoTitleNew !== 'Recheck')
                     ){
-                        $userF->update([
-                            'concurrent'    => $videoConcurrent,
-                            'streaming'     => true,
-                            'title'         => $videoTitleNew,
-                        ]);
+                        // $userF->update([
+                        //     'concurrent'    => $videoConcurrent,
+                        //     'streaming'     => true,
+                        //     'title'         => $videoTitleNew,
+                        // ]);
 
                         return "Online and updating";
                     }
@@ -525,13 +525,17 @@ class YoutubeRepositories{
                 return "Just online";
             }
             else{
-                // $userF->update([
-                //     'concurrent'        => 0,
-                //     'streaming'         => false,
-                //     'streaming_archive' => true,
-                // ]);
+                if($userF->streaming == true){
+                    // $userF->update([
+                    //     'concurrent'        => 0,
+                    //     'streaming'         => false,
+                    //     'streaming_archive' => true,
+                    // ]);
 
-                return "Offline and updating";
+                    return "Offline and updating";
+                }
+
+                return "Just offline";
             }
         }
         catch(\Throwable $th){}
@@ -613,7 +617,7 @@ class YoutubeRepositories{
 
     // User feed stream archive
     public static function userFeedArchived(){
-        return $datas = UserFeed::where([
+        $datas = UserFeed::where([
             ['base_link_id', '=', 2],
             ['streaming', '=', false],
             ['streaming_archive', '=', true],
@@ -628,12 +632,29 @@ class YoutubeRepositories{
 
             if($http['pageInfo']['totalResults'] >= 1){
                 foreach($http['items'] AS $data){
-                    UserFeed::where([
-                        ['identifier', '=', $data['id']],
-                    ])->update([
-                        'actual_end'    => isset($data['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
-                        'duration'      => isset($data['contentDetails']['duration']) ? $data['contentDetails']['duration'] : "P0D",
-                    ]);
+                    if(($data['snippet']['liveBroadcastContent'] == "live")){
+                        UserFeed::where([
+                            ['identifier', '=', $data['id']],
+                        ])->update([
+                            'concurrent'        => isset($data['liveStreamingDetails']['concurrentViewers']) ? $data['liveStreamingDetails']['concurrentViewers'] : 0,
+                            'streaming'         => true,
+                            'streaming_archive' => null,
+                            'actual_start'      => isset($data['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($data['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
+                            'duration'          => isset($data['contentDetails']['duration']) ? $data['contentDetails']['duration'] : "P0D",
+                        ]);
+                    }
+                    else{
+                        UserFeed::where([
+                            ['identifier', '=', $data['id']],
+                        ])->update([
+                            'concurrent'        => 0,
+                            'streaming'         => false,
+                            'streaming_archive' => true,
+                            'actual_start'      => isset($data['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($data['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
+                            'actual_end'        => isset($data['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
+                            'duration'          => isset($data['contentDetails']['duration']) ? $data['contentDetails']['duration'] : "P0D",
+                        ]);
+                    }
                 }
             }
 
