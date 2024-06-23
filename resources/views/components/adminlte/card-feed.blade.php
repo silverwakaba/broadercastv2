@@ -1,20 +1,13 @@
 <div @class(["scrolling-pagination" => isset($feeds->links) ])>
-    <div @class(["row row-cols-1", "row-cols-lg-2" => count($feeds->data) == 2, "row-cols-lg-$col" => count($feeds->data) >= 3])>
+    <div @class(["row row-cols-1", "row-cols-lg-$col" => count($feeds->data) >= 1])>
         @if(($feeds) && (count($feeds->data) >= 1))
             @foreach($feeds->data AS $data)
                 <div class="col">
                     <div class="card card-widget">
                         <a href="{{ $data->link }}" target="_blank">
                             <img src="{{ $data->thumbnail }}" class="card-img-top" />
-                            <div class="card-img-overlay text-right">
-                                @if($data->duration == null)
-                                    <span class="badge badge-danger">{{ number_format($data->concurrent) }} watching</span>
-                                @else
-                                    <span class="badge badge-dark">{{ $data->duration }}</span>
-                                @endif
-                            </div>
                         </a>
-                        <a href="{{ $data->channel->link }}" class="text-light" target="_blank">
+                        <a href="{{ $data->user->page }}" class="text-light">
                             <div class="card-header">
                                 <div class="user-block">
                                     <img class="img-fluid img-circle" src="{{ $data->profile->avatar }}" />
@@ -23,6 +16,11 @@
                                         <ul class="list-inline m-0">
                                             <li class="list-inline-item">{{ $data->timestamp }}</li>
                                             <li class="list-inline-item">{{ $data->timestamp_for_human }}</li>
+                                            @if($data->base_status_id == 7)
+                                                <li class="list-inline-item badge badge-danger">{{ number_format($data->concurrent) }} watching</li>
+                                            @elseif(($data->base_status_id == 9) || ($data->base_status_id == 10))
+                                                <li class="list-inline-item badge badge-dark">{{ $data->duration }}</li>
+                                            @endif
                                         </ul>
                                     </div>
                                 </div>

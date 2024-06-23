@@ -31,6 +31,7 @@ class UserChannelActivityResource extends JsonResource{
 
         return [
             'id'                        => $this->id,
+            'base_status_id'            => $this->base_status_id,
             'streaming'                 => $this->streaming,
             'concurrent'                => $this->concurrent,
             'identifier'                => $this->identifier,

@@ -4,9 +4,10 @@
 <footer class="main-footer">
     <div class="row">
         <div class="col-md-5">
-            <h3>{{ config('app.name', 'BASE') }}</h3>
+            <h3>{{ config('app.name', 'Broadercast') }}</h3>
             <div class="pr-lg-5">
-                <p><small>Copyright &copy; 2023. <a href="/">{{ config('app.name', 'BASE') }}</a> by <a href="http://www.silverspoon.me" target="_blank">SilverSpoon Media</a>. All rights reserved.</small></p>
+                <p>Broadercast is a project designed to simplify the process of keeping up with your favorite content creators; All in one convenient portal. Our service is open to anyone, meaning that if you are a content creator, you can directly register your account to be included in our tracking database.</p>
+                <p><small>Copyright &copy; 2023. <abbr title="Build {{ config('app.version') }}">{{ config('app.name', 'Broadercast') }} Project</abbr> by <a href="http://www.silverspoon.me" class="text-light" target="_blank">SilverSpoon Media</a>. All rights reserved.</small></p>
             </div>
         </div>
         <div class="col-md-7">
@@ -15,16 +16,16 @@
                     <h4>Internal</h4>
                     <ul class="list-unstyled">
                         <li>
-                            <a href="#">About</a>
+                            <a href="#" class="text-light">About</a>
                         </li>
                         <li>
-                            <a href="#">Blog</a>
+                            <a href="#" class="text-light">Blog</a>
                         </li>
                         <li>
-                            <a href="#">Contact</a>
+                            <a href="#" class="text-light">Contact</a>
                         </li>
                         <li>
-                            <a href="#">Help</a>
+                            <a href="#" class="text-light">Help</a>
                         </li>
                     </ul>
                 </div>
@@ -32,16 +33,16 @@
                     <h4>Legal</h4>
                     <ul class="list-unstyled">
                         <li>
-                            <a href="#">Terms of Service</a>
+                            <a href="#" class="text-light">Terms of Service</a>
                         </li>
                         <li>
-                            <a href="#">Privacy Policy</a>
+                            <a href="#" class="text-light">Privacy Policy</a>
                         </li>
                         <li>
-                            <a href="#">Payment Agreement</a>
+                            <a href="#" class="text-light">Payment Agreement</a>
                         </li>
                         <li>
-                            <a href="#">Copyright, Report & Dispute</a>
+                            <a href="#" class="text-light">Copyright, Report & Dispute</a>
                         </li>
                     </ul>
                 </div>
@@ -49,10 +50,10 @@
                     <h4>External</h4>
                     <ul class="list-unstyled">
                         <li>
-                            <a href="#">Status</a>
+                            <a href="#" class="text-light">Status</a>
                         </li>
                         <li>
-                            <a href="#">Discord</a>
+                            <a href="#" class="text-light">Discord</a>
                         </li>
                     </ul>
                 </div>

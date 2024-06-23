@@ -35,7 +35,7 @@ class UserProfileRepositories{
             'belongsToBaseLink'
         ])->withAggregate('belongsToBaseLink', 'name')->where(
             isset($data['query']) ? $data['query'] : []
-        )->whereNotIn('base_link_id', BaseHelper::getCheckedBaseLink())->orderBy('belongs_to_base_link_name')->get();
+        )->orderBy('belongs_to_base_link_name')->get();
 
         return BaseHelper::resourceToJson(UserLinkResource::collection($datas));
     }
@@ -99,7 +99,7 @@ class UserProfileRepositories{
             &&
             (Str::contains($data['option']['orderType'], ['upcoming']))
         ){
-            $datas->orderBy('schedule', 'DESC');
+            $datas->orderBy('schedule', 'ASC');
         }
         else{
             $datas->orderBy('published', 'DESC');

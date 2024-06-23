@@ -14,8 +14,6 @@ class UserBiodataResource extends JsonResource{
      * @return array<string, mixed>
      */
     public function toArray(Request $request) : array{
-        $nickname = $this->nickname ? $this->nickname : 'No nickname yet';
-
         $markdownBio = Str::of($this->biography)->markdown([
             'html_input'            => 'strip',
             'allow_unsafe_links'    => false,
@@ -26,9 +24,9 @@ class UserBiodataResource extends JsonResource{
         return [
             'id'                => $this->id,
             'users_id'          => $this->users_id,
-            'nickname'          => $nickname,
-            'nickname_preview'  => Str::limit($nickname, 15, ' (...)'),
-            'dob'               => $this->dob ? Carbon::parse($this->dob)->format('d M Y') : null,
+            'nickname'          => $this->nickname ? explode(PHP_EOL, $this->nickname) : null,
+            'nickname_preview'  => Str::limit($this->nickname, 15, ' (...)'),
+            'dob'               => $this->dob ? Carbon::parse($this->dob)->format('d M') : null,
             'dod'               => $this->dod ? Carbon::parse($this->dod)->format('d M Y') : null,
             'biography'         => $this->biography ? $markdownBioStripped : $this->biography,
         ];

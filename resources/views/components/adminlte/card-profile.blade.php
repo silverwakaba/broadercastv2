@@ -20,7 +20,15 @@
             </li>
             <li class="list-group-item">
                 <strong>Nickname</strong>
-                <p class="m-0">{{ $profile->biodata->nickname }}</p>
+                @if($profile->biodata->nickname)
+                    <ul class="list-inline m-0">
+                        @foreach($profile->biodata->nickname AS $nickname)
+                            <li class="list-inline-item">{{ $nickname }}</li>
+                        @endforeach
+                    </ul>
+                @else
+                    <p class="m-0">No nickname yet</p>
+                @endif
             </li>
             <li class="list-group-item">
                 <strong>Debut Date</strong>
@@ -86,7 +94,7 @@
                 @endif
             </li>
             <li class="list-group-item">
-                <strong>Lore</strong>
+                <strong>Persona</strong>
                 @if($profile->race)
                     <ul class="list-inline m-0">
                         @foreach($profile->race AS $race)
@@ -94,34 +102,38 @@
                         @endforeach
                     </ul>
                 @else
-                    <p class="m-0">No character race</p>
+                    <p class="m-0">No character persona</p>
                 @endif
             </li>
             <li class="list-group-item text-center bg-secondary">
                 <strong>Resource</strong>
             </li>
             <li class="list-group-item">
-                <strong><p>Channel</p></strong>
-                @if($channels)
-                    <x-Adminlte.CardChannel :channels="$channels" />
+                @if($links)
+                    <div class="text-center">
+                        <strong>External Link</strong>
+                        <ul class="list-inline m-0 my-3">
+                            @foreach($links AS $link)
+                                <li class="list-inline-item">
+                                    <a href="{{ $link->link }}" class="btn btn-sm btn-link border p-2" data-toggle="tooltip" data-placement="top" title="{{ $link->service->name }}" target="_blank">
+                                        <img height="25" width="25" src="{{ $link->service->logo }}" />
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
                 @else
-                    <p class="m-0">No channel</p>
+                    <strong>External Link</strong>
+                    <p class="m-0">No external link</p>
                 @endif
             </li>
             <li class="list-group-item">
-                <strong>External Link</strong>
-                @if($links)
-                    <ul class="list-inline text-center m-0">
-                        @foreach($links AS $link)
-                            <li class="list-inline-item">
-                                <a href="{{ $link->link }}" class="btn btn-sm btn-link border" data-toggle="tooltip" data-placement="top" title="{{ $link->service->name }}" target="_blank">
-                                    <img height="25" width="25" src="{{ $link->service->logo }}" />
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
+                @if($channels)
+                    <strong class="text-center"><p>Channel</p></strong>
+                    <x-Adminlte.CardChannel :channels="$channels" />
                 @else
-                    <p class="m-0">No external link</p>
+                    <strong><p>Channel</p></strong>
+                    <p class="m-0">No channel</p>
                 @endif
             </li>
         </ul>

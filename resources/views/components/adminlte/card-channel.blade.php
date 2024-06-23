@@ -3,17 +3,17 @@
         <div class="col text-truncate">
             <div class="card card-widget widget-user">
                 <div class="widget-user-header" style="background: url('{{ $data->banner }}') center center;">
-                    <h3 class="widget-user-username">
-                        <span class="badge badge-dark" data-toggle="tooltip" data-placement="top" title="{{ $data->name }}">{{ $data->name }}</span>
-                    </h3>
-                    <h5 class="widget-user-desc">
-                        <span class="badge badge-dark">{{ $data->link->name }} Channel</span>
-                    </h5>
+                    <!--  -->
                 </div>
                 <div class="widget-user-image">
                     <img class="img-circle elevation-2" src="{{ $data->avatar }}" />
                 </div>
-                <div class="card-footer">
+                <div class="card-footer text-truncate">
+                    
+                    <div class="description-block">
+                        <h5 class="description-header">{{ $data->name }}</h5>
+                        <span class="description-text">{{ $data->link->name }} Channel</span>
+                    </div>
                     <div class="row row-cols-1 row-cols-md-2">
                         <div class="col">
                             <div class="description-block">

@@ -14,14 +14,12 @@ class FrontController extends Controller{
         // Feed Live
         $feedLive = UserProfileRepositories::getFeed([
             'with'      => [
+                'belongsToUser',
                 'hasOneThroughUserLink',
                 'belongsToUserLinkTracker',
             ],
             'query'     => [
-                ['streaming', '=', true],
-                ['streaming_archive', '=', null],
-                ['actual_end', '=', null],
-                ['duration', '=', "P0D"],
+                ['base_status_id', '=', 7],
             ],
             'option'    => [
                 'take'       => 15,
@@ -35,14 +33,12 @@ class FrontController extends Controller{
         // Feed Upcoming
         $feedUpcoming = UserProfileRepositories::getFeed([
             'with'      => [
+                'belongsToUser',
                 'hasOneThroughUserLink',
                 'belongsToUserLinkTracker',
             ],
             'query'     => [
-                ['streaming', '=', false],
-                ['schedule', '!=', null],
-                ['actual_end', '=', null],
-                ['duration', '=', "P0D"],
+                ['base_status_id', '=', 8],
             ],
             'option'    => [
                 'take'       => 15,
@@ -56,13 +52,12 @@ class FrontController extends Controller{
         // Feed Archive
         $feedArchive = UserProfileRepositories::getFeed([
             'with'  => [
+                'belongsToUser',
                 'hasOneThroughUserLink',
                 'belongsToUserLinkTracker',
             ],
             'query'      => [
-                ['streaming', '=', false],
-                ['actual_end', '!=', null],
-                ['duration', '!=', "P0D"],
+                ['base_status_id', '=', 9],
             ],
             'option'     => [
                 'take'      => 15,
@@ -73,9 +68,29 @@ class FrontController extends Controller{
             ],
         ]);
 
+        // Uploaded Content
+        $feedUploaded = UserProfileRepositories::getFeed([
+            'with'  => [
+                'belongsToUser',
+                'hasOneThroughUserLink',
+                'belongsToUserLinkTracker',
+            ],
+            'query'      => [
+                ['base_status_id', '=', 10],
+            ],
+            'option'     => [
+                'take'      => 15,
+                // 'pagination' => [
+                //     'type' => 'cursor',
+                // ],
+            ],
+        ]);
+
         return view('pages/index', [
-            'feedLive' => $feedLive,
-            'feedArchive' => $feedArchive,
+            'feedLive'      => $feedLive,
+            'feedUpcoming'  => $feedUpcoming,
+            'feedArchive'   => $feedArchive,
+            'feedUploaded'  => $feedUploaded,
         ]);
     }
 }
