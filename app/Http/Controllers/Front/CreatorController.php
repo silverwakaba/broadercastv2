@@ -49,24 +49,26 @@ class CreatorController extends Controller{
             ],
         ]);
 
-        // Feed
         $feed = UserProfileRepositories::getFeed([
             'with'  => [
-                'belongsToBaseLink',
+                'belongsToUser',
+                'hasOneThroughUserLink',
+                'belongsToUserLinkTracker',
             ],
-            'query' => [
-                ['users_id', '=', $profile->id],
+            'option'     => [
+                'take'      => 6,
+                'orderType' => 'all',
+                'pagination' => [
+                    'type' => 'normal',
+                ],
             ],
-        ], true);
-
-        if(request()->ajax()){
-            return $feed;
-        }
+        ]);
 
         return view('pages/front/creator/profile', [
             'profile'   => $profile,
             'link'      => $link,
             'tracker'   => $tracker,
+            'feed'      => $feed,
         ]);
     }
 }

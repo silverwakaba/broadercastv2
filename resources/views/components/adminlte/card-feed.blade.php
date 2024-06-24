@@ -16,7 +16,7 @@
                                         <ul class="list-inline m-0">
                                             <li class="list-inline-item">{{ $data->timestamp }}</li>
                                             <li class="list-inline-item">{{ $data->timestamp_for_human }}</li>
-                                            @if($data->base_status_id == 7)
+                                            @if($data->base_status_id == 8)
                                                 <li class="list-inline-item badge badge-danger">{{ number_format($data->concurrent) }} watching</li>
                                             @elseif(($data->base_status_id == 9) || ($data->base_status_id == 10))
                                                 <li class="list-inline-item badge badge-dark">{{ $data->duration }}</li>
@@ -32,9 +32,9 @@
                     </div>
                 </div>
             @endforeach
-            @if(isset($feeds->links) && (count($feeds->data) >= 1))
-                <div class="scrolling-paging">
-                    <a href="{{ $feeds->links->next }}">Loading...</a>
+            @if(isset($feeds->links->next))
+                <div class="href-pagination">
+                    <a href="{{ $feeds->links->next }}" class="scrolling-paging">Loading...</a>
                 </div>
             @endif
         @else

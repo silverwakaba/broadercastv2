@@ -14,10 +14,10 @@ use Illuminate\Support\Collection;
 use App\Repositories\Service\YoutubeRepositories;
 
 // Delete
-use App\Helpers\BaseHelper;
-use Carbon\Carbon;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Http;
+// use App\Helpers\BaseHelper;
+// use Carbon\Carbon;
+// use Illuminate\Support\Str;
+// use Illuminate\Support\Facades\Http;
 
 class YoutubeCron extends Controller{
     public function fetchDebug(){
@@ -25,17 +25,13 @@ class YoutubeCron extends Controller{
         // return YoutubeRepositories::userFeedInit();
 
         // Ngecek Bentar
-        // return YoutubeRepositories::fetchVideoStatus('EnHwxzporvs');
-        // return YoutubeRepositories::fetchVideoViaScraper('wepgHTeZyrM', 1);
+        return YoutubeRepositories::fetchVideoStatus('og7UWM65nOU');
+        // return YoutubeRepositories::fetchVideoViaScraper('eGn4klwJcLs', 1);
 
         // return YoutubeRepositories::userFeedArchived();
     }
 
     public function everyMinutes(){
-        // Days
-        $sub = Carbon::now()->subDays(3)->toDateTimeString();
-        $add = Carbon::now()->addDays(3)->toDateTimeString();
-
         // Archive initialization
         UserLinkTracker::where([
             ['base_link_id', '=', 2],
@@ -71,8 +67,7 @@ class YoutubeCron extends Controller{
             ['base_link_id', '=', 2],
             ['actual_end', '=', null],
             ['duration', '=', "P0D"],
-        ])->whereBetween('published', [$sub, $add])->orWhereBetween('schedule', [$sub, $add])
-          ->whereIn('base_status_id', ['7', '8'])->whereNotIn('base_status_id', ['5'])->chunk(100, function(Collection $chunks){
+        ])->whereIn('base_status_id', ['7', '8'])->whereNotIn('base_status_id', ['5'])->chunk(100, function(Collection $chunks){
             foreach($chunks as $chunk){
                 try{
                     // Fetch stream activity

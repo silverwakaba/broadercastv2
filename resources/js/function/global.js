@@ -8,9 +8,10 @@ $(function () {
     });
 
     $('.scrolling-pagination').jscroll({
+        debug: true,
         autoTrigger: true,
         padding: 0,
-        pagingSelector: 'div.scrolling-paging',
+        nextSelector: 'a.scrolling-paging',
         contentSelector: 'div.scrolling-pagination',
     });
 });

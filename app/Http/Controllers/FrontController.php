@@ -19,14 +19,14 @@ class FrontController extends Controller{
                 'belongsToUserLinkTracker',
             ],
             'query'     => [
-                ['base_status_id', '=', 7],
+                ['base_status_id', '=', 8],
             ],
             'option'    => [
                 'take'       => 6,
                 'orderType' => 'live',
-                'pagination' => [
-                    'type' => 'cursor',
-                ],
+                // 'pagination' => [
+                //     'type' => 'cursor',
+                // ],
             ],
         ]);
 
@@ -38,14 +38,14 @@ class FrontController extends Controller{
                 'belongsToUserLinkTracker',
             ],
             'query'     => [
-                ['base_status_id', '=', 8],
+                ['base_status_id', '=', 7],
             ],
             'option'    => [
                 'take'       => 6,
                 'orderType' => 'upcoming',
-                'pagination' => [
-                    'type' => 'cursor',
-                ],
+                // 'pagination' => [
+                //     'type' => 'cursor',
+                // ],
             ],
         ]);
 
@@ -62,9 +62,9 @@ class FrontController extends Controller{
             'option'     => [
                 'take'      => 6,
                 'orderType' => 'archive',
-                'pagination' => [
-                    'type' => 'cursor',
-                ],
+                // 'pagination' => [
+                //     'type' => 'cursor',
+                // ],
             ],
         ]);
 
@@ -80,9 +80,9 @@ class FrontController extends Controller{
             ],
             'option'     => [
                 'take'      => 6,
-                'pagination' => [
-                    'type' => 'cursor',
-                ],
+                // 'pagination' => [
+                //     'type' => 'cursor',
+                // ],
             ],
         ]);
 
@@ -92,5 +92,9 @@ class FrontController extends Controller{
             'feedArchive'   => $feedArchive,
             'feedUploaded'  => $feedUploaded,
         ]);
+    }
+
+    public function discoverLive(){
+        return view('pages/front/discover/live');
     }
 }

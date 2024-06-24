@@ -15,6 +15,7 @@ use App\Models\UserLink;
 use App\Models\UserLinkTracker;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Builder;
 use Yajra\DataTables\Facades\DataTables;
@@ -101,6 +102,17 @@ class UserProfileRepositories{
         ){
             $datas->orderBy('schedule', 'ASC');
         }
+
+        elseif(
+            (isset($data['option']['orderType']))
+            &&
+            (Str::contains($data['option']['orderType'], ['all']))
+        ){
+            $datas->orderByRaw("CASE WHEN schedule IS NULL THEN 0 ELSE 1 END DESC")->orderBy('schedule', 'DESC')
+            ->orderByRaw("CASE WHEN actual_start IS NULL THEN 0 ELSE 1 END DESC")->orderBy('actual_start', 'DESC')
+            ->orderBy('published', 'DESC');
+        }
+
         else{
             $datas->orderBy('published', 'DESC');
         }
@@ -115,13 +127,13 @@ class UserProfileRepositories{
         // Data retrieval
         if(isset($data['option']['pagination'])){
             if($data['option']['pagination']['type'] == 'normal'){
-                $newDatas = $datas->paginate($data['option']['take']);
+                $newDatas = $datas->paginate($data['option']['take'])->withQueryString();
             }
             elseif($data['option']['pagination']['type'] == 'cursor'){
-                $newDatas = $datas->cursorPaginate($data['option']['take']);
+                $newDatas = $datas->cursorPaginate($data['option']['take'])->withQueryString();
             }
             else{
-                $newDatas = $datas->paginate($data['option']['take']);
+                $newDatas = $datas->paginate($data['option']['take'])->withQueryString();
             }
         }
         else{
