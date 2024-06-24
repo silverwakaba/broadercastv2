@@ -46,7 +46,7 @@ class UserLinkRepositories{
         $datas = UserLink::with([
             'belongsToBaseDecision', 'belongsToBaseLink'
         ])->withAggregate('belongsToBaseLink', 'name')->where([
-            ['users_id', '=', '1'],
+            ['users_id', '=', $data['id']],
         ])->orderBy('belongs_to_base_link_name')->get();
 
         return DataTables::of($datas)->setTransformer(function($datas) use($data){
