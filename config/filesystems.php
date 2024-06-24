@@ -29,7 +29,6 @@ return [
     */
 
     'disks' => [
-
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
@@ -46,14 +45,23 @@ return [
 
         's3public' => [
             'driver'        => 's3',
-            'bucket'        => env('B2_EU_BUCKET_1'),
-            'region'        => env('B2_EU_REGION'),
-            'key'           => env('B2_EU_KEY'),
-            'secret'        => env('B2_EU_SECRET'),
-            'endpoint'      => env('B2_EU_ENDPOINT'),
+            'bucket'        => env('B2_BUCKET_1'),
+            'region'        => env('B2_REGION'),
+            'key'           => env('B2_KEY'),
+            'secret'        => env('B2_SECRET'),
+            'endpoint'      => env('B2_ENDPOINT'),
             'visibility'    => 'public',
         ],
 
+        's3private' => [
+            'driver'        => 's3',
+            'bucket'        => env('B2_BUCKET_1'),
+            'region'        => env('B2_REGION'),
+            'key'           => env('B2_KEY'),
+            'secret'        => env('B2_SECRET'),
+            'endpoint'      => env('B2_ENDPOINT'),
+            'visibility'    => 'private',
+        ],
     ],
 
     /*

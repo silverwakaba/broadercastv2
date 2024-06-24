@@ -20,7 +20,7 @@
             </x-Adminlte.NavDropdown>
         @else
             <li class="nav-item">
-                <x-Adminlte.navlink route="register" value="Register" />
+                <x-Adminlte.NavLink route="register" value="Register" />
             </li>
             <li class="nav-item">
                 <x-Adminlte.NavLink route="login" value="Login" />
