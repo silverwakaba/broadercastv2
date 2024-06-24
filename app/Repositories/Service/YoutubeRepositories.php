@@ -200,12 +200,12 @@ class YoutubeRepositories{
                     return self::verifyChannelDirectly($channelID, $uniqueID, $id);
                 }
                 else{
-                    if($counter == false){
+                    // if($counter == false){
                         return self::verifyChannelManually($channelID, $uniqueID, $id);
-                    }
-                    else{
-                        return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Because we only allow one YouTube tracker per creator, thus we have to cancel this verification process.', 'error');
-                    }
+                    // }
+                    // else{
+                    //     return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Because we only allow one YouTube tracker per creator, thus we have to cancel this verification process.', 'error');
+                    // }
                 }
             }
             else{
