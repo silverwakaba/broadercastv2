@@ -28,8 +28,12 @@
         "APP_NAME": "Broadercast",
         "APP_ENV": "production",
         "APP_DEBUG": "true",
+        "APP_TIMEZONE": "Asia/Jakarta",
         "APP_URL": "https://broadercast.vercel.app",
         "APP_KEY": "base64:HsufxIfGwKO5PQH04w2l/iokmsHgY/X7hTvIO1ELvWI=",
+        "APP_MAINTENANCE_DRIVER": "file",
+        "APP_MAINTENANCE_STORE": "database",
+        "BCRYPT_ROUNDS": "12",
         
         "VERCEL_DEMO_MODE": "true",
         "APP_CONFIG_CACHE": "/tmp/config.php",

@@ -22,11 +22,11 @@ class FrontController extends Controller{
                 ['base_status_id', '=', 7],
             ],
             'option'    => [
-                'take'       => 15,
+                'take'       => 6,
                 'orderType' => 'live',
-                // 'pagination' => [
-                //     'type' => 'cursor',
-                // ],
+                'pagination' => [
+                    'type' => 'cursor',
+                ],
             ],
         ]);
 
@@ -41,11 +41,11 @@ class FrontController extends Controller{
                 ['base_status_id', '=', 8],
             ],
             'option'    => [
-                'take'       => 15,
+                'take'       => 6,
                 'orderType' => 'upcoming',
-                // 'pagination' => [
-                //     'type' => 'cursor',
-                // ],
+                'pagination' => [
+                    'type' => 'cursor',
+                ],
             ],
         ]);
 
@@ -79,10 +79,10 @@ class FrontController extends Controller{
                 ['base_status_id', '=', 10],
             ],
             'option'     => [
-                'take'      => 15,
-                // 'pagination' => [
-                //     'type' => 'cursor',
-                // ],
+                'take'      => 6,
+                'pagination' => [
+                    'type' => 'cursor',
+                ],
             ],
         ]);
 
