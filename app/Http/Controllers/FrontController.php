@@ -60,11 +60,11 @@ class FrontController extends Controller{
                 ['base_status_id', '=', 9],
             ],
             'option'     => [
-                'take'      => 15,
+                'take'      => 6,
                 'orderType' => 'archive',
-                // 'pagination' => [
-                //     'type' => 'cursor',
-                // ],
+                'pagination' => [
+                    'type' => 'cursor',
+                ],
             ],
         ]);
 

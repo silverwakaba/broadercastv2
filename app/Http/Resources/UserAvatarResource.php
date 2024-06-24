@@ -21,13 +21,11 @@ class UserAvatarResource extends JsonResource{
     }
     
     public function randomAvatar(){
-        // $faker = Factory::create();
-        
+        // $faker = Factory::create();        
         // return $faker->numberBetween(1, 5);
-
+        
         $numbers = range(1, 5);
         shuffle($numbers);
-
         foreach($numbers as $number);
 
         return $number;
