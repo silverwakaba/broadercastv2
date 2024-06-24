@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Faker\Factory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,7 +21,7 @@ class UserAvatarResource extends JsonResource{
     }
 	
 	public function randomAvatar(){
-		$faker = \Faker\Factory::create();
+		$faker = Factory::create();
 		
 		return $faker->numberBetween(1, 5);
 	}
