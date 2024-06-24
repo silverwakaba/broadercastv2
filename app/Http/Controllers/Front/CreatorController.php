@@ -55,6 +55,9 @@ class CreatorController extends Controller{
                 'hasOneThroughUserLink',
                 'belongsToUserLinkTracker',
             ],
+            'query' => [
+                ['users_id', '=', $profile->id],
+            ],
             'option'     => [
                 'take'      => 6,
                 'orderType' => 'all',
