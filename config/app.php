@@ -15,6 +15,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application CDN Link
+    |--------------------------------------------------------------------------
+    |
+    | Current used CDN link.
+    |
+    */
+
+    'cdn_public_url'    => env('APP_PUBLIC_CDN_URL', 'https://library.silverspoon.me'),
+    'cdn_private_url'   => env('APP_PRIVATE_CDN_URL', 'https://library.silverspoon.me'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Name
     |--------------------------------------------------------------------------
     |

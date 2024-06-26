@@ -13,8 +13,8 @@ class CronYoutubeFetchArchive extends Command{
      *
      * @var string
      */
-    // protected $signature = 'app:cron-youtube-fetch-archive';
-    protected $signature = 'cronYTfArchive';
+    protected $signature = 'app:cron-youtube-fetch-archive';
+    // protected $signature = 'cronYTfArchive';
 
     /**
      * The console command description.
@@ -27,17 +27,6 @@ class CronYoutubeFetchArchive extends Command{
      * Execute the console command.
      */
     public function handle(){
-        UserLinkTracker::where([
-            ['base_link_id', '=', 2],
-        ])->select('users_id', 'identifier')->chunk(100, function(Collection $chunks){
-            foreach($chunks as $chunk){
-                YoutubeRepositories::fetchArchive($chunk->identifier, $chunk->users_id);
-
-                // try{
-                //     YoutubeRepositories::fetchArchive($chunk->identifier, $chunk->users_id);
-                // }
-                // catch(\Throwable $th){}
-            }
-        });
+        // 
     }
 }

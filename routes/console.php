@@ -4,10 +4,6 @@ use Illuminate\Support\Facades\Schedule;
 
 /**
  * YouTube Block
- * Fetch every day: profile
- * Fetch every minute: archive > activity
 */
-Schedule::call('App\Http\Controllers\Cron\YoutubeCron@everyMinutes')->everyMinute();
-
-// Schedule::call('App\Http\Controllers\Cron\YoutubeCron@fetchUserLinkTrackerMinutely')->everyMinute();
-// Schedule::call('App\Http\Controllers\Cron\YoutubeCron@fetchUserFeedMinutely')->everyMinute();
+Schedule::command('app:cron-youtube-initial')->everyMinute()->runInBackground();
+Schedule::command('app:cron-youtube-checker')->everyMinute()->runInBackground();

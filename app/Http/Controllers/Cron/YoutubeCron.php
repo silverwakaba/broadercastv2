@@ -25,13 +25,13 @@ class YoutubeCron extends Controller{
         // return YoutubeRepositories::userFeedInit();
 
         // Ngecek Bentar
-        return YoutubeRepositories::fetchVideoStatus('og7UWM65nOU');
+        // return YoutubeRepositories::fetchVideoStatus('og7UWM65nOU');
         // return YoutubeRepositories::fetchVideoViaScraper('eGn4klwJcLs', 1);
 
         // return YoutubeRepositories::userFeedArchived();
     }
 
-    public function everyMinutes(){
+    public function init(){
         // Archive initialization
         UserLinkTracker::where([
             ['base_link_id', '=', 2],
@@ -61,7 +61,9 @@ class YoutubeCron extends Controller{
                 catch(\Throwable $th){}
             }
         });
+    }
 
+    public function checker(){
         // Live Streaming
         UserFeed::where([
             ['base_link_id', '=', 2],
