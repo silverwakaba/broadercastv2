@@ -58,44 +58,47 @@ class UserChannelActivityResource extends JsonResource{
     }
 
     public function timestamp(){
+        // Scheduled
         if(
-            (($this->streaming == true) && ($this->schedule != null) && ($this->actual_start != null) && ($this->actual_end == null) && ($this->duration == "P0D"))
-            ||
-            (($this->streaming == true) && ($this->schedule == null) && ($this->actual_start != null) && ($this->actual_end == null) && ($this->duration == "P0D"))
-            ||
-            (($this->streaming == false) && ($this->schedule != null) && ($this->actual_start != null) && ($this->actual_end != null) && ($this->duration != "P0D"))
-            ||
-            (($this->streaming == false) && ($this->schedule == null) && ($this->actual_start != null) && ($this->actual_end != null) && ($this->duration != "P0D"))
-        ){
-            return Carbon::parse($this->actual_start)->format('d M Y, g:i A');
-        }
-        elseif(
-            (($this->streaming == false) && ($this->schedule != null) && ($this->actual_start == null) && ($this->actual_end == null) && ($this->duration == "P0D"))
+            ($this->base_status_id == 7)
         ){
             return Carbon::parse($this->schedule)->format('d M Y, g:i A');
         }
+
+        // Live
+        elseif(
+            ($this->base_status_id == 8)
+            ||
+            ($this->base_status_id == 9)
+        ){
+            return Carbon::parse($this->actual_start)->format('d M Y, g:i A');
+        }
+
+        // Else
         else{
             return Carbon::parse($this->published)->format('d M Y, g:i A');
         }
+
     }
 
     public function timestampForHuman(){
+        // Scheduled
         if(
-            (($this->streaming == true) && ($this->schedule != null) && ($this->actual_start != null) && ($this->actual_end == null) && ($this->duration == "P0D"))
-            ||
-            (($this->streaming == true) && ($this->schedule == null) && ($this->actual_start != null) && ($this->actual_end == null) && ($this->duration == "P0D"))
-            ||
-            (($this->streaming == false) && ($this->schedule != null) && ($this->actual_start != null) && ($this->actual_end != null) && ($this->duration != "P0D"))
-            ||
-            (($this->streaming == false) && ($this->schedule == null) && ($this->actual_start != null) && ($this->actual_end != null) && ($this->duration != "P0D"))
-        ){
-            return Carbon::parse($this->actual_start)->diffForHumans();
-        }
-        elseif(
-            (($this->streaming == false) && ($this->schedule != null) && ($this->actual_start == null) && ($this->actual_end == null) && ($this->duration == "P0D"))
+            ($this->base_status_id == 7)
         ){
             return Carbon::parse($this->schedule)->diffForHumans();
         }
+
+        // Live
+        elseif(
+            ($this->base_status_id == 8)
+            ||
+            ($this->base_status_id == 9)
+        ){
+            return Carbon::parse($this->actual_start)->diffForHumans();
+        }
+
+        // Else
         else{
             return Carbon::parse($this->published)->diffForHumans();
         }
