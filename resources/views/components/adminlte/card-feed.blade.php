@@ -26,9 +26,11 @@
                                 </div>
                             </div>
                         </a>
-                        <div class="card-body">
-                            <h5 class="text-truncate h5 m-0" title="{{ $data->title }}">{{ $data->title }}</h5>
-                        </div>
+                        <a href="{{ $data->link }}" target="_blank" class="text-light">
+                            <div class="card-body">
+                                <h5 class="text-truncate h5 m-0" title="{{ $data->title }}">{{ $data->title }}</h5>
+                            </div>
+                        </a>
                     </div>
                 </div>
             @endforeach

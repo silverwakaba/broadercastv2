@@ -24,9 +24,6 @@ class FrontController extends Controller{
             'option'    => [
                 'take'       => 6,
                 'orderType' => 'live',
-                // 'pagination' => [
-                //     'type' => 'cursor',
-                // ],
             ],
         ]);
 
@@ -43,9 +40,7 @@ class FrontController extends Controller{
             'option'    => [
                 'take'       => 6,
                 'orderType' => 'upcoming',
-                // 'pagination' => [
-                //     'type' => 'cursor',
-                // ],
+                'dayLoad'   => 7,
             ],
         ]);
 
@@ -62,9 +57,6 @@ class FrontController extends Controller{
             'option'     => [
                 'take'      => 6,
                 'orderType' => 'archive',
-                // 'pagination' => [
-                //     'type' => 'cursor',
-                // ],
             ],
         ]);
 
@@ -80,9 +72,6 @@ class FrontController extends Controller{
             ],
             'option'     => [
                 'take'      => 6,
-                // 'pagination' => [
-                //     'type' => 'cursor',
-                // ],
             ],
         ]);
 
@@ -92,9 +81,5 @@ class FrontController extends Controller{
             'feedArchive'   => $feedArchive,
             'feedUploaded'  => $feedUploaded,
         ]);
-    }
-
-    public function discoverLive(){
-        return view('pages/front/discover/live');
     }
 }

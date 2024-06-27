@@ -520,11 +520,11 @@ class YoutubeRepositories{
                             'title'          => $videoTitleNew,
                         ]);
 
-                        // return "Online and updating";
+                        return "Online and updating";
                     }
                 }
 
-                // return "Just online";
+                return "Just online";
             }
             else{
                 if($userF->base_status_id == 8){
@@ -533,10 +533,10 @@ class YoutubeRepositories{
                         'concurrent'     => 0,
                     ]);
 
-                    // return "Offline and updating";
+                    return "Offline and updating";
                 }
 
-                // return "Just offline";
+                return "Just offline";
             }
         }
         catch(\Throwable $th){}
@@ -693,7 +693,7 @@ class YoutubeRepositories{
                 return "5";
             }
 
-            // Unknown
+            // Unknown Streaming Content
             else{
                 return "6";
             }

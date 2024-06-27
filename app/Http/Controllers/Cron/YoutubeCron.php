@@ -7,17 +7,11 @@ use App\Http\Controllers\Controller;
 use App\Models\BaseAPI;
 use App\Models\UserFeed;
 use App\Models\UserLinkTracker;
-
-use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
-
 use App\Repositories\Service\YoutubeRepositories;
 
-// Delete
-// use App\Helpers\BaseHelper;
-// use Carbon\Carbon;
-// use Illuminate\Support\Str;
-// use Illuminate\Support\Facades\Http;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class YoutubeCron extends Controller{
     public function fetchDebug(){
@@ -25,10 +19,16 @@ class YoutubeCron extends Controller{
         // return YoutubeRepositories::userFeedInit();
 
         // Ngecek Bentar
-        // return YoutubeRepositories::fetchVideoStatus('og7UWM65nOU');
-        // return YoutubeRepositories::fetchVideoViaScraper('eGn4klwJcLs', 1);
+        // return YoutubeRepositories::fetchVideoStatus('jctscOPKEgM');
+        // return YoutubeRepositories::fetchVideoViaScraper('jctscOPKEgM', 1);
 
         // return YoutubeRepositories::userFeedArchived();
+
+        return UserFeed::where([
+            ['base_link_id', '=', 2],
+            ['actual_end', '=', null],
+            ['duration', '=', "P0D"],
+        ])->whereIn('base_status_id', ['6', '7', '8'])->whereNotIn('base_status_id', ['5'])->get();
     }
 
     public function init(){
@@ -64,12 +64,19 @@ class YoutubeCron extends Controller{
     }
 
     public function checker(){
+        // $sub = Carbon::now()->subDays(3)->toDateTimeString();
+        // $add = Carbon::now()->addDays(3)->toDateTimeString();
+
         // Live Streaming
         UserFeed::where([
             ['base_link_id', '=', 2],
             ['actual_end', '=', null],
             ['duration', '=', "P0D"],
-        ])->whereIn('base_status_id', ['7', '8'])->whereNotIn('base_status_id', ['5'])->chunk(100, function(Collection $chunks){
+        ])
+        
+        // ->whereBetween('published', [$sub, $add])->orWhereBetween('schedule', [$sub, $add])
+        
+        ->whereIn('base_status_id', ['7', '8'])->whereNotIn('base_status_id', ['5'])->chunk(100, function(Collection $chunks){
             foreach($chunks as $chunk){
                 try{
                     // Fetch stream activity

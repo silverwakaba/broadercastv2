@@ -14,6 +14,7 @@ use App\Models\UserFeed;
 use App\Models\UserLink;
 use App\Models\UserLinkTracker;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -47,17 +48,13 @@ class UserProfileRepositories{
             isset($data['with']) ? $data['with'] : []
         )->where(
             isset($data['query']) ? $data['query'] : []
-        )->whereIn('base_link_id', BaseHelper::getCheckedBaseLink());//->orderBy('streaming', 'DESC');
+        )->whereIn('base_link_id', BaseHelper::getCheckedBaseLink());
         
         // Additional query
         if(isset($data['option'])){
             if(isset($data['option']['take']) && !isset($data['option']['pagination'])){
                 $datas->take($data['option']['take']);
             }
-
-            // if(isset($data['option']['aggregate'])){
-            //     $datas->withAggregate('belongsToActiveStream', 'published')->orderBy('belongs_to_active_stream_published', 'DESC');
-            // }
         }
 
         // Data retrieval
@@ -101,6 +98,10 @@ class UserProfileRepositories{
             (Str::contains($data['option']['orderType'], ['upcoming']))
         ){
             $datas->orderBy('schedule', 'ASC');
+
+            if((isset($data['option']['dayLoad']))){
+                $datas->whereBetween('schedule', [Carbon::now()->toDateTimeString(), Carbon::now()->addDays($data['option']['dayLoad'])->toDateTimeString()]);
+            }
         }
 
         elseif(
