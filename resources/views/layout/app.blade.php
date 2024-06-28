@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>@yield('title', 'Page') | {{ config('app.name', 'BASE') }}</title>
+        <link rel="icon" type="image/x-icon" href="{{ config('app.cdn_public_url') . '/system/image/logo/broadercast/logo-100px.png' }}">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.0/dist/sweetalert2.min.css">
@@ -13,7 +14,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2.0/dist/css/adminlte.min.css">
     </head>
-    <body class="hold-transition sidebar-mini sidebar-collapse dark-mode">
+    <body class="hold-transition sidebar-mini dark-mode">
         <div class="wrapper">
             <x-Adminlte.Main />
         </div>

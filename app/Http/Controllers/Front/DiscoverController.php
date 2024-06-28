@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 class DiscoverController extends Controller{
     public function index(){}
 
+    // Live
     public function live(){
         $datas = UserProfileRepositories::getFeed([
             'with'      => [
@@ -23,9 +24,9 @@ class DiscoverController extends Controller{
             ],
             'option'    => [
                 'take'       => 3,
-                'orderType' => 'live',
+                'orderType' => 'normal',
                 'pagination' => [
-                    'type' => 'cursor',
+                    'type' => 'normal',
                 ],
             ],
         ]);
@@ -35,6 +36,7 @@ class DiscoverController extends Controller{
         ]);
     }
 
+    // Scheduled
     public function scheduled(){
         $datas = UserProfileRepositories::getFeed([
             'with'      => [
@@ -47,9 +49,9 @@ class DiscoverController extends Controller{
             ],
             'option'    => [
                 'take'       => 3,
-                'orderType' => 'upcoming',
+                'orderType' => 'normal',
                 'pagination' => [
-                    'type' => 'cursor',
+                    'type' => 'normal',
                 ],
             ],
         ]);
@@ -59,6 +61,7 @@ class DiscoverController extends Controller{
         ]);
     }
 
+    // Archived
     public function archived(){
         $datas = UserProfileRepositories::getFeed([
             'with'      => [
@@ -71,14 +74,14 @@ class DiscoverController extends Controller{
             ],
             'option'    => [
                 'take'       => 3,
-                'orderType' => 'archive',
+                'orderType' => 'normal',
                 'pagination' => [
-                    'type' => 'cursor',
+                    'type' => 'normal',
                 ],
             ],
         ]);
 
-        return view('pages/front/discover/scheduled', [
+        return view('pages/front/discover/archived', [
             'datas' => $datas,
         ]);
     }
@@ -95,8 +98,9 @@ class DiscoverController extends Controller{
             ],
             'option'    => [
                 'take'       => 3,
+                'orderType' => 'vod',
                 'pagination' => [
-                    'type' => 'cursor',
+                    'type' => 'normal',
                 ],
             ],
         ]);

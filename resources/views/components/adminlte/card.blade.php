@@ -1,11 +1,11 @@
 @props(['id'])
 <div @class(["card", "card-outline card-$outline" => $outline, "card-outline-tabs" => $add])>
     @if($title || $add || $tab)
-        <div class="card-header p-0 border-bottom-0">
-            <ul class="nav nav-tabs" role="tablist">
+        <div @class(["card-header p-0", "d-flex" => $tab])>
+            <ul class="nav nav-tabs mr-auto">
                 @if($title)
                     <li class="nav-item">
-                        <h3 class="nav-link pt-2 h5">{{ $title }}</h3>
+                        <h3 class="nav-link card-title h3 pt-2">{{ $title }}</h3>
                     </li>
                 @endif
                 @if($add)
@@ -13,14 +13,16 @@
                         <a href="{{ route($add) }}" class="nav-link text-dark"><i class="fas fa-plus-square"></i> Add New</a>
                     </li>
                 @endif
-                @if($tab)
+            </ul>
+            @if($tab)
+                <ul class="nav nav-tabs float-right">
                     @foreach($tab as $key => $value)
                         <li class="nav-item">
                             <a href="#tab_{{ $key }}" @class(["nav-link", "text-light", "active" => $key == 0]) data-toggle="tab">{{ $value }}</a>
                         </li>
                     @endforeach
-                @endif
-            </ul>
+                </ul>
+            @endif
         </div>
     @endif
     <div class="card-body">

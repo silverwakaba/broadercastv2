@@ -26,18 +26,28 @@
                 <x-Adminlte.NavLink route="login" value="Login" />
             </li>
         @endcan
+        <li class="nav-item">
+            <a href="#" class="nav-link" data-widget="fullscreen">
+                <i class="fas fa-expand-arrows-alt"></i>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true">
+                <i class="fas fa-th-large"></i>
+            </a>
+        </li>
     </ul>
 </nav>
-<aside class="main-sidebar main-sidebar-custom sidebar-dark-primary elevation-4">
+<aside class="main-sidebar main-sidebar-custom sidebar-dark-primary elevation-5">
     <a href="{{ url('/') }}" class="brand-link">
-        <img src="https://pub.silverspoon.me/system/image/logo/broadercast/logo-100px.png" class="brand-image">
+        <img src="{{ config('app.cdn_public_url') . '/system/image/logo/broadercast/logo-100px.png' }}" class="brand-image">
         <span class="brand-text">{{ config('app.name', 'Broadercast') }}</span>
     </a>
     <div class="sidebar">
         @can('canLogin')
             <div class="user-panel pb-3 mt-3 mb-3 d-flex">
                 <div class="image">
-                    <img src="{{ $user->avatar->path }}" class="img-circle elevation-2" alt="User Image" />
+                    <img src="{{ $user->avatar->path }}" class="img-circle elevation-2" />
                 </div>
                 <div class="info">
                     <a href="{{ $user->page }}" class="d-block text-truncate">{{ $user->name }}</a>
@@ -45,7 +55,7 @@
             </div>
         @endcan
         <nav class="my-2">
-            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <ul class="nav nav-pills nav-sidebar nav-flat nav-compact flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <li class="nav-header">Navigation</li>
                 <x-Adminlte.NavTree route="index">
                     <x-Adminlte.NavLink icon="1" parent="1" fa="fas fa-home" value="Main Menu" />

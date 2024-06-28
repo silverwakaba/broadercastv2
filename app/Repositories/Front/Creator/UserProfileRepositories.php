@@ -128,13 +128,13 @@ class UserProfileRepositories{
         // Data retrieval
         if(isset($data['option']['pagination'])){
             if($data['option']['pagination']['type'] == 'normal'){
-                $newDatas = $datas->paginate($data['option']['take'])->withQueryString();
+                $newDatas = $datas->paginate($data['option']['take'])->fragment($data['option']['orderType'])->withQueryString();
             }
             elseif($data['option']['pagination']['type'] == 'cursor'){
-                $newDatas = $datas->cursorPaginate($data['option']['take'])->withQueryString();
+                $newDatas = $datas->cursorPaginate($data['option']['take'])->fragment($data['option']['orderType'])->withQueryString();
             }
             else{
-                $newDatas = $datas->paginate($data['option']['take'])->withQueryString();
+                $newDatas = $datas->paginate($data['option']['take'])->fragment($data['option']['orderType'])->withQueryString();
             }
         }
         else{

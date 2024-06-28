@@ -9,7 +9,7 @@
                 </x-Adminlte.Card>
             </div>
             <div class="col-12 col-lg-9">
-                <x-Adminlte.Card title="Video on Demand">
+                <x-Adminlte.Card title="Video on Demand Content">
                     <x-Adminlte.CardFeed col="3" :feeds="$datas" />
                 </x-Adminlte.Card>
             </div>

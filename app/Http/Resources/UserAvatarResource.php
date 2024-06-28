@@ -16,7 +16,7 @@ class UserAvatarResource extends JsonResource{
         return [
             'id'        => $this->id,
             'users_id'  => $this->users_id,
-            'path'      => $this->path ? $this->cdnURI . "/project/broadercast/system/avatar/$this->path" : $this->cdnURI . "/system/image/avatar/avatar-" . $this->randomAvatar() . ".png",
+            'path'      => $this->path ? config('app.cdn_public_url') . "/project/broadercast/system/avatar/$this->path" : config('app.cdn_public_url') . "/system/image/avatar/avatar-" . $this->randomAvatar() . ".png",
         ];
     }
     
