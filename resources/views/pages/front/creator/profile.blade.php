@@ -8,12 +8,14 @@
             </div>
             <div class="col-lg-8">
                 <x-Adminlte.Card title="Content" tab="Live, Upcoming">
-                    <div class="tab-pane active" id="tab_0">
-                        <x-Adminlte.CardFeed col="4" :feeds="$live" />
-                    </div>
-                    <div class="tab-pane" id="tab_1">
-                        <x-Adminlte.CardFeed col="4" :feeds="$schedule" />
-                    </div>
+                    <x-slot name="tabContent">
+                        <div class="tab-pane active" id="tab_0">
+                            <x-Adminlte.CardFeed col="4" :feeds="$live" />
+                        </div>
+                        <div class="tab-pane" id="tab_1">
+                            <x-Adminlte.CardFeed col="4" :feeds="$schedule" />
+                        </div>
+                    </x-slot>
                 </x-Adminlte.Card>
             </div>
         </div>
