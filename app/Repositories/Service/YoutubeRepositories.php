@@ -195,22 +195,22 @@ class YoutubeRepositories{
 
             $counter = self::userLinkTrackerCounter(auth()->user()->id, true);
 
-            if(($checker == true)){
-                if(auth()->user()->hasRole('Admin|Moderator')){
-                    return self::verifyChannelDirectly($channelID, $uniqueID, $id);
-                }
-                else{
-                    // if($counter == false){
-                        return self::verifyChannelManually($channelID, $uniqueID, $id);
-                    // }
-                    // else{
-                    //     return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Because we only allow one YouTube tracker per creator, thus we have to cancel this verification process.', 'error');
-                    // }
-                }
-            }
-            else{
-                return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Because we found that this channel has been successfully verified by other users, thus we have to cancel this verification process.', 'error');
-            }
+            // if(($checker == true)){
+            //     if(auth()->user()->hasRole('Admin|Moderator')){
+                    return self::verifyChannelDirectly($channelID, $uniqueID, $id); // Bypass buat testing
+            //     }
+            //     else{
+            //         // if($counter == false){
+            //             return self::verifyChannelManually($channelID, $uniqueID, $id);
+            //         // }
+            //         // else{
+            //         //     return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Because we only allow one YouTube tracker per creator, thus we have to cancel this verification process.', 'error');
+            //         // }
+            //     }
+            // }
+            // else{
+            //     return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Because we found that this channel has been successfully verified by other users, thus we have to cancel this verification process.', 'error');
+            // }
         }
         catch(\Throwable $th){
             return $th;
