@@ -95,7 +95,7 @@ class UserProfileRepositories{
         elseif(
             (isset($data['option']['orderType']))
             &&
-            (Str::contains($data['option']['orderType'], ['upcoming']))
+            (Str::contains($data['option']['orderType'], ['schedule']))
         ){
             $datas->orderBy('schedule', 'ASC');
 

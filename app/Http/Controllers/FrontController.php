@@ -11,8 +11,8 @@ use Illuminate\Http\Request;
 class FrontController extends Controller{
     // Index
     public function index(){
-        // Feed Live
-        $feedLive = UserProfileRepositories::getFeed([
+        // Live
+        $live = UserProfileRepositories::getFeed([
             'with'      => [
                 'belongsToUser',
                 'hasOneThroughUserLink',
@@ -22,13 +22,13 @@ class FrontController extends Controller{
                 ['base_status_id', '=', 8],
             ],
             'option'    => [
-                'take'       => 6,
+                'take'       => 4,
                 'orderType' => 'live',
             ],
         ]);
 
-        // Feed Upcoming
-        $feedUpcoming = UserProfileRepositories::getFeed([
+        // Upcoming Schedule
+        $schedule = UserProfileRepositories::getFeed([
             'with'      => [
                 'belongsToUser',
                 'hasOneThroughUserLink',
@@ -38,48 +38,48 @@ class FrontController extends Controller{
                 ['base_status_id', '=', 7],
             ],
             'option'    => [
-                'take'       => 6,
-                'orderType' => 'upcoming',
+                'take'       => 4,
+                'orderType' => 'schedule',
                 'dayLoad'   => 7,
             ],
         ]);
 
-        // Feed Archive
-        $feedArchive = UserProfileRepositories::getFeed([
-            'with'  => [
-                'belongsToUser',
-                'hasOneThroughUserLink',
-                'belongsToUserLinkTracker',
-            ],
-            'query'      => [
-                ['base_status_id', '=', 9],
-            ],
-            'option'     => [
-                'take'      => 6,
-                'orderType' => 'archive',
-            ],
-        ]);
+        // // Feed Archive
+        // $feedArchive = UserProfileRepositories::getFeed([
+        //     'with'  => [
+        //         'belongsToUser',
+        //         'hasOneThroughUserLink',
+        //         'belongsToUserLinkTracker',
+        //     ],
+        //     'query'      => [
+        //         ['base_status_id', '=', 9],
+        //     ],
+        //     'option'     => [
+        //         'take'      => 6,
+        //         'orderType' => 'archive',
+        //     ],
+        // ]);
 
-        // Uploaded Content
-        $feedUploaded = UserProfileRepositories::getFeed([
-            'with'  => [
-                'belongsToUser',
-                'hasOneThroughUserLink',
-                'belongsToUserLinkTracker',
-            ],
-            'query'      => [
-                ['base_status_id', '=', 10],
-            ],
-            'option'     => [
-                'take'      => 6,
-            ],
-        ]);
+        // // Uploaded Content
+        // $feedUploaded = UserProfileRepositories::getFeed([
+        //     'with'  => [
+        //         'belongsToUser',
+        //         'hasOneThroughUserLink',
+        //         'belongsToUserLinkTracker',
+        //     ],
+        //     'query'      => [
+        //         ['base_status_id', '=', 10],
+        //     ],
+        //     'option'     => [
+        //         'take'      => 6,
+        //     ],
+        // ]);
 
         return view('pages/index', [
-            'feedLive'      => $feedLive,
-            'feedUpcoming'  => $feedUpcoming,
-            'feedArchive'   => $feedArchive,
-            'feedUploaded'  => $feedUploaded,
+            'live'      => $live,
+            'schedule'  => $schedule,
+            // 'feedArchive'   => $feedArchive,
+            // 'feedUploaded'  => $feedUploaded,
         ]);
     }
 }
