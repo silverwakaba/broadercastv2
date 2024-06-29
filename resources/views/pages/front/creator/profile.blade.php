@@ -15,14 +15,12 @@
                         <div class="tab-pane" id="tab_1">
                             <x-Adminlte.CardFeed col="4" :feeds="$schedule" />
                         </div>
-
-                        <div class="tab-pane" id="tab_1">
+                        <div class="tab-pane" id="tab_2">
                             <x-Adminlte.CardFeed col="4" :feeds="$archive" />
                         </div>
-                        <div class="tab-pane" id="tab_1">
+                        <div class="tab-pane" id="tab_3">
                             <x-Adminlte.CardFeed col="4" :feeds="$uploaded" />
                         </div>
-
                     </x-slot>
                 </x-Adminlte.Card>
             </div>
