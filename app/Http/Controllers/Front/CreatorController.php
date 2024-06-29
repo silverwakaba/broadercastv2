@@ -49,82 +49,18 @@ class CreatorController extends Controller{
             ],
         ]);
 
-        // BENTARAN YA
-        // Live
-        $live = UserProfileRepositories::getFeed([
-            'with'      => [
-                'belongsToUser',
-                'hasOneThroughUserLink',
-                'belongsToUserLinkTracker',
-            ],
-            'query'     => [
-                ['base_status_id', '=', 8],
-                ['users_id', '=', $profile->id],
-            ],
-            'option'    => [
-                'take'       => 4,
-                'orderType' => 'live',
-                'pagination' => [
-                    'type' => 'normal',
-                ],
-            ],
-        ]);
-
-        // Schedule
-        $schedule = UserProfileRepositories::getFeed([
-            'with'      => [
-                'belongsToUser',
-                'hasOneThroughUserLink',
-                'belongsToUserLinkTracker',
-            ],
-            'query'     => [
-                ['base_status_id', '=', 7],
-                ['users_id', '=', $profile->id],
-            ],
-            'option'    => [
-                'take'       => 4,
-                'orderType' => 'schedule',
-                'dayLoad'   => 7,
-                'pagination' => [
-                    'type' => 'normal',
-                ],
-            ],
-        ]);
-
-        // Archive
-        $archive = UserProfileRepositories::getFeed([
+        $feed = UserProfileRepositories::getFeed([
             'with'  => [
                 'belongsToUser',
                 'hasOneThroughUserLink',
                 'belongsToUserLinkTracker',
             ],
-            'query'      => [
-                ['base_status_id', '=', 9],
+            'query' => [
                 ['users_id', '=', $profile->id],
             ],
             'option'     => [
-                'take'      => 4,
-                'orderType' => 'archive',
-                'pagination' => [
-                    'type' => 'normal',
-                ],
-            ],
-        ]);
-
-        // Uploaded Content
-        $uploaded = UserProfileRepositories::getFeed([
-            'with'  => [
-                'belongsToUser',
-                'hasOneThroughUserLink',
-                'belongsToUserLinkTracker',
-            ],
-            'query'      => [
-                ['base_status_id', '=', 10],
-                ['users_id', '=', $profile->id],
-            ],
-            'option'     => [
-                'take'      => 6,
-                'orderType' => 'uploaded',
+                'take'      => 3,
+                'orderType' => 'all',
                 'pagination' => [
                     'type' => 'normal',
                 ],
@@ -135,12 +71,7 @@ class CreatorController extends Controller{
             'profile'   => $profile,
             'link'      => $link,
             'tracker'   => $tracker,
-            
-            // Kela
-            'live'      => $live,
-            'schedule'  => $schedule,
-            'archive'   => $archive,
-            'uploaded'  => $uploaded,
+            'feed'      => $feed,
         ]);
     }
 }
