@@ -49,29 +49,73 @@ class CreatorController extends Controller{
             ],
         ]);
 
-        $feed = UserProfileRepositories::getFeed([
-            'with'  => [
+        // BENTARAN YA
+        $live = UserProfileRepositories::getFeed([
+            'with'      => [
                 'belongsToUser',
                 'hasOneThroughUserLink',
                 'belongsToUserLinkTracker',
             ],
-            'query' => [
+            'query'     => [
+                ['base_status_id', '=', 8],
                 ['users_id', '=', $profile->id],
             ],
-            'option'     => [
-                'take'      => 6,
-                'orderType' => 'all',
+            'option'    => [
+                'take'       => 4,
+                'orderType' => 'live',
                 'pagination' => [
                     'type' => 'normal',
                 ],
             ],
         ]);
 
+        // Upcoming Schedule
+        $schedule = UserProfileRepositories::getFeed([
+            'with'      => [
+                'belongsToUser',
+                'hasOneThroughUserLink',
+                'belongsToUserLinkTracker',
+            ],
+            'query'     => [
+                ['base_status_id', '=', 7],
+                ['users_id', '=', $profile->id],
+            ],
+            'option'    => [
+                'take'       => 4,
+                'orderType' => 'schedule',
+                'dayLoad'   => 7,
+                'pagination' => [
+                    'type' => 'normal',
+                ],
+            ],
+        ]);
+
+        // $feed = UserProfileRepositories::getFeed([
+        //     'with'  => [
+        //         'belongsToUser',
+        //         'hasOneThroughUserLink',
+        //         'belongsToUserLinkTracker',
+        //     ],
+        //     'query' => [
+        //         ['users_id', '=', $profile->id],
+        //     ],
+        //     'option'     => [
+        //         'take'      => 6,
+        //         'orderType' => 'all',
+        //         'pagination' => [
+        //             'type' => 'normal',
+        //         ],
+        //     ],
+        // ]);
+
         return view('pages/front/creator/profile', [
             'profile'   => $profile,
             'link'      => $link,
             'tracker'   => $tracker,
-            'feed'      => $feed,
+            
+            // Kela
+            'live'      => $live,
+            'schedule'  => $schedule,
         ]);
     }
 }

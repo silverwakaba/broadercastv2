@@ -7,8 +7,13 @@
                 <x-Adminlte.CardProfile :profile="$profile" :links="$link" :channels="$tracker->data" />
             </div>
             <div class="col-lg-8">
-                <x-Adminlte.Card title="Archive">
-                    <x-Adminlte.CardFeed col="3" :feeds="$feed" />
+                <x-Adminlte.Card title="Content" tab="Live, Upcoming">
+                    <div class="tab-pane active" id="tab_0">
+                        <x-Adminlte.CardFeed col="4" :feeds="$live" />
+                    </div>
+                    <div class="tab-pane" id="tab_1">
+                        <x-Adminlte.CardFeed col="4" :feeds="$schedule" />
+                    </div>
                 </x-Adminlte.Card>
             </div>
         </div>
