@@ -122,6 +122,23 @@ class YoutubeRepositories{
         catch(\Throwable $th){}
     }
 
+    public static function newVideoScrapper($videoID){
+        $http = Http::get('https://www.silverspoon.me/peepee/youtube/video', [
+            'id'  => $videoID,
+        ])->json();
+
+        if(($http['success'] == true)){
+            return $http;
+        }
+        else{
+            return self::newVideoScrapperRepeater($videoID);
+        }
+    }
+
+    public static function newVideoScrapperRepeater($videoID){
+        return self::newVideoScrapper($videoID);
+    }
+
     // User Link Tracker
     public static function userLinkTracker($channelID, $userID, $initialized = null){
         $userLT = UserLinkTracker::where([
@@ -476,67 +493,38 @@ class YoutubeRepositories{
         try{
             $userF = self::userFeed($vID);
 
-            // Default state
-            $videoID = null;
-            $videoIDNew = null;
             $isOffline = true;
-            $videoSchedule = null;
 
-            $http = self::videoScrapper($vID);
+            $http = self::newVideoScrapper($vID);
 
-            /**
-             * Array key reference (Patch 15 June 2024)
-             * 14: Streaming status (id, title, next stream schedule)
-             * 35: Streaming statistic (concurrent viewers)
-            */
-            $httpResultScript = $http['result']['script'];
-            $httpResultTitle = Str::remove(' - YouTube', $http['result']['title'][0]);
-
-            if(isset($httpResultScript[35]) && (Str::contains($httpResultScript[35], ['originalViewCount']) == true)){
+            if(
+                ($http['live'] == true) && ($http['title'] != null) && ($http['schedule'] == null) && isset($http['concurrent'])
+            ){
                 $isOffline = false;
-
-                $videoID = Str::betweenFirst($httpResultScript[14], '{"liveStreamabilityRenderer":{"videoId":"', '",'); // Cek kalo ada 11 char berarti valid
-
-                $videoTitle = Str::betweenFirst($httpResultScript[14], '"title":"', '",');
-                $videoTitleNew = $httpResultTitle == $videoTitle ? $httpResultTitle : 'Recheck';
-
-                $videoSchedule = (int) Str::betweenFirst($httpResultScript[14], '"scheduledStartTime":"', '",'); // Cek kalo 0 artinya lagi live dan/atau gak ada next schedule
-
-                $videoConcurrent = (int) Str::betweenFirst($httpResultScript[35], '"originalViewCount":"', '"'); // Cek kalo int berarti oke
             }
 
             if(
-                (($isOffline == false) && (Str::length($videoID) === 11) && ($videoID == $userF->identifier))
-                &&
-                (($videoSchedule == null) || (BaseHelper::diffInDays($userF->schedule) <= 0))
+                (($isOffline == false) && (BaseHelper::diffInDays($userF->schedule) <= 0))
             ){
                 if(isset($userF)){
-                    if(
-                        ($videoTitleNew !== 'Recheck')
-                    ){
-                        $userF->update([
-                            'base_status_id' => 8,
-                            'concurrent'     => $videoConcurrent,
-                            'title'          => $videoTitleNew,
-                        ]);
-
-                        return "Online and updating";
-                    }
-                }
-
-                return "Just online";
-            }
-            else{
-                if($userF->base_status_id == 8){
                     $userF->update([
-                        'base_status_id' => 9,
-                        'concurrent'     => 0,
+                        'base_status_id' => 8,
+                        'concurrent'     => $http['concurrent'],
+                        'title'          => $http['title'],
                     ]);
 
-                    return "Offline and updating";
+                    // return "Online and updating";
                 }
 
-                return "Just offline";
+                // return "Just online";
+            }
+            else{
+                $userF->update([
+                    'base_status_id' => 9,
+                    'concurrent'     => 0,
+                ]);
+
+                // return "Offline and updating";
             }
         }
         catch(\Throwable $th){}

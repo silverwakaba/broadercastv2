@@ -20,15 +20,11 @@ class YoutubeCron extends Controller{
 
         // Ngecek Bentar
         // return YoutubeRepositories::fetchVideoStatus('jctscOPKEgM');
-        // return YoutubeRepositories::fetchVideoViaScraper('jctscOPKEgM', 1);
+        return YoutubeRepositories::fetchVideoViaScraper('oJYJ0482P7g', 1);
 
         // return YoutubeRepositories::userFeedArchived();
 
-        return UserFeed::where([
-            ['base_link_id', '=', 2],
-            ['actual_end', '=', null],
-            ['duration', '=', "P0D"],
-        ])->whereIn('base_status_id', ['6', '7', '8'])->whereNotIn('base_status_id', ['5'])->get();
+        // return YoutubeRepositories::newVideoScrapper('eErqk2ISVNk');
     }
 
     public function init(){
@@ -64,8 +60,8 @@ class YoutubeCron extends Controller{
     }
 
     public function checker(){
-        // $sub = Carbon::now()->subDays(3)->toDateTimeString();
-        // $add = Carbon::now()->addDays(3)->toDateTimeString();
+        $sub = Carbon::now()->subDays(3)->toDateTimeString();
+        $add = Carbon::now()->addDays(3)->toDateTimeString();
 
         // Live Streaming
         UserFeed::where([
@@ -74,7 +70,7 @@ class YoutubeCron extends Controller{
             ['duration', '=', "P0D"],
         ])
         
-        // ->whereBetween('published', [$sub, $add])->orWhereBetween('schedule', [$sub, $add])
+        ->whereBetween('published', [$sub, $add])->orWhereBetween('schedule', [$sub, $add])
         
         ->whereIn('base_status_id', ['7', '8'])->whereNotIn('base_status_id', ['5'])->chunk(100, function(Collection $chunks){
             foreach($chunks as $chunk){
