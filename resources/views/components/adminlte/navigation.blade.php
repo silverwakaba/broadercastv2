@@ -27,13 +27,8 @@
             </li>
         @endcan
         <li class="nav-item">
-            <a href="#" class="nav-link" data-widget="fullscreen">
-                <i class="fas fa-expand-arrows-alt"></i>
-            </a>
-        </li>
-        <li class="nav-item">
             <a href="#" class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true">
-                <i class="fas fa-th-large"></i>
+                <i class="fas fa-cogs"></i>
             </a>
         </li>
     </ul>

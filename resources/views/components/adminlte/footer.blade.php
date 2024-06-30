@@ -1,5 +1,7 @@
 <aside class="control-sidebar control-sidebar-dark p-2">
-    <!--  -->
+    <x-Adminlte.CardForm title="Search" button="Search">
+        <x-Form.Input name="name" type="text" text="Name" />
+    </x-Adminlte.CardForm>
 </aside>
 <footer class="main-footer">
     <div class="row">
