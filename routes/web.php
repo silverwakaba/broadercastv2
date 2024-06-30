@@ -21,7 +21,6 @@ use App\Http\Controllers\Apps\Master\UserController as MasterUserController;
 
 // Front
 use App\Http\Controllers\Front\CreatorController as FrontCreatorController;
-use App\Http\Controllers\Front\DiscoverController as FrontDiscoverController;
 
 // Debug | Please comment before deployment
 use App\Http\Controllers\Cron\YoutubeCron;
@@ -35,24 +34,6 @@ Route::group(['prefix' => '/'], function(){
         Route::get('youtube', [YoutubeCron::class, 'fetchDebug']);
     });
 
-    // Discover
-    Route::group(['prefix' => 'discover'], function(){
-        // Index
-        // Route::get('/', [FrontCreatorController::class, 'index'])->name('creator.index');
-
-        // Live
-        Route::get('live', [FrontDiscoverController::class, 'live'])->name('discover.live');
-
-        // Scheduled
-        Route::get('scheduled', [FrontDiscoverController::class, 'scheduled'])->name('discover.scheduled');
-
-        // Archived
-        Route::get('archived', [FrontDiscoverController::class, 'archived'])->name('discover.archived');
-
-        // Archived
-        Route::get('uploaded', [FrontDiscoverController::class, 'uploaded'])->name('discover.uploaded');
-    });
-
     // Creator
     Route::group(['prefix' => 'creator'], function(){
         // Index
@@ -60,6 +41,18 @@ Route::group(['prefix' => '/'], function(){
 
         // Profile
         Route::get('@{id}', [FrontCreatorController::class, 'profile'])->name('creator.profile');
+
+        // Live
+        Route::get('live', [FrontCreatorController::class, 'live'])->name('creator.live');
+
+        // Scheduled
+        Route::get('scheduled', [FrontCreatorController::class, 'scheduled'])->name('creator.scheduled');
+
+        // Archived
+        Route::get('archived', [FrontCreatorController::class, 'archived'])->name('creator.archived');
+
+        // Archived
+        Route::get('uploaded', [FrontCreatorController::class, 'uploaded'])->name('creator.uploaded');
     });
 
     // // Auth

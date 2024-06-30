@@ -1,6 +1,4 @@
 $(function () {
-    Pusher.logToConsole = true;
-
     $('[data-toggle="tooltip"]').tooltip();
     
     $('.select2bs4').select2({
@@ -8,7 +6,7 @@ $(function () {
     });
 
     $('.scrolling-pagination').jscroll({
-        debug: true,
+        // debug: true,
         autoTrigger: true,
         padding: 0,
         nextSelector: 'a.scrolling-paging',

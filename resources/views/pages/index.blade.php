@@ -6,11 +6,11 @@
             <x-slot name="tabContent">
                 <div class="tab-pane active" id="tab_0">
                     <x-Adminlte.CardFeed col="4" :feeds="$live" />
-                    <a href="{{ route('discover.live') }}" class="btn btn-block btn-outline-light">Load more live content...</a>
+                    <a href="{{ route('creator.live') }}" class="btn btn-block btn-outline-light">Load more live content...</a>
                 </div>
                 <div class="tab-pane" id="tab_1">
                     <x-Adminlte.CardFeed col="4" :feeds="$schedule" />
-                    <a href="{{ route('discover.scheduled') }}" class="btn btn-block btn-outline-light">Load more scheduled live...</a>
+                    <a href="{{ route('creator.scheduled') }}" class="btn btn-block btn-outline-light">Load more scheduled live...</a>
                 </div>
             </x-slot>
         </x-Adminlte.Card>

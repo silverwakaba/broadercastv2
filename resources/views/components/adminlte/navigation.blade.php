@@ -65,6 +65,27 @@
                         </li>
                     </ul>
                 </x-Adminlte.NavTree>
+                <li class="nav-header">Creator</li>
+                <x-Adminlte.NavTree route="creator.*">
+                    <x-Adminlte.NavLink icon="1" parent="1" fa="fas fa-globe" value="Creator" />
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <x-Adminlte.NavLink icon="1" route="creator.index" value="Summary" />
+                        </li>
+                        <li class="nav-item">
+                            <x-Adminlte.NavLink icon="1" route="creator.live" value="Live" />
+                        </li>
+                        <li class="nav-item">
+                            <x-Adminlte.NavLink icon="1" route="creator.scheduled" value="Scheduled" />
+                        </li>
+                        <li class="nav-item">
+                            <x-Adminlte.NavLink icon="1" route="creator.archived" value="Archived" />
+                        </li>
+                        <li class="nav-item">
+                            <x-Adminlte.NavLink icon="1" route="creator.uploaded" value="Uploaded" />
+                        </li>
+                    </ul>
+                </x-Adminlte.NavTree>
                 @can('canLogin')
                     <li class="nav-header">Apps</li>
                     <x-Adminlte.NavTree route="apps.front.*">
