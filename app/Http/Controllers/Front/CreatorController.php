@@ -59,7 +59,7 @@ class CreatorController extends Controller{
                 ['users_id', '=', $profile->id],
             ],
             'option'     => [
-                'take'       => 4,
+                'take'       => 3,
                 'orderType' => 'all',
                 'pagination' => [
                     'type' => 'normal',
