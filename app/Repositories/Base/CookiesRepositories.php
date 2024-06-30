@@ -18,7 +18,7 @@ class CookiesRepositories{
     }
 
     public static function schedule(){
-        $data = request()->cookie('schedule') ? request()->cookie('schedule') : 'DESC';
+        $data = request()->cookie('schedule') ? request()->cookie('schedule') : 'ASC';
 
         return $data;
     }

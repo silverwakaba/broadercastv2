@@ -110,9 +110,9 @@ class UserProfileRepositories{
             &&
             (Str::contains($data['option']['orderType'], ['all']))
         ){
-            $datas->orderByRaw("CASE WHEN schedule IS NULL THEN 0 ELSE 1 END " . CookiesRepositories::schedule())->orderBy('schedule', CookiesRepositories::schedule())
-            ->orderByRaw("CASE WHEN actual_start IS NULL THEN 0 ELSE 1 END " . CookiesRepositories::actualStart())->orderBy('actual_start', CookiesRepositories::actualStart())
-            ->orderBy('published', CookiesRepositories::published());
+            $datas->orderByRaw("CASE WHEN schedule IS NULL THEN 0 ELSE 1 END DESC")->orderBy('schedule', 'DESC')
+            ->orderByRaw("CASE WHEN actual_start IS NULL THEN 0 ELSE 1 END DESC")->orderBy('actual_start', 'DESC')
+            ->orderBy('published', 'DESC');
         }
 
         else{
