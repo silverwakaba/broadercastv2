@@ -40,7 +40,7 @@
 </nav>
 <aside class="main-sidebar main-sidebar-custom sidebar-dark-primary elevation-5">
     <a href="{{ url('/') }}" class="brand-link">
-        <img src="{{ config('app.cdn_public_url') . '/system/image/logo/broadercast/logo-100px.png' }}" class="brand-image">
+        <img src="{{ config('app.cdn_public_url') . '/system/image/logo/broadercast/logo-100px.png' }}" class="brand-image" />
         <span class="brand-text">{{ config('app.name', 'Broadercast') }}</span>
     </a>
     <div class="sidebar">
