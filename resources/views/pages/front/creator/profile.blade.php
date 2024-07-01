@@ -8,7 +8,7 @@
             </div>
             <div class="col-lg-8">
                 <x-Adminlte.Card title="Content">
-                    <x-Adminlte.CardFeed col="3" :feeds="$feed" />
+                    <x-Adminlte.CardFeed col="4" :feeds="$feed" />
                 </x-Adminlte.Card>
             </div>
         </div>

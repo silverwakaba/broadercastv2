@@ -110,9 +110,7 @@ class UserProfileRepositories{
             &&
             (Str::contains($data['option']['orderType'], ['all']))
         ){
-            $datas->orderByRaw("CASE WHEN schedule IS NULL THEN 0 ELSE 1 END DESC")->orderBy('schedule', 'DESC')
-            ->orderByRaw("CASE WHEN actual_start IS NULL THEN 0 ELSE 1 END DESC")->orderBy('actual_start', 'DESC')
-            ->orderBy('published', 'DESC');
+            $datas->orderByRaw("CASE WHEN schedule IS NULL THEN 0 ELSE 1 END DESC")->orderBy('schedule', 'DESC')->orderBy('actual_start', 'DESC')->orderBy('published', 'DESC');
         }
 
         else{
