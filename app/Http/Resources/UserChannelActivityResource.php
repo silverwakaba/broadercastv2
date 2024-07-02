@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\BaseLink;
+use App\Repositories\Base\CookiesRepositories;
 
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
@@ -62,7 +63,7 @@ class UserChannelActivityResource extends JsonResource{
         if(
             ($this->base_status_id == 7)
         ){
-            return Carbon::parse($this->schedule)->format('d M Y, g:i A');
+            return Carbon::parse($this->schedule)->timezone(CookiesRepositories::timezone())->format('d M Y, g:i A');
         }
 
         // Live
@@ -71,12 +72,12 @@ class UserChannelActivityResource extends JsonResource{
             ||
             ($this->base_status_id == 9)
         ){
-            return Carbon::parse($this->actual_start)->format('d M Y, g:i A');
+            return Carbon::parse($this->actual_start)->timezone(CookiesRepositories::timezone())->format('d M Y, g:i A');
         }
 
         // Else
         else{
-            return Carbon::parse($this->published)->format('d M Y, g:i A');
+            return Carbon::parse($this->published)->timezone(CookiesRepositories::timezone())->format('d M Y, g:i A');
         }
 
     }
@@ -86,7 +87,7 @@ class UserChannelActivityResource extends JsonResource{
         if(
             ($this->base_status_id == 7)
         ){
-            return Carbon::parse($this->schedule)->diffForHumans();
+            return Carbon::parse($this->schedule)->timezone(CookiesRepositories::timezone())->diffForHumans();
         }
 
         // Live
@@ -95,12 +96,12 @@ class UserChannelActivityResource extends JsonResource{
             ||
             ($this->base_status_id == 9)
         ){
-            return Carbon::parse($this->actual_start)->diffForHumans();
+            return Carbon::parse($this->actual_start)->timezone(CookiesRepositories::timezone())->diffForHumans();
         }
 
         // Else
         else{
-            return Carbon::parse($this->published)->diffForHumans();
+            return Carbon::parse($this->published)->timezone(CookiesRepositories::timezone())->diffForHumans();
         }
     }
 }

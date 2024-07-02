@@ -173,4 +173,12 @@ class CreatorController extends Controller{
             'datas' => $datas,
         ]);
     }
+
+    public function setting(Request $request){
+        // 
+    }
+
+    public function settingPost(Request $request){
+        // 
+    }
 }

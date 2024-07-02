@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder{
             BaseRaceSeeder::class,
             BaseLinkSeeder::class,
             BaseAPISeeder::class,
+            BaseTimezoneSeeder::class,
             // BaseActivitySeeder::class,
         ]);
     }

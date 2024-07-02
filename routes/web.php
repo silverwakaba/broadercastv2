@@ -53,6 +53,10 @@ Route::group(['prefix' => '/'], function(){
 
         // Archived
         Route::get('uploaded', [FrontCreatorController::class, 'uploaded'])->name('creator.uploaded');
+
+        // Setting
+        Route::get('setting', [FrontCreatorController::class, 'setting'])->name('creator.setting');
+        Route::post('setting', [FrontCreatorController::class, 'settingPost']);
     });
 
     // // Auth
