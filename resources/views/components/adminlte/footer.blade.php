@@ -6,7 +6,7 @@
         <div class="col-md-5">
             <h3>{{ config('app.name', 'Broadercast') }}</h3>
             <div class="pr-lg-5">
-                <p>Broadercast is a project designed to simplify the process of keeping up with your favorite content creators; All in one convenient portal. Our service is open to anyone, meaning that if you are a content creator, you can directly register your account to be included in our tracking database.</p>
+                <p>{{ config('app.name', 'Broadercast') }} is a project designed to simplify the process of keeping up with your favorite content creators; All in one convenient portal. Our service is open to anyone, meaning that if you are a content creator, you can directly register your account to be included in our tracking database.</p>
                 <p><small>Copyright &copy; 2023. <abbr title="Build {{ config('app.version') }}">{{ config('app.name', 'Broadercast') }} Project</abbr> by <a href="https://www.silverspoon.me" class="text-light" target="_blank">SilverSpoon Media</a>. All rights reserved.</small></p>
             </div>
         </div>

@@ -20,7 +20,7 @@ class YoutubeCron extends Controller{
 
         // Ngecek Bentar
         // return YoutubeRepositories::fetchVideoStatus('jctscOPKEgM');
-        return YoutubeRepositories::fetchVideoViaScraper('oJYJ0482P7g', 1);
+        // return YoutubeRepositories::fetchVideoViaScraper('oJYJ0482P7g', 1);
 
         // return YoutubeRepositories::userFeedArchived();
 
@@ -68,15 +68,14 @@ class YoutubeCron extends Controller{
             ['base_link_id', '=', 2],
             ['actual_end', '=', null],
             ['duration', '=', "P0D"],
-        ])
-        
-        ->whereBetween('published', [$sub, $add])->orWhereBetween('schedule', [$sub, $add])
-        
-        ->whereIn('base_status_id', ['7', '8'])->whereNotIn('base_status_id', ['5'])->chunk(100, function(Collection $chunks){
+        ])->whereBetween('published', [$sub, $add])->orWhereBetween('schedule', [$sub, $add])->whereIn('base_status_id', ['7', '8'])->whereNotIn('base_status_id', ['5'])->chunk(100, function(Collection $chunks){
             foreach($chunks as $chunk){
                 try{
                     // Fetch stream activity
                     YoutubeRepositories::fetchVideoViaScraper($chunk->identifier, $chunk->users_id);
+
+                    // Update live streaming that have missing metadata
+                    YoutubeRepositories::userFeedLiveMissingMetadata();
                 }
                 catch(\Throwable $th){}
             }

@@ -2,8 +2,6 @@
 
 namespace App\Repositories\Base;
 
-use Illuminate\Http\Request;
-
 class CookiesRepositories{
     public static function actualStart(){
         $data = request()->cookie('actual_start') ? request()->cookie('actual_start') : 'DESC';

@@ -109,13 +109,13 @@ class YoutubeRepositories{
 
             // Get another result by repooling, if both is being blocked
             else{
-                return self::videoScrapperAgain($videoID);
+                return self::videoScrapperRepeater($videoID);
             }
         }
         catch(\Throwable $th){}
     }
 
-    public static function videoScrapperAgain($videoID){
+    public static function videoScrapperRepeater($videoID){
         try{
             return self::videoScrapper($videoID);
         }
@@ -598,7 +598,7 @@ class YoutubeRepositories{
                     }
                 }
     
-                return self::userFeedInitAgain();
+                return self::userFeedInitRepeater();
             }
         }
         catch(\Throwable $th){
@@ -606,8 +606,44 @@ class YoutubeRepositories{
         }
     }
 
-    public static function userFeedInitAgain(){
+    public static function userFeedInitRepeater(){
         return self::userFeedInit();
+    }
+
+    // User feed live stream without metadata
+    public static function userFeedLiveMissingMetadata(){
+        $datas = UserFeed::where([
+            ['base_link_id', '=', 2],
+            ['base_status_id', '=', 9],
+            ['actual_start', '=', null],
+            ['duration', '=', "P0D"],
+        ])->select('identifier')->take(50)->get();
+
+        if(($datas) && isset($datas) && ($datas->count() >= 1)){
+            $videoID = implode(',', ($datas)->pluck('identifier')->toArray());
+
+            $http = self::fetchVideoStatus($videoID);
+
+            if($http['pageInfo']['totalResults'] >= 1){
+                foreach($http['items'] AS $data){
+                    UserFeed::where([
+                        ['identifier', '=', $data['id']],
+                    ])->update([
+                        'base_status_id'    => self::userFeedStatus($data),
+                        'concurrent'        => isset($data['liveStreamingDetails']['concurrentViewers']) ? $data['liveStreamingDetails']['concurrentViewers'] : 0,
+                        'actual_start'      => isset($data['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($data['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
+                        'actual_end'        => isset($data['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString()  : null,
+                        'duration'          => isset($data['contentDetails']['duration']) ? $data['contentDetails']['duration'] : "P0D",
+                    ]);
+                }
+            }
+
+            return self::userFeedLiveMissingMetadataRepeater();
+        }
+    }
+
+    public static function userFeedLiveMissingMetadataRepeater(){
+        return self::userFeedLiveMissingMetadata();
     }
 
     // User feed stream archive
@@ -638,11 +674,11 @@ class YoutubeRepositories{
                 }
             }
 
-            return self::userFeedArchivedAgain();
+            return self::userFeedArchivedRepeater();
         }
     }
 
-    public static function userFeedArchivedAgain(){
+    public static function userFeedArchivedRepeater(){
         return self::userFeedArchived();
     }
 
