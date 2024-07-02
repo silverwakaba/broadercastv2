@@ -614,7 +614,7 @@ class YoutubeRepositories{
     public static function userFeedLiveMissingMetadata(){
         $datas = UserFeed::where([
             ['base_link_id', '=', 2],
-            ['base_status_id', '=', 9],
+            ['base_status_id', '=', 8],
             ['actual_start', '=', null],
             ['duration', '=', "P0D"],
         ])->select('identifier')->take(50)->get();
