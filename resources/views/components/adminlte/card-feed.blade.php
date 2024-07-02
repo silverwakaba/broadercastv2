@@ -18,7 +18,7 @@
                                                 <li class="list-inline-item">{{ $data->timestamp }}</li>
                                                 <li class="list-inline-item">{{ $data->timestamp_for_human }}</li>
                                             @elseif(($data->base_status_id == 8))
-                                                <li class="list-inline-item">{{ $data->timestamp_for_human }}</li>
+                                                <li class="list-inline-item">Since {{ $data->timestamp_for_human }}</li>
                                                 <li class="list-inline-item badge badge-danger">{{ number_format($data->concurrent) }} watching</li>
                                             @elseif(($data->base_status_id == 9) || ($data->base_status_id == 10))
                                                 <li class="list-inline-item">{{ $data->timestamp }}</li>
