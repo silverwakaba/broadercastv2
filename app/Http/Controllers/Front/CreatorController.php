@@ -140,7 +140,7 @@ class CreatorController extends Controller{
             ],
             'option'    => [
                 'take'       => 4,
-                'orderType' => 'schedule',
+                'orderType' => 'archive',
                 'pagination' => [
                     'type' => 'normal',
                 ],
