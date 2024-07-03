@@ -140,7 +140,7 @@ class CreatorController extends Controller{
             ],
             'option'    => [
                 'take'       => 4,
-                'orderType' => 'normal',
+                'orderType' => 'schedule',
                 'pagination' => [
                     'type' => 'normal',
                 ],
@@ -187,7 +187,6 @@ class CreatorController extends Controller{
         return view('pages/front/creator/setting', [
             'sort'              => $sort,
             'timezone'          => $timezone,
-
             'timezone_value'    => $timezone_value,
             'live_value'        => $live_value,
             'schedule_value'    => $schedule_value,
@@ -201,7 +200,7 @@ class CreatorController extends Controller{
         Cookie::queue('timezone', $request->timezone, $expire);
         Cookie::queue('actual_start', $request->live_content, $expire);
         Cookie::queue('schedule', $request->schedule_content, $expire);
-        
+        Cookie::queue('published', $request->vod_value, $expire);
 
         return redirect()->back();
     }

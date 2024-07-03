@@ -17,13 +17,10 @@ class YoutubeCron extends Controller{
     public function fetchDebug(){
         // return YoutubeRepositories::fetchArchiveViaAPI('UC-WX1CXssCtCtc2TNIRnJzg', 1);
         // return YoutubeRepositories::userFeedInit();
-
         // Ngecek Bentar
         // return YoutubeRepositories::fetchVideoStatus('jctscOPKEgM');
         // return YoutubeRepositories::fetchVideoViaScraper('oJYJ0482P7g', 1);
-
         // return YoutubeRepositories::userFeedArchived();
-
         // return YoutubeRepositories::newVideoScrapper('eErqk2ISVNk');
     }
 
