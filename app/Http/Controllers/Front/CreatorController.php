@@ -45,7 +45,6 @@ class CreatorController extends Controller{
             'with'  => [
                 'belongsToBaseLink',
                 'belongsToUserLink',
-                // 'belongsToActiveStream',
             ],
             'query' => [
                 ['users_id', '=', $profile->id],
@@ -91,7 +90,7 @@ class CreatorController extends Controller{
             ],
             'option'    => [
                 'take'       => 4,
-                'orderType' => 'normal',
+                'orderType' => 'live',
                 'pagination' => [
                     'type' => 'normal',
                 ],

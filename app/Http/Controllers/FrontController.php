@@ -44,42 +44,9 @@ class FrontController extends Controller{
             ],
         ]);
 
-        // // Feed Archive
-        // $feedArchive = UserProfileRepositories::getFeed([
-        //     'with'  => [
-        //         'belongsToUser',
-        //         'hasOneThroughUserLink',
-        //         'belongsToUserLinkTracker',
-        //     ],
-        //     'query'      => [
-        //         ['base_status_id', '=', 9],
-        //     ],
-        //     'option'     => [
-        //         'take'      => 6,
-        //         'orderType' => 'archive',
-        //     ],
-        // ]);
-
-        // // Uploaded Content
-        // $feedUploaded = UserProfileRepositories::getFeed([
-        //     'with'  => [
-        //         'belongsToUser',
-        //         'hasOneThroughUserLink',
-        //         'belongsToUserLinkTracker',
-        //     ],
-        //     'query'      => [
-        //         ['base_status_id', '=', 10],
-        //     ],
-        //     'option'     => [
-        //         'take'      => 6,
-        //     ],
-        // ]);
-
         return view('pages/index', [
             'live'      => $live,
             'schedule'  => $schedule,
-            // 'feedArchive'   => $feedArchive,
-            // 'feedUploaded'  => $feedUploaded,
         ]);
     }
 }
