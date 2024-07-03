@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class RaceController extends Controller{
     // Constructor
     public function __construct(){
-        $this->back = 'apps.base.race.index';
+        $this->back = 'apps.base.persona.index';
         $this->model = 'App\Models\BaseRace';
         $this->resource = 'App\Http\Resources\BaseRaceResource';
     }
@@ -21,7 +21,7 @@ class RaceController extends Controller{
             return BaseRepositories::datatable([
                 'model'     => $this->model,
                 'resource'  => $this->resource,
-                'route'     => 'apps.base.race',
+                'route'     => 'apps.base.persona',
                 'with'      => ['belongsToBaseDecision', 'hasOneUser'],
             ]);
         }

@@ -1,5 +1,5 @@
 @extends('layout.app')
-@section('title', 'Content Language')
+@section('title', 'Language Type')
 @section('content')
     <x-Adminlte.Content previous="apps.master.index">
         <x-Adminlte.Card add="apps.base.language.add">
@@ -18,16 +18,6 @@
     </x-Adminlte.Content>
 
     <script type="module">
-        // var channel = Echo.channel('baseChannel');
-
-        // channel.listen('.baseLanguageCreated', function(data){
-        //     $('#languageTables').DataTable().ajax.reload();
-        // });
-
-        // channel.listen('.baseLanguageModified', function(data){
-        //     $('#languageTables').DataTable().ajax.reload();
-        // });
-
         $("#languageTables").DataTable({
             "ordering": false,
             "processing": true,

@@ -1,8 +1,8 @@
 @extends('layout.app')
-@section('title', 'Content Race')
+@section('title', 'Persona Type')
 @section('content')
     <x-Adminlte.Content previous="apps.master.index">
-        <x-Adminlte.Card add="apps.base.race.add">
+        <x-Adminlte.Card add="apps.base.persona.add">
             <x-Adminlte.Table ids="raceTables">
                 <thead>
                     <tr>
@@ -18,16 +18,6 @@
     </x-Adminlte.Content>
 
     <script type="module">
-        // var channel = Echo.channel('baseChannel');
-
-        // channel.listen('.baseRaceCreated', function(data){
-        //     $('#raceTables').DataTable().ajax.reload();
-        // });
-
-        // channel.listen('.baseRaceModified', function(data){
-        //     $('#raceTables').DataTable().ajax.reload();
-        // });
-
         $("#raceTables").DataTable({
             "ordering": false,
             "processing": true,

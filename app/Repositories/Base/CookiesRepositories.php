@@ -2,6 +2,8 @@
 
 namespace App\Repositories\Base;
 
+use App\Models\BaseTimezone;
+
 class CookiesRepositories{
     public static function actualStart(){
         $data = request()->cookie('actual_start') ? request()->cookie('actual_start') : 'DESC';
@@ -22,8 +24,6 @@ class CookiesRepositories{
     }
 
     public static function timezone(){
-        $data = request()->cookie('timezone') ? request()->cookie('timezone') : config('app.timezone');
-
-        return $data;
+        return request()->cookie('timezone') ? request()->cookie('timezone') : 'Asia/Jakarta';
     }
 }

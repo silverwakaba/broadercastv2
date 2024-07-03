@@ -18,16 +18,6 @@
     </x-Adminlte.Content>
 
     <script type="module">
-        // var channel = Echo.channel('baseChannel');
-
-        // channel.listen('.baseGenderCreated', function(data){
-        //     $('#genderTables').DataTable().ajax.reload();
-        // });
-
-        // channel.listen('.baseGenderModified', function(data){
-        //     $('#genderTables').DataTable().ajax.reload();
-        // });
-
         $("#genderTables").DataTable({
             "ordering": false,
             "processing": true,

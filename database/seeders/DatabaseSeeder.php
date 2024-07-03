@@ -24,8 +24,9 @@ class DatabaseSeeder extends Seeder{
             BaseRaceSeeder::class,
             BaseLinkSeeder::class,
             BaseAPISeeder::class,
+            BaseSortSeeder::class,
             BaseTimezoneSeeder::class,
-            // BaseActivitySeeder::class,
+            BaseCountrySeeder::class,
         ]);
     }
 }

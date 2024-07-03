@@ -14,24 +14,12 @@ class BaseTypeSeeder extends Seeder{
     public function run() : void{
         BaseType::insert([
             [
-                'base_decision_id'  => '2',
-                'name'              => "VTuber",
+                'base_decision_id'  => 2,
+                'name'              => "General Content Creator",
             ],
             [
-                'base_decision_id'  => '2',
-                'name'              => "VStreamer",
-            ],
-            [
-                'base_decision_id'  => '2',
-                'name'              => "VSinger",
-            ],
-            [
-                'base_decision_id'  => '2',
-                'name'              => "Streamer",
-            ],
-            [
-                'base_decision_id'  => '2',
-                'name'              => "Content Creator",
+                'base_decision_id'  => 2,
+                'name'              => "Virtual Content Creator",
             ],
         ]);
     }

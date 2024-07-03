@@ -59,7 +59,7 @@ Route::group(['prefix' => '/'], function(){
         Route::post('setting', [FrontCreatorController::class, 'settingPost']);
     });
 
-    // // Auth
+    // Auth
     Route::group(['prefix' => 'auth', 'middleware' => ['guest']], function(){
         // Register
         Route::get('register', [AuthController::class, 'register'])->name('register');
@@ -139,9 +139,9 @@ Route::group(['prefix' => '/'], function(){
                 Route::post('delete/{id}/confirm', [ManagerUserController::class, 'linkDeleteConfirmPost']);
             });
 
-            // Race
-            Route::get('race', [ManagerUserController::class, 'race'])->name('apps.manager.race');
-            Route::post('race', [ManagerUserController::class, 'racePost']);
+            // Persona
+            Route::get('persona', [ManagerUserController::class, 'race'])->name('apps.manager.persona');
+            Route::post('persona', [ManagerUserController::class, 'racePost']);
         });
 
         // Master Data
@@ -221,22 +221,22 @@ Route::group(['prefix' => '/'], function(){
                 Route::get('decision/{id}', [BaseLinkController::class, 'decision'])->name('apps.base.link.decision');
             });
 
-            // Master data - Base Race Type
-            Route::group(['prefix' => 'race-type'], function(){
+            // Master data - Base Persona Type
+            Route::group(['prefix' => 'persona-type'], function(){
                 // Index
-                Route::get('/', [BaseRaceController::class, 'index'])->name('apps.base.race.index');
+                Route::get('/', [BaseRaceController::class, 'index'])->name('apps.base.persona.index');
 
                 // Add
-                Route::get('add', [BaseRaceController::class, 'add'])->name('apps.base.race.add');
+                Route::get('add', [BaseRaceController::class, 'add'])->name('apps.base.persona.add');
                 Route::post('add', [BaseRaceController::class, 'addPost']);
 
                 // Edit
-                Route::get('edit/{id}', [BaseRaceController::class, 'edit'])->name('apps.base.race.edit');
+                Route::get('edit/{id}', [BaseRaceController::class, 'edit'])->name('apps.base.persona.edit');
                 Route::post('edit/{id}', [BaseRaceController::class, 'editPost']);
 
                 // Decision
-                Route::get('delete/{id}', [BaseRaceController::class, 'delete'])->name('apps.base.race.delete');
-                Route::get('decision/{id}', [BaseRaceController::class, 'decision'])->name('apps.base.race.decision');
+                Route::get('delete/{id}', [BaseRaceController::class, 'delete'])->name('apps.base.persona.delete');
+                Route::get('decision/{id}', [BaseRaceController::class, 'decision'])->name('apps.base.persona.decision');
             });
 
             // Master data - User

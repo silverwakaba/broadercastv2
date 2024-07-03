@@ -79,6 +79,9 @@
                         <li class="nav-item">
                             <x-Adminlte.NavLink icon="1" route="creator.uploaded" value="Uploaded" />
                         </li>
+                        <li class="nav-item">
+                            <x-Adminlte.NavLink icon="1" route="creator.setting" value="Setting" />
+                        </li>
                     </ul>
                 </x-Adminlte.NavTree>
                 @can('canLogin')
@@ -117,7 +120,7 @@
                                 <x-Adminlte.NavLink icon="1" route="apps.manager.link" value="Link" />
                             </li>
                             <li class="nav-item">
-                                <x-Adminlte.NavLink icon="1" route="apps.manager.race" value="Race" />
+                                <x-Adminlte.NavLink icon="1" route="apps.manager.persona" value="Persona" />
                             </li>
                         </ul>
                     </x-Adminlte.NavTree>
@@ -142,7 +145,7 @@
                                     <x-Adminlte.NavLink icon="1" route="apps.base.link.index" value="Link Type" />
                                 </li>
                                 <li class="nav-item">
-                                    <x-Adminlte.NavLink icon="1" route="apps.base.race.index" value="Race Type" />
+                                    <x-Adminlte.NavLink icon="1" route="apps.base.persona.index" value="Persona Type" />
                                 </li>
                                 <li class="nav-item">
                                     <x-Adminlte.NavLink icon="1" route="apps.master.user.index" value="User Account" />

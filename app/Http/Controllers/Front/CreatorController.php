@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 
+use App\Helpers\BasedataHelper;
+use App\Repositories\Base\CookiesRepositories;
 use App\Repositories\Front\Creator\UserProfileRepositories;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 
 class CreatorController extends Controller{
     // Index
@@ -175,10 +178,32 @@ class CreatorController extends Controller{
     }
 
     public function setting(Request $request){
-        // 
+        $sort = BasedataHelper::baseSort();
+        $timezone = BasedataHelper::baseTimezone();
+        $timezone_value = CookiesRepositories::timezone();
+        $live_value = CookiesRepositories::actualStart();
+        $schedule_value = CookiesRepositories::schedule();
+        $vod_value = CookiesRepositories::published();
+
+        return view('pages/front/creator/setting', [
+            'sort'              => $sort,
+            'timezone'          => $timezone,
+
+            'timezone_value'    => $timezone_value,
+            'live_value'        => $live_value,
+            'schedule_value'    => $schedule_value,
+            'vod_value'         => $vod_value,
+        ]);
     }
 
     public function settingPost(Request $request){
-        // 
+        $expire = (60 * 24) * 30;
+
+        Cookie::queue('timezone', $request->timezone, $expire);
+        Cookie::queue('actual_start', $request->live_content, $expire);
+        Cookie::queue('schedule', $request->schedule_content, $expire);
+        
+
+        return redirect()->back();
     }
 }

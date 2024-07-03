@@ -13,6 +13,6 @@ class UserRaceRepositories{
 
         $user->belongsToManyUserRace()->sync($data);
 
-        return RedirectHelper::routeBack(null, 'success', 'Your Character Race', 'update');
+        return RedirectHelper::routeBack(null, 'success', 'Your Character Persona', 'update');
     }
 }

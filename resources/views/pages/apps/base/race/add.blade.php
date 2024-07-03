@@ -1,7 +1,7 @@
 @extends('layout.app')
-@section('title', 'Add New Race Type')
+@section('title', 'Add New Persona Type')
 @section('content')
-    <x-Adminlte.Content previous="apps.base.race.index">
+    <x-Adminlte.Content previous="apps.base.persona.index">
         <x-Adminlte.CardForm button="Add">
             <x-form.Input name="name" type="text" text="Name" />
         </x-Adminlte.CardForm>

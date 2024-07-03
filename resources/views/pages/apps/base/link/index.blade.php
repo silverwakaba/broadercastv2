@@ -1,5 +1,5 @@
 @extends('layout.app')
-@section('title', 'Conten Link')
+@section('title', 'Link Type')
 @section('content')
     <x-Adminlte.Content previous="apps.master.index">
         <x-Adminlte.Card add="apps.base.link.add">
@@ -18,16 +18,6 @@
     </x-Adminlte.Content>
 
     <script type="module">
-        // var channel = Echo.channel('baseChannel');
-
-        // channel.listen('.baseLinkCreated', function(data){
-        //     $('#linkTables').DataTable().ajax.reload();
-        // });
-
-        // channel.listen('.baseLinkModified', function(data){
-        //     $('#linkTables').DataTable().ajax.reload();
-        // });
-
         $("#linkTables").DataTable({
             "ordering": false,
             "processing": true,

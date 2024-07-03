@@ -13,17 +13,19 @@ class Select2n extends Component{
     public string $text;
     public $value;
     public string $extclass;
+    public string $grab;
 
     /**
      * Create a new component instance.
      */
-    public function __construct($name, $text, $data, $value = '', $col = '', $extclass = ''){
+    public function __construct($name, $text, $data, $value = '', $col = '', $extclass = '', $grab = ''){
         $this->name = $name;
         $this->text = $text;
         $this->data = $data;
         $this->value = $value;
         $this->col = $col ? $col : 12;
         $this->extclass = $extclass;
+        $this->grab = $grab ? $grab : 'id';
     }
 
     /**
