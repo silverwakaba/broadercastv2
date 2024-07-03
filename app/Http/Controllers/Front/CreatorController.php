@@ -200,7 +200,7 @@ class CreatorController extends Controller{
         Cookie::queue('timezone', $request->timezone, $expire);
         Cookie::queue('actual_start', $request->live_content, $expire);
         Cookie::queue('schedule', $request->schedule_content, $expire);
-        Cookie::queue('published', $request->vod_value, $expire);
+        Cookie::queue('published', $request->vod_content, $expire);
 
         return redirect()->back();
     }
