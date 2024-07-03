@@ -60,15 +60,12 @@ class YoutubeCron extends Controller{
     }
 
     public function checker(){
-        $sub = Carbon::now()->subDays(3)->toDateTimeString();
-        $add = Carbon::now()->addDays(3)->toDateTimeString();
-
         // Live Streaming
         UserFeed::where([
             ['base_link_id', '=', 2],
             ['actual_end', '=', null],
             ['duration', '=', "P0D"],
-        ])->whereBetween('published', [$sub, $add])->orWhereBetween('schedule', [$sub, $add])->whereIn('base_status_id', ['7', '8'])->whereNotIn('base_status_id', ['5'])->chunk(100, function(Collection $chunks){
+        ])->whereIn('base_status_id', ['7', '8'])->whereNotIn('base_status_id', ['5'])->chunk(100, function(Collection $chunks){
             foreach($chunks as $chunk){
                 try{
                     // Fetch stream activity
