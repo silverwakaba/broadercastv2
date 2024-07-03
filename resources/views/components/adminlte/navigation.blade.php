@@ -26,11 +26,6 @@
                 <x-Adminlte.NavLink route="login" value="Login" />
             </li>
         @endcan
-        <li class="nav-item">
-            <a href="#" class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true">
-                <i class="fas fa-cogs"></i>
-            </a>
-        </li>
     </ul>
 </nav>
 <aside class="main-sidebar main-sidebar-custom sidebar-dark-primary elevation-5">

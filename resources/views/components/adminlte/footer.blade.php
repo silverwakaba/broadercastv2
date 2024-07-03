@@ -1,4 +1,4 @@
-<aside class="control-sidebar control-sidebar-dark p-2">
+<aside class="control-sidebar control-sidebar-dark">
     <!--  -->
 </aside>
 <footer class="main-footer">
@@ -50,7 +50,7 @@
                     <h4>External</h4>
                     <ul class="list-unstyled">
                         <li>
-                            <a href="#" class="text-light">Status</a>
+                            <a href="https://status.silverspoon.me" target="_blank" class="text-light">Status</a>
                         </li>
                         <li>
                             <a href="#" class="text-light">Discord</a>

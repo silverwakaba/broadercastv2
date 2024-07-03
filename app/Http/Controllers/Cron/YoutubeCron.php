@@ -22,6 +22,8 @@ class YoutubeCron extends Controller{
         // return YoutubeRepositories::fetchVideoViaScraper('oJYJ0482P7g', 1);
         // return YoutubeRepositories::userFeedArchived();
         // return YoutubeRepositories::newVideoScrapper('eErqk2ISVNk');
+
+        return YoutubeRepositories::fetchProfile('UCLlJpxXt6L5d-XQ0cDdIyDQ', 1);
     }
 
     public function init(){
@@ -84,6 +86,22 @@ class YoutubeCron extends Controller{
                 try{
                     // Update archive metadata after streaming goes offline
                     YoutubeRepositories::userFeedArchived();
+                }
+                catch(\Throwable $th){}
+            }
+        });
+    }
+
+    public function profiler(){
+        // Profile metadata
+        UserLinkTracker::where([
+            ['base_link_id', '=', 2],
+            ['initialized', '=', true],
+        ])->select('users_id', 'identifier')->chunk(100, function(Collection $chunks){
+            foreach($chunks as $chunk){
+                try{
+                    // Update profile metadata daily
+                    YoutubeRepositories::fetchProfile($chunk->identifier, $chunk->users_id);
                 }
                 catch(\Throwable $th){}
             }
