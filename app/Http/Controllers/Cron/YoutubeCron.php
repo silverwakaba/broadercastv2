@@ -13,6 +13,10 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
+// Hapus
+use Illuminate\Support\Facades\Storage;
+use App\Repositories\Base\FileVaultRepositories;
+
 class YoutubeCron extends Controller{
     public function fetchDebug(){
         // return YoutubeRepositories::fetchArchiveViaAPI('UC-WX1CXssCtCtc2TNIRnJzg', 1);
@@ -22,8 +26,11 @@ class YoutubeCron extends Controller{
         // return YoutubeRepositories::fetchVideoViaScraper('oJYJ0482P7g', 1);
         // return YoutubeRepositories::userFeedArchived();
         // return YoutubeRepositories::newVideoScrapper('eErqk2ISVNk');
+        // return YoutubeRepositories::fetchProfile('UCLlJpxXt6L5d-XQ0cDdIyDQ', 1);
 
-        return YoutubeRepositories::fetchProfile('UCLlJpxXt6L5d-XQ0cDdIyDQ', 1);
+        // return Storage::disk('s3private')->temporaryUrl('/project/broadercast/system/attachment/3.png', now()->addMinutes(3500));
+
+        return FileVaultRepositories::download('/project/broadercast/system/attachment/3.png');
     }
 
     public function init(){

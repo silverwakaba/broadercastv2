@@ -23,7 +23,7 @@ return [
     */
 
     'cdn_public_url'    => env('APP_PUBLIC_CDN_URL', 'https://library.silverspoon.me'),
-    // 'cdn_private_url'   => env('APP_PRIVATE_CDN_URL', 'https://library.silverspoon.me'),
+    'cdn_private_url'   => env('APP_PRIVATE_CDN_URL', 'https://vault.silverspoon.me'),
 
     /*
     |--------------------------------------------------------------------------
