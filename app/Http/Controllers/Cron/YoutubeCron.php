@@ -27,10 +27,8 @@ class YoutubeCron extends Controller{
         // return YoutubeRepositories::userFeedArchived();
         // return YoutubeRepositories::newVideoScrapper('eErqk2ISVNk');
         // return YoutubeRepositories::fetchProfile('UCLlJpxXt6L5d-XQ0cDdIyDQ', 1);
-
         // return Storage::disk('s3private')->temporaryUrl('/project/broadercast/system/attachment/3.png', now()->addMinutes(3500));
-
-        return FileVaultRepositories::download('/project/broadercast/system/attachment/3.png');
+        // return FileVaultRepositories::download('/project/broadercast/system/attachment/3.png', 'img.png');
     }
 
     public function init(){

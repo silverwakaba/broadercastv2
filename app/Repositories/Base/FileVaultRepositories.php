@@ -31,10 +31,12 @@ class FileVaultRepositories{
         return Str::replace('+', '_', urlencode($name));
     }
 
-    public static function download($path){
+    public static function download($path, $name = null){
+        $newName = $name ? $name : $path;
+
         return self::view($path, [
             'ResponseContentType'           => 'application/octet-stream',
-            'ResponseContentDisposition'    => 'attachment; filename=' . self::newName($path),
+            'ResponseContentDisposition'    => 'attachment; filename=' . self::newName($newName),
         ]);
     }
 
