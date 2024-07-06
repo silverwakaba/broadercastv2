@@ -62,7 +62,7 @@ class UserLinkRepositories{
         })->toJson();
     }
     
-    public static function upsert(array $data, $back, $id = ''){
+    public static function upsert(array $data, $back, $id = null){
         $checking = BaseLink::select('checking')->where([
             ['id', '=', $data['base_link_id']]
         ])->first();
