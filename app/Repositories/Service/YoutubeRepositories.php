@@ -406,33 +406,38 @@ class YoutubeRepositories{
 
     // User feed live stream without metadata
     public static function userFeedLiveMissingMetadata(){
-        $datas = UserFeed::where([
-            ['base_link_id', '=', 2],
-            ['base_status_id', '=', 8],
-            ['actual_start', '=', null],
-            ['duration', '=', "P0D"],
-        ])->select('identifier')->take(50)->get();
-
-        if(($datas) && isset($datas) && ($datas->count() >= 1)){
-            $videoID = implode(',', ($datas)->pluck('identifier')->toArray());
-
-            $http = self::apiCall('video', $videoID);
-
-            if($http['pageInfo']['totalResults'] >= 1){
-                foreach($http['items'] AS $data){
-                    UserFeed::where([
-                        ['identifier', '=', $data['id']],
-                    ])->update([
-                        'base_status_id'    => self::userFeedStatus($data),
-                        'concurrent'        => isset($data['liveStreamingDetails']['concurrentViewers']) ? $data['liveStreamingDetails']['concurrentViewers'] : 0,
-                        'actual_start'      => isset($data['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($data['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
-                        'actual_end'        => isset($data['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString()  : null,
-                        'duration'          => isset($data['contentDetails']['duration']) ? $data['contentDetails']['duration'] : "P0D",
-                    ]);
+        try{
+            $datas = UserFeed::where([
+                ['base_link_id', '=', 2],
+                ['base_status_id', '=', 8],
+                ['actual_start', '=', null],
+                ['duration', '=', "P0D"],
+            ])->select('identifier')->take(50)->get();
+    
+            if(($datas) && isset($datas) && ($datas->count() >= 1)){
+                $videoID = implode(',', ($datas)->pluck('identifier')->toArray());
+    
+                $http = self::apiCall('video', $videoID);
+    
+                if($http['pageInfo']['totalResults'] >= 1){
+                    foreach($http['items'] AS $data){
+                        UserFeed::where([
+                            ['identifier', '=', $data['id']],
+                        ])->update([
+                            'base_status_id'    => self::userFeedStatus($data),
+                            'concurrent'        => isset($data['liveStreamingDetails']['concurrentViewers']) ? $data['liveStreamingDetails']['concurrentViewers'] : 0,
+                            'actual_start'      => isset($data['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($data['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
+                            'actual_end'        => isset($data['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString()  : null,
+                            'duration'          => isset($data['contentDetails']['duration']) ? $data['contentDetails']['duration'] : "P0D",
+                        ]);
+                    }
                 }
+    
+                return self::userFeedLiveMissingMetadataRepeater();
             }
-
-            return self::userFeedLiveMissingMetadataRepeater();
+        }
+        catch(\Throwable $th){
+            // return $th;
         }
     }
 
@@ -442,33 +447,38 @@ class YoutubeRepositories{
 
     // User feed stream archive
     public static function userFeedArchived(){
-        $datas = UserFeed::where([
-            ['base_link_id', '=', 2],
-            ['base_status_id', '=', 9],
-            ['actual_end', '=', null],
-            ['duration', '=', "P0D"],
-        ])->select('identifier')->take(50)->get();
-
-        if(($datas) && isset($datas) && ($datas->count() >= 1)){
-            $videoID = implode(',', ($datas)->pluck('identifier')->toArray());
-
-            $http = self::apiCall('video', $videoID);
-
-            if($http['pageInfo']['totalResults'] >= 1){
-                foreach($http['items'] AS $data){
-                    UserFeed::where([
-                        ['identifier', '=', $data['id']],
-                    ])->update([
-                        'base_status_id'    => self::userFeedStatus($data),
-                        'concurrent'        => isset($data['liveStreamingDetails']['concurrentViewers']) ? $data['liveStreamingDetails']['concurrentViewers'] : 0,
-                        'actual_start'      => isset($data['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($data['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
-                        'actual_end'        => isset($data['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString()  : null,
-                        'duration'          => isset($data['contentDetails']['duration']) ? $data['contentDetails']['duration'] : "P0D",
-                    ]);
+        try{
+            $datas = UserFeed::where([
+                ['base_link_id', '=', 2],
+                ['base_status_id', '=', 9],
+                ['actual_end', '=', null],
+                ['duration', '=', "P0D"],
+            ])->select('identifier')->take(50)->get();
+    
+            if(($datas) && isset($datas) && ($datas->count() >= 1)){
+                $videoID = implode(',', ($datas)->pluck('identifier')->toArray());
+    
+                $http = self::apiCall('video', $videoID);
+    
+                if($http['pageInfo']['totalResults'] >= 1){
+                    foreach($http['items'] AS $data){
+                        UserFeed::where([
+                            ['identifier', '=', $data['id']],
+                        ])->update([
+                            'base_status_id'    => self::userFeedStatus($data),
+                            'concurrent'        => isset($data['liveStreamingDetails']['concurrentViewers']) ? $data['liveStreamingDetails']['concurrentViewers'] : 0,
+                            'actual_start'      => isset($data['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($data['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
+                            'actual_end'        => isset($data['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString()  : null,
+                            'duration'          => isset($data['contentDetails']['duration']) ? $data['contentDetails']['duration'] : "P0D",
+                        ]);
+                    }
                 }
+    
+                return self::userFeedArchivedRepeater();
             }
-
-            return self::userFeedArchivedRepeater();
+        }
+        catch(\Throwable $th){
+            return $th;
         }
     }
 
