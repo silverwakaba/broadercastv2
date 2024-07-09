@@ -24,7 +24,7 @@ class YoutubeCron extends Controller{
         // Ngecek Bentar
         // return YoutubeRepositories::fetchVideoStatus('jctscOPKEgM');
         // return YoutubeRepositories::fetchVideoViaScraper('oJYJ0482P7g', 1);
-        // return YoutubeRepositories::userFeedArchived();
+        return YoutubeRepositories::userFeedArchived();
         // return YoutubeRepositories::newVideoScrapper('eErqk2ISVNk');
         // return YoutubeRepositories::fetchProfile('UCLlJpxXt6L5d-XQ0cDdIyDQ', 1);
         // return Storage::disk('s3private')->temporaryUrl('/project/broadercast/system/attachment/3.png', now()->addMinutes(3500));
