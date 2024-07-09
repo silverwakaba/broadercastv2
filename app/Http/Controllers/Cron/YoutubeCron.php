@@ -29,6 +29,8 @@ class YoutubeCron extends Controller{
         // return YoutubeRepositories::fetchProfile('UCLlJpxXt6L5d-XQ0cDdIyDQ', 1);
         // return Storage::disk('s3private')->temporaryUrl('/project/broadercast/system/attachment/3.png', now()->addMinutes(3500));
         // return FileVaultRepositories::download('/project/broadercast/system/attachment/3.png', 'img.png');
+
+        return YoutubeRepositories::fetchProfile('UCLlJpxXt6L5d-XQ0cDdIyDQ', 1);
     }
 
     public function init(){
@@ -69,11 +71,11 @@ class YoutubeCron extends Controller{
             ['base_link_id', '=', 2],
             ['actual_end', '=', null],
             ['duration', '=', "P0D"],
-        ])->whereIn('base_status_id', ['7', '8'])->whereNotIn('base_status_id', ['5'])->chunk(100, function(Collection $chunks){
+        ])->whereIn('base_status_id', ['7', '8'])->whereNotIn('base_status_id', ['5'])->select('users_id', 'identifier')->chunk(100, function(Collection $chunks){
             foreach($chunks as $chunk){
                 try{
                     // Fetch stream activity
-                    YoutubeRepositories::fetchVideoViaScraper($chunk->identifier, $chunk->users_id);
+                    YoutubeRepositories::fetchVideoViaScraper($chunk->identifier);
 
                     // Update live streaming that have missing metadata
                     YoutubeRepositories::userFeedLiveMissingMetadata();

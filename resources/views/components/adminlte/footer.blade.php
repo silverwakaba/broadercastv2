@@ -7,7 +7,7 @@
             <h3>{{ config('app.name', 'Broadercast') }}</h3>
             <div class="pr-lg-5">
                 <p>{{ config('app.name', 'Broadercast') }} is a project designed to simplify the process of keeping up with your favorite content creators; All in one convenient portal. Our service is open to anyone, meaning that if you are a content creator, then you can directly register your account to be included in our tracking database without the need for any manual approval.</p>
-                <p><small>Copyright &copy; since 2024. <abbr title="Build {{ config('app.version') }}">{{ config('app.name', 'Broadercast') }} Project</abbr> by <a href="https://www.silverspoon.me" class="text-light" target="_blank">SilverSpoon Media</a>. All rights reserved.</small></p>
+                <p><small>Copyright &copy; since 2024. <abbr title="Build {{ config('app.version') }}">{{ config('app.name', 'Broadercast') }} Project</abbr> by <a href="https://www.silverspoon.me" class="text-light" target="_blank">Silverspoon Media</a>. All rights reserved.</small></p>
             </div>
         </div>
         <div class="col-md-7">
@@ -16,16 +16,16 @@
                     <h4>Internal</h4>
                     <ul class="list-unstyled">
                         <li>
-                            <a href="#" class="text-light">About</a>
+                            <a href="https://help.silverspoon.me/docs/broadercast/about" target="_blank" class="text-light">About Us</a>
                         </li>
                         <li>
-                            <a href="#" class="text-light">Blog</a>
+                            <a href="https://help.silverspoon.me/blog/tags/broadercast" target="_blank" class="text-light">Blog Post</a>
                         </li>
                         <li>
-                            <a href="#" class="text-light">Contact</a>
+                            <a href="https://help.silverspoon.me/docs/silverspoon/contact" target="_blank" class="text-light">Contact Us</a>
                         </li>
                         <li>
-                            <a href="#" class="text-light">Help</a>
+                            <a href="https://help.silverspoon.me/docs/category/broadercast" target="_blank" class="text-light">Get Some Help</a>
                         </li>
                     </ul>
                 </div>
@@ -33,16 +33,16 @@
                     <h4>Legal</h4>
                     <ul class="list-unstyled">
                         <li>
-                            <a href="#" class="text-light">Terms of Service</a>
+                            <a href="https://help.silverspoon.me/docs/silverspoon/tos" target="_blank" class="text-light">Terms of Service</a>
                         </li>
                         <li>
-                            <a href="#" class="text-light">Privacy Policy</a>
+                            <a href="https://help.silverspoon.me/docs/silverspoon/privacy" target="_blank" class="text-light">Privacy Policy</a>
                         </li>
                         <li>
-                            <a href="#" class="text-light">Payment Agreement</a>
+                            <a href="https://help.silverspoon.me/docs/silverspoon/report" target="_blank" class="text-light">Report</a>
                         </li>
                         <li>
-                            <a href="#" class="text-light">Copyright, Report & Dispute</a>
+                            <a href="https://help.silverspoon.me/docs/silverspoon/feedback" target="_blank" class="text-light">Feedback</a>
                         </li>
                     </ul>
                 </div>
@@ -50,10 +50,10 @@
                     <h4>External</h4>
                     <ul class="list-unstyled">
                         <li>
-                            <a href="https://status.silverspoon.me" target="_blank" class="text-light">Status</a>
+                            <a href="https://x.com/BroadercastNet" target="_blank" class="text-light">Twitter</a>
                         </li>
                         <li>
-                            <a href="#" class="text-light">Discord</a>
+                            <a href="https://status.silverspoon.me" target="_blank" class="text-light">Status</a>
                         </li>
                     </ul>
                 </div>

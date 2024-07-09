@@ -142,8 +142,8 @@ class UserController extends Controller{
         $datas = UserLinkRepositories::getLink([
             'did'   => $id,
             'uid'   => auth()->user()->id,
-            'with'  => ['belongsToBaseLink'],
-        ]);
+            'with'  => ['belongsToBaseLink', 'hasOneUserLinkTracker'],
+        ], 'edit');
 
         return view('pages/apps/setting/user/link/edit', [
             'services'  => BasedataHelper::baseLink(),

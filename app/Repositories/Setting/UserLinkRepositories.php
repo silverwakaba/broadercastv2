@@ -13,13 +13,26 @@ use App\Models\UserLink;
 use Yajra\DataTables\Facades\DataTables;
 
 class UserLinkRepositories{
-    public static function getLink(array $data){
+    public static function getLink(array $data, $mode = null){
+        $id = BaseHelper::decrypt($data['did']);
+
         $datas = UserLink::with(isset($data['with']) ? $data['with'] : [])->where([
-            ['id', '=', BaseHelper::decrypt($data['did'])],
+            ['id', '=', $id],
             ['users_id', '=', $data['uid']],
         ])->firstOrFail();
 
-        return $datas;
+        $trackerCounter = $datas->hasOneUserLinkTracker()->where([
+            ['users_link_id', '=', $id]
+        ])->count();
+
+        if(
+            ($trackerCounter == 0) xor ($mode !== 'edit')
+        ){
+            return $datas;
+        }
+        else{
+            return abort(403);
+        }
     }
 
     public static function getLinkToVerify(array $data){

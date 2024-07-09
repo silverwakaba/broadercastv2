@@ -91,7 +91,7 @@
                     </x-Adminlte.NavTree>
                     <li class="nav-header">Manager</li>
                     <x-Adminlte.NavTree route="apps.manager.*">
-                        <x-Adminlte.NavLink icon="1" parent="1" fa="fas fa-tasks" value="Manager" />
+                        <x-Adminlte.NavLink icon="1" parent="1" fa="fas fa-user" value="Account Manager" />
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
                                 <x-Adminlte.NavLink icon="1" route="apps.manager.index" value="Summary" />
