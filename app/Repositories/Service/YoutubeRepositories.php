@@ -192,7 +192,7 @@ class YoutubeRepositories{
             }
         }
         catch(\Throwable $th){
-            return $th;
+            // return $th;
         }
     }
 
@@ -224,7 +224,7 @@ class YoutubeRepositories{
             }
         }
         catch(\Throwable $th){
-            // return $th;
+            // // return $th;
         }
     }
 
@@ -267,7 +267,7 @@ class YoutubeRepositories{
             }
         }
         catch(\Throwable $th){
-            return $th;
+            // return $th;
         }
     }
 
@@ -276,7 +276,7 @@ class YoutubeRepositories{
             self::fetchArchiveViaAPI($channelID, $userID, $pageToken);
         }
         catch(\Throwable $th){
-            return $th;
+            // return $th;
         }
     }
 
@@ -307,7 +307,7 @@ class YoutubeRepositories{
             }
         }
         catch(\Throwable $th){
-            return $th;
+            // return $th;
         }
     }
 
@@ -351,7 +351,7 @@ class YoutubeRepositories{
             }
         }
         catch(\Throwable $th){
-            return $th;
+            // return $th;
         }
     }
 
@@ -396,7 +396,7 @@ class YoutubeRepositories{
             }
         }
         catch(\Throwable $th){
-            return $th;
+            // return $th;
         }
     }
 
@@ -452,7 +452,7 @@ class YoutubeRepositories{
         if(($datas) && isset($datas) && ($datas->count() >= 1)){
             $videoID = implode(',', ($datas)->pluck('identifier')->toArray());
 
-            $http = self::fetchVideoStatus($videoID);
+            $http = self::apiCall('video', $videoID);
 
             if($http['pageInfo']['totalResults'] >= 1){
                 foreach($http['items'] AS $data){

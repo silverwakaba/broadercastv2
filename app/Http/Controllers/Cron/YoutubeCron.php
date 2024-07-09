@@ -14,8 +14,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 // Hapus
-use Illuminate\Support\Facades\Storage;
-use App\Repositories\Base\FileVaultRepositories;
+// use Illuminate\Support\Facades\Storage;
+// use App\Repositories\Base\FileVaultRepositories;
 
 class YoutubeCron extends Controller{
     public function fetchDebug(){
@@ -30,7 +30,7 @@ class YoutubeCron extends Controller{
         // return Storage::disk('s3private')->temporaryUrl('/project/broadercast/system/attachment/3.png', now()->addMinutes(3500));
         // return FileVaultRepositories::download('/project/broadercast/system/attachment/3.png', 'img.png');
 
-        return YoutubeRepositories::fetchProfile('UCLlJpxXt6L5d-XQ0cDdIyDQ', 1);
+        // return YoutubeRepositories::fetchProfile('UCLlJpxXt6L5d-XQ0cDdIyDQ', 1);
     }
 
     public function init(){
