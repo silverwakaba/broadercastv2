@@ -5,8 +5,8 @@ use Illuminate\Support\Facades\Schedule;
 /**
  * YouTube Block
 **/
-Schedule::command('app:cron-youtube-initial')->everyFifteenMinutes()->timezone('Asia/Jakarta')->runInBackground();
-Schedule::command('app:cron-youtube-checker')->everyThreeMinutes()->timezone('Asia/Jakarta')->runInBackground();
+Schedule::command('app:cron-youtube-initial')->everyFiveMinutes()->timezone('Asia/Jakarta')->runInBackground();
+Schedule::command('app:cron-youtube-checker')->everyTwoMinutes()->timezone('Asia/Jakarta')->runInBackground();
 Schedule::command('app:cron-youtube-fetch-profile')->daily()->timezone('Asia/Jakarta')->runInBackground();
 
 // Schedule::call('App\Http\Controllers\Cron\YoutubeCron@init')->everyMinute();
