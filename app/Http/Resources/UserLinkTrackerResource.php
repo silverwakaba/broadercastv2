@@ -17,9 +17,7 @@ class UserLinkTrackerResource extends JsonResource{
     public function toArray(Request $request) : array{
         $data = BaseLink::where([
             ['id', '=', $this->base_link_id]
-        ])->first();
-
-        $null = env('CDN_URL_PUBLIC') . "/system/misc/banner.jpg";
+        ])->select('name')->first();
 
         if($data->name == 'YouTube'){
             $banner = $this->banner ? Str::of($this->banner)->append('=w1080-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj') : $null;
@@ -37,11 +35,10 @@ class UserLinkTrackerResource extends JsonResource{
             'banner'        => $banner,
             'view'          => $this->view,
             'subscriber'    => $this->subscriber,
-            // 'streaming'     => $this->streaming,
             'concurrent'    => $this->concurrent,
+            'profile'       => new UserResource($this->whenLoaded('belongsToUser')),
             'link'          => new UserLinkResource($this->whenLoaded('belongsToBaseLink')),
             'channel'       => new UserChannelResource($this->whenLoaded('belongsToUserLink')),
-            'activity'      => new UserChannelActivityResource($this->whenLoaded('belongsToActiveStream')),
         ];
     }
 }

@@ -36,6 +36,26 @@ class UserLinkTracker extends Model{
         return $this->belongsTo(UserLink::class, 'users_link_id');
     }
 
+    public function hasOneBiodataThroughUser(){
+        return $this->hasOneThrough(UserBiodata::class, User::class, 'id', 'users_id', 'users_id', 'id');
+    }
+
+    public function hasManyThroughUserContent(){
+        return $this->hasManyThrough(UserContent::class, User::class, 'id', 'users_id', 'users_id', 'id');
+    }
+
+    public function hasManyThroughUserGender(){
+        return $this->hasManyThrough(UserGender::class, User::class, 'id', 'users_id', 'users_id', 'id');
+    }
+
+    public function hasManyThroughUserLanguage(){
+        return $this->hasManyThrough(UserLanguage::class, User::class, 'id', 'users_id', 'users_id', 'id');
+    }
+
+    public function hasManyThroughUserRace(){
+        return $this->hasManyThrough(UserRace::class, User::class, 'id', 'users_id', 'users_id', 'id');
+    }
+
     // public function belongsToActiveStream(){
     //     return $this->belongsTo(UserFeed::class, 'users_feed_id', 'id');
     // }

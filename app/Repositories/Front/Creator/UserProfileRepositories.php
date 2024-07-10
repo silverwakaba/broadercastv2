@@ -18,6 +18,7 @@ use App\Models\UserLinkTracker;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Builder;
 use Yajra\DataTables\Facades\DataTables;
@@ -45,40 +46,96 @@ class UserProfileRepositories{
 
     // Tracker
     public static function getLinkTracker(array $data){
+        // Get data
         $datas = UserLinkTracker::with(
             isset($data['with']) ? $data['with'] : []
         )->where(
             isset($data['query']) ? $data['query'] : []
         )->whereIn('base_link_id', BaseHelper::getCheckedBaseLink());
+
+        // Order By
+        if(
+            (isset($data['option']['orderType']))
+            &&
+            (Str::contains($data['option']['orderType'], ['discovery']))
+        ){
+            $channel = $data['filter']['channel'];
+            $name = $data['filter']['name'];
+            $content = $data['filter']['content'];
+            $gender = $data['filter']['gender'];
+            $language = $data['filter']['language'];
+            $persona = $data['filter']['persona'];
+
+            if($channel !== null){
+                $datas->where([
+                    ['name', 'like', '%' . $channel . '%']
+                ]);
+            }
+
+            if($name !== null){
+                $datas->whereHas('belongsToUser', function($query) use($name){
+                    $query->where('name', 'like', '%' . $name . '%');
+                })->orWhereHas('hasOneBiodataThroughUser', function($query) use($name){
+                    $query->where('nickname', 'like', '%' . $name . '%');
+                });
+            }
+
+            if($content !== null){
+                $datas->whereHas('hasManyThroughUserContent', function($query) use($content){
+                    $query->whereIn('base_content_id', [$content]);
+                });
+            }
+
+            if($gender !== null){
+                $datas->whereHas('hasManyThroughUserGender', function($query) use($gender){
+                    $query->whereIn('base_gender_id', [$gender]);
+                });
+            }
+
+            if($language !== null){
+                $datas->whereHas('hasManyThroughUserLanguage', function($query) use($language){
+                    $query->whereIn('base_language_id', [$language]);
+                });
+            }
+
+            if($persona !== null){
+                $datas->whereHas('hasManyThroughUserRace', function($query) use($persona){
+                    $query->whereIn('base_race_id', [$persona]);
+                });
+            }
+        }
         
-        // Additional query
+        // Only takes
         if(isset($data['option'])){
             if(isset($data['option']['take']) && !isset($data['option']['pagination'])){
                 $datas->take($data['option']['take']);
             }
         }
 
-        // Data retrieval
+        // Takes with paginate data retrieval
         if(isset($data['option']['pagination'])){
             if($data['option']['pagination']['type'] == 'normal'){
-                $newData = $datas->paginate($data['option']['take']);
+                $newData = $datas->paginate($data['option']['take'])->fragment($data['option']['orderType'])->withQueryString();
             }
             elseif($data['option']['pagination']['type'] == 'cursor'){
-                $newData = $datas->cursorPaginate($data['option']['take']);
+                $newData = $datas->cursorPaginate($data['option']['take'])->fragment($data['option']['orderType'])->withQueryString();
             }
             else{
-                $newData = $datas->paginate($data['option']['take']);
+                $newData = $datas->paginate($data['option']['take'])->fragment($data['option']['orderType'])->withQueryString();
             }
         }
         else{
             $newData = $datas->get();
         }
 
+        // return $newData = $datas->get();
+
         return BaseHelper::resourceToJson(UserLinkTrackerResource::collection($newData)->response()->getData());
     }
 
     // Feed
     public static function getFeed(array $data, $datatable = false){
+        // Get Data
         $datas = UserFeed::with(
             isset($data['with']) ? $data['with'] : []
         )->where(
@@ -104,7 +161,6 @@ class UserProfileRepositories{
                 $datas->whereBetween('schedule', [Carbon::now()->toDateTimeString(), Carbon::now()->addDays($data['option']['dayLoad'])->toDateTimeString()]);
             }
         }
-
         elseif(
             (isset($data['option']['orderType']))
             &&
@@ -112,19 +168,18 @@ class UserProfileRepositories{
         ){
             $datas->orderByRaw("CASE WHEN schedule IS NULL THEN 0 ELSE 1 END DESC")->orderBy('schedule', 'DESC')->orderBy('actual_start', 'DESC')->orderBy('published', 'DESC');
         }
-
         else{
             $datas->orderBy('published', CookiesRepositories::published());
         }
 
-        // Pagination
+        // Only takes
         if(isset($data['option'])){
             if(isset($data['option']['take']) && !isset($data['option']['pagination'])){
                 $datas->take($data['option']['take']);
             }
         }
 
-        // Data retrieval
+        // Paginate data retrieval
         if(isset($data['option']['pagination'])){
             if($data['option']['pagination']['type'] == 'normal'){
                 $newDatas = $datas->paginate($data['option']['take'])->fragment($data['option']['orderType'])->withQueryString();

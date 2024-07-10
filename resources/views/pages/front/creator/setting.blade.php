@@ -7,7 +7,7 @@
             <ol class="m-0">
                 <li>The settings below will only apply to dynamic data, such as video feeds.</li>
                 <li>The settings below are not tied to an account, instead it will only be saved in the local browser and are valid for one month.</li>
-                <li>The settings below MAY NOT APPLY if you open the {{ config('app.name', 'Broadercast') }} on a new browser or within the next month.</li>
+                <li>The settings below MAY NOT APPLY if you open the {{ config('app.name', 'vTual') }} on a new browser or within the next month.</li>
             </ol>
         </x-Adminlte.Callout>
         <x-Adminlte.CardForm button="Personalize">

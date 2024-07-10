@@ -20,10 +20,11 @@ class UserChannelFeedResource extends JsonResource{
 
         if($data->name == 'YouTube'){
             $link = 'https://www.youtube.com/watch?v=' . $this->identifier;
-            $thumbnail = 'https://i.ytimg.com/vi/' . $this->identifier . '/maxresdefault.jpg';
+            $thumbnail = 'https://i.ytimg.com/vi/' . $this->identifier . '/sddefault.jpg';
         }
         else{
             $link = null;
+            $thumbnail = null;
         }
 
         return [

@@ -4,10 +4,10 @@
 <footer class="main-footer">
     <div class="row">
         <div class="col-md-5">
-            <h3>{{ config('app.name', 'Broadercast') }}</h3>
+            <h3>{{ config('app.name', 'vTual') }}</h3>
             <div class="pr-lg-5">
-                <p>{{ config('app.name', 'Broadercast') }} is a project designed to simplify the process of keeping up with your favorite content creators; All in one convenient portal. Our service is open to anyone, meaning that if you are a content creator, then you can directly register your account to be included in our tracking database without the need for any manual approval.</p>
-                <p><small>Copyright &copy; since 2024. <abbr title="Build {{ config('app.version') }}">{{ config('app.name', 'Broadercast') }} Project</abbr> by <a href="https://www.silverspoon.me" class="text-light" target="_blank">Silverspoon Media</a>. All rights reserved.</small></p>
+                <p>{{ config('app.name', 'vTual') }} is a project designed to simplify the process of keeping up with your favorite content creators; All in one convenient portal. Our service is open to anyone, meaning that if you are a content creator, then you can directly register your account to be included in our tracking database without the need for any manual approval.</p>
+                <p><small>Copyright &copy; since 2024. <abbr title="Build {{ config('app.version') }}">{{ config('app.name', 'vTual') }} Project</abbr> by <a href="https://www.silverspoon.me" class="text-light" target="_blank">Silverspoon Media</a>. All rights reserved.</small></p>
             </div>
         </div>
         <div class="col-md-7">

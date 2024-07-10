@@ -13,8 +13,31 @@ use Illuminate\Support\Facades\Cookie;
 
 class CreatorController extends Controller{
     // Index
-    public function index(){
-        return "List semua creator";
+    public function index(Request $request){
+        $tracker = UserProfileRepositories::getLinkTracker([
+            'with'  => [
+                'belongsToUser',
+                'belongsToBaseLink',
+                'belongsToUserLink',
+            ],
+            'option'    => [
+                'take'          => 3,
+                'orderType'     => 'discovery',
+                'pagination'    => [
+                    'type'  => 'normal',
+                ],
+            ],
+            'filter'    => [
+                'channel'   => $request->channel,
+                'name'      => $request->name,
+                'content'   => $request->content,
+                'gender'    => $request->gender,
+                'language'  => $request->language,
+                'persona'   => $request->persona,
+            ],
+        ]);
+
+        return $tracker;
     }
 
     // Profile
