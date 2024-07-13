@@ -36,7 +36,6 @@
         <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-
         <div class="collapse navbar-collapse order-3" id="navbarCollapse">
             <ul class="navbar-nav">
                 <li class="nav-item">
@@ -98,11 +97,11 @@
                     </li>
                 @endcan
             </ul>
-        @endif
-    </div>
+        </div>
+    @endif
 </nav>
 @if(request()->routeIs('apps.*'))
-    <aside class="main-sidebar main-sidebar-custom sidebar-dark-primary elevation-5">
+    <aside class="main-sidebar main-sidebar-custom sidebar-dark-primary elevation-4">
         <div class="brand-link">
             <img src="{{ config('app.cdn_public_url') . '/system/image/logo/broadercast/logo-100px.png' }}" class="brand-image" />
             <span class="brand-text">{{ config('app.name', 'vTual') }}</span>
@@ -119,7 +118,7 @@
                 </div>
             @endcan
             <nav class="my-2">
-                <ul class="nav nav-pills nav-sidebar nav-flat nav-compact flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                     <li class="nav-header">Navigation</li>
                     <x-Adminlte.NavTree route="index">
                         <x-Adminlte.NavLink icon="1" parent="1" fa="fas fa-home" value="Main Menu" />
