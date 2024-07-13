@@ -95,12 +95,14 @@
                 </x-Adminlte.NavDropdown>
             </ul>
         @else
-            <li class="nav-item">
-                <x-Adminlte.NavLink route="register" value="Register" />
-            </li>
-            <li class="nav-item">
-                <x-Adminlte.NavLink route="login" value="Login" />
-            </li>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <x-Adminlte.NavLink route="register" value="Register" />
+                </li>
+                <li class="nav-item">
+                    <x-Adminlte.NavLink route="login" value="Login" />
+                </li>
+            </ul>
         @endcan
     @endif
 </nav>
