@@ -6,25 +6,9 @@
                     <i class="fas fa-bars"></i>
                 </a>
             </li>
-            <li class="nav-item">
-                <x-Adminlte.NavLink route="creator.index" value="Creator" />
-            </li>
-            <li class="nav-item">
-                <x-Adminlte.NavLink route="creator.live" value="Live" />
-            </li>
-            <li class="nav-item">
-                <x-Adminlte.NavLink route="creator.scheduled" value="Scheduled" />
-            </li>
-            <li class="nav-item">
-                <x-Adminlte.NavLink route="creator.archived" value="Archived" />
-            </li>
-            <li class="nav-item">
-                <x-Adminlte.NavLink route="creator.uploaded" value="Uploaded" />
-            </li>
-            <li class="nav-item">
-                <x-Adminlte.NavLink route="creator.setting" value="Setting" />
-            </li>
-            <ul class="navbar-nav">
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            @can('canLogin')
                 <x-Adminlte.NavDropdown>
                     <a id="dropdownSubMenuAccountMenu" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">
                         User Menu
@@ -35,76 +19,87 @@
                         </li>
                     </ul>
                 </x-Adminlte.NavDropdown>
-            </ul>
-        </ul>
-    @else
-        <a href="{{ route('index') }}" class="navbar-brand">
-            <img src="{{ config('app.cdn_public_url') . '/system/image/logo/broadercast/logo-100px.png' }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" />
-            <span class="brand-text font-weight-light text-light">{{ config('app.name', 'vTual') }}</span>
-        </a>
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <x-Adminlte.NavLink route="index" value="Home" />
-            </li>
-        </ul>
-        @can('canLogin')
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <x-Adminlte.NavLink route="apps.front.index" value="App" />
-                </li>                
-            </ul>
-        @endcan
-        <ul class="navbar-nav">
-            <x-Adminlte.NavDropdown route="creator.*">
-                <a id="dropdownSubMenuCreators" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">
-                    Creator
-                </a>
-                <ul aria-labelledby="dropdownSubMenuCreators" class="dropdown-menu border-0 shadow">
-                    <li class="nav-item">
-                        <x-Adminlte.NavLink route="creator.index" mode="dropdown" value="Discover" />
-                    </li>
-                    <li class="nav-item">
-                        <x-Adminlte.NavLink route="creator.live" mode="dropdown" value="Live" />
-                    </li>
-                    <li class="nav-item">
-                        <x-Adminlte.NavLink route="creator.scheduled" mode="dropdown" value="Scheduled" />
-                    </li>
-                    <li class="nav-item">
-                        <x-Adminlte.NavLink route="creator.archived" mode="dropdown" value="Archived" />
-                    </li>
-                    <li class="nav-item">
-                        <x-Adminlte.NavLink route="creator.uploaded" mode="dropdown" value="Uploaded" />
-                    </li>
-                    <li class="nav-item">
-                        <x-Adminlte.NavLink route="creator.setting" mode="dropdown" value="Setting" />
-                    </li>
-                </ul>
-            </x-Adminlte.NavDropdown>
-        </ul>
-        @can('canLogin')
-            <ul class="navbar-nav">
-                <x-Adminlte.NavDropdown>
-                    <a id="dropdownSubMenuAccountMenu" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">
-                        User Menu
-                    </a>
-                    <ul aria-labelledby="dropdownSubMenuAccountMenu" class="dropdown-menu border-0 shadow">
-                        <li class="nav-item">
-                            <x-Adminlte.NavLink route="logout" mode="dropdown" value="Logout" />
-                        </li>
-                    </ul>
-                </x-Adminlte.NavDropdown>
-            </ul>
-        @else
-            <ul class="navbar-nav">
+            @else
                 <li class="nav-item">
                     <x-Adminlte.NavLink route="register" value="Register" />
                 </li>
                 <li class="nav-item">
                     <x-Adminlte.NavLink route="login" value="Login" />
                 </li>
+            @endcan
+        </ul>
+    @else
+        <a href="{{ route('index') }}" class="navbar-brand">
+            <img src="{{ config('app.cdn_public_url') . '/system/image/logo/broadercast/logo-100px.png' }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" />
+            <span class="brand-text font-weight-light text-light">{{ config('app.name', 'vTual') }}</span>
+        </a>
+        <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse order-3" id="navbarCollapse">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <x-Adminlte.NavLink route="index" value="Home" />
+                </li>
             </ul>
-        @endcan
-    @endif
+            @can('canLogin')
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <x-Adminlte.NavLink route="apps.front.index" value="App" />
+                    </li>                
+                </ul>
+            @endcan
+            <ul class="navbar-nav">
+                <x-Adminlte.NavDropdown route="creator.*">
+                    <a id="dropdownSubMenuCreators" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">
+                        Creator
+                    </a>
+                    <ul aria-labelledby="dropdownSubMenuCreators" class="dropdown-menu border-0 shadow">
+                        <li class="nav-item">
+                            <x-Adminlte.NavLink route="creator.index" mode="dropdown" value="Discover" />
+                        </li>
+                        <li class="nav-item">
+                            <x-Adminlte.NavLink route="creator.live" mode="dropdown" value="Live" />
+                        </li>
+                        <li class="nav-item">
+                            <x-Adminlte.NavLink route="creator.scheduled" mode="dropdown" value="Scheduled" />
+                        </li>
+                        <li class="nav-item">
+                            <x-Adminlte.NavLink route="creator.archived" mode="dropdown" value="Archived" />
+                        </li>
+                        <li class="nav-item">
+                            <x-Adminlte.NavLink route="creator.uploaded" mode="dropdown" value="Uploaded" />
+                        </li>
+                        <li class="nav-item">
+                            <x-Adminlte.NavLink route="creator.setting" mode="dropdown" value="Setting" />
+                        </li>
+                    </ul>
+                </x-Adminlte.NavDropdown>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                @can('canLogin')
+                    <x-Adminlte.NavDropdown>
+                        <a id="dropdownSubMenuAccountMenu" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">
+                            User Menu
+                        </a>
+                        <ul aria-labelledby="dropdownSubMenuAccountMenu" class="dropdown-menu border-0 shadow">
+                            <li class="nav-item">
+                                <x-Adminlte.NavLink route="logout" mode="dropdown" value="Logout" />
+                            </li>
+                        </ul>
+                    </x-Adminlte.NavDropdown>
+                @else
+                    <li class="nav-item">
+                        <x-Adminlte.NavLink route="register" value="Register" />
+                    </li>
+                    <li class="nav-item">
+                        <x-Adminlte.NavLink route="login" value="Login" />
+                    </li>
+                @endcan
+            </ul>
+        @endif
+    </div>
 </nav>
 @if(request()->routeIs('apps.*'))
     <aside class="main-sidebar main-sidebar-custom sidebar-dark-primary elevation-5">
