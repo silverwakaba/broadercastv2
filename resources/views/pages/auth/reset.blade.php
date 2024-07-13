@@ -13,7 +13,7 @@
                     <div class="col-8">
                         <input type="hidden" name="_token" class="d-none" value="{{ csrf_token() }}" readonly />
                         <input type="hidden" name="email" class="d-none" value="{{ $datas->belongsToUser->email }}" readonly />
-                        <x-form.checkbox name="terms" value="1">I agree to <a href="https://www.google.com">Blabla</a></x-form.checkbox>
+                        <x-form.checkbox name="terms" value="1">I agree to <a href="https://help.silverspoon.me/docs/vtual/authentication/recovery" target="_blank">Account Recovery</a> policy</x-form.checkbox>
                     </div>
                     <div class="col-4">
                         <button class="btn btn-block btn-danger" type="submit">Reset</button>

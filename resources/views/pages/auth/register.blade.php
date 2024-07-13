@@ -23,7 +23,7 @@
                 <p>- OR -</p>
                 <div class="row">
                     <div class="col-12">
-                        <p><a href="{{ route('login') }}" class="btn btn-block btn-success">Login to broaderhood</a></p>
+                        <p><a href="{{ route('login') }}" class="btn btn-block btn-success">Login with an existing account</a></p>
                     </div>
                 </div>
             </div>

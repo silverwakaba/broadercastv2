@@ -10,7 +10,7 @@
                 <div class="row">
                     <div class="col-8">
                         <input type="hidden" name="_token" class="d-none" value="{{ csrf_token() }}" readonly />
-                        <x-form.checkbox name="terms" value="1">I agree to <a href="https://www.google.com">Blabla</a></x-form.checkbox>
+                        <x-form.checkbox name="terms" value="1">I agree to <a href="https://help.silverspoon.me/docs/vtual/authentication/recovery" target="_blank">Account Recovery</a> policy</x-form.checkbox>
                     </div>
                     <div class="col-4">
                         <button class="btn btn-block btn-danger" type="submit">Recover</button>
