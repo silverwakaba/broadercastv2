@@ -1,4 +1,4 @@
-<nav class="main-header navbar navbar-expand navbar-dark">
+<nav class="main-header container-fluids navbar navbar-expand navbar-dark">
     @if(request()->routeIs('apps.*'))
         <ul class="navbar-nav">
             <li class="nav-item">
