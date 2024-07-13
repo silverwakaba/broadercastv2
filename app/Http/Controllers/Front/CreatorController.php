@@ -21,19 +21,14 @@ class CreatorController extends Controller{
                 'belongsToUserLink',
             ],
             'option'    => [
-                'take'          => 3,
+                'take'          => 6,
                 'orderType'     => 'discovery',
                 'pagination'    => [
                     'type'  => 'normal',
                 ],
             ],
             'filter'    => [
-                'channel'   => $request->channel,
-                'name'      => $request->name,
-                'content'   => $request->content,
-                'gender'    => $request->gender,
-                'language'  => $request->language,
-                'persona'   => $request->persona,
+                'request' => $request,
             ],
         ]);
 

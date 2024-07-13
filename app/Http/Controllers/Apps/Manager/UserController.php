@@ -171,7 +171,10 @@ class UserController extends Controller{
             $structure = 'https://www.twitch.tv/wakaba6969';
         }
         elseif($datas->belongsToBaseLink->name == 'YouTube'){
-            $structure = 'https://www.youtubes.com/channel/UCIRQxP7jORi6jsLt0HmUmqQ';
+            $structure = [
+                'https://www.youtube.com/@wakaba69',
+                'https://www.youtube.com/channel/UCIRQxP7jORi6jsLt0HmUmqQ',
+            ];
         }
 
         return view('pages/apps/setting/user/link/verify', [

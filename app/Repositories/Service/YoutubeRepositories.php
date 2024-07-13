@@ -30,11 +30,22 @@ class YoutubeRepositories{
             'silverspoon' => 'https://www.silverspoon.me/peepee/youtube/',
         ];
 
+        // Via YouTube Scrapper
         if($mode == 'live'){
             return Http::acceptJson()->get(Str::of($endpoint['silverspoon'])->append('video'), [
                 'id' => $id,
             ])->json();
         }
+        elseif($mode == 'handler'){
+            return Http::acceptJson()->get(Str::of($endpoint['silverspoon'])->append('channel'), [
+                'id' => $id,
+            ])->json();
+        }
+
+        // Via 3rd Party Scrapper
+        // Not yet
+
+        // Via Official API
         elseif($mode == 'video'){
             return Http::acceptJson()->get(Str::of($endpoint['silverspoon'])->append('fetch-video'), [
                 'id' => $id,
@@ -110,17 +121,28 @@ class YoutubeRepositories{
     // Verify Channel
     public static function verifyChannel($channelID, $uniqueID, $id){
         try{
-            $checkString = Str::contains($channelID, "https://www.youtube.com/channel/");
+            $checkViaChannel = Str::contains($channelID, "https://www.youtube.com/channel/");
+            $checkViaHandler = Str::contains($channelID, "https://www.youtube.com/@");
 
-            if($checkString){
+            if($checkViaChannel xor $checkViaHandler){
+                if($checkViaChannel == true){
+                    $checkChannel = Str::of($channelID)->afterLast('/');
+                }
+                elseif($checkViaHandler == true){
+                    $handler = Str::of($channelID)->afterLast('@');
+
+                    $http = self::apiCall('handler', '@' . $handler);
+
+                    $checkChannel = $http['id'];
+                }
+                
                 $debug = true;
                 $linkID = BaseHelper::decrypt($id);
                 $userLink = UserLink::find($linkID);
-                $checkChannel = Str::of($channelID)->afterLast('/');
                 $countChannel = self::userLinkTrackerChecker($checkChannel);
                 $limitChannel = self::userLinkTrackerCounter($userLink->users_id);
 
-                if(Str::of($checkChannel)->length() == 24){
+                if(($checkChannel !== null) && (Str::of($checkChannel)->length() == 24)){
                     if($countChannel == 0){
                         $http = self::apiCall('channel', $checkChannel);
 
@@ -136,6 +158,7 @@ class YoutubeRepositories{
                                 'name'          => $data['snippet']['title'],
                                 'avatar'        => Str::before($data['snippet']['thumbnails']['medium']['url'], '='),
                                 'banner'        => isset($data['brandingSettings']['image']['bannerExternalUrl']) ? Str::before($data['brandingSettings']['image']['bannerExternalUrl'], '=') : null,
+                                'content'       => $data['statistics']['videoCount'] ? $data['statistics']['videoCount'] : 0,
                                 'view'          => $data['statistics']['viewCount'] ? $data['statistics']['viewCount'] : 0,
                                 'subscriber'    => $data['statistics']['hiddenSubscriberCount'] == false ? $data['statistics']['subscriberCount'] : 0,
                                 'joined'        => Carbon::parse($data['snippet']['publishedAt'])->timezone(config('app.timezone'))->toDateTimeString(),
@@ -209,7 +232,10 @@ class YoutubeRepositories{
 
             if($http['pageInfo']['totalResults'] >= 1){
                 foreach($http['items'] AS $data){
-                    UserLinkTracker::where([
+                    $tracker = new UserLinkTracker();
+                    
+                    $tracker->timestamps = false;
+                    $tracker->where([
                         ['users_id', '=', $userID],
                         ['identifier', '=', $channelID],
                         ['base_link_id', '=', 2]
@@ -218,13 +244,15 @@ class YoutubeRepositories{
                         'name'          => $data['snippet']['title'],
                         'avatar'        => Str::before($data['snippet']['thumbnails']['medium']['url'], '='),
                         'banner'        => isset($data['brandingSettings']['image']['bannerExternalUrl']) ? Str::before($data['brandingSettings']['image']['bannerExternalUrl'], '=') : null,
+                        'content'       => $data['statistics']['videoCount'] ? $data['statistics']['videoCount'] : 0,
+                        'view'          => $data['statistics']['viewCount'] ? $data['statistics']['viewCount'] : 0,
                         'subscriber'    => $data['statistics']['hiddenSubscriberCount'] == false ? $data['statistics']['subscriberCount'] : 0,
                     ]);
                 }
             }
         }
         catch(\Throwable $th){
-            // // return $th;
+            return $th;
         }
     }
 
@@ -257,17 +285,19 @@ class YoutubeRepositories{
             }
 
             // Next Page Token Implementation
-            if(isset($http['nextPageToken'])){
+            if(isset($http['nextPageToken']) && !isset($http['error'])){
                 self::fetchArchiveViaAPIRepeater($channelID, $userID, $http['nextPageToken']);
             }
-            else{
+            elseif(!isset($http['nextPageToken']) && !isset($http['error'])){
+                $userLT->timestamps = false;
+
                 $userLT->update([
                     'initialized' => true,
                 ]);
             }
         }
         catch(\Throwable $th){
-            // return $th;
+            return $th;
         }
     }
 
@@ -462,15 +492,23 @@ class YoutubeRepositories{
     
                 if($http['pageInfo']['totalResults'] >= 1){
                     foreach($http['items'] AS $data){
-                        UserFeed::where([
-                            ['identifier', '=', $data['id']],
-                        ])->update([
+                        $feed = UserFeed::where('identifier', '=', $data['id'])->first();
+                        
+                        $feed->update([
                             'base_status_id'    => self::userFeedStatus($data),
                             'concurrent'        => isset($data['liveStreamingDetails']['concurrentViewers']) ? $data['liveStreamingDetails']['concurrentViewers'] : 0,
                             'actual_start'      => isset($data['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($data['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
-                            'actual_end'        => isset($data['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString()  : null,
+                            'actual_end'        => isset($data['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
                             'duration'          => isset($data['contentDetails']['duration']) ? $data['contentDetails']['duration'] : "P0D",
                         ]);
+
+                        $feed->belongsToUserLinkTracker()->select('updated_at')->first()->updated_at;
+
+                        if((isset($data['liveStreamingDetails']['actualEndTime'])) && (Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString() >= $feed->belongsToUserLinkTracker()->select('updated_at')->first()->updated_at)){
+                            $feed->belongsToUserLinkTracker()->update([
+                                'updated_at' => Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString(),
+                            ]);
+                        }
                     }
                 }
     

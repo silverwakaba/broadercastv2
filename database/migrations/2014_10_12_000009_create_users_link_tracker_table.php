@@ -21,6 +21,7 @@ return new class extends Migration{
             $table->string('avatar');
             $table->string('banner')->nullable();
             $table->double('view')->nullable()->default('0');
+            $table->double('content')->nullable()->default('0');
             $table->double('subscriber')->nullable()->default('0');
             $table->dateTime('joined')->nullable();
             $table->timestamps();

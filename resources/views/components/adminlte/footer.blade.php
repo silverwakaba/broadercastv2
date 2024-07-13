@@ -16,16 +16,16 @@
                     <h4>Internal</h4>
                     <ul class="list-unstyled">
                         <li>
-                            <a href="https://help.silverspoon.me/docs/broadercast/about" target="_blank" class="text-light">About Us</a>
+                            <a href="https://help.silverspoon.me/docs/vtual/about" target="_blank" class="text-light">About Us</a>
                         </li>
                         <li>
-                            <a href="https://help.silverspoon.me/blog/tags/broadercast" target="_blank" class="text-light">Blog Post</a>
+                            <a href="https://help.silverspoon.me/blog/tags/vtual" target="_blank" class="text-light">Blog Post</a>
                         </li>
                         <li>
                             <a href="https://help.silverspoon.me/docs/silverspoon/contact" target="_blank" class="text-light">Contact Us</a>
                         </li>
                         <li>
-                            <a href="https://help.silverspoon.me/docs/category/broadercast" target="_blank" class="text-light">Get Some Help</a>
+                            <a href="https://help.silverspoon.me/docs/category/vtual" target="_blank" class="text-light">Get Some Help</a>
                         </li>
                     </ul>
                 </div>

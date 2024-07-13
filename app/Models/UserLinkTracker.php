@@ -19,6 +19,7 @@ class UserLinkTracker extends Model{
         'name',
         'avatar',
         'banner',
+        'content',
         'view',
         'subscriber',
         'joined',
@@ -54,6 +55,10 @@ class UserLinkTracker extends Model{
 
     public function hasManyThroughUserRace(){
         return $this->hasManyThrough(UserRace::class, User::class, 'id', 'users_id', 'users_id', 'id');
+    }
+
+    public function hasManyThroughUserFeed(){
+        return $this->hasManyThrough(UserFeed::class, User::class, 'id', 'base_link_id', 'base_link_id', 'id');
     }
 
     // public function belongsToActiveStream(){

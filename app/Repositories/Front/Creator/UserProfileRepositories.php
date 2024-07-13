@@ -59,27 +59,42 @@ class UserProfileRepositories{
             &&
             (Str::contains($data['option']['orderType'], ['discovery']))
         ){
-            $channel = $data['filter']['channel'];
-            $name = $data['filter']['name'];
-            $content = $data['filter']['content'];
-            $gender = $data['filter']['gender'];
-            $language = $data['filter']['language'];
-            $persona = $data['filter']['persona'];
+            // Request filter
+            $request = $data['filter']['request'];
 
-            if($channel !== null){
+            // Channel-related
+            $channel_name = $request->channelname;
+            $profile_name = $request->profilename;
+
+            $subs_range = $request->channelsubsrange;
+            $channel_subs_range = $request->channelsubsrange ? explode(',', $subs_range) : null;
+
+            // Have their own base
+            $content = $request->content;
+            $gender = $request->gender;
+            $language = $request->language;
+            $persona = $request->persona;
+
+            // Channel-related
+            if($channel_name !== null){
                 $datas->where([
-                    ['name', 'like', '%' . $channel . '%']
+                    ['name', 'like', '%' . $channel_name . '%']
                 ]);
             }
 
-            if($name !== null){
-                $datas->whereHas('belongsToUser', function($query) use($name){
-                    $query->where('name', 'like', '%' . $name . '%');
-                })->orWhereHas('hasOneBiodataThroughUser', function($query) use($name){
-                    $query->where('nickname', 'like', '%' . $name . '%');
+            if($profile_name !== null){
+                $datas->whereHas('belongsToUser', function($query) use($profile_name){
+                    $query->where('name', 'like', '%' . $profile_name . '%');
+                })->orWhereHas('hasOneBiodataThroughUser', function($query) use($profile_name){
+                    $query->where('nickname', 'like', '%' . $profile_name . '%');
                 });
             }
 
+            if($channel_subs_range !== null){
+                $datas->whereBetween('subscriber', [$channel_subs_range]);
+            }
+
+            // Have their own base
             if($content !== null){
                 $datas->whereHas('hasManyThroughUserContent', function($query) use($content){
                     $query->whereIn('base_content_id', [$content]);
@@ -102,6 +117,32 @@ class UserProfileRepositories{
                 $datas->whereHas('hasManyThroughUserRace', function($query) use($persona){
                     $query->whereIn('base_race_id', [$persona]);
                 });
+            }
+
+            // Short Type
+            $short_type = $request->shorttype == 1 ? 'asc' : 'desc';
+
+            // Short By
+            $short_by = $request->shortby;
+
+            if(($short_by == null) || ($short_by == 'time')){
+                $datas->orderBy('updated_at', $short_type);
+            }
+            elseif($short_by == 'name'){
+                $datas->orderBy('name', $short_type);
+            }
+            elseif($short_by == 'view'){
+                $datas->orderBy('view', $short_type);
+            }
+
+            elseif($short_by == 'content'){
+                $datas->orderBy('content', $short_type);
+            }
+            elseif($short_by == 'subscriber'){
+                $datas->orderBy('subscriber', $short_type);
+            }
+            elseif($short_by == 'joined'){
+                $datas->orderBy('joined', $short_type);
             }
         }
         
@@ -127,8 +168,6 @@ class UserProfileRepositories{
         else{
             $newData = $datas->get();
         }
-
-        // return $newData = $datas->get();
 
         return BaseHelper::resourceToJson(UserLinkTrackerResource::collection($newData)->response()->getData());
     }

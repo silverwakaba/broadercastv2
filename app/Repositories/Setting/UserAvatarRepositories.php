@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Storage;
 
 class UserAvatarRepositories{
     public static function change($data){
-        $dir = 'project/broadercast/system/avatar';
+        $dir = 'project/vtual/system/avatar';
 
         $user = User::find(auth()->user()->id);
 

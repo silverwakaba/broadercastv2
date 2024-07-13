@@ -11,11 +11,25 @@
                     <li>After that, <u>our crawler will try to match</u> the data. If a match is found, then your {{ $datas->belongsToBaseLink->name }} channel will <u>automatically be marked as verified</u> and will start to be <u>crawled on our timeline</u>.</li>
                     <li>The verification <u>process will take place automatically</u> and the <u>results will appear immediately</u>.</li>
                     <li>After the verification process is successful, <u>you are allowed to delete the unique detail</u> because it is no longer needed.</li>
-                    <li>The link structure you should enter should look like this: <span class="badge badge-secondary">{{ $structure }}</span>.</li>
+                    <li>
+                        <span>The link structure you enter should be formatted like one of these:</span>
+                        <ul>
+                            @foreach($structure AS $link)
+                                <li><span class="badge badge-secondary">{{ $link }}</span></li>
+                            @endforeach
+                        </ul>
+                        <span>Please only use one of the above formats.</span>
+                    </li>
                     <li>If the link structure doesn't match as in the example, you can still <u><a href="{{ route('apps.manager.link.edit', ['id' => request()->id]) }}">make a changes</a></u> before submitting.</li>
                     <li>To avoid the possibility of abuse, the <u>submission process can only be done twice every hour</u>. Please use this feature wisely.</li>
                     <li>If the verification attempt reaches the limit, <u>you have to wait until the number of attempts is reset</u> in the next period (every 1 hours, since the last time you tried to verify). <sup><a href="#">[?]</a></sup></li>
-                    <li>Your unique detail is <span class="badge badge-secondary">{{ $secret }}</span>. Please <u>keep this unique detail a secret</u> to avoid impersonation in the verification process.</li>
+                    <li>
+                        <span>Your unique detail is:</span>
+                        <blockquote class="blockquote m-0">
+                            <span>{{ $secret }}</span>
+                        </blockquote>
+                        <span>Please <u>keep this unique detail a secret</u> to avoid impersonation in the verification process.</span>
+                    </li>
                 </ol>
                 <p>If you have further questions, please let us know. We thank you for your attention and cooperation.</p>
             </div>
