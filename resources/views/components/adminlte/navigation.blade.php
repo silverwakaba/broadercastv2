@@ -24,6 +24,18 @@
             <li class="nav-item">
                 <x-Adminlte.NavLink route="creator.setting" value="Setting" />
             </li>
+            <ul class="navbar-nav">
+                <x-Adminlte.NavDropdown>
+                    <a id="dropdownSubMenuAccountMenu" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">
+                        User Menu
+                    </a>
+                    <ul aria-labelledby="dropdownSubMenuAccountMenu" class="dropdown-menu border-0 shadow">
+                        <li class="nav-item">
+                            <x-Adminlte.NavLink route="logout" mode="dropdown" value="Logout" />
+                        </li>
+                    </ul>
+                </x-Adminlte.NavDropdown>
+            </ul>
         </ul>
     @else
         <a href="{{ route('index') }}" class="navbar-brand">
@@ -69,19 +81,19 @@
                 </ul>
             </x-Adminlte.NavDropdown>
         </ul>
-    @endif
-    <ul class="navbar-nav ml-auto">
         @can('canLogin')
-            <x-Adminlte.NavDropdown>
-                <a id="dropdownSubMenuAccountMenu" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">
-                    User Menu
-                </a>
-                <ul aria-labelledby="dropdownSubMenuAccountMenu" class="dropdown-menu border-0 shadow">
-                    <li class="nav-item">
-                        <x-Adminlte.NavLink route="logout" mode="dropdown" value="Logout" />
-                    </li>
-                </ul>
-            </x-Adminlte.NavDropdown>
+            <ul class="navbar-nav">
+                <x-Adminlte.NavDropdown>
+                    <a id="dropdownSubMenuAccountMenu" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">
+                        User Menu
+                    </a>
+                    <ul aria-labelledby="dropdownSubMenuAccountMenu" class="dropdown-menu border-0 shadow">
+                        <li class="nav-item">
+                            <x-Adminlte.NavLink route="logout" mode="dropdown" value="Logout" />
+                        </li>
+                    </ul>
+                </x-Adminlte.NavDropdown>
+            </ul>
         @else
             <li class="nav-item">
                 <x-Adminlte.NavLink route="register" value="Register" />
@@ -90,7 +102,7 @@
                 <x-Adminlte.NavLink route="login" value="Login" />
             </li>
         @endcan
-    </ul>
+    @endif
 </nav>
 @if(request()->routeIs('apps.*'))
     <aside class="main-sidebar main-sidebar-custom sidebar-dark-primary elevation-5">
