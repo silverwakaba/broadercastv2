@@ -120,8 +120,6 @@ class YoutubeRepositories{
             if($checkViaChannel xor $checkViaHandler){
                 if($checkViaChannel == true){
                     $checkChannel = Str::of($channelID)->afterLast('/');
-
-                    return "A";
                 }
                 elseif($checkViaHandler == true){
                     $handler = Str::of($channelID)->afterLast('@');
@@ -129,8 +127,9 @@ class YoutubeRepositories{
                     $http = self::apiCall('handler', '@' . $handler);
 
                     $checkChannel = $http['id'];
-
-                    return "B";
+                }
+                else{
+                    $checkChannel = null;
                 }
                 
                 $debug = true;
@@ -212,7 +211,7 @@ class YoutubeRepositories{
             }
         }
         catch(\Throwable $th){
-            return $th;
+            // return $th;
         }
     }
 
