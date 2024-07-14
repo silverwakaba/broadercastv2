@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Cron;
-
-use App\Http\Controllers\Controller;
+namespace App\Repositories\Service;
 
 use App\Models\BaseAPI;
 use App\Models\UserFeed;
+
 use App\Models\UserLinkTracker;
 use App\Repositories\Service\YoutubeRepositories;
 
@@ -13,13 +12,10 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
-class YoutubeCron extends Controller{
-    public function fetchDebug(){
-        return YoutubeRepositories::fetchVideoViaScraper('iWZ6mNZxIP4');
-    }
-
-    public function init(){
-        // Archive initialization
+class YoutubeCron{
+    // Init
+    public static function init(){
+        // Insert Past Archive
         UserLinkTracker::where([
             ['base_link_id', '=', 2],
             ['initialized', '=', false],
@@ -33,13 +29,14 @@ class YoutubeCron extends Controller{
             }
         });
 
-        // Archive metadata
+        // Archive Metadata
         UserLinkTracker::where([
             ['base_link_id', '=', 2],
             ['initialized', '=', true],
         ])->select('identifier', 'users_id')->chunk(100, function(Collection $chunks){
             foreach($chunks as $chunk){
                 try{
+                    // Fetch acrhive via Youtube Feed
                     YoutubeRepositories::fetchArchiveViaFeed($chunk->identifier, $chunk->users_id);
 
                     // Update archive metadata after fetched from Youtube API
@@ -50,7 +47,8 @@ class YoutubeCron extends Controller{
         });
     }
 
-    public function checker(){
+    // Checker
+    public static function checker(){
         // Live Streaming
         UserFeed::where([
             ['base_link_id', '=', 2],
@@ -84,6 +82,7 @@ class YoutubeCron extends Controller{
         });
     }
 
+    // Profiler
     public function profiler(){
         // Profile metadata
         UserLinkTracker::where([

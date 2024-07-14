@@ -17,6 +17,9 @@ use Illuminate\Http\Client\Pool;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 
+//
+use Illuminate\Support\Facades\Log;
+
 class YoutubeRepositories{
     /**
      * ----------------------------
@@ -27,38 +30,26 @@ class YoutubeRepositories{
     // API Call to Internal-endpoint
     public static function apiCall($mode, $id, $token = null){
         // Via YouTube Scrapper
-        if($mode == 'live'){
-            return Http::acceptJson()->get(route('api.yt.video.scraper'), [
+        if(($mode == 'handler') || ($mode == 'live')){
+            return Http::acceptJson()->get(route("api.yt.$mode.scraper", [
                 'id' => $id,
-            ])->json();
-        }
-        elseif($mode == 'handler'){
-            return Http::acceptJson()->get(route('api.yt.channel.scraper'), [
-                'id' => $id,
-            ])->json();
+            ]))->json();
         }
 
         // Via Official API
-        elseif($mode == 'video'){
-            return Http::acceptJson()->get(route('api.yt.video.fetch'), [
+        elseif(($mode == 'channel') || ($mode == 'feed') || ($mode == 'video')){
+            return Http::acceptJson()->get(route("api.yt.$mode.fetch", [
                 'id' => $id,
-            ])->json();
+            ]))->json();
         }
-        elseif($mode == 'channel'){
-            return Http::acceptJson()->get(route('api.yt.channel.fetch'), [
-                'id' => $id,
-            ])->json();
-        }
-        elseif($mode == 'feed'){
-            return Http::acceptJson()->get(route('api.yt.feed.fetch'), [
-                'id' => $id,
-            ])->json();
-        }
+
+        // Else
         elseif($mode == 'playlist'){
-            return Http::acceptJson()->get(route('api.yt.playlist.fetch'), [
+            // Copas ini aja
+            return Http::acceptJson()->get(route("api.yt.$mode.fetch", [
                 'id'    => $id,
                 'token' => $token,
-            ])->json();
+            ]))->json();
         }
     }
 
@@ -211,7 +202,7 @@ class YoutubeRepositories{
             }
         }
         catch(\Throwable $th){
-            // return $th;
+            return $th;
         }
     }
 
@@ -281,10 +272,11 @@ class YoutubeRepositories{
             }
 
             // Next Page Token Implementation
-            if(isset($http['nextPageToken']) && !isset($http['error'])){
+            if(isset($http['nextPageToken']) || isset($http['error'])){
                 self::fetchArchiveViaAPIRepeater($channelID, $userID, $http['nextPageToken']);
             }
-            elseif(!isset($http['nextPageToken']) && !isset($http['error'])){
+
+            else{
                 $userLT->timestamps = false;
 
                 $userLT->update([
@@ -293,7 +285,7 @@ class YoutubeRepositories{
             }
         }
         catch(\Throwable $th){
-            return $th;
+            // return $th;
         }
     }
 
@@ -319,14 +311,14 @@ class YoutubeRepositories{
 
             $http = self::apiCall('feed', $channelID);
 
-            if(isset($http->entry)){
-                foreach($http->entry AS $data){
+            if(isset($http['entry'])){
+                foreach($http['entry'] AS $data){
                     UserFeed::insertOrIgnore(
                         array_merge($userLTs, [
                             'base_status_id' => 6,
-                            'identifier'     => Str::afterLast($data->id, ':'),
-                            'title'          => $data->title,
-                            'published'      => Carbon::parse($data->published)->timezone(config('app.timezone'))->toDateTimeString(),
+                            'identifier'     => Str::afterLast($data['id'], ':'),
+                            'title'          => $data['title'],
+                            'published'      => Carbon::parse($data['published'])->timezone(config('app.timezone'))->toDateTimeString(),
                         ])
                     );
                 }
@@ -344,7 +336,7 @@ class YoutubeRepositories{
 
             $isOffline = true;
 
-            $http = self::apiCall('live', $videoID);
+            $http = self::apiCall('live', $userF->identifier);
 
             if(
                 ($http['live'] == true) && ($http['title'] != null) && ($http['schedule'] == null) && isset($http['concurrent'])
