@@ -336,7 +336,7 @@ class YoutubeRepositories{
 
             $isOffline = true;
 
-            $http = self::apiCall('live', $userF->identifier);
+            $http = self::apiCall('live', $videoID);
 
             if(
                 ($http['live'] == true) && ($http['title'] != null) && ($http['schedule'] == null) && isset($http['concurrent'])
