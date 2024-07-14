@@ -140,7 +140,7 @@ class YoutubeRepositories{
 
                 if(($checkChannel !== null) && (Str::of($checkChannel)->length() == 24)){
                     if($countChannel == 0){
-                        return $http = self::apiCall('channel', $checkChannel);
+                        $http = self::apiCall('channel', $checkChannel);
 
                         if($http['pageInfo']['totalResults'] >= 1){
                             foreach($http['items'] AS $data);
