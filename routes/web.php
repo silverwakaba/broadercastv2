@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+// General
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Apps\AppsController;

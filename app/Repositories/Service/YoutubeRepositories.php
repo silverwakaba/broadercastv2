@@ -24,45 +24,38 @@ class YoutubeRepositories{
      * ----------------------------
     **/
 
-    // API Call to Silverspoon-endpoint
+    // API Call to Internal-endpoint
     public static function apiCall($mode, $id, $token = null){
-        $endpoint = [
-            'silverspoon' => 'https://www.silverspoon.me/peepee/youtube/',
-        ];
-
         // Via YouTube Scrapper
         if($mode == 'live'){
-            return Http::acceptJson()->get(Str::of($endpoint['silverspoon'])->append('video'), [
+            return Http::acceptJson()->get(route('api.yt.video.scraper'), [
                 'id' => $id,
             ])->json();
         }
         elseif($mode == 'handler'){
-            return Http::acceptJson()->get(Str::of($endpoint['silverspoon'])->append('channel'), [
+            return Http::acceptJson()->get(route('api.yt.channel.scraper'), [
                 'id' => $id,
             ])->json();
         }
 
-        // Via 3rd Party Scrapper
-        // Not yet
-
         // Via Official API
         elseif($mode == 'video'){
-            return Http::acceptJson()->get(Str::of($endpoint['silverspoon'])->append('fetch-video'), [
+            return Http::acceptJson()->get(route('api.yt.video.fetch'), [
                 'id' => $id,
             ])->json();
         }
         elseif($mode == 'channel'){
-            return Http::acceptJson()->get(Str::of($endpoint['silverspoon'])->append('fetch-channel'), [
+            return Http::acceptJson()->get(route('api.yt.channel.fetch'), [
                 'id' => $id,
             ])->json();
         }
         elseif($mode == 'feed'){
-            return Http::acceptJson()->get(Str::of($endpoint['silverspoon'])->append('fetch-feed'), [
+            return Http::acceptJson()->get(route('api.yt.feed.fetch'), [
                 'id' => $id,
             ])->json();
         }
         elseif($mode == 'playlist'){
-            return Http::acceptJson()->get(Str::of($endpoint['silverspoon'])->append('fetch-playlist'), [
+            return Http::acceptJson()->get(route('api.yt.playlist.fetch'), [
                 'id'    => $id,
                 'token' => $token,
             ])->json();
@@ -127,6 +120,8 @@ class YoutubeRepositories{
             if($checkViaChannel xor $checkViaHandler){
                 if($checkViaChannel == true){
                     $checkChannel = Str::of($channelID)->afterLast('/');
+
+                    return "A";
                 }
                 elseif($checkViaHandler == true){
                     $handler = Str::of($channelID)->afterLast('@');
@@ -134,6 +129,8 @@ class YoutubeRepositories{
                     $http = self::apiCall('handler', '@' . $handler);
 
                     $checkChannel = $http['id'];
+
+                    return "B";
                 }
                 
                 $debug = true;
@@ -144,7 +141,7 @@ class YoutubeRepositories{
 
                 if(($checkChannel !== null) && (Str::of($checkChannel)->length() == 24)){
                     if($countChannel == 0){
-                        $http = self::apiCall('channel', $checkChannel);
+                        return $http = self::apiCall('channel', $checkChannel);
 
                         if($http['pageInfo']['totalResults'] >= 1){
                             foreach($http['items'] AS $data);
@@ -215,7 +212,7 @@ class YoutubeRepositories{
             }
         }
         catch(\Throwable $th){
-            // return $th;
+            return $th;
         }
     }
 
