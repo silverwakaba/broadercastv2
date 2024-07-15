@@ -31,33 +31,33 @@ class YoutubeRepositories{
     public static function apiCall($mode, $id, $token = null){
         // Via Scraper
         if(($mode == 'handler')){
-            return Http::acceptJson()->get('https://silverspoon.me/api/youtube/scrape-channel', [
+            return Http::acceptJson()->get('https://www.silverspoon.me/api/youtube/scrape-channel', [
                 'id' => $id,
             ])->json();
         }
         elseif(($mode == 'live')){
-            return Http::acceptJson()->get('https://silverspoon.me/api/youtube/scrape-video', [
+            return Http::acceptJson()->get('https://www.silverspoon.me/api/youtube/scrape-video', [
                 'id' => $id,
             ])->json();
         }
 
         elseif(($mode == 'channel')){
-            return Http::acceptJson()->get('https://silverspoon.me/api/youtube/fetch-channel', [
+            return Http::acceptJson()->get('https://www.silverspoon.me/api/youtube/fetch-channel', [
                 'id' => $id,
             ])->json();
         }
         elseif(($mode == 'feed')){
-            return Http::acceptJson()->get('https://silverspoon.me/api/youtube/fetch-feed', [
+            return Http::acceptJson()->get('https://www.silverspoon.me/api/youtube/fetch-feed', [
                 'id' => $id,
             ])->json();
         }
         elseif(($mode == 'video')){
-            return Http::acceptJson()->get('https://silverspoon.me/api/youtube/fetch-video', [
+            return Http::acceptJson()->get('https://www.silverspoon.me/api/youtube/fetch-video', [
                 'id' => $id,
             ])->json();
         }
         elseif(($mode == 'playlist')){
-            return Http::acceptJson()->get('https://silverspoon.me/api/youtube/fetch-playlist', [
+            return Http::acceptJson()->get('https://www.silverspoon.me/api/youtube/fetch-playlist', [
                 'id'    => $id,
                 'token' => $token,
             ])->json();
