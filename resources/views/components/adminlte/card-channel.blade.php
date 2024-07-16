@@ -1,5 +1,5 @@
 <div @class(["scrolling-pagination" => isset($channels->links)])>
-    <div class="row row-cols-1 row-cols-xl-{{ $col }}">
+    <div @class(["row row-cols-1", "row-cols-lg-$col" => count($channels->data) >= 1])>
         @if(($channels) && (count($channels->data) >= 1))
             @foreach($channels->data AS $data)
                 <div class="col text-truncate">
@@ -38,7 +38,7 @@
                             <div @class(["row", "row-cols-1" => isset($data->profile->page) xor isset($data->channel->link), "row-cols-xl-2" => isset($data->profile->page) && isset($data->channel->link), "mt-3"])>
                                 @if(isset($data->profile->page))
                                     <div class="col">
-                                        <a href="{{ $data->channel->link }}" class="btn btn-sm btn-outline-light btn-block" target="_blank">PROFILE</a>
+                                        <a href="{{ $data->profile->page }}" class="btn btn-sm btn-outline-light btn-block">PROFILE</a>
                                     </div>
                                 @endif
                                 @if(isset($data->channel->link))
@@ -58,7 +58,7 @@
             @endif
         @else
             <div class="col my-4">
-                <p class="lead text-center m-0">It looks so quiet now...</p>
+                <p class="lead text-center m-0">No channel were found...</p>
             </div>
         @endif
     </div>

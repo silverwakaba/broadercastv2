@@ -39,6 +39,7 @@ Route::group(['prefix' => '/'], function(){
     Route::group(['prefix' => 'creator'], function(){
         // Index
         Route::get('/', [FrontCreatorController::class, 'index'])->name('creator.index');
+        Route::post('/', [FrontCreatorController::class, 'indexSearch'])->name('creator.index');
 
         // Profile
         Route::get('@{id}', [FrontCreatorController::class, 'profile'])->name('creator.profile');

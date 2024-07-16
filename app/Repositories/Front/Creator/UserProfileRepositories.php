@@ -66,8 +66,11 @@ class UserProfileRepositories{
             $channel_name = $request->channelname;
             $profile_name = $request->profilename;
 
+            // Subs Range
             $subs_range = $request->channelsubsrange;
             $channel_subs_range = $request->channelsubsrange ? explode(',', $subs_range) : null;
+            $subs_range_from = $request->channelsubsrangefrom;
+            $subs_range_to = $request->channelsubsrangeto;
 
             // Have their own base
             $content = $request->content;
@@ -90,8 +93,12 @@ class UserProfileRepositories{
                 });
             }
 
-            if($channel_subs_range !== null){
-                $datas->whereBetween('subscriber', [$channel_subs_range]);
+            if(
+                ($subs_range_from !== null)
+                &&
+                ($subs_range_to !== null)
+            ){
+                $datas->whereBetween('subscriber', [$subs_range_from, $subs_range_to]);
             }
 
             // Have their own base

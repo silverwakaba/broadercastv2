@@ -37,6 +37,16 @@ class CreatorController extends Controller{
         ]);
     }
 
+    public function indexSearch(Request $request){
+        return redirect()->route('creator.index', [
+            'channelname' => $request->channelname,
+            'profilename' => $request->profilename,
+
+            'channelsubsrangefrom' => $request->channelsubsrangefrom,
+            'channelsubsrangeto' => $request->channelsubsrangeto,
+        ]);
+    }
+
     // Profile
     public function profile($id){
         // Profile
