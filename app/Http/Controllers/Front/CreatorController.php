@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 
 use App\Helpers\BasedataHelper;
+use App\Http\Requests\Front\DiscoveryRequest;
 use App\Repositories\Base\CookiesRepositories;
 use App\Repositories\Front\Creator\UserProfileRepositories;
 
@@ -32,18 +33,43 @@ class CreatorController extends Controller{
             ],
         ]);
 
+        $content = BasedataHelper::baseContent();
+        $gender = BasedataHelper::baseGender();
+        $language = BasedataHelper::baseLanguage();
+        $persona = BasedataHelper::baseRace();
+        $sortType = BasedataHelper::baseSort();
+
+        $sortBy = [
+            ['id' => 'time', 'name' => 'Latest Activity'],
+            ['id' => 'name', 'name' => 'Channel Name'],
+            ['id' => 'view', 'name' => 'Total View'],
+            ['id' => 'content', 'name' => 'Total Content'],
+            ['id' => 'subscriber', 'name' => 'Total Subscriber'],
+        ];
+
         return view('pages/front/creator/index', [
-            'datas' => $datas,
+            'datas'     => $datas,
+            'content'   => $content,
+            'gender'    => $gender,
+            'language'  => $language,
+            'persona'   => $persona,
+            'sortType'  => $sortType,
+            'sortBy'    => json_decode(json_encode($sortBy)),
         ]);
     }
 
-    public function indexSearch(Request $request){
+    public function indexSearch(DiscoveryRequest $request){
         return redirect()->route('creator.index', [
-            'channelname' => $request->channelname,
-            'profilename' => $request->profilename,
-
-            'channelsubsrangefrom' => $request->channelsubsrangefrom,
-            'channelsubsrangeto' => $request->channelsubsrangeto,
+            'channelname'           => $request->channelname,
+            'profilename'           => $request->profilename,
+            'channelsubsrangefrom'  => $request->channelsubsrangefrom,
+            'channelsubsrangeto'    => $request->channelsubsrangeto,
+            'content'               => $request->content,
+            'gender'                => $request->gender,
+            'language'              => $request->language,
+            'persona'               => $request->persona,
+            'sorttype'              => $request->sorttype,
+            'sortby'                => $request->sortby,
         ]);
     }
 

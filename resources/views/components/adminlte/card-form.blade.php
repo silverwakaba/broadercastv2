@@ -5,7 +5,7 @@
                 <ul class="nav nav-tabs" role="tablist">
                     @if($title)
                         <li class="nav-item">
-                            <h3 class="nav-link pt-2 h5">{{ $title }}</h3>
+                            <h3 class="nav-link card-title h3 pt-2">{{ $title }}</h3>
                         </li>
                     @endif
                 </ul>

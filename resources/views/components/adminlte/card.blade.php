@@ -1,4 +1,3 @@
-@props(['id'])
 <div @class(["card", "card-outline card-$outline" => $outline, "card-outline-tabs" => $add])>
     @if($title || $add || $tab)
         <div @class(["card-header p-0", "d-flex" => $tab])>
