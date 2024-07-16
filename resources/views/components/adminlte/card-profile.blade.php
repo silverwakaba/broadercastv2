@@ -132,7 +132,7 @@
                     <strong class="text-center"><p>Channel</p></strong>
                     <x-Adminlte.CardChannel :channels="$channels" />
                 @else
-                    <strong><p>Channel</p></strong>
+                    <strong>Channel</strong>
                     <p class="m-0">No channel</p>
                 @endif
             </li>

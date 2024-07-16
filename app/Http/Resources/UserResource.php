@@ -31,7 +31,6 @@ class UserResource extends JsonResource{
             'page'          => route('creator.profile', $this->identifier),
             'name'          => $name,
             'name_preview'  => Str::limit($name, 15, ' (...)'),
-            // 'email'         => $this->email,
             'deleted_at'    => $this->deleted_at,
             'created_at'    => $this->created_at,
             'updated_at'    => $this->updated_at,

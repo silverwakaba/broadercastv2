@@ -27,7 +27,8 @@ class Navigation extends Component{
         $uid = auth()->user() ? auth()->user()->id : '0';
 
         $datas = User::with([
-            'hasOneUserAvatar', 'hasOneUserBiodata'
+            'hasOneUserAvatar',
+            // 'hasOneUserBiodata'
         ])->where([
             ['id', '=', $uid],
         ])->first();

@@ -14,17 +14,17 @@ use Illuminate\Support\Facades\Cookie;
 class CreatorController extends Controller{
     // Index
     public function index(Request $request){
-        $tracker = UserProfileRepositories::getLinkTracker([
+        $datas = UserProfileRepositories::getLinkTracker([
             'with'  => [
                 'belongsToUser',
                 'belongsToBaseLink',
                 'belongsToUserLink',
             ],
             'option'    => [
-                'take'          => 6,
+                'take'          => 2,
                 'orderType'     => 'discovery',
                 'pagination'    => [
-                    'type'  => 'normal',
+                    'type' => 'normal',
                 ],
             ],
             'filter'    => [
@@ -32,7 +32,9 @@ class CreatorController extends Controller{
             ],
         ]);
 
-        return $tracker;
+        return view('pages/front/creator/index', [
+            'datas' => $datas,
+        ]);
     }
 
     // Profile

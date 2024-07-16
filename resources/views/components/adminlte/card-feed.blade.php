@@ -1,4 +1,4 @@
-<div @class(["scrolling-pagination" => isset($feeds->links) ])>
+<div @class(["scrolling-pagination" => isset($feeds->links)])>
     <div @class(["row row-cols-1", "row-cols-lg-$col" => count($feeds->data) >= 1])>
         @if(($feeds) && (count($feeds->data) >= 1))
             @foreach($feeds->data AS $data)

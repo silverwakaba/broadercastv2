@@ -19,11 +19,13 @@ class UserLinkTrackerResource extends JsonResource{
             ['id', '=', $this->base_link_id]
         ])->select('name')->first();
 
+        $null = config('app.cdn_public_url') . "/system/image/misc/placeholder/banner.jpg";
+
         if($data->name == 'YouTube'){
             $banner = $this->banner ? Str::of($this->banner)->append('=w1080-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj') : $null;
         }
         else{
-            $banner = null;
+            $banner = $null;
         }
 
         return [
@@ -34,8 +36,8 @@ class UserLinkTrackerResource extends JsonResource{
             'avatar'        => $this->avatar,
             'banner'        => $banner,
             'view'          => $this->view,
+            'content'       => $this->content,
             'subscriber'    => $this->subscriber,
-            'concurrent'    => $this->concurrent,
             'profile'       => new UserResource($this->whenLoaded('belongsToUser')),
             'link'          => new UserLinkResource($this->whenLoaded('belongsToBaseLink')),
             'channel'       => new UserChannelResource($this->whenLoaded('belongsToUserLink')),
