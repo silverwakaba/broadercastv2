@@ -54,7 +54,7 @@
                 @if($profile->gender)
                     <ul class="list-inline m-0">
                         @foreach($profile->gender AS $gender)
-                            <li class="list-inline-item">{{ $gender->name }}</li>
+                            <li class="list-inline-item"><u><a href="{{ route('creator.index', ['gender[]' => $gender->id]) }}" class="text-light">{{ $gender->name }}</a></u></li>
                         @endforeach
                     </ul>
                 @else
@@ -74,7 +74,7 @@
                 @if($profile->content)
                     <ul class="list-inline m-0">
                         @foreach($profile->content AS $content)
-                            <li class="list-inline-item">{{ $content->name }}</li>
+                            <li class="list-inline-item"><u><a href="{{ route('creator.index', ['content[]' => $content->id]) }}" class="text-light">{{ $content->name }}</a></u></li>
                         @endforeach
                     </ul>
                 @else
@@ -86,7 +86,7 @@
                 @if($profile->language)
                     <ul class="list-inline m-0">
                         @foreach($profile->language AS $language)
-                            <li class="list-inline-item">{{ $language->name }}</li>
+                            <li class="list-inline-item"><u><a href="{{ route('creator.index', ['language[]' => $language->id]) }}" class="text-light">{{ $language->name }}</a></u></li>
                         @endforeach
                     </ul>
                 @else
@@ -98,7 +98,7 @@
                 @if($profile->race)
                     <ul class="list-inline m-0">
                         @foreach($profile->race AS $race)
-                            <li class="list-inline-item">{{ $race->name }}</li>
+                            <li class="list-inline-item"><u><a href="{{ route('creator.index', ['persona[]' => $race->id]) }}" class="text-light">{{ $race->name }}</a></u></li>
                         @endforeach
                     </ul>
                 @else
