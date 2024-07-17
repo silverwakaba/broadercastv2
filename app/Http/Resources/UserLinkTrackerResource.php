@@ -19,7 +19,7 @@ class UserLinkTrackerResource extends JsonResource{
             ['id', '=', $this->base_link_id]
         ])->select('name')->first();
 
-        $null = config('app.cdn_public_url') . "/system/image/misc/placeholder/banner.jpg";
+        $null = config('app.cdn_static_url') . "/system/internal/image/misc/placeholder/banner.jpg";
 
         if($data->name == 'YouTube'){
             $banner = $this->banner ? Str::of($this->banner)->append('=w1080-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj') : $null;
