@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Http\Controllers\Apps\Base;
-
 use App\Http\Controllers\Controller;
+
 use App\Http\Requests\Apps\Base\ContentRequest;
 use App\Repositories\Base\BaseRepositories;
+
 use Illuminate\Http\Request;
 
 class ContentController extends Controller{

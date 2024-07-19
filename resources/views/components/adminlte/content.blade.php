@@ -3,7 +3,7 @@
         <div class="container-fluid">
             <h1 class="m-0">
                 @if($previous)
-                    <a href="{{ route($previous) }}" class="btn btn-light">
+                    <a href="{{ $previous }}" class="btn btn-light">
                         <i class="fas fa-step-backward"></i>
                     </a>
                 @endif

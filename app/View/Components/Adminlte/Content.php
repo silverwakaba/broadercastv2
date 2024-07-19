@@ -9,7 +9,7 @@ use Illuminate\View\Component;
 
 class Content extends Component{
     public $title;
-    public string $previous;
+    public $previous;
 
     /**
      * Create a new component instance.

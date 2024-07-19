@@ -13,7 +13,7 @@ class BaseStatusSeeder extends Seeder{
      */
     public function run() : void{
         BaseStatus::insert([
-            // Channel status
+            // Profile status
             ['name' => "Active"],
             ['name' => "Inactive"],
             ['name' => "Hiatus"],
@@ -26,6 +26,9 @@ class BaseStatusSeeder extends Seeder{
             ['name' => "Live"], // 8
             ['name' => "Archived"], // 9
             ['name' => "Direct Upload"], // 10
+
+            // Other status
+            ['name' => "System Generated User"], // 11
         ]);
     }
 }

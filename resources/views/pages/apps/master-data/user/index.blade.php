@@ -3,12 +3,12 @@
 @section('content')
     <x-adminlte.content previous="apps.master.index">
         <x-adminlte.card add="apps.master.user.add">
-            <x-adminlte.table ids="userTable">
+            <x-adminlte.table ids="userTables">
                 <thead>
                     <tr>
                         <th width="5%">No.</th>
-                        <th width="45%">Name</th>
-                        <th width="40%">Email</th>
+                        <th width="25%">Status</th>
+                        <th width="60%">Name</th>
                         <th width="10%" class="text-center">Action</th>
                     </tr>
                 </thead>
@@ -17,17 +17,7 @@
     </x-adminlte.content>
 
     <script type="module">
-        var channel = Echo.channel('usersChannel');
-        
-        channel.listen('.usersCreated', function(data){
-            $('#userTable').DataTable().ajax.reload();
-        });
-
-        channel.listen('.UserModified', function(data){
-            $('#userTable').DataTable().ajax.reload();
-        });
-
-        $("#userTable").DataTable({
+        $("#userTables").DataTable({
             "ordering": false,
             "processing": true,
             "serverSide": true,
@@ -40,10 +30,15 @@
                     },
                 },
                 {
-                    data: "datas.name",
+                    data: "datas.title_temp",
                 },
                 {
-                    data: "datas.email",
+                    data: "datas.name",
+                    render: function(data, type, row){
+                        return `
+                            <a href="${ row['datas']['page'] }" target="_blank">${ row['datas']['name'] }</a>
+                        `;
+                    },
                 },
                 {
                     data: "action",

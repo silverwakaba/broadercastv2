@@ -13,8 +13,9 @@ class BaseRequestSeeder extends Seeder{
      */
     public function run() : void{
         BaseRequest::insert([
-            ['name' => 'Registration'],
-            ['name' => 'Password Recovery'],
+            ['name' => "Registration"],
+            ['name' => "Account Recovery"],
+            ['name' => "Claim SGU Account"],
         ]);
     }
 }

@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Schedule;
 
-// Schedule::call('App\Repositories\Service\YoutubeCron@init')->everyMinute();
+// everyMinute();
 
 /**
  * YouTube Block

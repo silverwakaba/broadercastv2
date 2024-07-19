@@ -51,6 +51,7 @@ class UserController extends Controller{
 
     public function biodataPost(UserBiodataRequest $request){
         return UserBiodataRepositories::update([
+            'id'        => auth()->user()->id,
             'name'      => $request->name,
             'nickname'  => $request->nickname,
             'dob'       => $request->dob,
@@ -73,7 +74,10 @@ class UserController extends Controller{
     }
 
     public function contentPost(Request $request){
-        return UserContentRepositories::sync($request->content);
+        return UserContentRepositories::sync([
+            'id'    => auth()->user()->id,
+            'data'  => $request->content,
+        ]);
     }
 
     // Gender
@@ -90,7 +94,10 @@ class UserController extends Controller{
     }
 
     public function genderPost(Request $request){
-        return UserGenderRepositories::sync($request->gender);
+        return UserGenderRepositories::sync([
+            'id'    => auth()->user()->id,
+            'data'  => $request->gender,
+        ]);
     }
 
     // Language
@@ -107,7 +114,10 @@ class UserController extends Controller{
     }
 
     public function languagePost(Request $request){
-        return UserLanguageRepositories::sync($request->language);
+        return UserLanguageRepositories::sync([
+            'id'    => auth()->user()->id,
+            'data'  => $request->language,
+        ]);
     }
 
     // Link
@@ -239,6 +249,9 @@ class UserController extends Controller{
     }
 
     public function racePost(Request $request){
-        return UserRaceRepositories::sync($request->race);
+        return UserRaceRepositories::sync([
+            'id'    => auth()->user()->id,
+            'data'  => $request->race,
+        ]);
     }
 }

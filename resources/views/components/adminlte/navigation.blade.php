@@ -101,11 +101,11 @@
     @endif
 </nav>
 @if(request()->routeIs('apps.*'))
-    <aside class="main-sidebar main-sidebar-custom sidebar-dark-primary elevation-4">
-        <div class="brand-link">
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <a href="{{ route('index') }}" class="brand-link">
             <img src="{{ config('app.cdn_static_url') . '/system/internal/image/logo/vtual/logo-50px.png' }}" class="brand-image img-circle elevation-3" />
             <span class="brand-text">{{ config('app.name', 'vTual') }}</span>
-        </div>
+        </a>
         <div class="sidebar">
             @can('canLogin')
                 <div class="user-panel pb-3 mt-3 mb-3 d-flex">
@@ -119,15 +119,6 @@
             @endcan
             <nav class="my-2">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                    <li class="nav-header">Navigation</li>
-                    <x-Adminlte.NavTree route="index">
-                        <x-Adminlte.NavLink icon="1" parent="1" fa="fas fa-home" value="Main Menu" />
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <x-Adminlte.NavLink icon="1" route="index" value="Home" />
-                            </li>
-                        </ul>
-                    </x-Adminlte.NavTree>
                     @can('canLogin')
                         <li class="nav-header">Apps</li>
                         <x-Adminlte.NavTree route="apps.front.*">

@@ -250,6 +250,57 @@ Route::group(['prefix' => '/'], function(){
                 Route::get('add', [MasterUserController::class, 'add'])->name('apps.master.user.add');
                 Route::post('add', [MasterUserController::class, 'addPost']);
 
+                // Manage User
+                Route::group(['prefix' => '{id}'], function(){
+                    // Index
+                    Route::get('/', [MasterUserController::class, 'manage'])->name('apps.master.user.manage.index');
+
+                    // Biodata
+                    Route::get('biodata', [MasterUserController::class, 'biodata'])->name('apps.master.user.manage.biodata');
+                    Route::post('biodata', [MasterUserController::class, 'biodataPost']);
+
+                    // Content
+                    Route::get('content', [MasterUserController::class, 'content'])->name('apps.master.user.manage.content');
+                    Route::post('content', [MasterUserController::class, 'contentPost']);
+
+                    // Gender
+                    Route::get('gender', [MasterUserController::class, 'gender'])->name('apps.master.user.manage.gender');
+                    Route::post('gender', [MasterUserController::class, 'genderPost']);
+
+                    // Gender
+                    Route::get('language', [MasterUserController::class, 'language'])->name('apps.master.user.manage.language');
+                    Route::post('language', [MasterUserController::class, 'languagePost']);
+
+                    // Link
+                    Route::group(['prefix' => 'link'], function(){
+                        // Index
+                        Route::get('/', [MasterUserController::class, 'link'])->name('apps.master.user.manage.link');
+                        
+                        // Add
+                        Route::get('add', [MasterUserController::class, 'linkAdd'])->name('apps.manager.link.add');
+                        Route::post('add', [MasterUserController::class, 'linkAddPost']);
+
+                        // Edit
+                        Route::get('edit/{id}', [MasterUserController::class, 'linkEdit'])->name('apps.manager.link.edit');
+                        Route::post('edit/{id}', [MasterUserController::class, 'linkEditPost']);
+
+                        // Verify
+                        Route::get('verify/{id}', [MasterUserController::class, 'linkVerify'])->name('apps.manager.link.verify');
+                        Route::post('verify/{id}', [MasterUserController::class, 'linkVerifyPost']);
+
+                        // Delete
+                        Route::get('delete/{id}', [MasterUserController::class, 'linkDelete'])->name('apps.manager.link.delete');
+
+                        // Delete with Confirmation
+                        Route::get('delete/{id}/confirm', [MasterUserController::class, 'linkDeleteConfirm'])->name('apps.manager.link.delete.confirm');
+                        Route::post('delete/{id}/confirm', [MasterUserController::class, 'linkDeleteConfirmPost']);
+                    });
+
+                    // Persona
+                    Route::get('persona', [MasterUserController::class, 'race'])->name('apps.master.user.manage.persona');
+                    Route::post('persona', [MasterUserController::class, 'racePost']);
+                });
+
                 // Edit
                 Route::get('edit/{id}', [MasterUserController::class, 'edit'])->name('apps.master.user.edit');
                 Route::post('edit/{id}', [MasterUserController::class, 'editPost']);
