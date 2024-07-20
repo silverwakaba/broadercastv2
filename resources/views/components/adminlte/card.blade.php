@@ -9,7 +9,7 @@
                 @endif
                 @if($add)
                     <li class="nav-item">
-                        <a href="{{ route($add) }}" class="nav-link text-dark"><i class="fas fa-plus-square"></i> Add New</a>
+                        <a href="{{ $add }}" class="nav-link text-dark"><i class="fas fa-plus-square"></i> Add New</a>
                     </li>
                 @endif
             </ul>

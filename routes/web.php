@@ -126,19 +126,19 @@ Route::group(['prefix' => '/'], function(){
                 Route::post('add', [ManagerUserController::class, 'linkAddPost']);
 
                 // Edit
-                Route::get('edit/{id}', [ManagerUserController::class, 'linkEdit'])->name('apps.manager.link.edit');
-                Route::post('edit/{id}', [ManagerUserController::class, 'linkEditPost']);
+                Route::get('edit/{did}', [ManagerUserController::class, 'linkEdit'])->name('apps.manager.link.edit');
+                Route::post('edit/{did}', [ManagerUserController::class, 'linkEditPost']);
 
                 // Verify
-                Route::get('verify/{id}', [ManagerUserController::class, 'linkVerify'])->name('apps.manager.link.verify');
-                Route::post('verify/{id}', [ManagerUserController::class, 'linkVerifyPost']);
+                Route::get('verify/{did}', [ManagerUserController::class, 'linkVerify'])->name('apps.manager.link.verify');
+                Route::post('verify/{did}', [ManagerUserController::class, 'linkVerifyPost']);
 
                 // Delete
-                Route::get('delete/{id}', [ManagerUserController::class, 'linkDelete'])->name('apps.manager.link.delete');
+                Route::get('delete/{did}', [ManagerUserController::class, 'linkDelete'])->name('apps.manager.link.delete');
 
                 // Delete with Confirmation
-                Route::get('delete/{id}/confirm', [ManagerUserController::class, 'linkDeleteConfirm'])->name('apps.manager.link.delete.confirm');
-                Route::post('delete/{id}/confirm', [ManagerUserController::class, 'linkDeleteConfirmPost']);
+                Route::get('delete/{did}/confirm', [ManagerUserController::class, 'linkDeleteConfirm'])->name('apps.manager.link.delete.confirm');
+                Route::post('delete/{did}/confirm', [ManagerUserController::class, 'linkDeleteConfirmPost']);
             });
 
             // Persona
@@ -147,7 +147,7 @@ Route::group(['prefix' => '/'], function(){
         });
 
         // Master Data
-        Route::group(['prefix' => 'master-data', 'middleware' => ['role:Admin|Moderator']], function(){
+        Route::group(['prefix' => 'master-data', 'middleware' => ['role:Admin']], function(){
             // Master data index
             Route::get('/', [AppsController::class, 'master'])->name('apps.master.index');
 
@@ -251,7 +251,7 @@ Route::group(['prefix' => '/'], function(){
                 Route::post('add', [MasterUserController::class, 'addPost']);
 
                 // Manage User
-                Route::group(['prefix' => '{id}'], function(){
+                Route::group(['prefix' => '{uid}'], function(){
                     // Index
                     Route::get('/', [MasterUserController::class, 'manage'])->name('apps.master.user.manage.index');
 
@@ -277,23 +277,23 @@ Route::group(['prefix' => '/'], function(){
                         Route::get('/', [MasterUserController::class, 'link'])->name('apps.master.user.manage.link');
                         
                         // Add
-                        Route::get('add', [MasterUserController::class, 'linkAdd'])->name('apps.manager.link.add');
+                        Route::get('add', [MasterUserController::class, 'linkAdd'])->name('apps.master.user.manage.link.add');
                         Route::post('add', [MasterUserController::class, 'linkAddPost']);
 
                         // Edit
-                        Route::get('edit/{id}', [MasterUserController::class, 'linkEdit'])->name('apps.manager.link.edit');
-                        Route::post('edit/{id}', [MasterUserController::class, 'linkEditPost']);
+                        Route::get('edit/{did}', [MasterUserController::class, 'linkEdit'])->name('apps.master.user.manage.link.edit');
+                        Route::post('edit/{did}', [MasterUserController::class, 'linkEditPost']);
 
                         // Verify
-                        Route::get('verify/{id}', [MasterUserController::class, 'linkVerify'])->name('apps.manager.link.verify');
-                        Route::post('verify/{id}', [MasterUserController::class, 'linkVerifyPost']);
+                        Route::get('verify/{did}', [MasterUserController::class, 'linkVerify'])->name('apps.master.user.manage.link.verify');
+                        Route::post('verify/{did}', [MasterUserController::class, 'linkVerifyPost']);
 
                         // Delete
-                        Route::get('delete/{id}', [MasterUserController::class, 'linkDelete'])->name('apps.manager.link.delete');
+                        Route::get('delete/{did}', [MasterUserController::class, 'linkDelete'])->name('apps.master.user.manage.link.delete');
 
                         // Delete with Confirmation
-                        Route::get('delete/{id}/confirm', [MasterUserController::class, 'linkDeleteConfirm'])->name('apps.manager.link.delete.confirm');
-                        Route::post('delete/{id}/confirm', [MasterUserController::class, 'linkDeleteConfirmPost']);
+                        Route::get('delete/{did}/confirm', [MasterUserController::class, 'linkDeleteConfirm'])->name('apps.master.user.manage.link.delete.confirm');
+                        Route::post('delete/{did}/confirm', [MasterUserController::class, 'linkDeleteConfirmPost']);
                     });
 
                     // Persona

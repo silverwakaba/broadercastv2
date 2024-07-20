@@ -163,8 +163,7 @@ class YoutubeRepositories{
                             ];
 
                             if(
-                                ($debug == true)
-                                // (auth()->user()->hasRole('Admin|Moderator'))
+                                (auth()->user()->hasRole('Admin|Moderator'))
                             ){
                                 $userLink->update([
                                     'base_decision_id' => 2,

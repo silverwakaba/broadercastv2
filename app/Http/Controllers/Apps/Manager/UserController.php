@@ -28,9 +28,17 @@ use App\Repositories\Service\YoutubeRepositories;
 use Illuminate\Http\Request;
 
 class UserController extends Controller{
+    // Constructor
+    public function __construct(){
+        $this->back = route('apps.manager.index');
+        $this->backLink = route('apps.manager.link');
+    }
+
     // Avatar
     public function avatar(){
-        return view('pages/apps/setting/user/avatar');
+        return view('pages/apps/setting/user/avatar', [
+            'backURI' => $this->back,
+        ]);
     }
 
     public function avatarPost(UserAvatarRequest $request){
@@ -45,7 +53,8 @@ class UserController extends Controller{
         ], false);
 
         return view('pages/apps/setting/user/biodata', [
-            'datas' => $datas,
+            'backURI'   => $this->back,
+            'datas'     => $datas,
         ]);
     }
 
@@ -68,8 +77,9 @@ class UserController extends Controller{
         ]);
 
         return view('pages/apps/setting/user/content', [
-            'datas' => BasedataHelper::baseContent(),
-            'value' => collect($datas->content)->pluck('id')->toArray(),
+            'backURI'   => $this->back,
+            'datas'     => BasedataHelper::baseContent(),
+            'value'     => collect($datas->content)->pluck('id')->toArray(),
         ]);
     }
 
@@ -88,8 +98,9 @@ class UserController extends Controller{
         ]);
 
         return view('pages/apps/setting/user/gender', [
-            'datas' => BasedataHelper::baseGender(),
-            'value' => collect($datas->gender)->pluck('id')->toArray(),
+            'backURI'   => $this->back,
+            'datas'     => BasedataHelper::baseGender(),
+            'value'     => collect($datas->gender)->pluck('id')->toArray(),
         ]);
     }
 
@@ -108,8 +119,9 @@ class UserController extends Controller{
         ]);
 
         return view('pages/apps/setting/user/language', [
-            'datas' => BasedataHelper::baseLanguage(),
-            'value' => collect($datas->language)->pluck('id')->toArray(),
+            'backURI'   => $this->back,
+            'datas'     => BasedataHelper::baseLanguage(),
+            'value'     => collect($datas->language)->pluck('id')->toArray(),
         ]);
     }
 
@@ -129,12 +141,16 @@ class UserController extends Controller{
             ]);
         }
 
-        return view('pages/apps/setting/user/link/index');
+        return view('pages/apps/setting/user/link/index', [
+            'addURI'    => route('apps.manager.link.add'),
+            'backURI'   => $this->back,
+        ]);
     }
 
     // Link Add
     public function linkAdd(){
         return view('pages/apps/setting/user/link/add', [
+            'backURI'  => $this->backLink,
             'services' => BasedataHelper::baseLink(),
         ]);
     }
@@ -156,6 +172,7 @@ class UserController extends Controller{
         ], 'edit');
 
         return view('pages/apps/setting/user/link/edit', [
+            'backURI'   => $this->backLink,
             'services'  => BasedataHelper::baseLink(),
             'datas'     => $datas,
             'protected' => in_array($datas->base_link_id, BaseHelper::getCheckedBaseLink()),
@@ -188,7 +205,8 @@ class UserController extends Controller{
         }
 
         return view('pages/apps/setting/user/link/verify', [
-            'secret'    => 'bc#' . BaseHelper::adler32(auth()->user()->id . date('d m Y') . $datas->belongsToBaseLink->name),
+            'backURI'   => $this->backLink,
+            'secret'    => 'vtl#' . BaseHelper::adler32(auth()->user()->id . date('d m Y') . $datas->belongsToBaseLink->name),
             'structure' => $structure,
             'datas'     => $datas,
         ]);
@@ -223,7 +241,8 @@ class UserController extends Controller{
         ]);
 
         return view('pages/apps/setting/user/link/delete', [
-            'datas' => $datas,
+            'backURI'   => $this->backLink,
+            'datas'     => $datas,
         ]);
     }
 
@@ -243,8 +262,9 @@ class UserController extends Controller{
         ]);
 
         return view('pages/apps/setting/user/race', [
-            'datas' => BasedataHelper::baseRace(),
-            'value' => collect($datas->race)->pluck('id')->toArray(),
+            'backURI'   => $this->back,
+            'datas'     => BasedataHelper::baseRace(),
+            'value'     => collect($datas->race)->pluck('id')->toArray(),
         ]);
     }
 

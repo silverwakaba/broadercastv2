@@ -1,8 +1,8 @@
 @extends('layout.app')
 @section('title', 'My External Link')
 @section('content')
-    <x-Adminlte.Content previous="apps.manager.index">
-        <x-Adminlte.Card add="apps.manager.link.add">
+    <x-Adminlte.Content :previous="$backURI">
+        <x-Adminlte.Card :add="$addURI">
             <x-Adminlte.Table ids="extLinkTables">
                 <thead>
                     <tr>

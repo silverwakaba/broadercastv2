@@ -66,7 +66,8 @@ class UserLinkRepositories{
             return [
                 'datas'  => UserLinkResource::make($datas)->resolve(),
                 'action' => view('datatable.action-user-link', [
-                    'id'        => BaseHelper::encrypt($datas->id),
+                    'did'        => BaseHelper::encrypt($datas->id),
+                    'uid'        => isset($data['uid']) ? BaseHelper::encrypt($datas->users_id) : null,
                     'decision'  => $datas->base_decision_id,
                     'protected' => in_array($datas->base_link_id, BaseHelper::getCheckedBaseLink()),
                     'route'     => $data['route'],
@@ -75,7 +76,7 @@ class UserLinkRepositories{
         })->toJson();
     }
     
-    public static function upsert(array $data, $back, $id = null){
+    public static function upsert(array $data, $back = null, $id = null){
         $checking = BaseLink::select('checking')->where([
             ['id', '=', $data['base_link_id']]
         ])->first();
@@ -100,7 +101,7 @@ class UserLinkRepositories{
         return RedirectHelper::routeBack($back, 'success', 'External Link', $state);
     }
 
-    public static function delete(array $data, $back){
+    public static function delete(array $data, $back = null){
         $datas = UserLink::where([
             ['id', '=', BaseHelper::decrypt($data['did'])],
             ['users_id', '=', $data['uid']],
@@ -111,7 +112,7 @@ class UserLinkRepositories{
         return RedirectHelper::routeBack($back, 'success', 'External Link', 'delete');
     }
 
-    public static function deleteChannel(array $data, $back){
+    public static function deleteChannel(array $data, $back = null){
         $datas = UserLink::where([
             ['id', '=', BaseHelper::decrypt($data['did'])],
             ['users_id', '=', $data['uid']],

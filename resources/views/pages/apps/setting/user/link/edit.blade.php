@@ -1,7 +1,7 @@
 @extends('layout.app')
 @section('title', 'Change Your External Link')
 @section('content')
-    <x-Adminlte.Content previous="apps.manager.link">
+    <x-Adminlte.Content :previous="$backURI">
         <x-Adminlte.CardForm button="Change">
             @if($protected)
                 <x-Form.Input name="readonly" type="text" text="Link" :value="$datas->belongsToBaseLink->name" readonly />

@@ -1,7 +1,7 @@
 @extends('layout.app')
 @section('title', 'Verify ' . $datas->belongsToBaseLink->name . ' Link')
 @section('content')
-    <x-Adminlte.Content previous="apps.manager.link">
+    <x-Adminlte.Content :previous="$backURI">
         <x-Adminlte.Card title="Guideline">
             <div class="lead">
                 <p>Please read the guidelines and requirements regarding the process of verifying the {{ $datas->belongsToBaseLink->name }} link that you have added, so that it can be included in our future crawler distribution:</p>
@@ -18,9 +18,9 @@
                                 <li><span class="badge badge-secondary">{{ $link }}</span></li>
                             @endforeach
                         </ul>
-                        <span>Please only use one of the above formats.</span>
+                        <span>Please only use and submit one of the above formats.</span>
                     </li>
-                    <li>If the link structure doesn't match as in the example, you can still <u><a href="{{ route('apps.manager.link.edit', ['id' => request()->id]) }}">make a changes</a></u> before submitting.</li>
+                    <li>If the link structure doesn't match as in the example, you can still <u><a href="{{ route('apps.manager.link.edit', ['did' => request()->did]) }}">make a changes</a></u> before submitting.</li>
                     <li>To avoid the possibility of abuse, the <u>submission process can only be done twice every hour</u>. Please use this feature wisely.</li>
                     <li>If the verification attempt reaches the limit, <u>you have to wait until the number of attempts is reset</u> in the next period (every 1 hours, since the last time you tried to verify). <sup><a href="#">[?]</a></sup></li>
                     <li>
@@ -28,7 +28,7 @@
                         <blockquote class="blockquote m-0">
                             <span>{{ $secret }}</span>
                         </blockquote>
-                        <span>Please <u>keep this unique detail a secret</u> to avoid impersonation in the verification process.</span>
+                        <span>If you feel you cannot complete the verification immediately, please <u>check the code above regularly</u> as the code changes every day.</span>
                     </li>
                 </ol>
                 <p>If you have further questions, please let us know. We thank you for your attention and cooperation.</p>

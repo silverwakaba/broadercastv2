@@ -1,7 +1,7 @@
 @extends('layout.app')
 @section('title', 'Delete ' . $datas->belongsToBaseLink->name . ' Tracker')
 @section('content')
-    <x-Adminlte.Content previous="apps.manager.link">
+    <x-Adminlte.Content :previous="$backURI">
         <x-Adminlte.Card title="Guideline">
             <div class="lead">
                 <p>Please read the guidelines and requirements regarding the process of deleting the {{ $datas->belongsToBaseLink->name }} tracker that you have added, so that it can be removed in our future crawler distribution:</p>

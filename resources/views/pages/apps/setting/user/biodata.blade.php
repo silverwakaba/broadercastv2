@@ -1,7 +1,7 @@
 @extends('layout.app')
 @section('title', 'Change Biodata')
 @section('content')
-    <x-Adminlte.Content previous="apps.manager.index">
+    <x-Adminlte.Content :previous="$backURI">
         <x-Adminlte.Callout class="info">
             <h5>Notes before submitting!</h5>
             <ol class="m-0">
