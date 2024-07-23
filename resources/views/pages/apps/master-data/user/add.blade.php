@@ -1,9 +1,9 @@
 @extends('layout.app')
 @section('title', 'Add New User')
 @section('content')
-    <x-adminlte.content previous="apps.master.user.index">
-        <x-adminlte.cardform button="Add">
-            <x-form.input name="name" type="text" text="Name" />
-        </x-adminlte.cardform>
-    </x-adminlte.content>
+    <x-Adminlte.Content previous="apps.master.user.index">
+        <x-Adminlte.Cardform button="Add">
+            <x-Form.Input name="name" type="text" text="Name" />
+        </x-Adminlte.Cardform>
+    </x-Adminlte.Content>
 @endsection

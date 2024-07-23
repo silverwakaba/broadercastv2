@@ -1,9 +1,9 @@
 @extends('layout.app')
 @section('title', 'User Account')
 @section('content')
-    <x-adminlte.content :previous="route('apps.master.index')">
-        <x-adminlte.card :add="route('apps.master.user.add')">
-            <x-adminlte.table ids="userTables">
+    <x-Adminlte.Content :previous="route('apps.master.index')">
+        <x-Adminlte.Card :add="route('apps.master.user.add')">
+            <x-Adminlte.Table ids="userTables">
                 <thead>
                     <tr>
                         <th width="5%">No.</th>
@@ -12,9 +12,9 @@
                         <th width="10%" class="text-center">Action</th>
                     </tr>
                 </thead>
-            </x-adminlte.table>
-        </x-adminlte.card>
-    </x-adminlte.content>
+            </x-Adminlte.Table>
+        </x-Adminlte.Card>
+    </x-Adminlte.Content>
 
     <script type="module">
         $("#userTables").DataTable({
