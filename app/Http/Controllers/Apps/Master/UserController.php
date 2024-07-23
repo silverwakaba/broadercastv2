@@ -287,6 +287,7 @@ class UserController extends Controller{
         ]);
     }
 
+    // Link Delete - For Checked Base Link (Like YouTube, Twitch, etc)
     public function linkDeleteConfirm($uid, $did){
         $uid = BaseHelper::decrypt($uid);
 

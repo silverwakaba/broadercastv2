@@ -13,8 +13,10 @@ class BaseSortSeeder extends Seeder{
      */
     public function run() : void{
         BaseSort::insert([
-            ['name' => "ASC", 'description' => "Smallest/newest to largest/oldest (eg. 1 to 10)"],
-            ['name' => "DESC", 'description' => "Largest/oldest to smallest/newest (eg. 10 to 1)"],
+            ['name' => "ASC", 'description' => "1 to 10"],
+            ['name' => "DESC", 'description' => "10 to 1"],
+            // ['name' => "ASC", 'description' => "Smallest/newest to largest/oldest (eg. 1 to 10)"],
+            // ['name' => "DESC", 'description' => "Largest/oldest to smallest/newest (eg. 10 to 1)"],
         ]);
     }
 }
