@@ -1,8 +1,8 @@
 @extends('layout.app')
 @section('title', 'User Account')
 @section('content')
-    <x-adminlte.content previous="apps.master.index">
-        <x-adminlte.card add="apps.master.user.add">
+    <x-adminlte.content :previous="route('apps.master.index')">
+        <x-adminlte.card :add="route('apps.master.user.add')">
             <x-adminlte.table ids="userTables">
                 <thead>
                     <tr>
