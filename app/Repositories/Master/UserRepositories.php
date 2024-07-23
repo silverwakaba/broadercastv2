@@ -39,7 +39,7 @@ class UserRepositories{
 
         $user = User::create($create);
 
-        return redirect()->route('apps.master.user.manage.index', ['id' => BaseHelper::encrypt($user->id)]);
+        return redirect()->route('apps.master.user.manage.index', ['uid' => BaseHelper::encrypt($user->id)]);
     }
 
     public static function find(array $data){
