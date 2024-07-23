@@ -33,9 +33,11 @@ class UserController extends Controller{
     public function __construct(){
         $this->title = 'Master User';
         $this->back = 'apps.master.user.index';
-        
-        $this->backLink = route('apps.master.user.manage.link', ['uid' => request()->uid]);
-        $this->backManage = route('apps.master.user.manage.index', ['uid' => request()->uid]);
+
+        if(request()->routeIs('apps.master.user.manage.*')){
+            $this->backLink = route('apps.master.user.manage.link', ['uid' => request()->uid]);
+            $this->backManage = route('apps.master.user.manage.index', ['uid' => request()->uid]);
+        }
     }
 
     // Index
