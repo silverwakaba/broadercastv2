@@ -57,7 +57,7 @@ class UserController extends Controller{
     }
 
     public function addPost(UserRequest $request){
-        return UserRepositories::create([
+        return MasterUserRepositories::create([
             'name' => $request->name,
         ]);
     }
