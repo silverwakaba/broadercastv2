@@ -14,12 +14,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 class YoutubeCron extends Controller{
+    // Debug
     public function fetchDebug(){
-        // return YoutubeRepositories::apiCall('playlist', 'UULlJpxXt6L5d-XQ0cDdIyDQ');
+        // $api = YoutubeRepositories::fetchVideoViaScraper('Z5854fRspzo');
     }
 
+    // Archive initialization
     public function init(){
-        // Archive initialization
+        // Init
         UserLinkTracker::where([
             ['base_link_id', '=', 2],
             ['initialized', '=', false],
@@ -33,7 +35,7 @@ class YoutubeCron extends Controller{
             }
         });
 
-        // Archive metadata
+        // Metadata
         UserLinkTracker::where([
             ['base_link_id', '=', 2],
             ['initialized', '=', true],
@@ -50,8 +52,9 @@ class YoutubeCron extends Controller{
         });
     }
 
+    // Checker
     public function checker(){
-        // Live Streaming
+        // Just another checker
         UserFeed::where([
             ['base_link_id', '=', 2],
             ['actual_end', '=', null],
@@ -68,22 +71,9 @@ class YoutubeCron extends Controller{
                 catch(\Throwable $th){}
             }
         });
-
-        // Offline Streaming
-        UserFeed::where([
-            ['base_link_id', '=', 2],
-            ['base_status_id', '=', 9],
-        ])->select('users_id', 'identifier')->chunk(100, function(Collection $chunks){
-            foreach($chunks as $chunk){
-                try{
-                    // Update archive metadata after streaming goes offline
-                    YoutubeRepositories::userFeedArchived();
-                }
-                catch(\Throwable $th){}
-            }
-        });
     }
 
+    // Profiler
     public function profiler(){
         // Profile metadata
         UserLinkTracker::where([

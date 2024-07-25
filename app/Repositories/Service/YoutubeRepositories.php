@@ -17,9 +17,6 @@ use Illuminate\Http\Client\Pool;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 
-//
-use Illuminate\Support\Facades\Log;
-
 class YoutubeRepositories{
     /**
      * ----------------------------
@@ -212,7 +209,7 @@ class YoutubeRepositories{
             }
         }
         catch(\Throwable $th){
-            return $th;
+            // return $th;
         }
     }
 
@@ -249,7 +246,7 @@ class YoutubeRepositories{
             }
         }
         catch(\Throwable $th){
-            return $th;
+            // return $th;
         }
     }
 
@@ -344,38 +341,48 @@ class YoutubeRepositories{
         try{
             $userF = self::userFeed($videoID);
 
-            $isOffline = true;
+            if(isset($userF)){
+                $isOffline = true;
 
-            $http = self::apiCall('live', $videoID);
+                $viaScraper = self::apiCall('live', $videoID);
 
-            if(
-                ($http['live'] == true) && ($http['title'] != null) && ($http['schedule'] == null) && isset($http['concurrent'])
-            ){
-                $isOffline = false;
-            }
-
-            if(
-                (($isOffline == false) && (BaseHelper::diffInDays($userF->schedule) <= 0))
-            ){
-                if(isset($userF)){
-                    $userF->update([
-                        'base_status_id' => 8,
-                        'concurrent'     => $http['concurrent'],
-                        'title'          => $http['title'],
-                    ]);
-
-                    // return "Online and updating";
+                if(
+                    ($viaScraper['live'] == true) && ($viaScraper['title'] != null) && ($viaScraper['schedule'] == null) && isset($viaScraper['concurrent'])
+                ){
+                    $isOffline = false;
                 }
 
-                // return "Just online";
-            }
-            else{
-                $userF->update([
-                    'base_status_id' => 9,
-                    'concurrent'     => 0,
-                ]);
+                if(
+                    (($isOffline == false) && (BaseHelper::diffInDays($userF->schedule) <= 0))
+                ){
+                    $userF->update([
+                        'base_status_id' => 8,
+                        'concurrent'     => $viaScraper['concurrent'],
+                        'title'          => $viaScraper['title'],
+                    ]);
+                }
+                else{
+                    $viaAPI = self::apiCall('video', $videoID);
 
-                // return "Offline and updating";
+                    if($viaAPI['pageInfo']['totalResults'] >= 1){
+                        foreach($viaAPI['items'] AS $data){
+                            $userF->update([
+                                'base_status_id'    => self::userFeedStatus($data),
+                                'concurrent'        => isset($data['liveStreamingDetails']['concurrentViewers']) ? $data['liveStreamingDetails']['concurrentViewers'] : 0,
+                                'title'             => $viaScraper['snippet']['title'],
+                                'actual_start'      => isset($data['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($data['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
+                                'actual_end'        => isset($data['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
+                                'duration'          => isset($data['contentDetails']['duration']) ? $data['contentDetails']['duration'] : "P0D",
+                            ]);
+
+                            if((isset($data['liveStreamingDetails']['actualEndTime'])) && (Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString() >= $feed->belongsToUserLinkTracker()->select('updated_at')->first()->updated_at)){
+                                $feed->belongsToUserLinkTracker()->update([
+                                    'updated_at' => Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString(),
+                                ]);
+                            }
+                        }
+                    }
+                }
             }
         }
         catch(\Throwable $th){
@@ -514,7 +521,7 @@ class YoutubeRepositories{
             }
         }
         catch(\Throwable $th){
-            return $th;
+            // return $th;
         }
     }
 
@@ -524,37 +531,27 @@ class YoutubeRepositories{
 
     // User Feed Status
     public static function userFeedStatus($data){
+        // Manage streaming content
         if(isset($data['liveStreamingDetails'])){
-            // Scheduled Stream
+            // Scheduled
             if(
-                (isset($data['liveStreamingDetails']['scheduledStartTime']) && !isset($data['liveStreamingDetails']['actualStartTime']) && !isset($data['liveStreamingDetails']['actualEndTime']) && !isset($data['liveStreamingDetails']['concurrentViewers']))
+                ($data['snippet']['liveBroadcastContent'] == 'upcoming')
             ){
                 return "7";
             }
 
-            // Live Stream
+            // Live
             elseif(
-                (isset($data['liveStreamingDetails']['scheduledStartTime']) && isset($data['liveStreamingDetails']['actualStartTime']) && !isset($data['liveStreamingDetails']['actualEndTime']) && isset($data['liveStreamingDetails']['concurrentViewers']))
-                ||
-                (!isset($data['liveStreamingDetails']['scheduledStartTime']) && isset($data['liveStreamingDetails']['actualStartTime']) && !isset($data['liveStreamingDetails']['actualEndTime']) && isset($data['liveStreamingDetails']['concurrentViewers']))
+                ($data['snippet']['liveBroadcastContent'] == 'live')
             ){
                 return "8";
             }
 
-            // Archive Stream
+            // Archive
             elseif(
-                (isset($data['liveStreamingDetails']['scheduledStartTime']) && isset($data['liveStreamingDetails']['actualStartTime']) && isset($data['liveStreamingDetails']['actualEndTime']) && !isset($data['liveStreamingDetails']['concurrentViewers']))
-                ||
-                (!isset($data['liveStreamingDetails']['scheduledStartTime']) && isset($data['liveStreamingDetails']['actualStartTime']) && isset($data['liveStreamingDetails']['actualEndTime']) && !isset($data['liveStreamingDetails']['concurrentViewers']))
+                ($data['snippet']['liveBroadcastContent'] == 'none')
             ){
                 return "9";
-            }
-
-            // Default Stream/Upload from Youtube
-            elseif(
-                (!isset($data['liveStreamingDetails']['scheduledStartTime']) && !isset($data['liveStreamingDetails']['actualStartTime']) && !isset($data['liveStreamingDetails']['actualEndTime']) && !isset($data['liveStreamingDetails']['concurrentViewers']))
-            ){
-                return "5";
             }
 
             // Unknown Streaming Content
@@ -562,6 +559,8 @@ class YoutubeRepositories{
                 return "6";
             }
         }
+
+        // Manage non-streaming content
         else{
             // Direct Upload
             return "10";
