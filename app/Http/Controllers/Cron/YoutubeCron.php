@@ -16,7 +16,7 @@ use Illuminate\Support\Collection;
 class YoutubeCron extends Controller{
     // Debug
     public function fetchDebug(){
-        // return YoutubeRepositories::fetchVideoViaScraper("z-VdHwbNYBg");
+        return YoutubeRepositories::fetchVideoViaScraper("G9rODPToGr8");
         // $api = YoutubeRepositories::fetchVideoViaScraper('Z5854fRspzo');
     }
 

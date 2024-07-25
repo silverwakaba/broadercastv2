@@ -361,7 +361,7 @@ class YoutubeRepositories{
                         'title'          => $viaScraper['title'],
                     ]);
 
-                    return "Online and updating";
+                    // return "Online and updating";
                 }
                 else{
                     $viaAPI = self::apiCall('video', $videoID);
@@ -384,17 +384,20 @@ class YoutubeRepositories{
                             }
                         }
 
-                        return "Offline and updating";
+                        // return "Offline and updating";
+                    }
+                    else{
+                        $userF->delete();
                     }
 
-                    return "Just offline";
+                    // return "Just offline";
                 }
             }
 
-            return "???";
+            // return "???";
         }
         catch(\Throwable $th){
-            return $th;
+            // return $th;
         }
     }
 
