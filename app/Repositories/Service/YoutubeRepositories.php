@@ -360,6 +360,8 @@ class YoutubeRepositories{
                         'concurrent'     => $viaScraper['concurrent'],
                         'title'          => $viaScraper['title'],
                     ]);
+
+                    return "Online and updating";
                 }
                 else{
                     $viaAPI = self::apiCall('video', $videoID);
@@ -369,24 +371,30 @@ class YoutubeRepositories{
                             $userF->update([
                                 'base_status_id'    => self::userFeedStatus($data),
                                 'concurrent'        => isset($data['liveStreamingDetails']['concurrentViewers']) ? $data['liveStreamingDetails']['concurrentViewers'] : 0,
-                                'title'             => $viaScraper['snippet']['title'],
+                                'title'             => $data['snippet']['title'],
                                 'actual_start'      => isset($data['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($data['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
                                 'actual_end'        => isset($data['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
                                 'duration'          => isset($data['contentDetails']['duration']) ? $data['contentDetails']['duration'] : "P0D",
                             ]);
 
-                            if((isset($data['liveStreamingDetails']['actualEndTime'])) && (Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString() >= $feed->belongsToUserLinkTracker()->select('updated_at')->first()->updated_at)){
-                                $feed->belongsToUserLinkTracker()->update([
+                            if((isset($data['liveStreamingDetails']['actualEndTime'])) && (Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString() >= $userF->belongsToUserLinkTracker()->select('updated_at')->first()->updated_at)){
+                                $userF->belongsToUserLinkTracker()->update([
                                     'updated_at' => Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString(),
                                 ]);
                             }
                         }
+
+                        return "Offline and updating";
                     }
+
+                    return "Just offline";
                 }
             }
+
+            return "???";
         }
         catch(\Throwable $th){
-            // return $th;
+            return $th;
         }
     }
 
