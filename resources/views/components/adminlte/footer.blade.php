@@ -6,7 +6,9 @@
         <div class="col-md-5">
             <h3>{{ config('app.name', 'vTual') }}</h3>
             <div class="pr-lg-5">
-                <p>{{ config('app.name', 'vTual') }} is a project designed to simplify the process of keeping up with your favorite content creators; All in one convenient portal. Our service is open to anyone, meaning that if you are a content creator, then you can directly register your account to be included in our tracking database without the need for any manual approval.</p>
+                <p>{{ config('app.name', 'vTual') }} is a project designed to simplify the process of keeping up with your favorite content creators activity; All in one convenient portal.</p>
+                <p>If you are a content creator, join us so that we can feature your content on our platform, allowing it to be seen by a larger audience. By becoming part of our community, you can expand your reach and engage with more viewers who are eager to discover and enjoy your work.</p>
+                <p>If you are a viewer, join us to receive the latest updates about your favorite content creators, or even discover new and promising creators. By becoming part of our community, you can stay informed and explore a wide range of content that caters to your interests.</p>
                 <p><small>Copyright &copy; since 2024. <abbr title="Build {{ config('app.version') }}">{{ config('app.name', 'vTual') }} Project</abbr> by <a href="https://www.silverspoon.me" class="text-light" target="_blank">Silverspoon Media</a>. All rights reserved.</small></p>
             </div>
         </div>

@@ -332,7 +332,7 @@ class YoutubeRepositories{
             }
         }
         catch(\Throwable $th){
-            // return $th;
+            return $th;
         }
     }
 
@@ -388,6 +388,8 @@ class YoutubeRepositories{
                     }
                     else{
                         $userF->delete();
+
+                        // return "Privated and deleting";
                     }
 
                     // return "Just offline";
@@ -433,9 +435,12 @@ class YoutubeRepositories{
                             'schedule'       => isset($data['liveStreamingDetails']['scheduledStartTime']) ? Carbon::parse($data['liveStreamingDetails']['scheduledStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
                             'actual_start'   => isset($data['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($data['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
                             'actual_end'     => isset($data['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString()  : null,
-                            'duration'       => $data['contentDetails']['duration'],
+                            'duration'       => isset($data['contentDetails']['duration']) ? $data['contentDetails']['duration'] : null,
                         ]);
                     }
+                }
+                else{
+                    UserFeed::whereIn('identifier', explode(',', $videoID))->delete();
                 }
     
                 return self::userFeedInitRepeater();

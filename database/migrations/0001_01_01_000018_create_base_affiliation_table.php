@@ -9,15 +9,13 @@ return new class extends Migration{
      * Run the migrations.
      */
     public function up() : void{
-        Schema::create('users_biodata', function (Blueprint $table) {
+        Schema::create('base_affiliation', function (Blueprint $table) {
             $table->id();
             $table->foreignId('users_id')->references('id')->on('users')->onDelete('cascade');
-            $table->mediumText('nickname')->nullable();
-            $table->date('dob')->nullable();
-            $table->date('dod')->nullable();
-            $table->date('dor')->nullable();
-            $table->longText('biography')->nullable();
-            // $table->softDeletes();
+            $table->foreignId('base_decision_id')->references('id')->on('base_decision')->onDelete('cascade');
+            $table->string('identifier')->unique();
+            $table->string('name');
+            $table->longText('about')->nullable();
         });
     }
 
@@ -25,6 +23,6 @@ return new class extends Migration{
      * Reverse the migrations.
      */
     public function down() : void{
-        Schema::dropIfExists('users_biodata');
+        Schema::dropIfExists('base_affiliation');
     }
 };

@@ -18,6 +18,7 @@ class UserBiodata extends Model{
         'nickname',
         'dob',
         'dod',
+        'dor',
         'biography',
     ];
 

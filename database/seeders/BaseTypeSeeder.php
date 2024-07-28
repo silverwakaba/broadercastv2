@@ -13,13 +13,28 @@ class BaseTypeSeeder extends Seeder{
      */
     public function run() : void{
         BaseType::insert([
+            // v-Ism
             [
                 'base_decision_id'  => 2,
-                'name'              => "General Content Creator",
+                'name'              => "vTuber",
             ],
             [
                 'base_decision_id'  => 2,
-                'name'              => "Virtual Content Creator",
+                'name'              => "vSinger",
+            ],
+            [
+                'base_decision_id'  => 2,
+                'name'              => "vInfluencer",
+            ],
+
+            // General
+            [
+                'base_decision_id'  => 2,
+                'name'              => "Clipper",
+            ],
+            [
+                'base_decision_id'  => 2,
+                'name'              => "Streamer",
             ],
         ]);
     }
