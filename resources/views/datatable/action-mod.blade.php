@@ -8,6 +8,9 @@
             <a href="{{ route($route . '.decision', ['id' => $id, 'action' => 'accept']) }}" @class(["dropdown-item", "disabled" => $decision == '2'])><i class="fas fa-check-circle"></i> Accept</a>
             <a href="{{ route($route . '.decision', ['id' => $id, 'action' => 'decline']) }}" @class(["dropdown-item", "disabled" => $decision == '3'])><i class="fas fa-times-circle"></i> Decline</a>
         @endif
+        @if(Route::has($route . '.manage'))
+            <a href="{{ route($route . '.manage', ['id' => $id]) }}" @class(["dropdown-item"])><i class="fas fa-tasks"></i> Manage</a>
+        @endif
         @if(Route::has($route . '.delete'))
             <a href="{{ route($route . '.delete', ['id' => $id]) }}" @class(["dropdown-item"])><i class="fas fa-trash"></i> Delete</a>
         @endif

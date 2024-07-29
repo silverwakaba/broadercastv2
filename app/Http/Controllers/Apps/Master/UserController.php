@@ -278,7 +278,10 @@ class UserController extends Controller{
             return "Twitch";
         }
         elseif($request->service == 'YouTube'){
-            return YoutubeRepositories::verifyChannel($request->channel, $uid, $did);
+            return YoutubeRepositories::verifyChannel($request->channel, $uid, $did, [
+                'route' => 'apps.master.user.manage.link',
+                'query' => ['uid' => request()->uid],
+            ]);
         }
         else{
             return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. It seems that you are stranded.', 'error');
@@ -292,6 +295,9 @@ class UserController extends Controller{
         return UserLinkRepositories::delete([
             'did'   => $did,
             'uid'   => $uid,
+        ], [
+            'route' => 'apps.master.user.manage.link',
+            'query' => ['uid' => request()->uid],
         ]);
     }
 
@@ -318,6 +324,9 @@ class UserController extends Controller{
             'did'           => $did,
             'uid'           => $uid,
             'identifier'    => $request->identifier,
+        ], [
+            'route' => 'apps.master.user.manage.link',
+            'query' => ['uid' => request()->uid],
         ]);
     }
 

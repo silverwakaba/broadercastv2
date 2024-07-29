@@ -217,7 +217,9 @@ class UserController extends Controller{
             return "Twitch";
         }
         elseif($request->service == 'YouTube'){
-            return YoutubeRepositories::verifyChannel($request->channel, auth()->user()->id, $id);
+            return YoutubeRepositories::verifyChannel($request->channel, auth()->user()->id, $id, [
+                'route' => 'apps.manager.link',
+            ]);
         }
         else{
             return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. It seems that you are stranded.', 'error');

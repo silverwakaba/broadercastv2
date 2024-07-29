@@ -76,7 +76,7 @@ class RedirectHelper{
             return redirect()->route($route)->with("class", $class)->with("message", $message);
         }
         elseif($route !== null && is_array($route) == true){
-            return redirect()->route($route['route'], $route['query'])->with("class", $class)->with("message", $message);
+            return redirect()->route($route['route'], (isset($route['query']) ? $route['query'] : null))->with("class", $class)->with("message", $message);
         }
         else{
             return back()->with("class", $class)->with("message", $message);

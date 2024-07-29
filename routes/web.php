@@ -301,12 +301,11 @@ Route::group(['prefix' => '/'], function(){
                     Route::post('persona', [MasterUserController::class, 'racePost']);
                 });
 
-                // Edit
-                Route::get('edit/{id}', [MasterUserController::class, 'edit'])->name('apps.master.user.edit');
-                Route::post('edit/{id}', [MasterUserController::class, 'editPost']);
+                // Manage
+                Route::get('{id}', [MasterUserController::class, 'edit'])->name('apps.master.user.manage');
 
                 // Delete
-                Route::get('delete/{id}', [MasterUserController::class, 'delete'])->name('apps.master.user.delete');
+                // Route::get('delete/{id}', [MasterUserController::class, 'delete'])->name('apps.master.user.delete');
             });
         });
     });

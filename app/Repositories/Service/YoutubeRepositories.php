@@ -111,7 +111,7 @@ class YoutubeRepositories{
     **/
 
     // Verify Channel
-    public static function verifyChannel($channelID, $uniqueID, $id){
+    public static function verifyChannel($channelID, $uniqueID, $id, $back = null){
         try{
             $checkViaChannel = Str::contains($channelID, "https://www.youtube.com/channel/");
             $checkViaHandler = Str::contains($channelID, "https://www.youtube.com/@");
@@ -169,7 +169,7 @@ class YoutubeRepositories{
                                 $userLink->hasOneUserLinkTracker()->create($createNew);
 
                                 // Redirect
-                                return RedirectHelper::routeBack('apps.manager.link', 'success', 'Channel Verification', 'verify');
+                                return RedirectHelper::routeBack($back, 'success', 'Channel Verification', 'verify');
                             }
                             else{
                                 $checkUnique = Str::contains($data['snippet']['description'], $uniqueID);
@@ -183,7 +183,7 @@ class YoutubeRepositories{
                                         $userLink->hasOneUserLinkTracker()->create($createNew);
             
                                         // Redirect
-                                        return RedirectHelper::routeBack('apps.manager.link', 'success', 'Channel Verification', 'verify');
+                                        return RedirectHelper::routeBack($back, 'success', 'Channel Verification', 'verify');
                                     }
                                     else{
                                         return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Because currently we only allow one YouTube tracker per creator, thus we have to cancel this verification process.', 'error');
@@ -211,7 +211,7 @@ class YoutubeRepositories{
             }
         }
         catch(\Throwable $th){
-            // return $th;
+            return $th;
         }
     }
 
