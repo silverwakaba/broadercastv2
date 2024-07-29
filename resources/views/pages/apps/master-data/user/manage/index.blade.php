@@ -1,7 +1,7 @@
 @extends('layout.app')
 @section('title', 'Manage ' . $datas->name)
 @section('content')
-    <x-Adminlte.Content previous="apps.master.index">
+    <x-Adminlte.Content :previous="route('apps.master.user.index')">
         <div class="row row-cols-1 row-cols-lg-2">
             <div class="col">
                 <x-Adminlte.Box colors="bg-dark" icon="fas fa-user" title="Biodata" content="Manage user biodata" :link="route('apps.master.user.manage.biodata', ['uid' => request()->uid])" />

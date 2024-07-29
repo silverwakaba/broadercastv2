@@ -209,6 +209,9 @@ class UserController extends Controller{
             'users_id'      => $id,
             'base_link_id'  => $request->service,
             'link'          => $request->link,
+        ], [
+            'route' => 'apps.master.user.manage.link',
+            'query' => ['uid' => request()->uid],
         ]);
     }
 
@@ -234,7 +237,10 @@ class UserController extends Controller{
         return UserLinkRepositories::upsert([
             'base_link_id'  => $request->service,
             'link'          => $request->link,
-        ], null, $did);
+        ], [
+            'route' => 'apps.master.user.manage.link',
+            'query' => ['uid' => request()->uid],
+        ], $did);
     }
 
     // Link Verify

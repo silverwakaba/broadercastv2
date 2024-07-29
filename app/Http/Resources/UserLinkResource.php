@@ -20,7 +20,7 @@ class UserLinkResource extends JsonResource{
             $logo = $this->icon == null ? Str::lower($this->name) : Str::lower($this->icon);
         }
         elseif($this->icon == '404'){
-            $logo = 'internetexplorer';
+            $logo = 'googlechrome';
         }
 
         return [
@@ -29,7 +29,7 @@ class UserLinkResource extends JsonResource{
             'link'          => $this->link,
             'icon'          => $this->icon,
             'color'         => $this->color,
-            'logo'          => 'https://cdn.simpleicons.org/' . ($logo),
+            'logo'          => 'https://cdn.simpleicons.org/' . ($logo) . '?viewbox=auto',
             'link_pivot'    => isset($this->pivot->link) ? $this->pivot->link : null,
             'decision'      => new BaseDecisionResource($this->whenLoaded('belongsToBaseDecision')),
             'service'       => new BaseLinkResource($this->whenLoaded('belongsToBaseLink')),

@@ -168,6 +168,7 @@ class YoutubeRepositories{
                                 
                                 $userLink->hasOneUserLinkTracker()->create($createNew);
 
+                                // Redirect
                                 return RedirectHelper::routeBack('apps.manager.link', 'success', 'Channel Verification', 'verify');
                             }
                             else{
@@ -181,6 +182,7 @@ class YoutubeRepositories{
 
                                         $userLink->hasOneUserLinkTracker()->create($createNew);
             
+                                        // Redirect
                                         return RedirectHelper::routeBack('apps.manager.link', 'success', 'Channel Verification', 'verify');
                                     }
                                     else{

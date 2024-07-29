@@ -9,7 +9,7 @@ class RedirectHelper{
         return back()->withErrors($data);
     }
 
-    public static function routeBack($route = '', $class, $title, $mode = ''){
+    public static function routeBack($route = null, $class, $title, $mode = null){
         $title = strtolower($title);
 
         if($mode == "create"){
@@ -72,11 +72,14 @@ class RedirectHelper{
             $message = "Your action in $modeMessage was successful.";
         }
 
-        if($route == null){
-            return back()->with("class", $class)->with("message", $message);
+        if($route !== null && is_array($route) == false){
+            return redirect()->route($route)->with("class", $class)->with("message", $message);
+        }
+        elseif($route !== null && is_array($route) == true){
+            return redirect()->route($route['route'], $route['query'])->with("class", $class)->with("message", $message);
         }
         else{
-            return redirect()->route($route)->with("class", $class)->with("message", $message);
+            return back()->with("class", $class)->with("message", $message);
         }
     }
 
