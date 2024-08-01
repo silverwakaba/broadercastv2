@@ -360,7 +360,7 @@ class YoutubeRepositories{
                     $userF->update([
                         'base_status_id' => 8,
                         'concurrent'     => $viaScraper['concurrent'],
-                        'title'          => $viaScraper['title'],
+                        // 'title'          => $viaScraper['title'],
                     ]);
 
                     // return "Online and updating";
@@ -524,8 +524,6 @@ class YoutubeRepositories{
                             'actual_end'        => isset($data['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
                             'duration'          => isset($data['contentDetails']['duration']) ? $data['contentDetails']['duration'] : "P0D",
                         ]);
-
-                        $feed->belongsToUserLinkTracker()->select('updated_at')->first()->updated_at;
 
                         if((isset($data['liveStreamingDetails']['actualEndTime'])) && (Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString() >= $feed->belongsToUserLinkTracker()->select('updated_at')->first()->updated_at)){
                             $feed->belongsToUserLinkTracker()->update([
