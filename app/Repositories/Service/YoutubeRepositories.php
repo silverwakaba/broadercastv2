@@ -26,7 +26,6 @@ class YoutubeRepositories{
 
     // API Call to Internal-endpoint
     public static function apiCall($mode, $id, $token = null){
-        // Via Scraper
         if(($mode == 'handler')){
             return Http::acceptJson()->get('https://www.silverspoon.me/api/youtube/scrape-channel', [
                 'id' => $id,
@@ -37,7 +36,6 @@ class YoutubeRepositories{
                 'id' => $id,
             ])->json();
         }
-
         elseif(($mode == 'channel')){
             return Http::acceptJson()->get('https://www.silverspoon.me/api/youtube/fetch-channel', [
                 'id' => $id,
@@ -496,6 +494,51 @@ class YoutubeRepositories{
 
     public static function userFeedLiveMissingMetadataRepeater(){
         return self::userFeedLiveMissingMetadata();
+    }
+
+    // User feed init
+    public static function userFeedLiveOverdue(){
+        try{
+            $datas = UserFeed::where([
+                ['base_link_id', '=', 2],
+                ['schedule', '!=', null],
+                ['actual_start', '=', null],
+                ['actual_end', '=', null],
+                ['duration', '=', null],
+            ])->whereDate('schedule', '<=', Carbon::now()->timezone(config('app.timezone'))->toDateTimeString())->whereIn('base_status_id', ['7'])->whereNotIn('base_status_id', ['5'])->select('identifier')->take(50)->get();
+    
+            if(($datas) && isset($datas) && ($datas->count() >= 1)){
+                $videoID = implode(',', ($datas)->pluck('identifier')->toArray());
+    
+                $http = self::apiCall('video', $videoID);
+    
+                if($http['pageInfo']['totalResults'] >= 1){
+                    foreach($http['items'] AS $data){
+                        UserFeed::where([
+                            ['identifier', '=', $data['id']],
+                        ])->update([
+                            'base_status_id' => self::userFeedStatus($data),
+                            'schedule'       => isset($data['liveStreamingDetails']['scheduledStartTime']) ? Carbon::parse($data['liveStreamingDetails']['scheduledStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
+                            'actual_start'   => isset($data['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($data['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
+                            'actual_end'     => isset($data['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString()  : null,
+                            'duration'       => isset($data['contentDetails']['duration']) ? $data['contentDetails']['duration'] : null,
+                        ]);
+                    }
+                }
+                else{
+                    UserFeed::whereIn('identifier', explode(',', $videoID))->delete();
+                }
+    
+                return self::userFeedLiveOverdueRepeater();
+            }
+        }
+        catch(\Throwable $th){
+            // return $th;
+        }
+    }
+
+    public static function userFeedLiveOverdueRepeater(){
+        return self::userFeedLiveOverdue();
     }
 
     // User feed stream archive
