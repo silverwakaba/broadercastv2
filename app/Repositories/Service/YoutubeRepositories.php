@@ -595,6 +595,8 @@ class YoutubeRepositories{
             // Scheduled
             if(
                 ($data['snippet']['liveBroadcastContent'] == 'upcoming')
+                &&
+                ((isset($data['liveStreamingDetails']['scheduledStartTime']) && !isset($data['liveStreamingDetails']['actualStartTime']) && !isset($data['liveStreamingDetails']['actualEndTime']) && !isset($data['liveStreamingDetails']['concurrentViewers'])))
             ){
                 return "7";
             }
@@ -602,6 +604,10 @@ class YoutubeRepositories{
             // Live
             elseif(
                 ($data['snippet']['liveBroadcastContent'] == 'live')
+                &&
+                ((isset($data['liveStreamingDetails']['scheduledStartTime']) && isset($data['liveStreamingDetails']['actualStartTime']) && !isset($data['liveStreamingDetails']['actualEndTime']) && isset($data['liveStreamingDetails']['concurrentViewers']))
+                ||
+                (!isset($data['liveStreamingDetails']['scheduledStartTime']) && isset($data['liveStreamingDetails']['actualStartTime']) && !isset($data['liveStreamingDetails']['actualEndTime']) && isset($data['liveStreamingDetails']['concurrentViewers'])))
             ){
                 return "8";
             }
@@ -609,8 +615,21 @@ class YoutubeRepositories{
             // Archive
             elseif(
                 ($data['snippet']['liveBroadcastContent'] == 'none')
+                &&
+                ((isset($data['liveStreamingDetails']['scheduledStartTime']) && isset($data['liveStreamingDetails']['actualStartTime']) && isset($data['liveStreamingDetails']['actualEndTime']) && !isset($data['liveStreamingDetails']['concurrentViewers']))
+                ||
+                (!isset($data['liveStreamingDetails']['scheduledStartTime']) && isset($data['liveStreamingDetails']['actualStartTime']) && isset($data['liveStreamingDetails']['actualEndTime']) && !isset($data['liveStreamingDetails']['concurrentViewers'])))
             ){
                 return "9";
+            }
+
+            // Default Stream/Upload from Youtube
+            elseif(
+                ($data['snippet']['liveBroadcastContent'] =! null)
+                &&
+                ((!isset($data['liveStreamingDetails']['scheduledStartTime']) && !isset($data['liveStreamingDetails']['actualStartTime']) && !isset($data['liveStreamingDetails']['actualEndTime']) && !isset($data['liveStreamingDetails']['concurrentViewers'])))
+            ){
+                return "5";
             }
 
             // Unknown Streaming Content

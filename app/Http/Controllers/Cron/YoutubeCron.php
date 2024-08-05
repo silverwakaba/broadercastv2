@@ -17,15 +17,6 @@ class YoutubeCron extends Controller{
     // Debug
     public function fetchDebug(){
         // Commented
-
-        // // Overdue scheduled stream
-        // return UserFeed::where([
-        //     ['base_link_id', '=', 2],
-        //     ['schedule', '!=', null],
-        //     ['actual_start', '=', null],
-        //     ['actual_end', '=', null],
-        //     ['duration', '=', null],
-        // ])->whereDate('schedule', '<=', Carbon::now()->timezone(config('app.timezone'))->toDateTimeString())->whereIn('base_status_id', ['7'])->whereNotIn('base_status_id', ['5'])->select('identifier')->take(50)->get();
     }
 
     // Archive initialization
