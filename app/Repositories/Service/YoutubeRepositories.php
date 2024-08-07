@@ -501,11 +501,10 @@ class YoutubeRepositories{
         try{
             $datas = UserFeed::where([
                 ['base_link_id', '=', 2],
-                ['schedule', '!=', null],
                 ['actual_start', '=', null],
                 ['actual_end', '=', null],
                 ['duration', '=', null],
-            ])->whereDate('schedule', '<=', Carbon::now()->timezone(config('app.timezone'))->toDateTimeString())->whereIn('base_status_id', ['7'])->whereNotIn('base_status_id', ['5'])->select('identifier')->take(50)->get();
+            ])->whereNotNull('schedule')->whereDate('schedule', '<=', Carbon::now()->timezone(config('app.timezone'))->format('Y-m-d'))->whereTime('schedule', '<=', Carbon::now()->timezone(config('app.timezone'))->format('H:i:s'))->whereIn('base_status_id', ['7'])->whereNotIn('base_status_id', ['5'])->take(50)->get();
     
             if(($datas) && isset($datas) && ($datas->count() >= 1)){
                 $videoID = implode(',', ($datas)->pluck('identifier')->toArray());
