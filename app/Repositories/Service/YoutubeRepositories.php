@@ -356,9 +356,8 @@ class YoutubeRepositories{
                     (($isOffline == false) && (BaseHelper::diffInDays($userF->schedule) <= 0))
                 ){
                     $userF->update([
-                        'base_status_id' => 8,
-                        'concurrent'     => $viaScraper['concurrent'],
-                        // 'title'          => $viaScraper['title'],
+                        'base_status_id'    => 8,
+                        'concurrent'        => $viaScraper['concurrent'],
                     ]);
 
                     // return "Online and updating";

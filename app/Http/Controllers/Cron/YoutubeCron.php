@@ -64,6 +64,10 @@ class YoutubeCron extends Controller{
             ['base_link_id', '=', 2],
             ['actual_end', '=', null],
             ['duration', '=', "P0D"],
+        ])->orWhere([
+            ['base_link_id', '=', 2],
+            ['actual_end', '=', null],
+            ['duration', '!=', "P0D"],
         ])->whereIn('base_status_id', ['7', '8'])->whereNotIn('base_status_id', ['5'])->select('users_id', 'identifier')->chunk(100, function(Collection $chunks){
             foreach($chunks as $chunk){
                 try{
