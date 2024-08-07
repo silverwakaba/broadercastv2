@@ -1,8 +1,8 @@
 @extends('layout.app')
 @section('title', 'Gender Type')
 @section('content')
-    <x-Adminlte.Content previous="apps.master.index">
-        <x-Adminlte.Card add="apps.base.gender.add">
+    <x-Adminlte.Content :previous="route('apps.master.index')">
+        <x-Adminlte.Card :add="route('apps.base.gender.add')">
             <x-Adminlte.Table ids="genderTables">
                 <thead>
                     <tr>

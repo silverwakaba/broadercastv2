@@ -1,14 +1,14 @@
 @extends('layout.app')
-@section('title', 'Content Type')
+@section('title', 'Affiliation')
 @section('content')
     <x-Adminlte.Content :previous="route('apps.master.index')">
-        <x-Adminlte.Card :add="route('apps.base.content.add')">
-            <x-Adminlte.Table ids="contentTables">
+        <x-Adminlte.Card :add="route('apps.base.persona.add')">
+            <x-Adminlte.Table ids="affiliationTables">
                 <thead>
                     <tr>
                         <th width="5%">No.</th>
                         <th width="15%">State</th>
-                        <th width="20%">Creator</th>
+                        <th width="20%">Manager</th>
                         <th width="50%">Name</th>
                         <th width="10%" class="text-center">Action</th>
                     </tr>
@@ -18,7 +18,7 @@
     </x-Adminlte.Content>
 
     <script type="module">
-        $("#contentTables").DataTable({
+        $("#raceTables").DataTable({
             "ordering": false,
             "processing": true,
             "serverSide": true,
@@ -43,7 +43,7 @@
                     data: "action",
                     bSortable: false,
                     bSearchable: false,
-                    // visible: {{ auth()->user()->hasRole('Admin|Moderator') ? "true" : "false" }},
+                    visible: {{ auth()->user()->hasRole('Admin') ? "true" : "false" }},
                 },
             ],
         });

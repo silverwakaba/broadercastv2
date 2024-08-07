@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Apps\AppsController;
 
 // Base Data
+use App\Http\Controllers\Apps\Base\AffiliationController as BaseAffiliationController;
 use App\Http\Controllers\Apps\Base\ContentController as BaseContentController;
 use App\Http\Controllers\Apps\Base\GenderController as BaseGenderController;
 use App\Http\Controllers\Apps\Base\LanguageController as BaseLanguageController;
@@ -150,6 +151,24 @@ Route::group(['prefix' => '/'], function(){
         Route::group(['prefix' => 'master-data', 'middleware' => ['role:Admin']], function(){
             // Master data index
             Route::get('/', [AppsController::class, 'master'])->name('apps.master.index');
+
+            // Master data - Base Affiliation
+            Route::group(['prefix' => 'affiliation'], function(){
+                // Index
+                Route::get('/', [BaseAffiliationController::class, 'index'])->name('apps.base.affiliation.index');
+
+                // // Add
+                // Route::get('add', [BaseLinkController::class, 'add'])->name('apps.base.link.add');
+                // Route::post('add', [BaseLinkController::class, 'addPost']);
+
+                // // Edit
+                // Route::get('edit/{id}', [BaseLinkController::class, 'edit'])->name('apps.base.link.edit');
+                // Route::post('edit/{id}', [BaseLinkController::class, 'editPost']);
+
+                // // Decision
+                // Route::get('delete/{id}', [BaseLinkController::class, 'delete'])->name('apps.base.link.delete');
+                // Route::get('decision/{id}', [BaseLinkController::class, 'decision'])->name('apps.base.link.decision');
+            });
 
             // Master data - Base Content Type
             Route::group(['prefix' => 'content-type'], function(){

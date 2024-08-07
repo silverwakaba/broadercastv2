@@ -1,8 +1,8 @@
 @extends('layout.app')
 @section('title', 'Language Type')
 @section('content')
-    <x-Adminlte.Content previous="apps.master.index">
-        <x-Adminlte.Card add="apps.base.language.add">
+    <x-Adminlte.Content :previous="route('apps.master.index')">
+        <x-Adminlte.Card :add="route('apps.base.language.add')">
             <x-Adminlte.Table ids="languageTables">
                 <thead>
                     <tr>

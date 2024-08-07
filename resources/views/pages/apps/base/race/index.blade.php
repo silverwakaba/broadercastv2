@@ -1,8 +1,8 @@
 @extends('layout.app')
 @section('title', 'Persona Type')
 @section('content')
-    <x-Adminlte.Content previous="apps.master.index">
-        <x-Adminlte.Card add="apps.base.persona.add">
+    <x-Adminlte.Content :previous="route('apps.master.index')">
+        <x-Adminlte.Card :add="route('apps.base.persona.add')">
             <x-Adminlte.Table ids="raceTables">
                 <thead>
                     <tr>

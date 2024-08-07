@@ -1,8 +1,8 @@
 @extends('layout.app')
 @section('title', 'Link Type')
 @section('content')
-    <x-Adminlte.Content previous="apps.master.index">
-        <x-Adminlte.Card add="apps.base.link.add">
+    <x-Adminlte.Content :previous="route('apps.master.index')">
+        <x-Adminlte.Card :add="route('apps.base.link.add')">
             <x-Adminlte.Table ids="linkTables">
                 <thead>
                     <tr>

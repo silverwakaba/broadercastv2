@@ -168,6 +168,9 @@
                                         <x-Adminlte.NavLink icon="1" route="apps.master.index" value="Summary" />
                                     </li>
                                     <li class="nav-item">
+                                        <x-Adminlte.NavLink icon="1" route="apps.base.affiliation.index" value="Affiliation" />
+                                    </li>
+                                    <li class="nav-item">
                                         <x-Adminlte.NavLink icon="1" route="apps.base.content.index" value="Content Type" />
                                     </li>
                                     <li class="nav-item">
