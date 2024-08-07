@@ -34,8 +34,10 @@ class YoutubeCron extends Controller{
                 catch(\Throwable $th){}
             }
         });
+    }
 
-        // Metadata
+    // Archive Metadata
+    public function metadata(){
         UserLinkTracker::where([
             ['base_link_id', '=', 2],
             ['initialized', '=', true],
