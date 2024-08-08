@@ -81,14 +81,10 @@ return [
         'pgsql' => [
             'driver' => 'pgsql',
             'read' => [
-                'host' => [
-                    '103.76.129.3',
-                ],
+                'host' => env('DB_HOST_RO', 'localhost'), // Read-only
             ],
             'write' => [
-                'host' => [
-                    '146.235.18.69',
-                ],
+                'host' => env('DB_HOST_RW', 'localhost'), // Read-write
             ],
             'sticky' => true,
             'port' => env('DB_PORT', '5432'),
