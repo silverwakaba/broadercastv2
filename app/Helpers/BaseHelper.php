@@ -18,6 +18,16 @@ class BaseHelper{
         return hash("adler32", $value);
     }
 
+    public static function setIdentifier($name, $before = null, $after = null){
+        $slug = Str::of($name)->slug('-');
+
+        $before = Str::before($before, '.');
+
+        $after = Str::after($after, '.');
+
+        return Str::of($before)->append('.' . Str::of($slug)->slug('-'));
+    }
+
     public static function diffInDays($compared){
         $now = Carbon::now()->timezone(config('app.timezone'))->toDateTimeString();
         $parse = Carbon::parse($compared)->timezone(config('app.timezone'))->toDateTimeString();

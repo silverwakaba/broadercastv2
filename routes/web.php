@@ -157,17 +157,16 @@ Route::group(['prefix' => '/'], function(){
                 // Index
                 Route::get('/', [BaseAffiliationController::class, 'index'])->name('apps.base.affiliation.index');
 
-                // // Add
-                // Route::get('add', [BaseLinkController::class, 'add'])->name('apps.base.link.add');
-                // Route::post('add', [BaseLinkController::class, 'addPost']);
+                // Add
+                Route::get('add', [BaseAffiliationController::class, 'add'])->name('apps.base.affiliation.add');
+                Route::post('add', [BaseAffiliationController::class, 'addPost']);
 
-                // // Edit
-                // Route::get('edit/{id}', [BaseLinkController::class, 'edit'])->name('apps.base.link.edit');
-                // Route::post('edit/{id}', [BaseLinkController::class, 'editPost']);
+                // Edit
+                Route::get('edit/{id}', [BaseAffiliationController::class, 'edit'])->name('apps.base.affiliation.edit');
+                Route::post('edit/{id}', [BaseAffiliationController::class, 'editPost']);
 
-                // // Decision
-                // Route::get('delete/{id}', [BaseLinkController::class, 'delete'])->name('apps.base.link.delete');
-                // Route::get('decision/{id}', [BaseLinkController::class, 'decision'])->name('apps.base.link.decision');
+                // Decision
+                Route::get('delete/{id}', [BaseAffiliationController::class, 'delete'])->name('apps.base.affiliation.delete');
             });
 
             // Master data - Base Content Type

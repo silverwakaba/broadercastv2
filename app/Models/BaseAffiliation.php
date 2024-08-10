@@ -22,4 +22,12 @@ class BaseAffiliation extends Model{
         'name',
         'about',
     ];
+
+    public function belongsToBaseDecision(){
+        return $this->belongsTo(BaseDecision::class, 'base_decision_id');
+    }
+
+    public function hasOneUser(){
+        return $this->hasOne(User::class, 'id', 'users_id');
+    }
 }

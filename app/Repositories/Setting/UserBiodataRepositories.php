@@ -16,19 +16,9 @@ class UserBiodataRepositories{
         $user = User::find($data['id']);
 
         if(($user->confirmed == true) || ($user->email_verified_at !== null)){
-            $name = Str::of($data['name'])->slug('-');
-
-            $before = Str::before($user->identifier, '.');
-
-            $after = Str::after($user->identifier, '.');
-
-            if($name !== $after){
-                $identifier = $before . '.' . Str::of($data['name'])->slug('-');
-            
-                $user->update([
-                    'identifier' => $identifier,
-                ]);
-            }
+            $user->update([
+                'identifier' => BaseHelper::setIdentifier($data['name'], $user->identifier, $user->name),
+            ]);
         }
 
         $user->update([

@@ -2,7 +2,7 @@
 @section('title', 'Affiliation')
 @section('content')
     <x-Adminlte.Content :previous="route('apps.master.index')">
-        <x-Adminlte.Card :add="route('apps.base.persona.add')">
+        <x-Adminlte.Card :add="route('apps.base.affiliation.add')">
             <x-Adminlte.Table ids="affiliationTables">
                 <thead>
                     <tr>
@@ -18,7 +18,7 @@
     </x-Adminlte.Content>
 
     <script type="module">
-        $("#raceTables").DataTable({
+        $("#affiliationTables").DataTable({
             "ordering": false,
             "processing": true,
             "serverSide": true,
@@ -43,7 +43,6 @@
                     data: "action",
                     bSortable: false,
                     bSearchable: false,
-                    visible: {{ auth()->user()->hasRole('Admin') ? "true" : "false" }},
                 },
             ],
         });
