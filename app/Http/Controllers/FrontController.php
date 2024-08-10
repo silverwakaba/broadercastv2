@@ -22,8 +22,9 @@ class FrontController extends Controller{
                 ['base_status_id', '=', 8],
             ],
             'option'    => [
-                'take'       => 4,
+                'take'      => 4,
                 'orderType' => 'live',
+                'dayLoad'   => 7,
             ],
         ]);
 
@@ -38,7 +39,7 @@ class FrontController extends Controller{
                 ['base_status_id', '=', 7],
             ],
             'option'    => [
-                'take'       => 4,
+                'take'      => 4,
                 'orderType' => 'schedule',
                 'dayLoad'   => 7,
             ],

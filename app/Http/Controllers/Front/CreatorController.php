@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 
 use App\Helpers\BasedataHelper;
+use App\Helpers\RedirectHelper;
 use App\Http\Requests\Front\DiscoveryRequest;
 use App\Repositories\Base\CookiesRepositories;
 use App\Repositories\Front\Creator\UserProfileRepositories;
@@ -118,7 +119,7 @@ class CreatorController extends Controller{
             ],
             'option'     => [
                 'take'       => 3,
-                'orderType' => 'all',
+                'orderType'  => 'all',
                 'pagination' => [
                     'type' => 'normal',
                 ],
@@ -146,7 +147,7 @@ class CreatorController extends Controller{
             ],
             'option'    => [
                 'take'       => 4,
-                'orderType' => 'live',
+                'orderType'  => 'live',
                 'pagination' => [
                     'type' => 'normal',
                 ],
@@ -171,7 +172,8 @@ class CreatorController extends Controller{
             ],
             'option'    => [
                 'take'       => 4,
-                'orderType' => 'schedule',
+                'orderType'  => 'schedule',
+                'dayLoad'    => 30,
                 'pagination' => [
                     'type' => 'normal',
                 ],
@@ -196,7 +198,7 @@ class CreatorController extends Controller{
             ],
             'option'    => [
                 'take'       => 4,
-                'orderType' => 'archive',
+                'orderType'  => 'archive',
                 'pagination' => [
                     'type' => 'normal',
                 ],
@@ -220,7 +222,7 @@ class CreatorController extends Controller{
             ],
             'option'    => [
                 'take'       => 4,
-                'orderType' => 'vod',
+                'orderType'  => 'vod',
                 'pagination' => [
                     'type' => 'normal',
                 ],
@@ -258,6 +260,6 @@ class CreatorController extends Controller{
         Cookie::queue('schedule', $request->schedule_content, $expire);
         Cookie::queue('published', $request->vod_content, $expire);
 
-        return redirect()->back();
+        return RedirectHelper::routeBack(null, 'success', 'Content preference', 'update');
     }
 }
