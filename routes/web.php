@@ -277,6 +277,10 @@ Route::group(['prefix' => '/'], function(){
                     Route::get('biodata', [MasterUserController::class, 'biodata'])->name('apps.master.user.manage.biodata');
                     Route::post('biodata', [MasterUserController::class, 'biodataPost']);
 
+                    // Biodata
+                    Route::get('affiliation', [MasterUserController::class, 'affiliation'])->name('apps.master.user.manage.affiliation');
+                    Route::post('affiliation', [MasterUserController::class, 'affiliationPost']);
+
                     // Content
                     Route::get('content', [MasterUserController::class, 'content'])->name('apps.master.user.manage.content');
                     Route::post('content', [MasterUserController::class, 'contentPost']);

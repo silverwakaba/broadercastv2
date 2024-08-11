@@ -9,6 +9,7 @@
                     <x-form.Input name="profilename" type="text" text="Profile Name" :value="request()->profilename" />
                     <x-form.Input name="channelsubsrangefrom" type="number" text="Subs Range From" :value="request()->channelsubsrangefrom" col="6" placeholder="1" />
                     <x-form.Input name="channelsubsrangeto" type="number" text="Subs Range To" :value="request()->channelsubsrangeto" col="6" placeholder="1000" />
+                    <x-Form.Select2m name="affiliation[]" text="Affiliation" :data="$affiliation" :value="(array) request()->affiliation" />
                     <x-Form.Select2m name="content[]" text="Content" :data="$content" :value="(array) request()->content" />
                     <x-Form.Select2m name="gender[]" text="Gender" :data="$gender" :value="(array) request()->gender" />
                     <x-Form.Select2m name="language[]" text="Language" :data="$language" :value="(array) request()->language" />

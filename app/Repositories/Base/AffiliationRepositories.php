@@ -2,10 +2,10 @@
 
 namespace App\Repositories\Base;
 
-use App\Models\BaseAffiliation; // <<<
+use App\Models\BaseAffiliation;
 use App\Helpers\BaseHelper;
 use App\Helpers\RedirectHelper;
-use App\Http\Resources\BaseAffiliationResource; // <<<
+use App\Http\Resources\BaseAffiliationResource;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
 

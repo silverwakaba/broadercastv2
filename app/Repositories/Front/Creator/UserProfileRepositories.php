@@ -74,6 +74,7 @@ class UserProfileRepositories{
             $subs_range_to = $request->channelsubsrangeto;
 
             // Have their own base
+            $affiliation = $request->affiliation;
             $content = $request->content;
             $gender = $request->gender;
             $language = $request->language;
@@ -103,6 +104,12 @@ class UserProfileRepositories{
             }
 
             // Have their own base
+            if($affiliation !== null){
+                $datas->whereHas('hasManyThroughUserAffiliation', function($query) use($affiliation){
+                    $query->whereIn('base_affiliation_id', $affiliation);
+                });
+            }
+
             if($content !== null){
                 $datas->whereHas('hasManyThroughUserContent', function($query) use($content){
                     $query->whereIn('base_content_id', $content);

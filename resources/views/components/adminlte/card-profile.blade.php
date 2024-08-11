@@ -50,6 +50,18 @@
                 <strong>Personal Details</strong>
             </li>
             <li class="list-group-item">
+                <strong>Affiliation</strong>
+                @if($profile->affiliation)
+                    <ul class="list-inline m-0">
+                        @foreach($profile->affiliation AS $affiliation)
+                            <li class="list-inline-item"><u><a href="{{ route('creator.index', ['affiliation[]' => $affiliation->id]) }}" class="text-light">{{ $affiliation->name }}</a></u></li>
+                        @endforeach
+                    </ul>
+                @else
+                    <p class="m-0">No character affiliation</p>
+                @endif
+            </li>
+            <li class="list-group-item">
                 <strong>Gender</strong>
                 @if($profile->gender)
                     <ul class="list-inline m-0">

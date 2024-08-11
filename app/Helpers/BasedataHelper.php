@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\BaseAffiliation;
 use App\Models\BaseContent;
 use App\Models\BaseCountry;
 use App\Models\BaseGender;
@@ -12,6 +13,12 @@ use App\Models\BaseSort;
 use App\Models\BaseTimezone;
 
 class BasedataHelper{
+    public static function baseAffiliation(){
+        $datas = BaseAffiliation::orderBy('name', 'ASC')->get();
+
+        return $datas;
+    }
+
     public static function baseContent(){
         $datas = BaseContent::orderBy('name', 'ASC')->get();
 

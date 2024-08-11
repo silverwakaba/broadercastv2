@@ -34,6 +34,7 @@ class CreatorController extends Controller{
             ],
         ]);
 
+        $affiliation = BasedataHelper::baseAffiliation();
         $content = BasedataHelper::baseContent();
         $gender = BasedataHelper::baseGender();
         $language = BasedataHelper::baseLanguage();
@@ -49,13 +50,14 @@ class CreatorController extends Controller{
         ];
 
         return view('pages/front/creator/index', [
-            'datas'     => $datas,
-            'content'   => $content,
-            'gender'    => $gender,
-            'language'  => $language,
-            'persona'   => $persona,
-            'sortType'  => $sortType,
-            'sortBy'    => json_decode(json_encode($sortBy)),
+            'datas'         => $datas,
+            'affiliation'   => $affiliation,
+            'content'       => $content,
+            'gender'        => $gender,
+            'language'      => $language,
+            'persona'       => $persona,
+            'sortType'      => $sortType,
+            'sortBy'        => json_decode(json_encode($sortBy)),
         ]);
     }
 
@@ -65,6 +67,7 @@ class CreatorController extends Controller{
             'profilename'           => $request->profilename,
             'channelsubsrangefrom'  => $request->channelsubsrangefrom,
             'channelsubsrangeto'    => $request->channelsubsrangeto,
+            'affiliation'           => $request->affiliation,
             'content'               => $request->content,
             'gender'                => $request->gender,
             'language'              => $request->language,
@@ -80,6 +83,7 @@ class CreatorController extends Controller{
         $profile = UserProfileRepositories::getProfile([
             'identifier'    => $id,
             'with'          => [
+                'belongsToManyUserAffiliation',
                 'hasOneUserAvatar',
                 'hasOneUserBiodata',
                 'belongsToManyUserContent',

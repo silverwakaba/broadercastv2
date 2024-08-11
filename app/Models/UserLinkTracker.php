@@ -37,6 +37,10 @@ class UserLinkTracker extends Model{
         return $this->belongsTo(UserLink::class, 'users_link_id');
     }
 
+    public function hasManyThroughUserAffiliation(){
+        return $this->hasManyThrough(UserAffiliation::class, User::class, 'id', 'users_id', 'users_id', 'id');
+    }
+
     public function hasOneBiodataThroughUser(){
         return $this->hasOneThrough(UserBiodata::class, User::class, 'id', 'users_id', 'users_id', 'id');
     }

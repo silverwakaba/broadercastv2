@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\UserAffiliationResource;
 use App\Http\Resources\UserAvatarResource;
 use App\Http\Resources\UserBiodataResource;
 use App\Http\Resources\UserContentResource;
@@ -34,6 +35,7 @@ class UserResource extends JsonResource{
             'deleted_at'    => $this->deleted_at,
             'created_at'    => $this->created_at,
             'updated_at'    => $this->updated_at,
+            'affiliation'   => UserAffiliationResource::collection($this->whenLoaded('belongsToManyUserAffiliation')),
             'avatar'        => new UserAvatarResource($this->whenLoaded('hasOneUserAvatar')),
             'biodata'       => new UserBiodataResource($this->whenLoaded('hasOneUserBiodata')),
             'content'       => UserContentResource::collection($this->whenLoaded('belongsToManyUserContent')),

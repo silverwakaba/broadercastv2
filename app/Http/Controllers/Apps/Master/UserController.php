@@ -16,6 +16,7 @@ use App\Http\Requests\Apps\Setting\UserLinkVerificationRequest;
 
 use App\Repositories\Master\UserRepositories as MasterUserRepositories;
 use App\Repositories\Setting\UserRepositories;
+use App\Repositories\Setting\UserAffiliationRepositories;
 use App\Repositories\Setting\UserAvatarRepositories;
 use App\Repositories\Setting\UserBiodataRepositories;
 use App\Repositories\Setting\UserContentRepositories;
@@ -70,6 +71,31 @@ class UserController extends Controller{
 
         return view('pages/apps/master-data/user/manage/index', [
             'datas' => $datas,
+        ]);
+    }
+
+    // Content
+    public function affiliation($uid){
+        $uid = BaseHelper::decrypt($uid);
+
+        $datas = UserProfileRepositories::getProfile([
+            'id'    => $uid,
+            'with'  => ['belongsToManyUserAffiliation'],
+        ]);
+
+        return view('pages/apps/setting/user/affiliation', [
+            'backURI'   => $this->backManage,
+            'datas'     => BasedataHelper::baseAffiliation(),
+            'value'     => collect($datas->affiliation)->pluck('id')->toArray(),
+        ]);
+    }
+
+    public function affiliationPost(Request $request, $uid){
+        $uid = BaseHelper::decrypt($uid);
+
+        return UserAffiliationRepositories::sync([
+            'id'    => $uid,
+            'data'  => $request->content,
         ]);
     }
 

@@ -5,9 +5,9 @@
                 <div class="col">
                     <div class="card card-widget">
                         <a href="{{ $data->link }}" target="_blank">
-                            <img src="{{ $data->thumbnail }}" class="card-img-top" />
+                            <img src="{{ $data->thumbnail }}" class="card-img-top" title="{{ $data->title }}" />
                         </a>
-                        <a href="{{ $data->user->page }}" class="text-light">
+                        <a href="{{ $data->user->page }}" class="text-light" title="{{ $data->profile->name }}">
                             <div class="card-header">
                                 <div class="user-block">
                                     <img class="img-fluid img-circle" src="{{ $data->profile->avatar }}" />
