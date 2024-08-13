@@ -13,4 +13,12 @@ class UserRelation extends Model{
         'users_follower_id',
         'users_followed_id',
     ];
+
+    public function hasManyUserFollowed(){
+        return $this->hasMany(User::class, 'id', 'users_followed_id');
+    }
+
+    public function hasManyUserFollower(){
+        return $this->hasMany(User::class, 'id', 'users_follower_id');
+    }
 }

@@ -5,7 +5,10 @@ use Illuminate\Support\Facades\Route;
 // General
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\Auth\AuthController;
+
+// Apps
 use App\Http\Controllers\Apps\AppsController;
+use App\Http\Controllers\Apps\SimpingController as AppsSimpingController;
 
 // Base Data
 use App\Http\Controllers\Apps\Base\AffiliationController as BaseAffiliationController;
@@ -91,6 +94,11 @@ Route::group(['prefix' => '/'], function(){
     Route::group(['prefix' => 'apps', 'middleware' => ['auth']], function(){
         // Apps Index
         Route::get('/', [AppsController::class, 'index'])->name('apps.front.index');
+
+        // Apps Simping Routine
+        Route::group(['prefix' => 'simp'], function(){
+            Route::get('/', [AppsSimpingController::class, 'index'])->name('apps.simp.index');
+        });
 
         // Master data - Base Content Type
         Route::group(['prefix' => 'account-manager'], function(){

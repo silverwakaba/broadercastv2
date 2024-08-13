@@ -48,4 +48,10 @@ class UserFeed extends Model{
     public function hasOneThroughUserLink(){
         return $this->hasOneThrough(UserLink::class, UserLinkTracker::class, 'id', 'id', 'users_link_tracker_id', 'users_link_id');
     }
+
+    public function belongsToUserRelationFollowed(){
+        return $this->belongsTo(UserRelation::class, 'users_id', 'users_followed_id')->where([
+            ['users_follower_id', '=', auth()->user()->id],
+        ]);
+    }
 }

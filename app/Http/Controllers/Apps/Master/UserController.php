@@ -123,6 +123,7 @@ class UserController extends Controller{
             'nickname'  => $request->nickname,
             'dob'       => $request->dob,
             'dod'       => $request->dod,
+            'dor'       => $request->dor,
             'biography' => $request->biography,
         ]);
     }

@@ -27,7 +27,11 @@ class UserBiodataResource extends JsonResource{
             'nickname'          => $this->nickname ? explode(PHP_EOL, $this->nickname) : null,
             'nickname_preview'  => Str::limit($this->nickname, 15, ' (...)'),
             'dob'               => $this->dob ? Carbon::parse($this->dob)->format('d M') : null,
+            'dobDiff'           => $this->dob ? Carbon::parse($this->dob)->diffForHumans() : null,
             'dod'               => $this->dod ? Carbon::parse($this->dod)->format('d M Y') : null,
+            'dodDiff'           => $this->dod ? Carbon::parse($this->dod)->diffForHumans() : null,
+            'dor'               => $this->dor ? Carbon::parse($this->dor)->format('d M Y') : null,
+            'dorDiff'           => $this->dor ? Carbon::parse($this->dor)->diffForHumans() : null,
             'biography'         => $this->biography ? $markdownBioStripped : $this->biography,
         ];
     }

@@ -13,6 +13,9 @@
             <img class="profile-user-img img-fluid img-circle" src="{{ $profile->avatar->path }}" />
             <h3 class="profile-username" data-toggle="tooltip" data-placement="top" title="{{ $profile->name }}">{{ $profile->name_preview }}</h3>
             <p class="text-muted text-center">{{ $profile->title_temp }}</p>
+            <p class="text-center">
+                <a href="{{ route('creator.live') }}" class="btn btn-block btn-success">Follow</a>
+            </p>
         </div>
         <ul class="list-group">
             <li class="list-group-item text-center bg-secondary">
@@ -38,6 +41,12 @@
                     <p class="m-0">Unknown</p>
                 @endif
             </li>
+            @if($profile->biodata->dor)
+                <li class="list-group-item">
+                    <strong>Retirement Date</strong>
+                    <p class="m-0">{{ $profile->biodata->dor }}</p>
+                </li>
+            @endif
             <li class="list-group-item">
                 <strong>About</strong>
                 @if($profile->biodata->biography)
@@ -50,7 +59,7 @@
                 <strong>Personal Details</strong>
             </li>
             <li class="list-group-item">
-                <strong>Affiliation</strong>
+                <strong>Affiliation <sup>[<a href="https://help.silverspoon.me/docs/vtual/app/manager/affiliation#limitation" target="_blank">?</a>]</sup></strong>
                 @if($profile->affiliation)
                     <ul class="list-inline m-0">
                         @foreach($profile->affiliation AS $affiliation)

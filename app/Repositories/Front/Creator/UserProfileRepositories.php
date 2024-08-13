@@ -196,6 +196,15 @@ class UserProfileRepositories{
             isset($data['query']) ? $data['query'] : []
         );
 
+        // Simping Mode
+        if(
+            (isset($data['option']['simping']))
+            &&
+            ($data['option']['simping'] == true)
+        ){
+            $datas->has('belongsToUserRelationFollowed');
+        }
+
         // Order By
         if(
             (isset($data['option']['orderType']))
