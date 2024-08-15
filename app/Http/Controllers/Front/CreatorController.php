@@ -91,6 +91,7 @@ class CreatorController extends Controller{
                 'belongsToManyUserLanguage',
                 'belongsToManyUserRace',
                 'belongsToManyUserLink',
+                'belongsToUserRelationFollowed',
             ],
         ]);
 
@@ -135,6 +136,12 @@ class CreatorController extends Controller{
             'link'      => $link,
             'tracker'   => $tracker,
             'feed'      => $feed,
+        ]);
+    }
+
+    public function rels($id){
+        return $datas = UserProfileRepositories::updateRelationship([
+            'identifier' => $id,
         ]);
     }
 
@@ -214,6 +221,7 @@ class CreatorController extends Controller{
         ]);
     }
 
+    // VOD
     public function uploaded(){
         $datas = UserProfileRepositories::getFeed([
             'with'      => [
@@ -238,6 +246,7 @@ class CreatorController extends Controller{
         ]);
     }
 
+    // Setting
     public function setting(Request $request){
         $sort = BasedataHelper::baseSort();
         $timezone = BasedataHelper::baseTimezone();

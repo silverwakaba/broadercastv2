@@ -121,11 +121,23 @@
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                     @can('canLogin')
                         <li class="nav-header">Apps</li>
-                        <x-Adminlte.NavTree route="apps.front.*">
+                        <x-Adminlte.NavTree route="apps.front.*, apps.simp.*">
                             <x-Adminlte.NavLink icon="1" parent="1" fa="fas fa-tablet-alt" value="Apps" />
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <x-Adminlte.NavLink icon="1" route="apps.front.index" value="Dashboard" />
+                                </li>
+                                <li class="nav-item">
+                                    <x-Adminlte.NavLink icon="1" route="apps.simp.live" value="Live" />
+                                </li>
+                                <li class="nav-item">
+                                    <x-Adminlte.NavLink icon="1" route="apps.simp.scheduled" value="Scheduled" />
+                                </li>
+                                <li class="nav-item">
+                                    <x-Adminlte.NavLink icon="1" route="apps.simp.archived" value="Archived" />
+                                </li>
+                                <li class="nav-item">
+                                    <x-Adminlte.NavLink icon="1" route="apps.simp.uploaded" value="Uploaded" />
                                 </li>
                             </ul>
                         </x-Adminlte.NavTree>

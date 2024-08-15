@@ -3,6 +3,7 @@
 namespace App\Repositories\Front\Creator;
 
 use App\Helpers\BaseHelper;
+use App\Helpers\RedirectHelper;
 use App\Repositories\Base\CookiesRepositories;
 
 use App\Http\Resources\UserResource;
@@ -14,6 +15,7 @@ use App\Models\User;
 use App\Models\UserFeed;
 use App\Models\UserLink;
 use App\Models\UserLinkTracker;
+use App\Models\UserRelation;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -31,6 +33,23 @@ class UserProfileRepositories{
         ])->firstOrFail();
 
         return BaseHelper::resourceToJson(new UserResource($datas));
+    }
+
+    // Relationship
+    public static function updateRelationship(array $data){
+        $datas = User::with('belongsToUserRelationFollowed')->where('identifier', '=', $data['identifier'])->select('id', 'identifier', 'name')->first();
+
+        if(isset($datas) && isset($datas->belongsToUserRelationFollowed)){
+            $datas->belongsToUserRelationFollowed()->delete();
+        }
+        else{
+            $datas->belongsToUserRelationFollowed()->insertOrIgnore([
+                'users_follower_id' => auth()->user()->id,
+                'users_followed_id' => $datas->id,
+            ]);
+        }
+
+        return RedirectHelper::routeIntended(route('creator.profile', ['id' => $datas->identifier]));
     }
 
     // Link

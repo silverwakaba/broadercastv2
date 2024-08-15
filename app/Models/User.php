@@ -105,4 +105,12 @@ class User extends Authenticatable{
     public function belongsToManyUserFeed(){
         return $this->belongsToMany(BaseLink::class, 'users_feed', 'users_id', 'base_link_id')->withPivot('identifier', 'title', 'published');
     }
+
+    public function belongsToUserRelationFollowed(){
+        $uid = isset(auth()->user()->id) ? auth()->user()->id : 'placeholderUserID';
+
+        return $this->belongsTo(UserRelation::class, 'id', 'users_followed_id')->where([
+            ['users_follower_id', '=', $uid],
+        ]);
+    }
 }

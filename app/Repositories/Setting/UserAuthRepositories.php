@@ -33,7 +33,7 @@ class UserAuthRepositories{
         if(Auth::attempt(['email' => $data['email'], 'password' => $data['password']], $data['remember'])){
             request()->session()->regenerate();
 
-            return RedirectHelper::routeIntended('apps.front.index');
+            return RedirectHelper::routeIntended(route('apps.front.index'));
         }
         else{
             return RedirectHelper::routeBackWithErrors([

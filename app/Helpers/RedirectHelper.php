@@ -21,6 +21,12 @@ class RedirectHelper{
         elseif($mode == "delete"){
             $modeMessage = "deletes to $title";
         }
+        elseif($mode == "follow"){
+            $modeMessage = "following " . Str::of($title)->apa();
+        }
+        elseif($mode == "unfollow"){
+            $modeMessage = "unfollowing " . Str::of($title)->apa();
+        }
         elseif($mode == "register"){
             $modeMessage = "user registration";
             
@@ -84,6 +90,6 @@ class RedirectHelper{
     }
 
     public static function routeIntended($route){
-        return redirect()->intended(route($route));
+        return redirect()->intended($route);
     }
 }

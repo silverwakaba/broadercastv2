@@ -48,6 +48,9 @@ Route::group(['prefix' => '/'], function(){
         // Profile
         Route::get('@{id}', [FrontCreatorController::class, 'profile'])->name('creator.profile');
 
+        // Follow and Unfollow - Update Relationship
+        Route::get('@{id}/rels', [FrontCreatorController::class, 'rels'])->name('creator.rels')->middleware(['auth']);
+
         // Live
         Route::get('live', [FrontCreatorController::class, 'live'])->name('creator.live');
 
@@ -97,7 +100,20 @@ Route::group(['prefix' => '/'], function(){
 
         // Apps Simping Routine
         Route::group(['prefix' => 'simp'], function(){
+            // Index
             Route::get('/', [AppsSimpingController::class, 'index'])->name('apps.simp.index');
+
+            // Live
+            Route::get('live', [AppsSimpingController::class, 'live'])->name('apps.simp.live');
+
+            // Scheduled
+            Route::get('scheduled', [AppsSimpingController::class, 'scheduled'])->name('apps.simp.scheduled');
+
+            // Archived
+            Route::get('archived', [AppsSimpingController::class, 'archived'])->name('apps.simp.archived');
+
+            // Uploaded
+            Route::get('uploaded', [AppsSimpingController::class, 'uploaded'])->name('apps.simp.uploaded');
         });
 
         // Master data - Base Content Type

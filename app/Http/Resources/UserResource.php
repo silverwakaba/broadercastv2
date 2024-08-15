@@ -43,6 +43,7 @@ class UserResource extends JsonResource{
             'language'      => UserLanguageResource::collection($this->whenLoaded('belongsToManyUserLanguage')),
             'link'          => UserLinkResource::collection($this->whenLoaded('belongsToManyUserLink')),
             'race'          => UserRaceResource::collection($this->whenLoaded('belongsToManyUserRace')),
+            'followed'      => new UserFollowedResource($this->whenLoaded('belongsToUserRelationFollowed')),
         ];
     }
 }
