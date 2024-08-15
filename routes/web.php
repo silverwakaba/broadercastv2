@@ -28,6 +28,7 @@ use App\Http\Controllers\Apps\Master\UserController as MasterUserController;
 use App\Http\Controllers\Front\CreatorController as FrontCreatorController;
 
 // Debug | Please comment before deployment
+use App\Http\Controllers\Cron\TwitchCron;
 use App\Http\Controllers\Cron\YoutubeCron;
 
 Route::group(['prefix' => '/'], function(){
@@ -36,6 +37,7 @@ Route::group(['prefix' => '/'], function(){
 
     // Debug
     Route::group(['prefix' => 'debug'], function(){
+        Route::get('twitch', [TwitchCron::class, 'fetchDebug']);
         Route::get('youtube', [YoutubeCron::class, 'fetchDebug']);
     });
 
