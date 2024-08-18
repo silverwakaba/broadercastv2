@@ -15,7 +15,17 @@ class TwitchCron extends Controller{
     public function fetchDebug(){
         // return TwitchRepositories::fetchProfile('dttodot');
         // return TwitchRepositories::fetchSubscriber('715990491');
-        
-        return TwitchRepositories::fetchVideoViaAPI('715990491');
+
+        // return TwitchRepositories::fetchProfile('dttodot');
+        // return TwitchRepositories::fetchProfile(715990491);
+
+        // return TwitchRepositories::fetchProfile('emtsmaru');
+        // return TwitchRepositories::fetchProfile(848822715);
+
+        // return TwitchRepositories::scrapeChannel('dttodot');
+
+        // return TwitchRepositories::scrapeChannel('dttodot');
+
+        return TwitchRepositories::fetchVideoViaAPI(null, 715990491, 41492753431);
     }
 }

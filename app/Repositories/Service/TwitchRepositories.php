@@ -18,6 +18,20 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 
 class TwitchRepositories{
+    /*
+    |------------------------------
+    | Core Block
+    |------------------------------
+    */
+
+    public static function errorKeyword(){
+        return [
+            'unusual traffic',
+            'Enable JavaScript and cookies to continue',
+            'Our systems have detected unusual traffic from your computer network',
+        ];
+    }
+
     /**
      * ----------------------------
      * Basic Function
@@ -27,14 +41,14 @@ class TwitchRepositories{
     public static function apiKey(){
         $datas = BaseAPI::where([
             ['base_link_id', '=', '1'],
-        ])->inRandomOrder()->first();
+        ])->select('client_id', 'client_secret', 'bearer')->inRandomOrder()->first();
 
         return $datas;
     }
 
     // Update Twitch Bearer Token
     public static function updateBearerToken(){
-        $datas = BaseAPI::where('base_link_id', '=', '1')->select('bearer', 'client_id', 'client_secret')->get();
+        $datas = BaseAPI::where('base_link_id', '=', '1')->select('client_id', 'client_secret', 'bearer')->get();
 
         foreach($datas AS $data){
             $validate = Http::acceptJson()->withHeaders([
@@ -82,10 +96,18 @@ class TwitchRepositories{
 
         $apiKey = self::apiKey();
 
-        $params = [
-            // String, as in "dttodot"
-            'login' => $channelID,
-        ];
+        if(is_integer($channelID)){
+            $params = [
+                // Integer, as in "715990491"
+                'id'    => $channelID,
+            ];
+        }
+        elseif(is_string($channelID)){
+            $params = [
+                // String, as in "dttodot"
+                'login' => $channelID,
+            ];
+        }
 
         return $http = Http::acceptJson()->withHeaders([
             'Authorization' => 'Bearer ' . $apiKey->bearer,
@@ -164,7 +186,7 @@ class TwitchRepositories{
     }
 
     // Fetch Stream via API
-    public static function fetchVideoViaAPI($streamID){
+    public static function fetchVideoViaAPI($videoID = null, $channelID = null, $streamID = null){
         /**
          * Notes
          * streamID !== videoID
@@ -176,12 +198,42 @@ class TwitchRepositories{
         $apiKey = self::apiKey();
 
         $params = [
-            'id' => $streamID,
+            'id'        => $videoID,
+            'user_id'   => $channelID,
         ];
     
-        return $http = Http::acceptJson()->withHeaders([
+        $http = Http::acceptJson()->withHeaders([
             'Authorization' => 'Bearer ' . $apiKey->bearer,
             'Client-Id'     => $apiKey->client_id,
         ])->get('https://api.twitch.tv/helix/videos', $params)->json();
+
+        if(($videoID == null) && ($streamID != null)){
+            foreach($http['data'] as $datas){
+                if($datas['stream_id'] == $streamID){
+                    return $datas;
+                }
+            }
+        }
+        else{
+            return $http;
+        }
+    }
+
+    public static function scrapeChannel($channelIDStr, $channelIDInt = null){
+        $http = Http::get('https://www.twitch.tv/' . $channelIDStr)->body();
+
+        $live = Str::betweenFirst($http, ',"isLiveBroadcast":', '}}');
+        $title = Str::betweenFirst($http, '"description":"', '",');
+
+        if((Str::of($live)->contains(['true'])) && (Str::length($title) <= 140)){
+            $stream = self::fetchStreamViaAPI('715990491'); // Use $channelIDInt on prod
+
+            if(isset($stream) && count($stream['data']) >= 1){
+                return "Update or Create";
+            }
+            else{
+                return "Update as Archived";
+            }
+        }
     }
 }
