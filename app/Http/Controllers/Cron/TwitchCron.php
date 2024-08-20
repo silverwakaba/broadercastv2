@@ -24,8 +24,8 @@ class TwitchCron extends Controller{
 
         // return TwitchRepositories::scrapeChannel('dttodot');
 
-        // return TwitchRepositories::scrapeChannel('dttodot');
+        // return TwitchRepositories::fetchChannelViaScraper('ran_hinokuma');
 
-        return TwitchRepositories::fetchVideoViaAPI(null, 715990491, 41492753431);
+        return TwitchRepositories::fetchVideoViaAPI(null, 715990491);
     }
 }

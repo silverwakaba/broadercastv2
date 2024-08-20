@@ -219,11 +219,13 @@ class TwitchRepositories{
         }
     }
 
-    public static function scrapeChannel($channelIDStr, $channelIDInt = null){
+    public static function fetchChannelViaScraper($channelIDStr, $channelIDInt = null){
         $http = Http::get('https://www.twitch.tv/' . $channelIDStr)->body();
 
         $live = Str::betweenFirst($http, ',"isLiveBroadcast":', '}}');
         $title = Str::betweenFirst($http, '"description":"', '",');
+
+        return $title;
 
         if((Str::of($live)->contains(['true'])) && (Str::length($title) <= 140)){
             $stream = self::fetchStreamViaAPI('715990491'); // Use $channelIDInt on prod

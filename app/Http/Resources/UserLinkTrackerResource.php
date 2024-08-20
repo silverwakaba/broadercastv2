@@ -16,15 +16,17 @@ class UserLinkTrackerResource extends JsonResource{
      */
     public function toArray(Request $request) : array{
         $data = BaseLink::where([
-            ['id', '=', $this->base_link_id]
+            ['id', '=', $this->base_link_id],
         ])->select('name')->first();
 
         $null = config('app.cdn_static_url') . "/system/internal/image/misc/placeholder/banner.jpg";
 
         if($data->name == 'YouTube'){
-            $banner = $this->banner ? Str::of($this->banner)->append('=w1080-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj') : $null;
+            $avatar = $this->avatar ? Str::of(config('app.cdn_cache_youtube_profile') . '/')->append($this->avatar) : $null;
+            $banner = $this->banner ? Str::of(config('app.cdn_cache_youtube_profile') . '/')->append(Str::of($this->banner)->append('=w1080-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj')) : $null;
         }
         else{
+            $avatar = $null;
             $banner = $null;
         }
 
@@ -33,7 +35,7 @@ class UserLinkTrackerResource extends JsonResource{
             'identifier'    => $this->identifier,
             'name'          => $this->name,
             'name_preview'  => Str::limit($this->name, 15, ' (...)'),
-            'avatar'        => $this->avatar,
+            'avatar'        => $avatar,
             'banner'        => $banner,
             'view'          => $this->view,
             'content'       => $this->content,

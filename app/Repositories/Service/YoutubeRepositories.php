@@ -128,8 +128,7 @@ class YoutubeRepositories{
                 else{
                     $checkChannel = null;
                 }
-                
-                $debug = true;
+
                 $linkID = BaseHelper::decrypt($id);
                 $userLink = UserLink::find($linkID);
                 $countChannel = self::userLinkTrackerChecker($checkChannel);
@@ -147,19 +146,18 @@ class YoutubeRepositories{
                                 'users_link_id' => $linkID,
                                 'base_link_id'  => $userLink->base_link_id,
                                 'identifier'    => $data['id'],
+                                'handler'       => $data['snippet']['customUrl'],
                                 'playlist'      => $data['contentDetails']['relatedPlaylists']['uploads'],
                                 'name'          => $data['snippet']['title'],
-                                'avatar'        => Str::before($data['snippet']['thumbnails']['medium']['url'], '='),
-                                'banner'        => isset($data['brandingSettings']['image']['bannerExternalUrl']) ? Str::before($data['brandingSettings']['image']['bannerExternalUrl'], '=') : null,
+                                'avatar'        => BaseHelper::getOnlyPath(Str::before($data['snippet']['thumbnails']['medium']['url'], '='), '.com/'),
+                                'banner'        => isset($data['brandingSettings']['image']['bannerExternalUrl']) ? BaseHelper::getOnlyPath(Str::before($data['brandingSettings']['image']['bannerExternalUrl'], '='), '.com/') : null,
                                 'content'       => $data['statistics']['videoCount'] ? $data['statistics']['videoCount'] : 0,
                                 'view'          => $data['statistics']['viewCount'] ? $data['statistics']['viewCount'] : 0,
                                 'subscriber'    => $data['statistics']['hiddenSubscriberCount'] == false ? $data['statistics']['subscriberCount'] : 0,
                                 'joined'        => Carbon::parse($data['snippet']['publishedAt'])->timezone(config('app.timezone'))->toDateTimeString(),
                             ];
 
-                            if(
-                                (auth()->user()->hasRole('Admin|Moderator'))
-                            ){
+                            if((auth()->user()->hasRole('Admin|Moderator'))){
                                 $userLink->update([
                                     'base_decision_id' => 2,
                                 ]);
@@ -209,6 +207,7 @@ class YoutubeRepositories{
             }
         }
         catch(\Throwable $th){
+            // redirect karena action
             return $th;
         }
     }
@@ -234,6 +233,7 @@ class YoutubeRepositories{
                         ['identifier', '=', $channelID],
                         ['base_link_id', '=', 2]
                     ])->update([
+                        'handler'       => $data['snippet']['customUrl'],
                         'playlist'      => $data['contentDetails']['relatedPlaylists']['uploads'],
                         'name'          => $data['snippet']['title'],
                         'avatar'        => Str::before($data['snippet']['thumbnails']['medium']['url'], '='),

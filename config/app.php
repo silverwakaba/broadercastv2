@@ -22,9 +22,12 @@ return [
     |
     */
 
-    'cdn_private_url'   => env('APP_PRIVATE_CDN_URL', 'https://vault.silverspoon.me'),
-    'cdn_static_url'    => env('APP_STATIC_CDN_URL', 'https://static.silverspoon.me'),
-    'cdn_public_url'    => env('APP_PUBLIC_CDN_URL', 'https://library.silverspoon.me'),
+    'cdn_private_url'               => env('APP_PRIVATE_CDN_URL', 'https://vault.silverspoon.me'),
+    'cdn_static_url'                => env('APP_STATIC_CDN_URL', 'https://static.silverspoon.me'),
+    'cdn_public_url'                => env('APP_PUBLIC_CDN_URL', 'https://library.silverspoon.me'),
+    'cdn_cache_twitch'              => env('APP_CDN_CACHE_TWITCH', 'https://cache-twitch.silverspoon.me'),
+    'cdn_cache_youtube_profile'     => env('APP_CACHE_YOUTUBE_PROFILE', 'https://cache-youtube-profile.silverspoon.me'),
+    'cdn_cache_youtube_thumbnail'   => env('APP_CACHE_YOUTUBE_THUMBNAIL', 'https://cache-youtube-thumbnail.silverspoon.me'),
 
     /*
     |--------------------------------------------------------------------------

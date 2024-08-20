@@ -18,6 +18,26 @@ class BaseHelper{
         return hash("adler32", $value);
     }
 
+    public static function getOnlyPath($url, $after){
+        $datas = Str::contains($url, [
+            // Youtube Avatar and Banner
+            'https://yt3.ggpht.com', 'https://yt3.googleusercontent.com',
+            
+            // Youtube Thumbnail
+            'https://i.ytimg.com',
+
+            // Twitch All-Static
+            'https://static-cdn.jtvnw.net',
+        ]);
+
+        if(($datas == true)){
+            return Str::of($url)->after($after);
+        }
+        else{
+            return $url;
+        }
+    }
+
     public static function setIdentifier($name, $before = null, $after = null){
         $slug = Str::of($name)->slug('-');
 

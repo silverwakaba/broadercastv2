@@ -17,6 +17,7 @@ class UserFeed extends Model{
         'base_feed_type_id',
         'concurrent',
         'identifier',
+        'thumbnail',
         'title',
         'published',
         'schedule',
