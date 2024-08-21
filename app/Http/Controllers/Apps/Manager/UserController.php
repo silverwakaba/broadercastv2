@@ -23,6 +23,7 @@ use App\Repositories\Setting\UserLanguageRepositories;
 use App\Repositories\Setting\UserLinkRepositories;
 use App\Repositories\Setting\UserProfileRepositories;
 use App\Repositories\Setting\UserRaceRepositories;
+use App\Repositories\Service\TwitchRepositories;
 use App\Repositories\Service\YoutubeRepositories;
 
 use Illuminate\Http\Request;
@@ -196,7 +197,9 @@ class UserController extends Controller{
         ]);
 
         if($datas->belongsToBaseLink->name == 'Twitch'){
-            $structure = 'https://www.twitch.tv/wakaba6969';
+            $structure = [
+                'https://www.twitch.tv/wakaba6969',
+            ];
         }
         elseif($datas->belongsToBaseLink->name == 'YouTube'){
             $structure = [
@@ -215,7 +218,9 @@ class UserController extends Controller{
 
     public function linkVerifyPost(UserLinkVerificationRequest $request, $id){
         if($request->service == 'Twitch'){
-            return "Twitch";
+            return TwitchRepositories::verifyChannel($request->channel, auth()->user()->id, $id, [
+                'route' => 'apps.manager.link',
+            ]);
         }
         elseif($request->service == 'YouTube'){
             return YoutubeRepositories::verifyChannel($request->channel, auth()->user()->id, $id, [

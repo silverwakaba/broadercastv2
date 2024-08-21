@@ -81,6 +81,7 @@ class YoutubeRepositories{
     // User Link Tracker - Checker
     public static function userLinkTrackerChecker($channelID){
         return UserLinkTracker::where([
+            ['base_link_id', '=', 2],
             ['identifier', '=', $channelID],
         ])->select('identifier')->get()->count();
     }

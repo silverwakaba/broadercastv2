@@ -24,6 +24,9 @@ class UserChannelProfileResource extends JsonResource{
         if($data->name == 'YouTube'){
             $avatar = $this->avatar ? Str::of(config('app.cdn_cache_youtube_profile') . '/')->append($this->avatar) : $null;
         }
+        elseif($data->name == 'Twitch'){
+            $avatar = $this->avatar ? Str::of(config('app.cdn_cache_twitch') . '/')->append($this->avatar) : $null;
+        }
         else{
             $avatar = $null;
         }

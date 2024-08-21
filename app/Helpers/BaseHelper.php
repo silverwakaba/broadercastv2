@@ -27,7 +27,7 @@ class BaseHelper{
             'https://i.ytimg.com',
 
             // Twitch All-Static
-            'https://static-cdn.jtvnw.net',
+            'https://static-cdn.jtvnw.net'
         ]);
 
         if(($datas == true)){

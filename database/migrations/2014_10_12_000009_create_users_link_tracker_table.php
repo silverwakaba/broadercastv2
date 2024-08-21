@@ -17,7 +17,7 @@ return new class extends Migration{
             $table->boolean('initialized')->default(false); // Initializing tracker feed
             $table->string('identifier');
             $table->string('handler');
-            $table->string('playlist');
+            $table->string('playlist')->nullable();
             $table->string('name');
             $table->string('avatar');
             $table->string('banner')->nullable();

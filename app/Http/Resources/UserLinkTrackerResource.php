@@ -25,6 +25,10 @@ class UserLinkTrackerResource extends JsonResource{
             $avatar = $this->avatar ? Str::of(config('app.cdn_cache_youtube_profile') . '/')->append($this->avatar) : $null;
             $banner = $this->banner ? Str::of(config('app.cdn_cache_youtube_profile') . '/')->append(Str::of($this->banner)->append('=w1080-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj')) : $null;
         }
+        elseif($data->name == 'Twitch'){
+            $avatar = $this->avatar ? Str::of(config('app.cdn_cache_twitch') . '/')->append($this->avatar) : $null;
+            $banner = $this->banner ? Str::of(config('app.cdn_cache_twitch') . '/')->append($this->banner) : $null;
+        }
         else{
             $avatar = $null;
             $banner = $null;
