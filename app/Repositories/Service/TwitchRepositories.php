@@ -17,6 +17,9 @@ use Illuminate\Http\Client\Pool;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 
+//
+use Illuminate\Support\Facades\Log;
+
 class TwitchRepositories{
     /*
     |------------------------------
@@ -212,28 +215,17 @@ class TwitchRepositories{
 
     // Fetch Profile
     public static function fetchProfile($channelID){
-        /**
-         * Notes
-         * identifier = id
-         * name = display_name
-         * avatar = profile_image_url
-         * banner = offline_image_url
-         * view = deprecated (0)
-         * content = no vod (0)
-         * subscriber = self::fetchSubscriber
-         * joined = created_at
-        **/
 
         $apiKey = self::apiKey();
 
-        if(is_integer($channelID)){
+        if(is_string($channelID)){
             $params = [
-                'id' => $channelID,
+                'login' => $channelID,
             ];
         }
         else{
             $params = [
-                'login' => $channelID,
+                'id' => $channelID,
             ];
         }
 
@@ -245,11 +237,6 @@ class TwitchRepositories{
 
     // Fetch Subscriber
     public static function fetchSubscriber($channelID){
-        /**
-         * Notes
-         * subscriber = total
-        **/
-
         $apiKey = self::apiKey();
 
         $params = [
@@ -265,11 +252,6 @@ class TwitchRepositories{
 
     // Fetch Activity
     public static function fetchChannel($channelID){
-        /**
-         * Notes
-         * -
-        **/
-
         $apiKey = self::apiKey();
 
         $params = [
@@ -285,15 +267,6 @@ class TwitchRepositories{
 
     // Fetch Stream via API
     public static function fetchStream($channelID){
-        /**
-         * Notes
-         * concurrent = viewer_count
-         * identifier = id
-         * title = title
-         * published & actual_start = started_at
-         * actual_end = ?
-        **/
-
         $apiKey = self::apiKey();
 
         $params = [
@@ -309,14 +282,6 @@ class TwitchRepositories{
 
     // Fetch Stream via API
     public static function fetchVideo($videoID = null, $channelID = null, $streamID = null){
-        /**
-         * Notes
-         * streamID !== videoID
-         * 
-         * actual_end = published_at
-         * duration = duration (dikasih awalan PT. Mis: 2h31m6s jadinya PT2H31M6S, uppercase)
-        **/
-
         $apiKey = self::apiKey();
 
         $params = [
@@ -347,6 +312,32 @@ class TwitchRepositories{
      * ----------------------------
     **/
 
+    public static function updateProfile($channelID, $userID){
+        try{
+            $http = self::fetchProfile($channelID);
+
+            foreach($http['data'] as $data){
+                $tracker = new UserLinkTracker();
+                $tracker->timestamps = false;
+                
+                $tracker->where([
+                    ['users_id', '=', $userID],
+                    ['identifier', '=', $channelID],
+                    ['base_link_id', '=', 1],
+                ])->update([
+                    'name'      => $data['display_name'],
+                    'handler'   => $data['login'],
+                    'name'      => $data['display_name'],
+                    'avatar'    => BaseHelper::getOnlyPath($data['profile_image_url'], '.net/'),
+                    'banner'    => ($data['offline_image_url'] != null) ? BaseHelper::getOnlyPath($data['offline_image_url'], '.net/') : null,
+                ]);
+            }
+        }
+        catch(\Throwable $th){
+            //return $th;
+        }
+    }
+
     // Update Subscriber
     public static function updateSubscriber($channelID, $userID){
         try{
@@ -360,7 +351,8 @@ class TwitchRepositories{
                 ['identifier', '=', $channelID],
                 ['base_link_id', '=', 1],
             ])->update([
-                'subscriber' => isset($http['total']) ? $http['total'] : 0,
+                'initialized'   => true,
+                'subscriber'    => isset($http['total']) ? $http['total'] : 0,
             ]);
         }
         catch(\Throwable $th){
@@ -424,22 +416,34 @@ class TwitchRepositories{
     // Wrap finished streaming
     public static function wrapChannelActivity($channelID, $streamID){
         try{
-            $http = self::fetchVideo(null, $channelID, $streamID);
-            $feed = UserFeed::where('identifier', '=', $streamID)->first();
+            $feed = UserFeed::where([
+                ['identifier', '=', $streamID],
+                ['base_status_id', '=', 8],
+            ])->first();
 
-            if(Str::contains($http['thumbnail_url'], '/_404/404_processing_%{width}x%{height}.png') == false){
-                $feed->update([
-                    'base_status_id'    => 9,
-                    'concurrent'        => 0,
-                    'identifier'        => $http['id'],
-                    'thumbnail'         => Str::replace('%{width}x%{height}', '640x480', BaseHelper::getOnlyPath($http['thumbnail_url'], '.net/')),
-                    'title'             => $http['title'],
-                    'duration'          => Str::of('PT')->append(Str::of($http['duration'])->upper()),
-                ]);
+            if(isset($feed) && ($feed->base_status_id == 8)){
+                $http = self::fetchVideo(null, $channelID, $streamID);
+
+                if(Str::contains($http['thumbnail_url'], '/_404/404_processing_%{width}x%{height}.png') == false){
+                    $feed->update([
+                        'base_status_id'    => 9,
+                        'concurrent'        => 0,
+                        'identifier'        => $http['id'],
+                        'thumbnail'         => Str::replace('%{width}x%{height}', '640x480', BaseHelper::getOnlyPath($http['thumbnail_url'], '.net/')),
+                        'title'             => $http['title'],
+                        'duration'          => Str::of('PT')->append(Str::of($http['duration'])->upper()),
+                    ]);
+
+                    if((isset($http['created_at'])) && (Carbon::parse($http['created_at'])->timezone(config('app.timezone'))->toDateTimeString() >= $feed->belongsToUserLinkTracker()->select('updated_at')->first()->updated_at)){
+                        $feed->belongsToUserLinkTracker()->update([
+                            'updated_at' => Carbon::parse($http['created_at'])->timezone(config('app.timezone'))->toDateTimeString(),
+                        ]);
+                    }
+                }
             }
         }
         catch(\Throwable $th){
-            //return $th;
+            // return $th;
         }
     }
 }
