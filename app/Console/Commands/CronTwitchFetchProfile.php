@@ -24,7 +24,7 @@ class CronTwitchFetchProfile extends Command{
     /**
      * Execute the console command.
      */
-    public function handle(){
+    public function handle(TwitchCron $cron){
         $cron->profiler();
     }
 }
