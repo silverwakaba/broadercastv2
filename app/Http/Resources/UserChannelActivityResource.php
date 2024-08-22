@@ -26,7 +26,7 @@ class UserChannelActivityResource extends JsonResource{
             $link = Str::replace('REPLACETHISPLACEHOLDER', $this->identifier, $data->url_content);
             $thumbnail = Str::replace('REPLACETHISPLACEHOLDER', $this->identifier, $data->url_thumbnail);
         }
-        if($data->name == 'Twitch'){
+        elseif($data->name == 'Twitch'){
             if(($this->base_status_id == 8) && ($this->thumbnail == null)){
                 $link = Str::of('https://www.twitch.tv/')->append($this->belongsToUserLinkTracker->handler);
                 $thumbnail = Str::replace('[insertUsername]', $this->belongsToUserLinkTracker->handler, Str::of(config('app.cdn_cache_twitch'))->append('/previews-ttv/live_user_[insertUsername]-640x480.jpg'));

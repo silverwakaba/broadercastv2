@@ -138,7 +138,8 @@ class TwitchRepositories{
                 $limitChannel = self::userLinkTrackerCounter($userLink->users_id);
 
                 if(($checkChannel !== null) && (Str::of($checkChannel)->length() <= 25)){
-                    $http = self::fetchProfile($checkChannel);
+                    $channeru = (string) $checkChannel;
+                    $http = self::fetchProfile($channeru);
 
                     if(count($http['data']) >= 1){
                         foreach($http['data'] AS $data);
@@ -215,7 +216,6 @@ class TwitchRepositories{
 
     // Fetch Profile
     public static function fetchProfile($channelID){
-
         $apiKey = self::apiKey();
 
         if(is_string($channelID)){
