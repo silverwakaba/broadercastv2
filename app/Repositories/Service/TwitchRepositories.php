@@ -375,10 +375,10 @@ class TwitchRepositories{
 
             $live = Str::betweenFirst($http, ',"isLiveBroadcast":', '}}');
             $title = Str::betweenFirst($http, '"description":"', '",');
+            $tracker = self::userLinkTracker($channelIDInt, $userID);
 
             if((Str::of($live)->contains(['true'])) && (Str::length($title) <= 140)){
                 $stream = self::fetchStream($channelIDInt);
-                $tracker = self::userLinkTracker($channelIDInt, $userID);
 
                 if(isset($stream) && count($stream['data']) >= 1){
                     foreach($stream['data'] as $data){
@@ -417,7 +417,7 @@ class TwitchRepositories{
             }
         }
         catch(\Throwable $th){
-            //return $th;
+            // return $th;
         }
     }
 
@@ -425,10 +425,9 @@ class TwitchRepositories{
     public static function wrapChannelActivity($channelID, $streamID){
         try{
             $http = self::fetchVideo(null, $channelID, $streamID);
+            $feed = UserFeed::where('identifier', '=', $streamID)->first();
 
             if(Str::contains($http['thumbnail_url'], '/_404/404_processing_%{width}x%{height}.png') == false){
-                $feed = UserFeed::where('identifier', '=', $streamID)->first();
-
                 $feed->update([
                     'base_status_id'    => 9,
                     'concurrent'        => 0,

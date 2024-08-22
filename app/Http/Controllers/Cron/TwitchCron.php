@@ -13,22 +13,6 @@ use Illuminate\Support\Collection;
 class TwitchCron extends Controller{
     // Debug
     public function fetchDebug(){
-        // return TwitchRepositories::fetchProfile('dttodot');
-        // return TwitchRepositories::fetchSubscriber('715990491');
-
-        // return TwitchRepositories::fetchProfile('dttodot');
-        // return TwitchRepositories::fetchProfile(715990491);
-
-        // return TwitchRepositories::fetchProfile('emtsmaru');
-        // return TwitchRepositories::fetchProfile(848822715);
-
-        // return TwitchRepositories::scrapeChannel('dttodot');
-
-        // return TwitchRepositories::fetchChannelViaScraper('ran_hinokuma');
-
-        // return TwitchRepositories::fetchVideo(null, 715990491, null);
-        return TwitchRepositories::fetchChannelActivity('dttodot', 715990491, 1);
-
-        // return TwitchRepositories::wrapChannelActivity(715990491, 41532916119);
+        // 
     }
 }

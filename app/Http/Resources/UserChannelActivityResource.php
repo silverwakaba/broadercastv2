@@ -33,7 +33,13 @@ class UserChannelActivityResource extends JsonResource{
             }
             elseif(($this->base_status_id == 9) && ($this->thumbnail != null)){
                 $link = Str::of('https://www.twitch.tv/videos/')->append($this->identifier);
-                $thumbnail = Str::of(config('app.cdn_cache_twitch') . '/')->append($this->thumbnail);
+
+                if(Carbon::now()->subDays(30)->timestamp >= Carbon::parse($this->actual_start)->timestamp){
+                    $thumbnail = Str::of(config('app.cdn_cache_twitch'))->append('/ttv-static/404_preview-640x480.jpg');
+                }
+                else{
+                    $thumbnail = Str::of(config('app.cdn_cache_twitch') . '/')->append($this->thumbnail);
+                }
             }
             else{
                 $link = Str::of('https://www.twitch.tv/')->append($this->belongsToUserLinkTracker->handler);
@@ -42,6 +48,7 @@ class UserChannelActivityResource extends JsonResource{
         }
         else{
             $link = null;
+            $thumbnail = null;
         }
 
         return [
@@ -74,18 +81,12 @@ class UserChannelActivityResource extends JsonResource{
 
     public function timestamp(){
         // Scheduled
-        if(
-            ($this->base_status_id == 7)
-        ){
+        if(($this->base_status_id == 7)){
             return Carbon::parse($this->schedule)->timezone(CookiesRepositories::timezone())->format('d M Y, g:i A');
         }
 
         // Live
-        elseif(
-            ($this->base_status_id == 8)
-            ||
-            ($this->base_status_id == 9)
-        ){
+        elseif(($this->base_status_id == 8) || ($this->base_status_id == 9)){
             return Carbon::parse($this->actual_start)->timezone(CookiesRepositories::timezone())->format('d M Y, g:i A');
         }
 
@@ -98,18 +99,12 @@ class UserChannelActivityResource extends JsonResource{
 
     public function timestampForHuman(){
         // Scheduled
-        if(
-            ($this->base_status_id == 7)
-        ){
+        if(($this->base_status_id == 7)){
             return Carbon::parse($this->schedule)->timezone(CookiesRepositories::timezone())->diffForHumans();
         }
 
         // Live
-        elseif(
-            ($this->base_status_id == 8)
-            ||
-            ($this->base_status_id == 9)
-        ){
+        elseif(($this->base_status_id == 8) || ($this->base_status_id == 9)){
             return Carbon::parse($this->actual_start)->timezone(CookiesRepositories::timezone())->diffForHumans();
         }
 
