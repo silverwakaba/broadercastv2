@@ -318,8 +318,8 @@ class TwitchRepositories{
 
             foreach($http['data'] as $data){
                 $tracker = new UserLinkTracker();
-                $tracker->timestamps = false;
                 
+                $tracker->timestamps = false;
                 $tracker->where([
                     ['users_id', '=', $userID],
                     ['identifier', '=', $channelID],

@@ -15,13 +15,13 @@ use Illuminate\Support\Collection;
 class TwitchCron extends Controller{
     // Debug
     public function fetchDebug(){
-        // Profiler
-        // TwitchRepositories::updateProfile(883696964, 1);
-        // TwitchRepositories::updateSubscriber($chunk->identifier, $chunk->users_id);
-        
-        // return $this->init();
-        // return $this->checker();
-        return $this->profiler();
+        // 
+    }
+
+    // MISC
+    public function misc(){
+        // Update Bearer Token
+        TwitchRepositories::updateBearerToken();
     }
 
     // Channel Initialization

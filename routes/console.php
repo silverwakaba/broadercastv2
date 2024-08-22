@@ -9,12 +9,15 @@ use Illuminate\Support\Facades\Schedule;
 **/
 
 Schedule::command('app:cron-youtube-initial')->everyTenMinutes()->onOneServer()->timezone('Asia/Jakarta')->runInBackground(); // everyTenMinutes
-Schedule::command('app:cron-youtube-metadata')->everyFiveMinutes()->onOneServer()->timezone('Asia/Jakarta')->runInBackground(); // everyTenMinutes
-Schedule::command('app:cron-youtube-checker')->everyThreeMinutes()->onOneServer()->timezone('Asia/Jakarta')->runInBackground(); // everyFiveMinutes
+Schedule::command('app:cron-youtube-metadata')->everyFiveMinutes()->onOneServer()->timezone('Asia/Jakarta')->runInBackground(); // everyFiveMinutes
+Schedule::command('app:cron-youtube-checker')->everyThreeMinutes()->onOneServer()->timezone('Asia/Jakarta')->runInBackground(); // everyThreeMinutes
 Schedule::command('app:cron-youtube-fetch-profile')->daily()->onOneServer()->timezone('Asia/Jakarta')->runInBackground();
 
 /**
  * Twitch Block
 **/
 
-// Not yet, you fucking dipshit
+Schedule::command('app:cron-twitch-initial')->everyTenMinutes()->onOneServer()->timezone('Asia/Jakarta')->runInBackground(); // everyTenMinutes
+Schedule::command('app:cron-twitch-checker')->everyThreeMinutes()->onOneServer()->timezone('Asia/Jakarta')->runInBackground(); // everyThreeMinutes
+Schedule::command('app:cron-twitch-fetch-profile')->daily()->onOneServer()->timezone('Asia/Jakarta')->runInBackground();
+Schedule::command('app:cron-twitch-fetch-misc')->daily()->onOneServer()->timezone('Asia/Jakarta')->runInBackground();
