@@ -17,6 +17,7 @@ class YoutubeCron extends Controller{
     // Debug
     public function fetchDebug(){
         // Commented
+        return YoutubeRepositories::fetchArchiveViaAPI('UCF_U2GCKHvDz52jWdizppIA', 3);
     }
 
     // Archive initialization

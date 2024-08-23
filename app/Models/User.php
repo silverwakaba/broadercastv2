@@ -107,7 +107,7 @@ class User extends Authenticatable{
     }
 
     public function belongsToUserRelationFollowed(){
-        $uid = isset(auth()->user()->id) ? auth()->user()->id : 'placeholderUserID';
+        $uid = isset(auth()->user()->id) ? auth()->user()->id : 0;
 
         return $this->belongsTo(UserRelation::class, 'id', 'users_followed_id')->where([
             ['users_follower_id', '=', $uid],

@@ -17,6 +17,9 @@ use Illuminate\Http\Client\Pool;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 
+//
+use Illuminate\Support\Facades\Log;
+
 class YoutubeRepositories{
     /**
      * ----------------------------
@@ -24,8 +27,17 @@ class YoutubeRepositories{
      * ----------------------------
     **/
 
+    // API Key
+    public static function apiKey(){
+        $datas = BaseAPI::where([
+            ['base_link_id', '=', '2'],
+        ])->select('client_key')->inRandomOrder()->first()->client_key;
+
+        return $datas;
+    }
+
     // API Call to Internal-endpoint
-    public static function apiCall($mode, $id, $token = null){
+    public static function apiCall($mode, $id, $token = null, $key = null){
         if(($mode == 'handler')){
             return Http::acceptJson()->get('https://www.silverspoon.me/api/youtube/scrape-channel', [
                 'id' => $id,
@@ -38,7 +50,8 @@ class YoutubeRepositories{
         }
         elseif(($mode == 'channel')){
             return Http::acceptJson()->get('https://www.silverspoon.me/api/youtube/fetch-channel', [
-                'id' => $id,
+                'id'     => $id,
+                'apikey' => $key,
             ])->json();
         }
         elseif(($mode == 'feed')){
@@ -53,8 +66,9 @@ class YoutubeRepositories{
         }
         elseif(($mode == 'playlist')){
             return Http::acceptJson()->get('https://www.silverspoon.me/api/youtube/fetch-playlist', [
-                'id'    => $id,
-                'token' => $token,
+                'id'     => $id,
+                'token'  => $token,
+                'apikey' => $key,
             ])->json();
         }
     }
@@ -137,7 +151,9 @@ class YoutubeRepositories{
 
                 if(($checkChannel !== null) && (Str::of($checkChannel)->length() == 24)){
                     if($countChannel == 0){
-                        $http = self::apiCall('channel', $checkChannel);
+                        $http = self::apiCall('channel', $checkChannel, null, self::apiKey());
+
+                        return $http;
 
                         if($http['pageInfo']['totalResults'] >= 1){
                             foreach($http['items'] AS $data);
@@ -254,7 +270,9 @@ class YoutubeRepositories{
     // Fetch Initial Archive via API
     public static function fetchArchiveViaAPI($channelID, $userID, $pageToken = null){
         try{
-            $userLT = self::userLinkTracker($channelID, $userID, false);
+            $userLT = self::userLinkTracker($channelID, $userID, true);
+
+            $errorCode = ['"code": 400', '"code": 401', '"code": 403', '"code": 404', '"code": 409'];
 
             $userLTs = [
                 'users_id'              => $userLT->users_id,
@@ -262,7 +280,8 @@ class YoutubeRepositories{
                 'users_link_tracker_id' => $userLT->id,
             ];
 
-            $http = self::apiCall('playlist', $userLT->playlist, $pageToken);
+            // Hardcoded to 'AIzaSyA5-XF2wJ0RcQCiD1OIgPNDHqn1mFg1fmI' as for debugging, if already ok then use the self::apiKey() instead
+            $http = self::apiCall('playlist', $userLT->playlist, $pageToken, 'AIzaSyA5-XF2wJ0RcQCiD1OIgPNDHqn1mFg1fmI');
 
             if(isset($http['items'])){
                 foreach($http['items'] AS $data){
@@ -280,10 +299,14 @@ class YoutubeRepositories{
             }
 
             // Next Page Token Implementation
-            if(isset($http['nextPageToken']) || isset($http['error'])){
+            if((isset($http['nextPageToken'])) || (Str::of($http)->contains($errorCode, ignoreCase: true) == false)){
                 self::fetchArchiveViaAPIRepeater($channelID, $userID, $http['nextPageToken']);
             }
-
+            elseif((!isset($http['nextPageToken'])) || (Str::of($http)->contains($errorCode, ignoreCase: true) == true)){
+                $nextToken = isset($http['nextPageToken']) ? $http['nextPageToken'] : null;
+                
+                self::fetchArchiveViaAPIRepeater($channelID, $userID, $nextToken);
+            }
             else{
                 $userLT->timestamps = false;
 
