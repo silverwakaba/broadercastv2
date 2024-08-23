@@ -153,8 +153,6 @@ class YoutubeRepositories{
                     if($countChannel == 0){
                         $http = self::apiCall('channel', $checkChannel, null, self::apiKey());
 
-                        return $http;
-
                         if($http['pageInfo']['totalResults'] >= 1){
                             foreach($http['items'] AS $data);
                 
