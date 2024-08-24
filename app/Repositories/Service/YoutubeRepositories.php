@@ -14,6 +14,7 @@ use App\Models\UserLinkTracker;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Client\Pool;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 
@@ -223,7 +224,9 @@ class YoutubeRepositories{
         }
         catch(\Throwable $th){
             // redirect karena action
-            return $th;
+            // return $th;
+
+            return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Something goes wrong, please try again.', 'error');
         }
     }
 
@@ -268,9 +271,9 @@ class YoutubeRepositories{
     // Fetch Initial Archive via API
     public static function fetchArchiveViaAPI($channelID, $userID, $pageToken = null){
         try{
-            $userLT = self::userLinkTracker($channelID, $userID, true);
+            $userLT = self::userLinkTracker($channelID, $userID, false);
 
-            $errorCode = ['"code": 400', '"code": 401', '"code": 403', '"code": 404', '"code": 409'];
+            $errorCode = ['error', 'error.code', 'error.message', 'error.status'];
 
             $userLTs = [
                 'users_id'              => $userLT->users_id,
@@ -284,33 +287,45 @@ class YoutubeRepositories{
             if(isset($http['items'])){
                 foreach($http['items'] AS $data){
                     if(isset($data['contentDetails']['videoId'])){
-                        UserFeed::insertOrIgnore(
-                            array_merge($userLTs, [
-                                'base_status_id' => 6,
-                                'identifier'     => $data['contentDetails']['videoId'],
-                                'title'          => $data['snippet']['title'],
-                                'published'      => Carbon::parse($data['snippet']['publishedAt'])->timezone(config('app.timezone'))->toDateTimeString(),
-                            ])
-                        );
+                        // try{
+                            UserFeed::insertOrIgnore(
+                                array_merge($userLTs, [
+                                    'base_status_id' => 6,
+                                    'identifier'     => $data['contentDetails']['videoId'],
+                                    'title'          => $data['snippet']['title'],
+                                    'published'      => Carbon::parse($data['snippet']['publishedAt'])->timezone(config('app.timezone'))->toDateTimeString(),
+                                ])
+                            );
+                        // }
+                        // catch(\Throwable $th){
+                        //     Log::error($th);
+                        // }
                     }
                 }
             }
 
-            // Next Page Token Implementation
-            if((isset($http['nextPageToken'])) || (Str::of($http)->contains($errorCode, ignoreCase: true) == false)){
-                self::fetchArchiveViaAPIRepeater($channelID, $userID, $http['nextPageToken']);
-            }
-            elseif((!isset($http['nextPageToken'])) || (Str::of($http)->contains($errorCode, ignoreCase: true) == true)){
-                $nextToken = isset($http['nextPageToken']) ? $http['nextPageToken'] : null;
-                
-                self::fetchArchiveViaAPIRepeater($channelID, $userID, $nextToken);
-            }
-            else{
-                $userLT->timestamps = false;
+            foreach([$http] as $data){
+                if(Arr::hasAny($data, $errorCode) == false){
+                    if(
+                        ((isset($http['nextPageToken'])) && (!isset($http['prevPageToken'])))
+                        xor
+                        ((isset($http['nextPageToken'])) && (isset($http['prevPageToken'])))
+                    ){
+                        self::fetchArchiveViaAPIRepeater($channelID, $userID, $http['nextPageToken']);
+                    }
+                    else{
+                        $userLT->timestamps = false;
 
-                $userLT->update([
-                    'initialized' => true,
-                ]);
+                        $userLT->update([
+                            'initialized' => true,
+                        ]);
+                    }
+                }
+                else{
+                    $nextToken = isset($http['nextPageToken']) ? $http['nextPageToken'] : $pageToken;
+            
+                    self::fetchArchiveViaAPIRepeater($channelID, $userID, $nextToken);
+                }
             }
         }
         catch(\Throwable $th){
@@ -354,7 +369,7 @@ class YoutubeRepositories{
             }
         }
         catch(\Throwable $th){
-            return $th;
+            // return $th;
         }
     }
 
