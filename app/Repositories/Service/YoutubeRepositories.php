@@ -282,7 +282,7 @@ class YoutubeRepositories{
             ];
 
             // Hardcoded to 'AIzaSyA5-XF2wJ0RcQCiD1OIgPNDHqn1mFg1fmI' as for debugging, if already ok then use the self::apiKey() instead
-            $http = self::apiCall('playlist', $userLT->playlist, $pageToken, 'AIzaSyA5-XF2wJ0RcQCiD1OIgPNDHqn1mFg1fmI');
+            $http = self::apiCall('playlist', $userLT->playlist, $pageToken, self::apiKey());
 
             if(isset($http['items'])){
                 foreach($http['items'] AS $data){
