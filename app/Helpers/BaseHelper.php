@@ -21,7 +21,7 @@ class BaseHelper{
     public static function getOnlyPath($url, $after){
         $datas = Str::contains($url, [
             // Youtube Avatar and Banner
-            'https://yt3.ggpht.com', 'https://yt3.googleusercontent.com',
+            'https://yt3.ggpht.com', 'https://yt3.googleusercontent.com', 'https://lh3.googleusercontent.com',
             
             // Youtube Thumbnail
             'https://i.ytimg.com',
