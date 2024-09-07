@@ -15,7 +15,51 @@ use Illuminate\Support\Collection;
 class TwitchCron extends Controller{
     // Debug
     public function fetchDebug(){
-        // 
+        // Validate Token
+        // return TwitchRepositories::apiCall('validate-token', [
+        //     'client_secret' => 'p9t9i4fez9eoicclqif8o04joeggog',
+        //     'bearer'        => '6iz7bik93aonvo7oao861j3zpfogg6',
+        // ]);
+        
+        // Create Token
+        // return TwitchRepositories::apiCall('create-token', [
+        //     'client_id'     => 'j1sg2t54dwptembv45th3uuzqkgo6e',
+        //     'client_secret' => 'p9t9i4fez9eoicclqif8o04joeggog',
+        // ]);
+        
+        // Fetch Profile
+        // return TwitchRepositories::apiCall('profile', [
+        //     'login' => 'dota2ti',
+        // ]);
+
+        // Fetch Channel
+        // return TwitchRepositories::apiCall('channel', [
+        //     'id' => 715990491,
+        // ]);
+
+        // Fetch Subscriber
+        // return TwitchRepositories::apiCall('subscriber', [
+        //     'id' => 715990491,
+        // ]);
+
+        // Fetch Stream
+        // return TwitchRepositories::apiCall('stream', [
+        //     'id' => 715990491,
+        // ]);
+
+        // Fetch Video and Archive
+        // return TwitchRepositories::apiCall('video', [
+        //     'user_id'   => 715990491,
+        //     // 'video_id'  => $video,
+        //     'stream_id' => 41564183287,
+        // ]);
+
+        // ***** \\
+
+        // return TwitchRepositories::fetchProfile(715990491);
+        // return TwitchRepositories::fetchProfile('dttodot');
+
+        // return TwitchRepositories::fetchSubscriber(715990491);
     }
 
     // MISC

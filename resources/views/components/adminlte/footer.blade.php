@@ -11,6 +11,7 @@
                     <summary>More Information...</summary>
                     <p>If you are a content creator, join us so that we can feature your content on our platform, allowing it to be seen by a larger audience. By becoming part of our community, you can expand your reach and engage with more viewers who are eager to discover and enjoy your work.</p>
                     <p>If you are a viewer, join us to receive the latest updates about your favorite content creators, or even discover new and promising creators. By becoming part of our community, you can stay informed and explore a wide range of content that caters to your interests.</p>
+                    <p>And most importantly, I do realized that the UI for Alpha version looks terrible and very shitty. Sorry, I will make a commission to fix this once I get a chance and budget. This BE kids can't do any FE at all. Lmao.</p>
                 </details>
                 <p><small>Copyright &copy; 2024. The {{ config('app.name', 'vTual') }} Project by <a href="https://www.silverspoon.me" class="text-light" target="_blank">Silverspoon Media</a>. All rights reserved.</small></p>
             </div>
@@ -30,7 +31,7 @@
                             <a href="https://help.silverspoon.me/docs/silverspoon/contact" target="_blank" class="text-light">Contact Us</a>
                         </li>
                         <li>
-                            <a href="https://help.silverspoon.me/docs/category/vtual" target="_blank" class="text-light">Get Some Help</a>
+                            <a href="https://help.silverspoon.me/docs/category/vtual" target="_blank" class="text-light">Get, Get Some Help</a>
                         </li>
                     </ul>
                 </div>
@@ -54,9 +55,6 @@
                 <div class="col-md-4">
                     <h4>External</h4>
                     <ul class="list-unstyled">
-                        <li>
-                            <a href="https://x.com/BroadercastNet" target="_blank" class="text-light">Twitter</a>
-                        </li>
                         <li>
                             <a href="https://status.silverspoon.me" target="_blank" class="text-light">Status</a>
                         </li>

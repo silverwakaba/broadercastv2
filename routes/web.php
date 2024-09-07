@@ -36,10 +36,10 @@ Route::group(['prefix' => '/'], function(){
     Route::get('/', [FrontController::class, 'index'])->name('index');
 
     // Debug
-    Route::group(['prefix' => 'debug'], function(){
-        Route::get('twitch', [TwitchCron::class, 'fetchDebug']);
-        Route::get('youtube', [YoutubeCron::class, 'fetchDebug']);
-    });
+    // Route::group(['prefix' => 'debug'], function(){
+    //     Route::get('twitch', [TwitchCron::class, 'fetchDebug']);
+    //     Route::get('youtube', [YoutubeCron::class, 'fetchDebug']);
+    // });
 
     // Creator
     Route::group(['prefix' => 'creator'], function(){

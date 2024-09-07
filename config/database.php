@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', null),
+    'default' => env('DB_CONNECTION', 'pgsql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -80,11 +80,11 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'read' => [
-                'host' => env('DB_HOST_RO', 'localhost'), // Read-only
-            ],
             'write' => [
                 'host' => env('DB_HOST_RW', 'localhost'), // Read-write
+            ],
+            'read' => [
+                'host' => env('DB_HOST_RO', 'localhost'), // Read-only
             ],
             'sticky' => true,
             'port' => env('DB_PORT', '5432'),

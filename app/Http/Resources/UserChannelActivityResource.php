@@ -34,7 +34,7 @@ class UserChannelActivityResource extends JsonResource{
             elseif(($this->base_status_id == 9) && ($this->thumbnail != null)){
                 $link = Str::of('https://www.twitch.tv/videos/')->append($this->identifier);
 
-                if(Carbon::now()->subDays(30)->timestamp >= Carbon::parse($this->actual_start)->timestamp){
+                if(Carbon::now()->subDays(7)->timestamp >= Carbon::parse($this->actual_start)->timestamp){
                     $thumbnail = Str::of(config('app.cdn_cache_twitch'))->append('/ttv-static/404_preview-640x480.jpg');
                 }
                 else{
