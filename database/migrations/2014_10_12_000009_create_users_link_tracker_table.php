@@ -14,13 +14,16 @@ return new class extends Migration{
             $table->foreignId('users_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('users_link_id')->references('id')->on('users_link')->onDelete('cascade');
             $table->foreignId('base_link_id')->references('id')->on('base_link')->onDelete('cascade');
-            $table->boolean('initialized')->default(false); // Initializing tracker feed
+            $table->boolean('initialized')->default(false);
+            $table->boolean('archived')->default(false);
             $table->string('identifier');
             $table->string('handler');
             $table->string('playlist')->nullable();
+            $table->string('trailer')->nullable();
             $table->string('name');
             $table->string('avatar');
             $table->string('banner')->nullable();
+            $table->longText('description')->nullable();
             $table->double('view')->nullable()->default('0');
             $table->double('content')->nullable()->default('0');
             $table->double('subscriber')->nullable()->default('0');

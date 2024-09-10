@@ -71,7 +71,7 @@
                         @endforeach
                     </ul>
                 @else
-                    <p class="m-0">No character affiliation</p>
+                    <p class="m-0">No affiliation found</p>
                 @endif
             </li>
             <li class="list-group-item">

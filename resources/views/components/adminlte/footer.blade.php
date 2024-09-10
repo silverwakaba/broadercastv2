@@ -6,7 +6,7 @@
         <div class="col-md-5">
             <h3>{{ config('app.name', 'vTual') }}</h3>
             <div class="pr-lg-5">
-                <p>{{ config('app.name', 'vTual') }} is a project designed to simplify the process of keeping up with your favorite content creators activity; All in one convenient portal.</p>
+                <p>The {{ config('app.name', 'vTual') }} network is a project designed to simplify the process of keeping up with your favorite content creators activity across platform; All in one convenient portal.</p>
                 <details class="my-3">
                     <summary>More Information...</summary>
                     <p>If you are a content creator, join us so that we can feature your content on our platform, allowing it to be seen by a larger audience. By becoming part of our community, you can expand your reach and engage with more viewers who are eager to discover and enjoy your work.</p>

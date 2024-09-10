@@ -17,6 +17,11 @@ class YoutubeCron extends Controller{
     // Debug
     public function fetchDebug(){
         // Commented
+        // return YoutubeRepositories::apiCall('live', 'XD85RXMLHmk');
+        
+        // return YoutubeRepositories::apiCall('videoLL', 'pQmzVBjyaZo');
+
+        return YoutubeRepositories::fetchVideoViaScraper('KIMWNQj41oQ');
     }
 
     // Archive initialization

@@ -17,7 +17,6 @@ return new class extends Migration{
             $table->date('dod')->nullable();
             $table->date('dor')->nullable();
             $table->longText('biography')->nullable();
-            // $table->softDeletes();
         });
     }
 

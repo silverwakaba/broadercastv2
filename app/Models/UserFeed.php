@@ -19,6 +19,7 @@ class UserFeed extends Model{
         'identifier',
         'thumbnail',
         'title',
+        'description',
         'published',
         'schedule',
         'actual_start',

@@ -20,6 +20,7 @@ return new class extends Migration{
             $table->string('identifier')->unique();
             $table->string('thumbnail')->nullable();
             $table->string('title');
+            $table->longText('description')->nullable();
             $table->dateTime('published')->nullable();
             $table->dateTime('schedule')->nullable();
             $table->dateTime('actual_start')->nullable();

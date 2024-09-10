@@ -55,6 +55,11 @@ class YoutubeRepositories{
                 'apikey' => $key,
             ])->json();
         }
+        elseif(($mode == 'channelLL')){
+            return Http::acceptJson()->get('https://www.silverspoon.me/api/youtube/scrapell-channel', [
+                'id' => $id,
+            ])->json();
+        }
         elseif(($mode == 'feed')){
             return Http::acceptJson()->get('https://www.silverspoon.me/api/youtube/fetch-feed', [
                 'id' => $id,
@@ -62,6 +67,11 @@ class YoutubeRepositories{
         }
         elseif(($mode == 'video')){
             return Http::acceptJson()->get('https://www.silverspoon.me/api/youtube/fetch-video', [
+                'id' => $id,
+            ])->json();
+        }
+        elseif(($mode == 'videoLL')){
+            return Http::acceptJson()->get('https://www.silverspoon.me/api/youtube/scrapell-video', [
                 'id' => $id,
             ])->json();
         }
@@ -164,9 +174,11 @@ class YoutubeRepositories{
                                 'identifier'    => $data['id'],
                                 'handler'       => $data['snippet']['customUrl'],
                                 'playlist'      => $data['contentDetails']['relatedPlaylists']['uploads'],
+                                'trailer'       => isset($data['brandingSettings']['channel']['unsubscribedTrailer']) ? $data['brandingSettings']['channel']['unsubscribedTrailer'] : null,
                                 'name'          => $data['snippet']['title'],
                                 'avatar'        => BaseHelper::getOnlyPath(Str::before($data['snippet']['thumbnails']['medium']['url'], '='), '.com/'),
                                 'banner'        => isset($data['brandingSettings']['image']['bannerExternalUrl']) ? BaseHelper::getOnlyPath(Str::before($data['brandingSettings']['image']['bannerExternalUrl'], '='), '.com/') : null,
+                                'description'   => isset($data['snippet']['description']) ? $data['snippet']['description'] : null,
                                 'content'       => $data['statistics']['videoCount'] ? $data['statistics']['videoCount'] : 0,
                                 'view'          => $data['statistics']['viewCount'] ? $data['statistics']['viewCount'] : 0,
                                 'subscriber'    => $data['statistics']['hiddenSubscriberCount'] == false ? $data['statistics']['subscriberCount'] : 0,
@@ -253,9 +265,11 @@ class YoutubeRepositories{
                     ])->update([
                         'handler'       => $data['snippet']['customUrl'],
                         'playlist'      => $data['contentDetails']['relatedPlaylists']['uploads'],
+                        'trailer'       => isset($data['brandingSettings']['channel']['unsubscribedTrailer']) ? $data['brandingSettings']['channel']['unsubscribedTrailer'] : null,
                         'name'          => $data['snippet']['title'],
                         'avatar'        => BaseHelper::getOnlyPath(Str::before($data['snippet']['thumbnails']['medium']['url'], '='), '.com/'),
                         'banner'        => isset($data['brandingSettings']['image']['bannerExternalUrl']) ? BaseHelper::getOnlyPath(Str::before($data['brandingSettings']['image']['bannerExternalUrl'], '='), '.com/') : null,
+                        'description'   => isset($data['snippet']['description']) ? $data['snippet']['description'] : null,
                         'content'       => $data['statistics']['videoCount'] ? $data['statistics']['videoCount'] : 0,
                         'view'          => $data['statistics']['viewCount'] ? $data['statistics']['viewCount'] : 0,
                         'subscriber'    => $data['statistics']['hiddenSubscriberCount'] == false ? $data['statistics']['subscriberCount'] : 0,
@@ -381,20 +395,18 @@ class YoutubeRepositories{
             if(isset($userF)){
                 $isOffline = true;
 
-                $viaScraper = self::apiCall('live', $videoID);
+                $viaScraper = self::apiCall('videoLL', $videoID);
+                
+                foreach($viaScraper['items'] AS $data);
 
-                if(
-                    ($viaScraper['live'] == true) && ($viaScraper['title'] != null) && ($viaScraper['schedule'] == null) && isset($viaScraper['concurrent'])
-                ){
+                if(($data['contentDetails']['duration'] == 0) && ($data['snippet']['publishedAt'] == false)){
                     $isOffline = false;
                 }
 
-                if(
-                    (($isOffline == false) && (BaseHelper::diffInDays($userF->schedule) <= 0))
-                ){
+                if((($isOffline == false) && (BaseHelper::diffInDays($userF->schedule) <= 0))){
                     $userF->update([
                         'base_status_id'    => 8,
-                        'concurrent'        => $viaScraper['concurrent'],
+                        'concurrent'        => $data['statistics']['viewCount'],
                     ]);
 
                     // return "Online and updating";
@@ -408,6 +420,7 @@ class YoutubeRepositories{
                                 'base_status_id'    => self::userFeedStatus($data),
                                 'concurrent'        => isset($data['liveStreamingDetails']['concurrentViewers']) ? $data['liveStreamingDetails']['concurrentViewers'] : 0,
                                 'title'             => $data['snippet']['title'],
+                                'description'       => isset($data['snippet']['description']) ? $data['snippet']['description'] : null,
                                 'actual_start'      => isset($data['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($data['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
                                 'actual_end'        => isset($data['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
                                 'duration'          => isset($data['contentDetails']['duration']) ? $data['contentDetails']['duration'] : "P0D",
@@ -468,6 +481,7 @@ class YoutubeRepositories{
                             ['identifier', '=', $data['id']],
                         ])->update([
                             'base_status_id' => self::userFeedStatus($data),
+                            'description'    => isset($data['snippet']['description']) ? $data['snippet']['description'] : null,
                             'schedule'       => isset($data['liveStreamingDetails']['scheduledStartTime']) ? Carbon::parse($data['liveStreamingDetails']['scheduledStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
                             'actual_start'   => isset($data['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($data['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
                             'actual_end'     => isset($data['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString()  : null,
@@ -512,6 +526,7 @@ class YoutubeRepositories{
                             ['identifier', '=', $data['id']],
                         ])->update([
                             'base_status_id'    => self::userFeedStatus($data),
+                            'description'       => isset($data['snippet']['description']) ? $data['snippet']['description'] : null,
                             'concurrent'        => isset($data['liveStreamingDetails']['concurrentViewers']) ? $data['liveStreamingDetails']['concurrentViewers'] : 0,
                             'actual_start'      => isset($data['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($data['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
                             'actual_end'        => isset($data['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString()  : null,
@@ -553,6 +568,7 @@ class YoutubeRepositories{
                             ['identifier', '=', $data['id']],
                         ])->update([
                             'base_status_id' => self::userFeedStatus($data),
+                            'description'    => isset($data['snippet']['description']) ? $data['snippet']['description'] : null,
                             'schedule'       => isset($data['liveStreamingDetails']['scheduledStartTime']) ? Carbon::parse($data['liveStreamingDetails']['scheduledStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
                             'actual_start'   => isset($data['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($data['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
                             'actual_end'     => isset($data['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString()  : null,
@@ -597,6 +613,7 @@ class YoutubeRepositories{
                         
                         $feed->update([
                             'base_status_id'    => self::userFeedStatus($data),
+                            'description'       => isset($data['snippet']['description']) ? $data['snippet']['description'] : null,
                             'concurrent'        => isset($data['liveStreamingDetails']['concurrentViewers']) ? $data['liveStreamingDetails']['concurrentViewers'] : 0,
                             'actual_start'      => isset($data['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($data['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
                             'actual_end'        => isset($data['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($data['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
