@@ -4,8 +4,8 @@
             @foreach($feeds->data AS $data)
                 <div class="col">
                     <div class="card card-widget">
-                        <a href="{{ $data->link }}" target="_blank">
-                            <img src="{{ $data->thumbnail }}" class="card-img-top" title="{{ $data->title }}" />
+                        <a href="{{ $data->link }}" class="embed-responsive embed-responsive-16by9" target="_blank">
+                            <img src="{{ $data->thumbnail }}" title="{{ $data->title }}" class="card-img-top embed-responsive-item" />
                         </a>
                         <a href="{{ $data->user->page }}" class="text-light" title="{{ $data->profile->name }}">
                             <div class="card-header">

@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Models\BaseLink;
 use App\Repositories\Base\CookiesRepositories;
 
 use Carbon\Carbon;
@@ -18,24 +17,16 @@ class UserChannelActivityResource extends JsonResource{
      * @return array<string, mixed>
      */
     public function toArray(Request $request) : array{
-        $data = BaseLink::where([
-            ['id', '=', $this->base_link_id]
-        ])->first();
-
-        if($data->name == 'YouTube'){
-            $link = Str::replace('REPLACETHISPLACEHOLDER', $this->identifier, $data->url_content);
-            $thumbnail = Str::replace('REPLACETHISPLACEHOLDER', $this->identifier, $data->url_thumbnail);
-        }
-        elseif($data->name == 'Twitch'){
+        if($this->base_link_id == 1){
             if(($this->base_status_id == 8) && ($this->thumbnail == null)){
                 $link = Str::of('https://www.twitch.tv/')->append($this->belongsToUserLinkTracker->handler);
-                $thumbnail = Str::replace('[insertUsername]', $this->belongsToUserLinkTracker->handler, Str::of(config('app.cdn_cache_twitch'))->append('/previews-ttv/live_user_[insertUsername]-640x480.jpg'));
+                $thumbnail = Str::replace('[insertUsername]', $this->belongsToUserLinkTracker->handler, Str::of(config('app.cdn_cache_twitch'))->append('/previews-ttv/live_user_[insertUsername]-1280x720.jpg'));
             }
             elseif(($this->base_status_id == 9) && ($this->thumbnail != null)){
                 $link = Str::of('https://www.twitch.tv/videos/')->append($this->identifier);
 
                 if(Carbon::now()->subDays(7)->timestamp >= Carbon::parse($this->actual_start)->timestamp){
-                    $thumbnail = Str::of(config('app.cdn_cache_twitch'))->append('/ttv-static/404_preview-640x480.jpg');
+                    $thumbnail = Str::of(config('app.cdn_cache_twitch'))->append('/ttv-static/404_preview-1280x720.jpg');
                 }
                 else{
                     $thumbnail = Str::of(config('app.cdn_cache_twitch') . '/')->append($this->thumbnail);
@@ -43,12 +34,16 @@ class UserChannelActivityResource extends JsonResource{
             }
             else{
                 $link = Str::of('https://www.twitch.tv/')->append($this->belongsToUserLinkTracker->handler);
-                $thumbnail = Str::of(config('app.cdn_cache_twitch'))->append('/ttv-static/404_preview-640x480.jpg');
+                $thumbnail = Str::of(config('app.cdn_cache_twitch'))->append('/ttv-static/404_preview-1280x720.jpg');
             }
         }
+        elseif($this->base_link_id == 2){
+            $link = Str::replace('[insertID]', $this->identifier, 'https://www.youtube.com/watch?v=[insertID]');
+            $thumbnail = Str::replace('[insertID]', $this->identifier, Str::of(config('app.cdn_cache_youtube_thumbnail'))->append('/vi/' . $this->identifier .'/maxresdefault.jpg')); // $this->thumbnail
+        }
         else{
-            $link = null;
-            $thumbnail = null;
+            $link = '#';
+            $thumbnail = 'https://static.silverspoon.me/system/internal/image/misc/placeholder/404.webp';
         }
 
         return [

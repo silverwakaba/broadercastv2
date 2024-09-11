@@ -430,7 +430,7 @@ class TwitchRepositories{
                         'base_status_id'    => 9,
                         'concurrent'        => 0,
                         'identifier'        => $http['id'],
-                        'thumbnail'         => Str::replace('%{width}x%{height}', '640x480', BaseHelper::getOnlyPath($http['thumbnail_url'], '.net/')),
+                        'thumbnail'         => Str::replace('%{width}x%{height}', '1280x720', BaseHelper::getOnlyPath($http['thumbnail_url'], '.net/')),
                         'title'             => $http['title'],
                         'duration'          => Str::of('PT')->append(Str::of($http['duration'])->upper()),
                     ]);

@@ -419,6 +419,7 @@ class YoutubeRepositories{
                             $userF->update([
                                 'base_status_id'    => self::userFeedStatus($data),
                                 'concurrent'        => isset($data['liveStreamingDetails']['concurrentViewers']) ? $data['liveStreamingDetails']['concurrentViewers'] : 0,
+                                'thumbnail'         => self::userThumbnail($viaAPI),
                                 'title'             => $data['snippet']['title'],
                                 'description'       => isset($data['snippet']['description']) ? $data['snippet']['description'] : null,
                                 'actual_start'      => isset($data['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($data['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
@@ -481,6 +482,7 @@ class YoutubeRepositories{
                             ['identifier', '=', $data['id']],
                         ])->update([
                             'base_status_id' => self::userFeedStatus($data),
+                            'thumbnail'      => self::userThumbnail($http),
                             'description'    => isset($data['snippet']['description']) ? $data['snippet']['description'] : null,
                             'schedule'       => isset($data['liveStreamingDetails']['scheduledStartTime']) ? Carbon::parse($data['liveStreamingDetails']['scheduledStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
                             'actual_start'   => isset($data['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($data['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
@@ -526,6 +528,7 @@ class YoutubeRepositories{
                             ['identifier', '=', $data['id']],
                         ])->update([
                             'base_status_id'    => self::userFeedStatus($data),
+                            'thumbnail'         => self::userThumbnail($http),
                             'description'       => isset($data['snippet']['description']) ? $data['snippet']['description'] : null,
                             'concurrent'        => isset($data['liveStreamingDetails']['concurrentViewers']) ? $data['liveStreamingDetails']['concurrentViewers'] : 0,
                             'actual_start'      => isset($data['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($data['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
@@ -568,6 +571,7 @@ class YoutubeRepositories{
                             ['identifier', '=', $data['id']],
                         ])->update([
                             'base_status_id' => self::userFeedStatus($data),
+                            'thumbnail'      => self::userThumbnail($http),
                             'description'    => isset($data['snippet']['description']) ? $data['snippet']['description'] : null,
                             'schedule'       => isset($data['liveStreamingDetails']['scheduledStartTime']) ? Carbon::parse($data['liveStreamingDetails']['scheduledStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
                             'actual_start'   => isset($data['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($data['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
@@ -613,6 +617,7 @@ class YoutubeRepositories{
                         
                         $feed->update([
                             'base_status_id'    => self::userFeedStatus($data),
+                            'thumbnail'         => self::userThumbnail($http),
                             'description'       => isset($data['snippet']['description']) ? $data['snippet']['description'] : null,
                             'concurrent'        => isset($data['liveStreamingDetails']['concurrentViewers']) ? $data['liveStreamingDetails']['concurrentViewers'] : 0,
                             'actual_start'      => isset($data['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($data['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
@@ -695,5 +700,22 @@ class YoutubeRepositories{
             // Direct Upload
             return "10";
         }
+    }
+
+    // User Thumbnail
+    public static function userThumbnail($datas){
+        $video = $datas;
+
+        $thumbnail = null;
+        foreach($video['items'] as $data);
+
+        $last_key = array_key_last($data['snippet']['thumbnails']);
+        foreach($data['snippet']['thumbnails'] as $key => $thumbnails){
+            if($key == $last_key){
+                $thumbnail = $thumbnails['url'];
+            }
+        }
+
+        return (isset($thumbnail) && ($thumbnail != null)) ? BaseHelper::getOnlyPath($thumbnail, BaseHelper::analyzeDomain($thumbnail, 'extension')) : null;
     }
 }

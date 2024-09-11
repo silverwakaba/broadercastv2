@@ -13,15 +13,38 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
+// 
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use App\Helpers\BaseHelper;
+
 class YoutubeCron extends Controller{
     // Debug
     public function fetchDebug(){
+
+        // return BaseHelper::analyzeDomain('https://yt3.googleusercontent.com/abc.def/ghij.net', 'extension');
+
         // Commented
-        // return YoutubeRepositories::apiCall('live', 'XD85RXMLHmk');
-        
+        $video = YoutubeRepositories::apiCall('video', 'XD85RXMLHmk');
+        return YoutubeRepositories::userThumbnail($video);
+
+        // $thumbnail = null;
+        // foreach($video['items'] as $data);
+
+        // $last_key = array_key_last($data['snippet']['thumbnails']);
+        // foreach($data['snippet']['thumbnails'] as $key => $thumbnails){
+        //     if($key == $last_key){
+        //         $thumbnail = $thumbnails['url'];
+        //     }
+        // }
+
+        // return isset($thumbnail) && ($thumbnail != null) ? BaseHelper::getOnlyPath($thumbnail, '.com/') : null;
+
+        // return BaseHelper::getOnlyPath($data['snippet']['thumbnails']['maxres']['url'], '.com/');
+
         // return YoutubeRepositories::apiCall('videoLL', 'pQmzVBjyaZo');
 
-        return YoutubeRepositories::fetchVideoViaScraper('KIMWNQj41oQ');
+        // return YoutubeRepositories::fetchVideoViaScraper('KIMWNQj41oQ');
     }
 
     // Archive initialization

@@ -50,6 +50,28 @@
                 </ul>
             @endcan
             <ul class="navbar-nav">
+                <x-Adminlte.NavDropdown route="content.*">
+                    <a id="dropdownSubMenuCreators" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">
+                        Content
+                    </a>
+                    <ul aria-labelledby="dropdownSubMenuCreators" class="dropdown-menu border-0 shadow">
+                        <li class="nav-item">
+                            <x-Adminlte.NavLink route="content.live" mode="dropdown" value="Live" />
+                        </li>
+                        <li class="nav-item">
+                            <x-Adminlte.NavLink route="content.scheduled" mode="dropdown" value="Scheduled" />
+                        </li>
+                        <li class="nav-item">
+                            <x-Adminlte.NavLink route="content.archived" mode="dropdown" value="Archived" />
+                        </li>
+                        <li class="nav-item">
+                            <x-Adminlte.NavLink route="content.uploaded" mode="dropdown" value="Uploaded" />
+                        </li>
+                        <li class="nav-item">
+                            <x-Adminlte.NavLink route="content.setting" mode="dropdown" value="Setting" />
+                        </li>
+                    </ul>
+                </x-Adminlte.NavDropdown>
                 <x-Adminlte.NavDropdown route="creator.*">
                     <a id="dropdownSubMenuCreators" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">
                         Creator
@@ -57,21 +79,6 @@
                     <ul aria-labelledby="dropdownSubMenuCreators" class="dropdown-menu border-0 shadow">
                         <li class="nav-item">
                             <x-Adminlte.NavLink route="creator.index" mode="dropdown" value="Discover" />
-                        </li>
-                        <li class="nav-item">
-                            <x-Adminlte.NavLink route="creator.live" mode="dropdown" value="Live" />
-                        </li>
-                        <li class="nav-item">
-                            <x-Adminlte.NavLink route="creator.scheduled" mode="dropdown" value="Scheduled" />
-                        </li>
-                        <li class="nav-item">
-                            <x-Adminlte.NavLink route="creator.archived" mode="dropdown" value="Archived" />
-                        </li>
-                        <li class="nav-item">
-                            <x-Adminlte.NavLink route="creator.uploaded" mode="dropdown" value="Uploaded" />
-                        </li>
-                        <li class="nav-item">
-                            <x-Adminlte.NavLink route="creator.setting" mode="dropdown" value="Setting" />
                         </li>
                     </ul>
                 </x-Adminlte.NavDropdown>

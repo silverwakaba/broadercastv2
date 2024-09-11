@@ -25,6 +25,7 @@ use App\Http\Controllers\Apps\Manager\UserController as ManagerUserController;
 use App\Http\Controllers\Apps\Master\UserController as MasterUserController;
 
 // Front
+use App\Http\Controllers\Front\ContentController as FrontContentController;
 use App\Http\Controllers\Front\CreatorController as FrontCreatorController;
 
 // Debug | Please comment before deployment to prods
@@ -45,7 +46,7 @@ Route::group(['prefix' => '/'], function(){
     Route::group(['prefix' => 'creator'], function(){
         // Index
         Route::get('/', [FrontCreatorController::class, 'index'])->name('creator.index');
-        Route::post('/', [FrontCreatorController::class, 'indexSearch'])->name('creator.index');
+        Route::post('/', [FrontCreatorController::class, 'indexSearch']);
 
         // Profile
         Route::get('@{id}', [FrontCreatorController::class, 'profile'])->name('creator.profile');
@@ -68,6 +69,27 @@ Route::group(['prefix' => '/'], function(){
         // Setting
         Route::get('setting', [FrontCreatorController::class, 'setting'])->name('creator.setting');
         Route::post('setting', [FrontCreatorController::class, 'settingPost']);
+    });
+
+    Route::group(['prefix' => 'content'], function(){
+        // Live
+        Route::get('live', [FrontContentController::class, 'live'])->name('content.live');
+
+        // Scheduled
+        Route::get('scheduled', [FrontContentController::class, 'scheduled'])->name('content.scheduled');
+
+        // Archived
+        Route::get('archived', [FrontContentController::class, 'archived'])->name('content.archived');
+
+        // Archived
+        Route::get('uploaded', [FrontContentController::class, 'uploaded'])->name('content.uploaded');
+
+        // Setting
+        Route::get('setting', [FrontContentController::class, 'setting'])->name('content.setting');
+        Route::post('setting', [FrontContentController::class, 'settingPost']);
+
+        // Watch
+        // Route::get('@{id}', [FrontContentController::class, 'watch'])->name('content.watch');
     });
 
     // Auth

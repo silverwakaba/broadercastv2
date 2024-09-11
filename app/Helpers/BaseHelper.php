@@ -18,6 +18,37 @@ class BaseHelper{
         return hash("adler32", $value);
     }
 
+    public static function analyzeDomain($url, $catch, $subTLD = false){
+        if(Str::isUrl($url) == true){
+            $url = Str::chopStart($url, ['http://', 'https://']);
+
+            $domain = Str::of($url)->before('/');
+
+            if($catch == 'domain'){
+                return $domain;
+            }
+            elseif($catch == 'name'){
+                return Str::of($domain)->before('.');
+            }
+            elseif($catch == 'extension'){
+                if($subTLD == true){
+                    $extension = Str::of($domain)->after('.');
+                }
+                else{
+                    $extension = Str::of($domain)->afterLast('.');
+                }
+
+                return $extension;
+            }
+            else{
+                return null;
+            }
+        }
+        else{
+            return null;
+        }
+    }
+
     public static function getOnlyPath($url, $after){
         $datas = Str::contains($url, [
             // Youtube Avatar and Banner
@@ -31,7 +62,7 @@ class BaseHelper{
         ]);
 
         if(($datas == true)){
-            return Str::of($url)->after($after);
+            return Str::of($url)->after($after . '/');
         }
         else{
             return $url;
