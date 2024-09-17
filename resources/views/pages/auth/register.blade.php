@@ -27,6 +27,7 @@
                     </div>
                 </div>
             </div>
+            <p>Have concerns about registering using email? Read our statement about <a href="https://help.silverspoon.me/docs/silverspoon/privacy#registering" target="_blank">registering anonymously</a>.</p>
         </x-Adminlte.Card>
     </x-Adminlte.Content>
 @endsection

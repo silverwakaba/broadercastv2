@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\UserFeed;
 use App\Models\UserLink;
 use App\Models\UserLinkTracker;
+use App\Repositories\Service\YoutubeAPIRepositories;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -27,62 +28,6 @@ class YoutubeRepositories{
      * Basic Function
      * ----------------------------
     **/
-
-    // API Key
-    public static function apiKey(){
-        $datas = BaseAPI::where([
-            ['base_link_id', '=', '2'],
-        ])->select('client_key')->inRandomOrder()->first()->client_key;
-
-        return $datas;
-    }
-
-    // API Call to Internal-endpoint
-    public static function apiCall($mode, $id, $token = null, $key = null){
-        if(($mode == 'handler')){
-            return Http::acceptJson()->get('https://www.silverspoon.me/api/youtube/scrape-channel', [
-                'id' => $id,
-            ])->json();
-        }
-        elseif(($mode == 'live')){
-            return Http::acceptJson()->get('https://www.silverspoon.me/api/youtube/scrape-video', [
-                'id' => $id,
-            ])->json();
-        }
-        elseif(($mode == 'channel')){
-            return Http::acceptJson()->get('https://www.silverspoon.me/api/youtube/fetch-channel', [
-                'id'     => $id,
-                'apikey' => $key,
-            ])->json();
-        }
-        elseif(($mode == 'channelLL')){
-            return Http::acceptJson()->get('https://www.silverspoon.me/api/youtube/scrapell-channel', [
-                'id' => $id,
-            ])->json();
-        }
-        elseif(($mode == 'feed')){
-            return Http::acceptJson()->get('https://www.silverspoon.me/api/youtube/fetch-feed', [
-                'id' => $id,
-            ])->json();
-        }
-        elseif(($mode == 'video')){
-            return Http::acceptJson()->get('https://www.silverspoon.me/api/youtube/fetch-video', [
-                'id' => $id,
-            ])->json();
-        }
-        elseif(($mode == 'videoLL')){
-            return Http::acceptJson()->get('https://www.silverspoon.me/api/youtube/scrapell-video', [
-                'id' => $id,
-            ])->json();
-        }
-        elseif(($mode == 'playlist')){
-            return Http::acceptJson()->get('https://www.silverspoon.me/api/youtube/fetch-playlist', [
-                'id'     => $id,
-                'token'  => $token,
-                'apikey' => $key,
-            ])->json();
-        }
-    }
 
     // User Link Tracker
     public static function userLinkTracker($channelID, $userID, $initialized = null){
@@ -142,27 +87,34 @@ class YoutubeRepositories{
 
             if($checkViaChannel xor $checkViaHandler){
                 if($checkViaChannel == true){
-                    $checkChannel = Str::of($channelID)->afterLast('/');
+                    $channelIDS = Str::of($channelID)->afterLast('/');
                 }
                 elseif($checkViaHandler == true){
-                    $handler = Str::of($channelID)->afterLast('@');
+                    $channelHandler = Str::of($channelID)->afterLast('@');
 
-                    $http = self::apiCall('handler', '@' . $handler);
+                    $scrapeChannel = YoutubeAPIRepositories::scrapeLLChannels('@' . $channelHandler);
 
-                    $checkChannel = $http['id'];
+                    if(count($scrapeChannel['items']) == 1){
+                        foreach($scrapeChannel['items'] as $dataChannel);
+
+                        $channelIDS = $dataChannel['id'];
+                    }
+                    else{
+                        $channelIDS = null;
+                    }
                 }
                 else{
-                    $checkChannel = null;
+                    $channelIDS = null;
                 }
 
                 $linkID = BaseHelper::decrypt($id);
                 $userLink = UserLink::find($linkID);
-                $countChannel = self::userLinkTrackerChecker($checkChannel);
+                $countChannel = self::userLinkTrackerChecker($channelIDS);
                 $limitChannel = self::userLinkTrackerCounter($userLink->users_id);
 
-                if(($checkChannel !== null) && (Str::of($checkChannel)->length() == 24)){
+                if(($channelIDS !== null) && (Str::of($channelIDS)->length() == 24)){
                     if($countChannel == 0){
-                        $http = self::apiCall('channel', $checkChannel, null, self::apiKey());
+                        $http = YoutubeAPIRepositories::fetchChannels($channelIDS, YoutubeAPIRepositories::apiKey());
 
                         if($http['pageInfo']['totalResults'] >= 1){
                             foreach($http['items'] AS $data);
@@ -176,8 +128,8 @@ class YoutubeRepositories{
                                 'playlist'      => $data['contentDetails']['relatedPlaylists']['uploads'],
                                 'trailer'       => isset($data['brandingSettings']['channel']['unsubscribedTrailer']) ? $data['brandingSettings']['channel']['unsubscribedTrailer'] : null,
                                 'name'          => $data['snippet']['title'],
-                                'avatar'        => BaseHelper::getOnlyPath(Str::before($data['snippet']['thumbnails']['medium']['url'], '='), '.com/'),
-                                'banner'        => isset($data['brandingSettings']['image']['bannerExternalUrl']) ? BaseHelper::getOnlyPath(Str::before($data['brandingSettings']['image']['bannerExternalUrl'], '='), '.com/') : null,
+                                'avatar'        => self::userThumbnail($http),
+                                'banner'        => isset($data['brandingSettings']['image']['bannerExternalUrl']) ? self::userBanner($http) : null,
                                 'description'   => isset($data['snippet']['description']) ? $data['snippet']['description'] : null,
                                 'content'       => $data['statistics']['videoCount'] ? $data['statistics']['videoCount'] : 0,
                                 'view'          => $data['statistics']['viewCount'] ? $data['statistics']['viewCount'] : 0,
@@ -235,10 +187,9 @@ class YoutubeRepositories{
             }
         }
         catch(\Throwable $th){
-            // redirect karena action
             // return $th;
-
-            return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Something goes wrong, please try again.', 'error');
+            // redirect karena action
+            return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Something went wrong, please try again.', 'error');
         }
     }
 
@@ -251,7 +202,7 @@ class YoutubeRepositories{
     // Fetch Profile
     public static function fetchProfile($channelID, $userID){
         try{
-            $http = self::apiCall('channel', $channelID);
+            $http = YoutubeAPIRepositories::fetchChannels($channelIDS);
 
             if($http['pageInfo']['totalResults'] >= 1){
                 foreach($http['items'] AS $data){
@@ -267,8 +218,8 @@ class YoutubeRepositories{
                         'playlist'      => $data['contentDetails']['relatedPlaylists']['uploads'],
                         'trailer'       => isset($data['brandingSettings']['channel']['unsubscribedTrailer']) ? $data['brandingSettings']['channel']['unsubscribedTrailer'] : null,
                         'name'          => $data['snippet']['title'],
-                        'avatar'        => BaseHelper::getOnlyPath(Str::before($data['snippet']['thumbnails']['medium']['url'], '='), '.com/'),
-                        'banner'        => isset($data['brandingSettings']['image']['bannerExternalUrl']) ? BaseHelper::getOnlyPath(Str::before($data['brandingSettings']['image']['bannerExternalUrl'], '='), '.com/') : null,
+                        'avatar'        => self::userThumbnail($http),
+                        'banner'        => isset($data['brandingSettings']['image']['bannerExternalUrl']) ? self::userBanner($http) : null,
                         'description'   => isset($data['snippet']['description']) ? $data['snippet']['description'] : null,
                         'content'       => $data['statistics']['videoCount'] ? $data['statistics']['videoCount'] : 0,
                         'view'          => $data['statistics']['viewCount'] ? $data['statistics']['viewCount'] : 0,
@@ -287,7 +238,9 @@ class YoutubeRepositories{
         try{
             $userLT = self::userLinkTracker($channelID, $userID, false);
 
-            $errorCode = ['error', 'error.code', 'error.message', 'error.status'];
+            $errorCode = [
+                'error', 'error.code', 'error.message', 'error.status'
+            ];
 
             $userLTs = [
                 'users_id'              => $userLT->users_id,
@@ -295,8 +248,8 @@ class YoutubeRepositories{
                 'users_link_tracker_id' => $userLT->id,
             ];
 
-            // Hardcoded to 'AIzaSyA5-XF2wJ0RcQCiD1OIgPNDHqn1mFg1fmI' as for debugging, if already ok then use the self::apiKey() instead
-            $http = self::apiCall('playlist', $userLT->playlist, $pageToken, self::apiKey());
+            // Hardcoded to 'AIzaSyA5-XF2wJ0RcQCiD1OIgPNDHqn1mFg1fmI' as for debugging, if already ok then use the YoutubeAPIRepositories::apiKey() instead
+            $http = YoutubeAPIRepositories::fetchPlaylistItems($userLT->playlist, $pageToken, null);
 
             if(isset($http['items'])){
                 foreach($http['items'] AS $data){
@@ -343,6 +296,7 @@ class YoutubeRepositories{
             }
         }
         catch(\Throwable $th){
+            return Log::debug($th);
             // return $th;
         }
     }
@@ -367,7 +321,7 @@ class YoutubeRepositories{
                 'users_link_tracker_id' => $userLT->id,
             ];
 
-            $http = self::apiCall('feed', $channelID);
+            $http = YoutubeAPIRepositories::fetchFeeds($channelID);
 
             if(isset($http['entry'])){
                 foreach($http['entry'] AS $data){
@@ -395,11 +349,12 @@ class YoutubeRepositories{
             if(isset($userF)){
                 $isOffline = true;
 
-                $viaScraper = self::apiCall('videoLL', $videoID);
+                $viaScraper = YoutubeAPIRepositories::scrapeLLVideos($videoID);
                 
                 foreach($viaScraper['items'] AS $data);
 
-                if(($data['contentDetails']['duration'] == 0) && ($data['snippet']['publishedAt'] == false)){
+                // Add && ($data['snippet']['publishedAt'] == false) if the Lemnos scraper is fixed
+                if(($data['contentDetails']['duration'] == 0)){
                     $isOffline = false;
                 }
 
@@ -412,7 +367,7 @@ class YoutubeRepositories{
                     // return "Online and updating";
                 }
                 else{
-                    $viaAPI = self::apiCall('video', $videoID);
+                    $viaAPI = YoutubeAPIRepositories::fetchVideos($videoID);
 
                     if($viaAPI['pageInfo']['totalResults'] >= 1){
                         foreach($viaAPI['items'] AS $data){
@@ -474,7 +429,7 @@ class YoutubeRepositories{
             if(($datas) && isset($datas) && ($datas->count() >= 1)){
                 $videoID = implode(',', ($datas)->pluck('identifier')->toArray());
     
-                $http = self::apiCall('video', $videoID);
+                $http = YoutubeAPIRepositories::fetchVideos($videoID);
     
                 if($http['pageInfo']['totalResults'] >= 1){
                     foreach($http['items'] AS $data){
@@ -520,7 +475,7 @@ class YoutubeRepositories{
             if(($datas) && isset($datas) && ($datas->count() >= 1)){
                 $videoID = implode(',', ($datas)->pluck('identifier')->toArray());
     
-                $http = self::apiCall('video', $videoID);
+                $http = YoutubeAPIRepositories::fetchVideos($videoID);
     
                 if($http['pageInfo']['totalResults'] >= 1){
                     foreach($http['items'] AS $data){
@@ -563,7 +518,7 @@ class YoutubeRepositories{
             if(($datas) && isset($datas) && ($datas->count() >= 1)){
                 $videoID = implode(',', ($datas)->pluck('identifier')->toArray());
     
-                $http = self::apiCall('video', $videoID);
+                $http = YoutubeAPIRepositories::fetchVideos($videoID);
     
                 if($http['pageInfo']['totalResults'] >= 1){
                     foreach($http['items'] AS $data){
@@ -609,7 +564,7 @@ class YoutubeRepositories{
             if(($datas) && isset($datas) && ($datas->count() >= 1)){
                 $videoID = implode(',', ($datas)->pluck('identifier')->toArray());
     
-                $http = self::apiCall('video', $videoID);
+                $http = YoutubeAPIRepositories::fetchVideos('video', $videoID);
     
                 if($http['pageInfo']['totalResults'] >= 1){
                     foreach($http['items'] AS $data){
@@ -700,6 +655,18 @@ class YoutubeRepositories{
             // Direct Upload
             return "10";
         }
+    }
+
+    // User Thumbnail
+    public static function userBanner($datas){
+        $channel = $datas;
+
+        $banner = null;
+        foreach($channel['items'] as $data);
+
+        $banner = $data['brandingSettings']['image']['bannerExternalUrl'];
+
+        return (isset($banner) && ($banner != null)) ? BaseHelper::getOnlyPath($banner, BaseHelper::analyzeDomain($banner, 'extension')) : null;
     }
 
     // User Thumbnail
