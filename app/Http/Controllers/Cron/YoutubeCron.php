@@ -24,9 +24,7 @@ use Illuminate\Support\Facades\Http;
 class YoutubeCron extends Controller{
     // Debug
     public function fetchDebug(){
-        // return YoutubeAPIRepositories::fetchChannels('UCFTLzh12_nrtzqBPsTCqenA', 'AIzaSyA5-XF2wJ0RcQCiD1OIgPNDHqn1mFg1fmI');
-
-        return YoutubeAPIRepositories::scrapeLLVideos('yjvGiej1NQs');
+        // 
     }
 
     // Archive initialization

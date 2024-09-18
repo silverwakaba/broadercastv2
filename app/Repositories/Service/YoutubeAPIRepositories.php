@@ -60,6 +60,7 @@ class YoutubeAPIRepositories{
                          * Forced to use googleapis endpoint if panic gaymode happen again
                          * 
                          * Def: Panic gaymode is when the noKey hosts is unreachable, so that even errorCode isn't fetched
+                         * so we were forced to use googleapis endpoint with valid apikey, until noKey hosts is reachable
                          * -----------------------------------------------------------------------------------------------
                         **/
 
@@ -145,16 +146,13 @@ class YoutubeAPIRepositories{
 
     // Feed
     public static function fetchFeeds($channelID){
-        $xml = BaseHelper::httpProxy('https://www.youtube.com/feeds/videos.xml', [
-            'channel_id' => $channelID,
-        ], [
-            'proxy'  => true,
-            'method' => 'GET'
+        $http = Http::get('https://www.youtube.com/feeds/videos.xml', [
+            'channel_id' => "$channelID",
         ]);
 
-        $http = simplexml_load_string($xml->getBody(), 'SimpleXMLElement', LIBXML_NOCDATA);
+        $xml = simplexml_load_string($http->getBody(), 'SimpleXMLElement', LIBXML_NOCDATA);
 
-        return BaseHelper::resourceToJson($http);
+        return BaseHelper::resourceToJson($xml);
     }
 
     // Playlist

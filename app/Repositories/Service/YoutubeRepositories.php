@@ -321,16 +321,24 @@ class YoutubeRepositories{
                 'users_link_tracker_id' => $userLT->id,
             ];
 
+            /**
+             * ----------------------------------
+             * We don't fetch from HTTPS anymore
+             * so the result will be plain json
+             * instead of array - Like from HTTPS
+             * ----------------------------------
+            **/
+
             $http = YoutubeAPIRepositories::fetchFeeds($channelID);
 
-            if(isset($http['entry'])){
-                foreach($http['entry'] AS $data){
+            if(isset($http->entry)){
+                foreach($http->entry AS $data){
                     UserFeed::insertOrIgnore(
                         array_merge($userLTs, [
                             'base_status_id' => 6,
-                            'identifier'     => Str::afterLast($data['id'], ':'),
-                            'title'          => $data['title'],
-                            'published'      => Carbon::parse($data['published'])->timezone(config('app.timezone'))->toDateTimeString(),
+                            'identifier'     => Str::afterLast($data->id, ':'),
+                            'title'          => $data->title,
+                            'published'      => Carbon::parse($data->published)->timezone(config('app.timezone'))->toDateTimeString(),
                         ])
                     );
                 }
@@ -389,22 +397,22 @@ class YoutubeRepositories{
                             }
                         }
 
-                        // return "Offline and updating";
+                        return "Offline and updating";
                     }
                     else{
                         $userF->delete();
 
-                        // return "Privated and deleting";
+                        return "Privated and deleting";
                     }
 
-                    // return "Just offline";
+                    return "Just offline";
                 }
             }
 
             // return "???";
         }
         catch(\Throwable $th){
-            // return $th;
+            return $th;
         }
     }
 
