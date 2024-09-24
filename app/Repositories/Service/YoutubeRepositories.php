@@ -352,8 +352,7 @@ class YoutubeRepositories{
     // Fetch Video via Scraper
     public static function fetchVideoViaScraper($videoID){
         try{
-            $userF = true;
-            // $userF = self::userFeed($videoID);
+            $userF = self::userFeed($videoID);
 
             if(isset($userF)){
                 $isOffline = true;
@@ -368,54 +367,53 @@ class YoutubeRepositories{
                     $isOffline = false;
                 }
 
-                // (BaseHelper::diffInDays($userF->schedule) <= 0)
-                if((($isOffline == false)) && (self::userFeedStatus($dataAPI) == 8)){
-                    // $userF->update([
-                    //     'base_status_id'    => 8,
-                    //     'concurrent'        => $dataScraper['statistics']['viewCount'],
-                    // ]);
+                if(($isOffline == false) && (self::userFeedStatus($dataAPI) == 8) && (BaseHelper::diffInDays($userF->schedule) <= 0)){
+                    $userF->update([
+                        'base_status_id'    => 8,
+                        'concurrent'        => $dataScraper['statistics']['viewCount'],
+                    ]);
 
-                    return "Online and updating";
+                    // return "Online and updating";
                 }
 
                 else{
                     if($viaAPI['pageInfo']['totalResults'] >= 1){
                         // foreach($viaAPI['items'] AS $dataAPI){}
 
-                        // $userF->update([
-                        //     'base_status_id'    => self::userFeedStatus($dataAPI),
-                        //     'concurrent'        => isset($dataAPI['liveStreamingDetails']['concurrentViewers']) ? $dataAPI['liveStreamingDetails']['concurrentViewers'] : 0,
-                        //     'thumbnail'         => self::userThumbnail($viaAPI),
-                        //     'title'             => $dataAPI['snippet']['title'],
-                        //     'description'       => isset($dataAPI['snippet']['description']) ? $dataAPI['snippet']['description'] : null,
-                        //     'actual_start'      => isset($dataAPI['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($dataAPI['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
-                        //     'actual_end'        => isset($dataAPI['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($dataAPI['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
-                        //     'duration'          => isset($dataAPI['contentDetails']['duration']) ? $dataAPI['contentDetails']['duration'] : "P0D",
-                        // ]);
+                        $userF->update([
+                            'base_status_id'    => self::userFeedStatus($dataAPI),
+                            'concurrent'        => isset($dataAPI['liveStreamingDetails']['concurrentViewers']) ? $dataAPI['liveStreamingDetails']['concurrentViewers'] : 0,
+                            'thumbnail'         => self::userThumbnail($viaAPI),
+                            'title'             => $dataAPI['snippet']['title'],
+                            'description'       => isset($dataAPI['snippet']['description']) ? $dataAPI['snippet']['description'] : null,
+                            'actual_start'      => isset($dataAPI['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($dataAPI['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
+                            'actual_end'        => isset($dataAPI['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($dataAPI['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
+                            'duration'          => isset($dataAPI['contentDetails']['duration']) ? $dataAPI['contentDetails']['duration'] : "P0D",
+                        ]);
 
-                        // if((isset($dataAPI['liveStreamingDetails']['actualEndTime'])) && (Carbon::parse($dataAPI['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString() >= $userF->belongsToUserLinkTracker()->select('updated_at')->first()->updated_at)){
-                        //     $userF->belongsToUserLinkTracker()->update([
-                        //         'updated_at' => Carbon::parse($dataAPI['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString(),
-                        //     ]);
-                        // }
+                        if((isset($dataAPI['liveStreamingDetails']['actualEndTime'])) && (Carbon::parse($dataAPI['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString() >= $userF->belongsToUserLinkTracker()->select('updated_at')->first()->updated_at)){
+                            $userF->belongsToUserLinkTracker()->update([
+                                'updated_at' => Carbon::parse($dataAPI['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString(),
+                            ]);
+                        }
 
-                        return "Offline and updating";
+                        // return "Offline and updating";
                     }
                     else{
-                        // $userF->delete();
+                        $userF->delete();
 
-                        return "Privated and deleting";
+                        // return "Privated and deleting";
                     }
 
-                    return "Just offline";
+                    // return "Just offline";
                 }
 
             }
 
-            return "???";
+            // return "???";
         }
         catch(\Throwable $th){
-            return $th;
+            // return $th;
         }
     }
 
