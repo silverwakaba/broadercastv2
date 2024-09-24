@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\UserLinkTracker;
 
 use App\Repositories\Service\TwitchRepositories;
+use App\Repositories\Service\TwitchAPIRepositories;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -15,51 +16,16 @@ use Illuminate\Support\Collection;
 class TwitchCron extends Controller{
     // Debug
     public function fetchDebug(){
-        // Validate Token
-        // return TwitchRepositories::apiCall('validate-token', [
-        //     'client_secret' => 'p9t9i4fez9eoicclqif8o04joeggog',
-        //     'bearer'        => '6iz7bik93aonvo7oao861j3zpfogg6',
-        // ]);
-        
-        // Create Token
-        // return TwitchRepositories::apiCall('create-token', [
-        //     'client_id'     => 'j1sg2t54dwptembv45th3uuzqkgo6e',
-        //     'client_secret' => 'p9t9i4fez9eoicclqif8o04joeggog',
-        // ]);
-        
-        // Fetch Profile
-        // return TwitchRepositories::apiCall('profile', [
-        //     'login' => 'dota2ti',
-        // ]);
+        // return TwitchAPIRepositories::createToken('7rrc3ifer1dcw4178d5iylqt7k0yzs', 'f9t4j1yitz8vy47lrsa9bfdut1cdah'); // Ok so commented
+        // return TwitchAPIRepositories::validateToken('f9t4j1yitz8vy47lrsa9bfdut1cdah', 'qv4fu7ggy8xm7kcrp2tz9dk42unmk7');  // Ok so commented
 
-        // Fetch Channel
-        // return TwitchRepositories::apiCall('channel', [
-        //     'id' => 715990491,
-        // ]);
+        // return TwitchAPIRepositories::fetchProfile('mande');
+        // return TwitchAPIRepositories::fetchChannel('128856353');
+        // return TwitchAPIRepositories::fetchSubscriber('128856353');
+        // return TwitchAPIRepositories::fetchStream('128856353');
+        // return TwitchAPIRepositories::fetchVideo('128856353');
 
-        // Fetch Subscriber
-        // return TwitchRepositories::apiCall('subscriber', [
-        //     'id' => 715990491,
-        // ]);
-
-        // Fetch Stream
-        // return TwitchRepositories::apiCall('stream', [
-        //     'id' => 715990491,
-        // ]);
-
-        // Fetch Video and Archive
-        // return TwitchRepositories::apiCall('video', [
-        //     'user_id'   => 715990491,
-        //     // 'video_id'  => $video,
-        //     'stream_id' => 41564183287,
-        // ]);
-
-        // ***** \\
-
-        // return TwitchRepositories::fetchProfile(715990491);
-        // return TwitchRepositories::fetchProfile('dttodot');
-
-        // return TwitchRepositories::fetchSubscriber(715990491);
+        return TwitchRepositories::fetchVideo(null, 128856353, null);
     }
 
     // MISC

@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\UserFeed;
 use App\Models\UserLink;
 use App\Models\UserLinkTracker;
+use App\Repositories\Service\TwitchAPIRepositories;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -19,100 +20,21 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 
 class TwitchRepositories{
-    /*
-    |------------------------------
-    | Core Block
-    |------------------------------
-    */
-
-    public static function errorKeyword(){
-        return [
-            'unusual traffic',
-            'Enable JavaScript and cookies to continue',
-            'Our systems have detected unusual traffic from your computer network',
-        ];
-    }
-
     /**
      * ----------------------------
      * Basic Function
      * ----------------------------
     **/
 
-    // API Key
-    public static function apiKey(){
-        $datas = BaseAPI::where([
-            ['base_link_id', '=', '1'],
-        ])->select('client_id', 'client_secret', 'bearer')->inRandomOrder()->first();
-
-        return $datas;
-    }
-
-    public static function apiCall($mode, $insertParams){
-        $apiKey = self::apiKey();
-
-        $apiParams = [
-            'client_id' => $apiKey->client_id,
-            'bearer'    => $apiKey->bearer,
-        ];
-
-        if(($mode == 'validate-token')){
-            return Http::acceptJson()->get('https://www.silverspoon.me/api/twitch/validate-token', [
-                'client_secret' => $insertParams['client_secret'],
-                'bearer'        => $insertParams['bearer'],
-            ])->json();
-        }
-        elseif(($mode == 'create-token')){
-            return Http::acceptJson()->get('https://www.silverspoon.me/api/twitch/create-token', [
-                'client_id'     => $insertParams['client_id'],
-                'client_secret' => $insertParams['client_secret'],
-            ])->json();
-        }
-        elseif(($mode == 'profile')){
-            return Http::acceptJson()->get('https://www.silverspoon.me/api/twitch/fetch-profile', array_merge($apiParams, [
-                'id'    => isset($insertParams['id']) ? $insertParams['id'] : null,
-                'login' => isset($insertParams['login']) ? $insertParams['login'] : null,
-            ]))->json();
-        }
-        elseif(($mode == 'channel')){
-            return Http::acceptJson()->get('https://www.silverspoon.me/api/twitch/fetch-channel', array_merge($apiParams, [
-                'id' => $insertParams['id'],
-            ]))->json();
-        }
-        elseif(($mode == 'subscriber')){
-            return Http::acceptJson()->get('https://www.silverspoon.me/api/twitch/fetch-subscriber', array_merge($apiParams, [
-                'id' => $insertParams['id'],
-            ]))->json();
-        }
-        elseif(($mode == 'stream')){
-            return Http::acceptJson()->get('https://www.silverspoon.me/api/twitch/fetch-stream', array_merge($apiParams, [
-                'id' => $insertParams['id'],
-            ]))->json();
-        }
-        elseif(($mode == 'video')){
-            return Http::acceptJson()->get('https://www.silverspoon.me/api/twitch/fetch-video', array_merge($apiParams, [
-                'user_id'   => isset($insertParams['user_id']) ? $insertParams['user_id'] : null,
-                'video_id'  => isset($insertParams['video_id']) ? $insertParams['video_id'] : null,
-                'stream_id' => isset($insertParams['stream_id']) ? $insertParams['stream_id'] : null,
-            ]))->json();
-        }
-    }
-
     // Update Twitch Bearer Token
     public static function updateBearerToken(){
         $datas = BaseAPI::where('base_link_id', '=', '1')->select('client_id', 'client_secret', 'bearer')->get();
 
         foreach($datas AS $data){
-            $validate = self::apiCall('validate-token', [
-                'client_secret' => $data->client_secret,
-                'bearer'        => $data->bearer,
-            ]);
+            $validate = TwitchAPIRepositories::validateToken($data->client_secret, $data->bearer);
 
             if($validate['status'] !== 200){
-                $reauth = TwitchRepositories::apiCall('create-token', [
-                    'client_id'     => $data->client_id,
-                    'client_secret' => $data->client_secret,
-                ]);
+                $reauth = TwitchAPIRepositories::createToken($data->client_id, $data->client_secret);
 
                 BaseAPI::where([
                     ['base_link_id', '=', '1'],
@@ -186,7 +108,7 @@ class TwitchRepositories{
 
                 if(($checkChannel !== null) && (Str::of($checkChannel)->length() <= 25)){
                     $channeru = (string) $checkChannel;
-                    $http = self::fetchProfile($channeru);
+                    $http = TwitchAPIRepositories::fetchProfile($channeru);
 
                     if(count($http['data']) >= 1){
                         foreach($http['data'] AS $data);
@@ -263,48 +185,28 @@ class TwitchRepositories{
 
     // Fetch Profile
     public static function fetchProfile($channelID){
-        if(is_string($channelID)){
-            $params = [
-                'login' => $channelID,
-            ];
-        }
-        else{
-            $params = [
-                'id' => $channelID,
-            ];
-        }
-
-        return self::apiCall('profile', $params);
+        // return self::apiCall('profile', $params);
+        return TwitchAPIRepositories::fetchProfile($channelID);
     }
 
     // Fetch Subscriber
     public static function fetchSubscriber($channelID){
-        return self::apiCall('subscriber', [
-            'id' => $channelID,
-        ]);
+        return TwitchAPIRepositories::fetchSubscriber($channelID);
     }
 
     // Fetch Activity
     public static function fetchChannel($channelID){
-        return TwitchRepositories::apiCall('channel', [
-            'id' => $channelID,
-        ]);
+        return TwitchAPIRepositories::fetchChannel($channelID);
     }
 
     // Fetch Stream via API
     public static function fetchStream($channelID){
-        return TwitchRepositories::apiCall('stream', [
-            'id' => $channelID,
-        ]);
+        return TwitchAPIRepositories::fetchStream($channelID);
     }
 
     // Fetch Stream via API
     public static function fetchVideo($videoID = null, $channelID = null, $streamID = null){
-        return TwitchRepositories::apiCall('video', [
-            'user_id'   => $channelID,
-            'video_id'  => $videoID,
-            'stream_id' => $streamID,
-        ]);
+        return TwitchAPIRepositories::fetchStream($channelID, $videoID, $streamID);
     }
 
     /**

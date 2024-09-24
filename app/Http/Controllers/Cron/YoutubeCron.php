@@ -24,7 +24,16 @@ use Illuminate\Support\Facades\Http;
 class YoutubeCron extends Controller{
     // Debug
     public function fetchDebug(){
-        // 
+        return YoutubeRepositories::fetchVideoViaScraper('uJS7kpOhu2o');
+
+        // // return $video;
+        
+        // foreach($video['items'] AS $data){
+        //     // return $data;
+        //     return YoutubeRepositories::userFeedStatus($data);
+        // }
+
+        // return YoutubeAPIRepositories::scrapeLLVideos('fPiIoFeP1Xs');
     }
 
     // Archive initialization

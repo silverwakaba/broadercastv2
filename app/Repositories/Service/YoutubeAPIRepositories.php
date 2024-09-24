@@ -20,6 +20,29 @@ class YoutubeAPIRepositories{
      * ----------------------------
     **/
 
+    // Error Code
+    public static function errorCode(){
+        return [
+            'error', 'error.code', 'error.message', 'error.status',
+        ];
+    }
+
+    // Error Keyword
+    public static function errorKeyword(){
+        return [
+            'unusual traffic',
+            'sending automated queries',
+            'Enable JavaScript and cookies to continue',
+            'Our systems have detected unusual traffic from your computer network',
+        ];
+    }
+
+    /**
+     * ----------------------------
+     * API Core Block
+     * ----------------------------
+    **/
+
     // API Key
     public static function apiKey(){
         $datas = BaseAPI::where([
@@ -29,7 +52,7 @@ class YoutubeAPIRepositories{
         return $datas;
     }
 
-    // API Call to Internal Endpoint
+    // API Call via Internal Routing Rules
     public static function apiCall($data, $function, $apiKey = null){
         $errorCode = [
             'error', 'error.code', 'error.message', 'error.status'
@@ -39,7 +62,7 @@ class YoutubeAPIRepositories{
             // Via Lemnos noKey
             if(($apiKey == null)){
                 $signature = [
-                    'fetchFrom' => 'llhost',
+                    'fetchFrom' => 'llHost',
                 ];
 
                 $endpoint = [
@@ -55,28 +78,18 @@ class YoutubeAPIRepositories{
                         return array_merge($signature, $response->json());
                     }
                     elseif((Arr::hasAny($response, $errorCode) == false) && ($response->ok() == false)){
-                        /**
-                         * -----------------------------------------------------------------------------------------------
-                         * Forced to use googleapis endpoint if panic gaymode happen again
-                         * 
-                         * Def: Panic gaymode is when the noKey hosts is unreachable, so that even errorCode isn't fetched
-                         * so we were forced to use googleapis endpoint with valid apikey, until noKey hosts is reachable
-                         * -----------------------------------------------------------------------------------------------
-                        **/
-
                         return self::apiRecall($data, $function, self::apiKey());
                     }
                     else{
-                        // Repeat apicall for new respond
                         return self::apiRecall($data, $function, null);
                     }
                 }
             }
 
-            // Via Lemnos Scraper
+            // Via Private Lemnos Scraper
             elseif(($apiKey == 'scraperLL')){
                 $signature = [
-                    'fetchFrom' => 'llpvt',
+                    'fetchFrom' => 'llPvt',
                 ];
 
                 $endpoint = [
@@ -95,7 +108,7 @@ class YoutubeAPIRepositories{
             // Via Googleapis
             else{
                 $signature = [
-                    'fetchFrom' => 'googleapis',
+                    'fetchFrom' => 'gApis',
                 ];
 
                 $endpoint = [
@@ -187,14 +200,14 @@ class YoutubeAPIRepositories{
     // Channel
     public static function scrapeLLChannels($channelID, $apiKey = 'scraperLL'){
         $length = Str::length($channelID);
-        $contain = Str::contains($channelID, ['@']);
+        $containAtSymbol = Str::contains($channelID, ['@']);
 
         $params = [
             'maxResults'    => 50,
             'part'          => "snippet,upcomingEvents,about,approval,membership",
         ];
 
-        if(($length == 24) && ($contain == false)){
+        if(($length == 24) && ($containAtSymbol == false)){
             $params['id'] = $channelID;
         }
         else{
@@ -209,7 +222,7 @@ class YoutubeAPIRepositories{
         $params = [
             'id'            => "$videoID",
             'maxResults'    => 50,
-            'part'          => "contentDetails,short,snippet,statistics,status,activity",
+            'part'          => "contentDetails,music,musics,short,snippet,statistics,status,activity,isPaidPromotion,isPremium,isMemberOnly,isOriginal,isRestricted,explicitLyrics",
         ];
 
         return self::apiCall($params, 'videos', $apiKey);
