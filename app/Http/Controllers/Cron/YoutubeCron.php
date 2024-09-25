@@ -23,17 +23,32 @@ use Illuminate\Support\Facades\Http;
 
 class YoutubeCron extends Controller{
     // Debug
-    public function fetchDebug(){
-        return YoutubeRepositories::fetchVideoViaScraper('uJS7kpOhu2o');
+    public function fetchDebug(Request $request){
+        // Channel
+        if(Str::contains($request->mode, 'channel-fetch')){
+            return YoutubeAPIRepositories::fetchChannels($request->id);
+        }
+        elseif(Str::contains($request->mode, 'channel-scrape')){
+            return YoutubeAPIRepositories::scrapeLLChannels($request->id);
+        }
 
-        // // return $video;
-        
-        // foreach($video['items'] AS $data){
-        //     // return $data;
-        //     return YoutubeRepositories::userFeedStatus($data);
-        // }
+        // Playlist
+        elseif(Str::contains($request->mode, 'playlist-fetch')){
+            return YoutubeAPIRepositories::fetchPlaylistItems($request->id, $request->token);
+        }
 
-        // return YoutubeAPIRepositories::scrapeLLVideos('fPiIoFeP1Xs');
+        // Video
+        elseif(Str::contains($request->mode, 'video-fetch')){
+            return YoutubeAPIRepositories::fetchVideos($request->id, 'AIzaSyCG2E8UACFHwuvVhb45dukAPkC0Agwj9WQ');
+        }
+        elseif(Str::contains($request->mode, 'video-scrape')){
+            return YoutubeAPIRepositories::scrapeVideos($request->id);
+        }
+
+        // Stream
+        elseif(Str::contains($request->mode, 'stream-check')){
+            return YoutubeRepositories::fetchVideoViaScraper($request->id);
+        }
     }
 
     // Archive initialization

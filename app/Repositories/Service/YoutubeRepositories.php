@@ -249,7 +249,7 @@ class YoutubeRepositories{
             ];
 
             // Hardcoded to 'AIzaSyA5-XF2wJ0RcQCiD1OIgPNDHqn1mFg1fmI' as for debugging, if already ok then use the YoutubeAPIRepositories::apiKey() instead
-            $http = YoutubeAPIRepositories::fetchPlaylistItems($userLT->playlist, $pageToken, null);
+            $http = YoutubeAPIRepositories::fetchPlaylistItems($userLT->playlist, $pageToken, YoutubeAPIRepositories::apiKey());
 
             if(isset($http['items'])){
                 foreach($http['items'] AS $data){
@@ -296,7 +296,7 @@ class YoutubeRepositories{
             }
         }
         catch(\Throwable $th){
-            return Log::debug($th);
+            // return Log::debug($th);
             // return $th;
         }
     }
@@ -357,28 +357,31 @@ class YoutubeRepositories{
             if(isset($userF)){
                 $isOffline = true;
 
-                $viaAPI = YoutubeAPIRepositories::fetchVideos($videoID);
-                $viaScraper = YoutubeAPIRepositories::scrapeLLVideos($videoID);
-                
-                foreach($viaAPI['items'] AS $dataAPI);
-                foreach($viaScraper['items'] AS $dataScraper);
+                // Direct as in we use HTTP Client to fetch the Page Directly
+                $viaScraperDirect = YoutubeAPIRepositories::scrapeVideos($videoID);
 
-                if(($dataScraper['contentDetails']['duration'] == 0)){
+                // Internal as in we use our own LL Scrapper Internally
+                $viaScraperInternal = YoutubeAPIRepositories::scrapeLLVideos($videoID);
+
+                foreach($viaScraperInternal['items'] AS $dataScraperInternal);
+
+                if(($dataScraperInternal['contentDetails']['duration'] == 0) && ($viaScraperDirect['live'] == true)){
                     $isOffline = false;
                 }
 
-                if(($isOffline == false) && (self::userFeedStatus($dataAPI) == 8) && (BaseHelper::diffInDays($userF->schedule) <= 0)){
+                if(($isOffline == false) && (BaseHelper::diffInDays($userF->schedule) <= 0)){
                     $userF->update([
                         'base_status_id'    => 8,
-                        'concurrent'        => $dataScraper['statistics']['viewCount'],
+                        'concurrent'        => $dataScraperInternal['statistics']['viewCount'],
                     ]);
 
                     // return "Online and updating";
                 }
-
                 else{
+                    $viaAPI = YoutubeAPIRepositories::fetchVideos($videoID);
+
                     if($viaAPI['pageInfo']['totalResults'] >= 1){
-                        // foreach($viaAPI['items'] AS $dataAPI){}
+                        foreach($viaAPI['items'] AS $dataAPI);
 
                         $userF->update([
                             'base_status_id'    => self::userFeedStatus($dataAPI),
@@ -407,7 +410,6 @@ class YoutubeRepositories{
 
                     // return "Just offline";
                 }
-
             }
 
             // return "???";

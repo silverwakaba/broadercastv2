@@ -37,6 +37,25 @@ class YoutubeAPIRepositories{
         ];
     }
 
+    // Information About Key That Being Used
+    public static function keyUsed($key){
+        // AIzaSy means that the key is v3 key
+        $keyUsed = Str::excerpt($key, 'AIzaSy', [
+            'radius'    => 5,
+            'omission'  => 'XXX',
+        ]);
+
+        return $keyUsed;
+    }
+
+    // Information About Service Signature
+    public static function signature($service, $key = null){
+        return [
+            'fetchFrom' => $service,
+            'keyUsed'   => self::keyUsed($key),
+        ];
+    }
+
     /**
      * ----------------------------
      * API Core Block
@@ -45,6 +64,9 @@ class YoutubeAPIRepositories{
 
     // API Key
     public static function apiKey(){
+        // Use for hardcode debug to see usage
+        // return $hardcode = 'AIzaSyCG2E8UACFHwuvVhb45dukAPkC0Agwj9WQ';
+
         $datas = BaseAPI::where([
             ['base_link_id', '=', '2'],
         ])->select('client_key')->inRandomOrder()->first()->client_key;
@@ -54,80 +76,59 @@ class YoutubeAPIRepositories{
 
     // API Call via Internal Routing Rules
     public static function apiCall($data, $function, $apiKey = null){
-        $errorCode = [
-            'error', 'error.code', 'error.message', 'error.status'
-        ];
-
         try{
-            // Via Lemnos noKey
+            // Via Official Lemnos noKey, through Tor Socks5 Network
             if(($apiKey == null)){
-                $signature = [
-                    'fetchFrom' => 'llHost',
-                ];
+                $http = Http::withOptions([
+                    'proxy' => BaseHelper::socks5Proxy(),
+                ])->get(Str::of('https://yt.lemnoslife.com/noKey/')->append($function), $data);
 
-                $endpoint = [
-                    '1st' => 'https://yt.lemnoslife.com/noKey/',
-                ];
-
-                $responses = Http::pool(fn (Pool $pool) => [
-                    $pool->as('1stR')->get(Str::of($endpoint['1st'])->append($function), $data),
-                ]);
-
-                foreach($responses as $response){
-                    if((Arr::hasAny($response, $errorCode) == false) && ($response->ok() == true)){
-                        return array_merge($signature, $response->json());
-                    }
-                    elseif((Arr::hasAny($response, $errorCode) == false) && ($response->ok() == false)){
-                        return self::apiRecall($data, $function, self::apiKey());
-                    }
-                    else{
-                        return self::apiRecall($data, $function, null);
-                    }
+                if((Arr::hasAny($http, self::errorCode()) == false) && ($http->ok() == true)){
+                    return array_merge(self::signature('llHost'), $http->json());
+                }
+                elseif((Arr::hasAny($http, self::errorCode()) == false) && ($http->ok() == false)){
+                    return self::apiRecall($data, $function, self::apiKey());
+                }
+                else{
+                    return self::apiRecall($data, $function);
                 }
             }
 
             // Via Private Lemnos Scraper
             elseif(($apiKey == 'scraperLL')){
-                $signature = [
-                    'fetchFrom' => 'llPvt',
-                ];
-
                 $endpoint = [
                     '1st' => 'https://llde.spn.my.id/',
+                    '2nd' => 'https://llid.spn.my.id/',
                 ];
 
                 $responses = Http::pool(fn (Pool $pool) => [
                     $pool->as('1stR')->get(Str::of($endpoint['1st'])->append($function), $data),
+                    $pool->as('2ndR')->get(Str::of($endpoint['2nd'])->append($function), $data),
                 ]);
 
-                foreach($responses as $response){
-                    return array_merge($signature, $response->json());
+                foreach($responses as $key => $response){
+                    if(($response->ok() == true)){
+                        return array_merge(self::signature('llScraper:' . $key), $response->json());
+                    }
+                    else{
+                        return self::apiRecall($data, $function);
+                    }
                 }
             }
 
             // Via Googleapis
             else{
-                $signature = [
-                    'fetchFrom' => 'gApis',
-                ];
-
-                $endpoint = [
-                    '1st' => 'https://www.googleapis.com/youtube/v3/',
-                ];
-
                 $params = array_merge($data, ['key' => $apiKey]);
 
-                $responses = Http::pool(fn (Pool $pool) => [
-                    $pool->as('1stR')->get(Str::of($endpoint['1st'])->append($function), $params),
-                ]);
+                $http = Http::withOptions([
+                    'proxy' => BaseHelper::socks5Proxy(),
+                ])->get(Str::of('https://www.googleapis.com/youtube/v3/')->append($function), $params);
 
-                foreach($responses as $response){
-                    if((Arr::hasAny($response, $errorCode) == false) && ($response->ok() == true)){
-                        return array_merge($signature, $response->json());
-                    }
-                    else{
-                        return self::apiRecall($data, $function, null);
-                    }
+                if((Arr::hasAny($http, self::errorCode()) == false) && ($http->ok() == true)){
+                    return array_merge(self::signature('gApis', $apiKey), $http->json());
+                }
+                else{
+                    return self::apiRecall($data, $function);
                 }
             }
         }
@@ -226,5 +227,38 @@ class YoutubeAPIRepositories{
         ];
 
         return self::apiCall($params, 'videos', $apiKey);
+    }
+
+    /**
+     * ----------------------------
+     * Scraping via HTTP Client
+     * ----------------------------
+    **/
+
+    public static function scrapeVideos($videoID){
+        $http = Http::withOptions([
+            'proxy' => BaseHelper::socks5Proxy(),
+        ])->get('https://www.youtube.com/watch', [
+            'v' => $videoID,
+        ])->body();
+
+        // return [$http];
+
+        $id = Str::betweenFirst($http, '{"liveStreamabilityRenderer":{"videoId":"', '",');
+        $title = Str::betweenFirst($http, '"title":"', '",');
+        $concurrent = (int) Str::betweenFirst($http, '"originalViewCount":"', '"');
+
+        if((Str::of($http)->contains(self::errorKeyword()) == false)){
+            return [
+                'id'            => $id,
+                'live'          => (Str::length($id) == 11) ? true : false,
+                'concurrent'    => $concurrent,
+                'title'         => (Str::length($id) <= 100) ? $title : null,
+                'timezone'      => config('app.timezone'),
+            ];
+        }
+        else{
+            return "Chaban";
+        }
     }
 }
