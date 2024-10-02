@@ -1,9 +1,7 @@
-@extends('layout.app')
+@extends('layout.front')
 @section('title', 'Archived Content')
 @section('content')
-    <x-Adminlte.Content :previous="route('index')">
-        <x-Adminlte.Card title="Past and Archived Content">
-            <x-Adminlte.CardFeed col="4" :feeds="$datas" />
-        </x-Adminlte.Card>
-    </x-Adminlte.Content>
+    <x-Valkivid.Container.Main>
+        <x-Valkivid.Live.Content title="Past and Archived Content" :feeds="$datas" />
+    </x-Valkivid.Container.Main>
 @endsection

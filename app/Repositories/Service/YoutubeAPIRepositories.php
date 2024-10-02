@@ -80,7 +80,10 @@ class YoutubeAPIRepositories{
             // Via Official Lemnos noKey, through Tor Socks5 Network
             if(($apiKey == null)){
                 $http = Http::withOptions([
-                    'proxy' => BaseHelper::socks5Proxy(),
+                    // 'proxy' => BaseHelper::socks5Proxy(),
+
+                    'proxy' => 'socks5://ipv4.id.1.spn.my.id:12053',
+
                 ])->get(Str::of('https://yt.lemnoslife.com/noKey/')->append($function), $data);
 
                 if((Arr::hasAny($http, self::errorCode()) == false) && ($http->ok() == true)){
@@ -120,9 +123,11 @@ class YoutubeAPIRepositories{
             else{
                 $params = array_merge($data, ['key' => $apiKey]);
 
-                $http = Http::withOptions([
-                    'proxy' => BaseHelper::socks5Proxy(),
-                ])->get(Str::of('https://www.googleapis.com/youtube/v3/')->append($function), $params);
+                $http = Http::
+                // withOptions([
+                //     'proxy' => BaseHelper::socks5Proxy(),
+                // ])->
+                get(Str::of('https://www.googleapis.com/youtube/v3/')->append($function), $params);
 
                 if((Arr::hasAny($http, self::errorCode()) == false) && ($http->ok() == true)){
                     return array_merge(self::signature('gApis', $apiKey), $http->json());

@@ -357,15 +357,19 @@ class YoutubeRepositories{
             if(isset($userF)){
                 $isOffline = true;
 
+                // Via v3 API
+                $viaAPI = YoutubeAPIRepositories::fetchVideos($videoID);
+
                 // Direct as in we use HTTP Client to fetch the Page Directly
                 $viaScraperDirect = YoutubeAPIRepositories::scrapeVideos($videoID);
 
-                // Internal as in we use our own LL Scrapper Internally
+                // Internal as in we use our own LL Scrapper that Hosted Internally
                 $viaScraperInternal = YoutubeAPIRepositories::scrapeLLVideos($videoID);
 
+                foreach($viaAPI['items'] AS $dataAPI);
                 foreach($viaScraperInternal['items'] AS $dataScraperInternal);
 
-                if(($dataScraperInternal['contentDetails']['duration'] == 0) && ($viaScraperDirect['live'] == true)){
+                if(($dataScraperInternal['contentDetails']['duration'] == 0) && ($viaScraperDirect['live'] == true) && (self::userFeedStatus($dataAPI) == 8)){
                     $isOffline = false;
                 }
 
@@ -378,11 +382,7 @@ class YoutubeRepositories{
                     // return "Online and updating";
                 }
                 else{
-                    $viaAPI = YoutubeAPIRepositories::fetchVideos($videoID);
-
                     if($viaAPI['pageInfo']['totalResults'] >= 1){
-                        foreach($viaAPI['items'] AS $dataAPI);
-
                         $userF->update([
                             'base_status_id'    => self::userFeedStatus($dataAPI),
                             'concurrent'        => isset($dataAPI['liveStreamingDetails']['concurrentViewers']) ? $dataAPI['liveStreamingDetails']['concurrentViewers'] : 0,
@@ -415,7 +415,7 @@ class YoutubeRepositories{
             // return "???";
         }
         catch(\Throwable $th){
-            // return $th;
+            return $th;
         }
     }
 

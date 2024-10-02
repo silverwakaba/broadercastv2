@@ -19,13 +19,13 @@ class TwitchCron extends Controller{
         // return TwitchAPIRepositories::createToken('7rrc3ifer1dcw4178d5iylqt7k0yzs', 'f9t4j1yitz8vy47lrsa9bfdut1cdah'); // Ok so commented
         // return TwitchAPIRepositories::validateToken('f9t4j1yitz8vy47lrsa9bfdut1cdah', 'qv4fu7ggy8xm7kcrp2tz9dk42unmk7');  // Ok so commented
 
-        // return TwitchAPIRepositories::fetchProfile('mande');
-        // return TwitchAPIRepositories::fetchChannel('128856353');
-        // return TwitchAPIRepositories::fetchSubscriber('128856353');
-        // return TwitchAPIRepositories::fetchStream('128856353');
-        // return TwitchAPIRepositories::fetchVideo('128856353');
+        // return TwitchAPIRepositories::fetchProfile('ran_hinokuma');
+        return TwitchAPIRepositories::fetchChannel('517857559');
+        // return TwitchAPIRepositories::fetchSubscriber('517857559');
+        // return TwitchAPIRepositories::fetchStream('517857559');
+        // return TwitchAPIRepositories::fetchVideo('517857559');
 
-        return TwitchRepositories::fetchVideo(null, 128856353, null);
+        // return TwitchRepositories::fetchVideo(null, 517857559, null);
     }
 
     // MISC

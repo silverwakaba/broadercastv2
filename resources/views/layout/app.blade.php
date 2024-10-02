@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>@yield('title', 'Page') | {{ config('app.name', 'BASE') }}</title>
+        <title>@yield('title', 'Page') | {{ config('app.name', 'vTual') }}</title>
         <link rel="icon" type="image/x-icon" href="{{ config('app.cdn_static_url') . '/system/internal/image/logo/vtual/logo-50px.png' }}">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css">

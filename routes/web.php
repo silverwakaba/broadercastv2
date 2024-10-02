@@ -63,7 +63,7 @@ Route::group(['prefix' => '/'], function(){
         // Archived
         Route::get('archived', [FrontCreatorController::class, 'archived'])->name('creator.archived');
 
-        // Archived
+        // Uploaded VODs
         Route::get('uploaded', [FrontCreatorController::class, 'uploaded'])->name('creator.uploaded');
 
         // Setting

@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use Carbon\Carbon;
+use Carbon\CarbonInterval;
 use App\Models\BaseLink;
 use App\Models\User;
 use Illuminate\Support\Arr;
@@ -50,12 +51,21 @@ class BaseHelper{
         }
     }
 
+    public static function timeInterval($date){
+        $carbon = Carbon::parse($date);
+
+        return CarbonInterval::create(
+            $years = null, $months = null, $weeks = null, $days = null, $hours = $carbon->diffInHours(), $minutes = null, $seconds = null, $microseconds = null
+        )->format('%H:%I:%S');
+    }
+
     public static function socks5Proxy(){
         $proxy = Arr::shuffle([
             'socks5://ipv4.id.1.spn.my.id:12053',
             'socks5://ipv4.de.2.spn.my.id:12053',
         ]);
 
+        // Get first array
         return $proxy[0];
     }
 

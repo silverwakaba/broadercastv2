@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Helpers\BaseHelper;
 use App\Repositories\Base\CookiesRepositories;
 
 use Carbon\Carbon;
@@ -49,7 +50,6 @@ class UserChannelActivityResource extends JsonResource{
         return [
             'id'                        => $this->id,
             'base_status_id'            => $this->base_status_id,
-            'streaming'                 => $this->streaming,
             'concurrent'                => $this->concurrent,
             'identifier'                => $this->identifier,
             'title'                     => $this->title,
@@ -63,7 +63,7 @@ class UserChannelActivityResource extends JsonResource{
             'actual_start_for_human'    => $this->actual_start ? Carbon::parse($this->actual_start)->diffForHumans() : null,
             'actual_end'                => $this->actual_end ? Carbon::parse($this->actual_end)->format('d M Y, g:i A') : null,
             'actual_end_for_human'      => $this->actual_end ? Carbon::parse($this->actual_end)->diffForHumans() : null,
-            'duration'                  => $this->streaming == false ? CarbonInterval::create($this->duration)->format('%H:%I:%S') : null,
+            'duration'                  => $this->base_status_id == 8 ? BaseHelper::timeInterval($this->published) : CarbonInterval::create($this->duration)->format('%H:%I:%S'),
             'timestamp'                 => $this->timestamp(),
             'timestamp_for_human'       => $this->timestampForHuman(),
             'user'                      => new UserResource($this->whenLoaded('belongsToUser')),

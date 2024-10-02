@@ -26,7 +26,7 @@ class YoutubeCron extends Controller{
     public function fetchDebug(Request $request){
         // Channel
         if(Str::contains($request->mode, 'channel-fetch')){
-            return YoutubeAPIRepositories::fetchChannels($request->id);
+            return YoutubeAPIRepositories::fetchChannels($request->id, $request->key);
         }
         elseif(Str::contains($request->mode, 'channel-scrape')){
             return YoutubeAPIRepositories::scrapeLLChannels($request->id);
@@ -34,12 +34,12 @@ class YoutubeCron extends Controller{
 
         // Playlist
         elseif(Str::contains($request->mode, 'playlist-fetch')){
-            return YoutubeAPIRepositories::fetchPlaylistItems($request->id, $request->token);
+            return YoutubeAPIRepositories::fetchPlaylistItems($request->id, $request->token, $request->key);
         }
 
         // Video
         elseif(Str::contains($request->mode, 'video-fetch')){
-            return YoutubeAPIRepositories::fetchVideos($request->id, 'AIzaSyCG2E8UACFHwuvVhb45dukAPkC0Agwj9WQ');
+            return YoutubeAPIRepositories::fetchVideos($request->id, $request->key);
         }
         elseif(Str::contains($request->mode, 'video-scrape')){
             return YoutubeAPIRepositories::scrapeVideos($request->id);

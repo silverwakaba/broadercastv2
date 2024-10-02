@@ -1,9 +1,7 @@
-@extends('layout.app')
+@extends('layout.front')
 @section('title', 'Scheduled Content')
 @section('content')
-    <x-Adminlte.Content :previous="route('index')">
-        <x-Adminlte.Card title="Upcoming Scheduled Content">
-            <x-Adminlte.CardFeed col="4" :feeds="$datas" />
-        </x-Adminlte.Card>
-    </x-Adminlte.Content>
+    <x-Valkivid.Container.Main>
+        <x-Valkivid.Live.Content title="Upcoming Scheduled Content" :feeds="$datas" />
+    </x-Valkivid.Container.Main>
 @endsection
