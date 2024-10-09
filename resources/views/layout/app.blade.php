@@ -2,9 +2,16 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
         <title>@yield('title', 'Page') | {{ config('app.name', 'vTual') }}</title>
-        <link rel="icon" type="image/x-icon" href="{{ config('app.cdn_static_url') . '/system/internal/image/logo/vtual/logo-50px.png' }}">
+        <meta name="description" content="" />
+        <meta name="keywords" content="" />
+        <link rel="shortcut icon" href="https://static.silverspoon.me/system/internal/image/logo/vtual/logo-50.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="https://static.silverspoon.me/system/internal/image/logo/vtual/logo-120.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="https://static.silverspoon.me/system/internal/image/logo/vtual/logo-152.png">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.0/dist/sweetalert2.min.css">

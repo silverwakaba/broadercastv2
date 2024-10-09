@@ -30,8 +30,7 @@
         </ul>
     @else
         <a href="{{ route('index') }}" class="navbar-brand">
-            <img src="{{ config('app.cdn_static_url') . '/system/internal/image/logo/vtual/logo-50px.png' }}" class="brand-image img-circle elevation-3" />
-            <span class="brand-text font-weight-light text-light">{{ config('app.name', 'vTual') }}</span>
+            <img src="{{ config('app.cdn_static_url') . '/system/internal/image/logo/vtual/full-light-50-transparent.png' }}" class="brand-image">
         </a>
         <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -110,14 +109,14 @@
 @if(request()->routeIs('apps.*'))
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <a href="{{ route('index') }}" class="brand-link">
-            <img src="{{ config('app.cdn_static_url') . '/system/internal/image/logo/vtual/logo-50px.png' }}" class="brand-image img-circle elevation-3" />
+            <img src="{{ config('app.cdn_static_url') . '/system/internal/image/logo/vtual/logo-50px.png' }}" class="brand-image img-circle elevation-3">
             <span class="brand-text">{{ config('app.name', 'vTual') }}</span>
         </a>
         <div class="sidebar">
             @can('canLogin')
                 <div class="user-panel pb-3 mt-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="{{ $user->avatar->path }}" class="img-circle elevation-2" />
+                        <img src="{{ $user->avatar->path }}" class="img-circle elevation-2">
                     </div>
                     <div class="info">
                         <a href="{{ $user->page }}" class="d-block text-truncate">{{ $user->name }}</a>

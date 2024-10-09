@@ -10,7 +10,7 @@
     @endif
     <div class="card-body box-profile">
         <div class="text-center">
-            <img class="profile-user-img img-fluid img-circle" src="{{ $profile->avatar->path }}" />
+            <img class="profile-user-img img-fluid img-circle" src="{{ $profile->avatar->path }}">
             <h3 class="profile-username" data-toggle="tooltip" data-placement="top" title="{{ $profile->name }}">{{ $profile->name_preview }}</h3>
             <p class="text-muted text-center">{{ $profile->title_temp }}</p>
             <p class="text-center">
@@ -141,7 +141,7 @@
                             @foreach($links AS $link)
                                 <li class="list-inline-item">
                                     <a href="{{ $link->link }}" class="btn btn-sm btn-link border p-2" data-toggle="tooltip" data-placement="top" title="{{ $link->service->name }}" target="_blank">
-                                        <img height="25" width="25" src="{{ $link->service->logo }}" />
+                                        <img height="25" width="25" src="{{ $link->service->logo }}">
                                     </a>
                                 </li>
                             @endforeach

@@ -14,7 +14,7 @@ class Content extends Component{
     /**
      * Create a new component instance.
      */
-    public function __construct($feeds, $title, $link = null){
+    public function __construct($feeds, $title = null, $link = null){
         $this->feeds = $feeds;
         $this->title = $title;
         $this->link = $link;

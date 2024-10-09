@@ -49,6 +49,14 @@ class YoutubeCron extends Controller{
         elseif(Str::contains($request->mode, 'stream-check')){
             return YoutubeRepositories::fetchVideoViaScraper($request->id);
         }
+
+        elseif(Str::contains($request->mode, 'pub')){
+            return Http::asForm()->post('https://pubsubhubbub.appspot.com/subscribe', [
+                'hub.mode'      => 'subscribe',
+                'hub.topic'     => 'https://www.youtube.com/feeds/videos.xml?channel_id=UCp6993wxpyDPHUpavwDFqgg',
+                'hub.callback'  => 'http://broadercast.test/debug/youtube?mode=pub',
+            ]);
+        }
     }
 
     // Archive initialization

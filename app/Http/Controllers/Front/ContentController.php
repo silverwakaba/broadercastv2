@@ -115,6 +115,11 @@ class ContentController extends Controller{
         ]);
     }
 
+    // Watch
+    public function watch($id){
+        return view('pages/front/content/watch');
+    }
+
     // Setting
     public function setting(Request $request){
         $sort = BasedataHelper::baseSort();
@@ -143,9 +148,5 @@ class ContentController extends Controller{
         Cookie::queue('published', $request->vod_content, $expire);
 
         return RedirectHelper::routeBack(null, 'success', 'Content preference', 'update');
-    }
-
-    public function watch($id){
-        return view('pages/front/content/watch');
     }
 }

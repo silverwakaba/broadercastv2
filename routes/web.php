@@ -89,7 +89,7 @@ Route::group(['prefix' => '/'], function(){
         Route::post('setting', [FrontContentController::class, 'settingPost']);
 
         // Watch
-        // Route::get('@{id}', [FrontContentController::class, 'watch'])->name('content.watch');
+        Route::get('@{id}', [FrontContentController::class, 'watch'])->name('content.watch');
     });
 
     // Auth

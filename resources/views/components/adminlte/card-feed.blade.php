@@ -4,27 +4,23 @@
             @foreach($feeds->data AS $data)
                 <div class="col">
                     <div class="card card-widget">
-                        <a href="{{ $data->link }}" class="embed-responsive embed-responsive-16by9" target="_blank">
-                            <img src="{{ $data->thumbnail }}" title="{{ $data->title }}" class="card-img-top embed-responsive-item" />
-                        </a>
+                        <div class="tube-post">
+                            <a href="{{ $data->link }}" class="embed-responsive embed-responsive-16by9" target="_blank">
+                                <img src="{{ $data->thumbnail }}" title="{{ $data->title }}" class="card-img-top embed-responsive-item">
+                                <span class="vid-time bg-secondary text-white p-1"><i class="fas fa-clock"></i> {{ $data->duration }}</span>
+                                @if(($data->base_status_id == 8))
+                                    <span class="vid-view bg-danger text-white p-1"><i class="fas fa-eye"></i> {{ number_format($data->concurrent) }}</span>
+                                @endif
+                            </a>
+                        </div>
                         <a href="{{ $data->user->page }}" class="text-light" title="{{ $data->profile->name }}">
                             <div class="card-header">
                                 <div class="user-block">
-                                    <img class="img-fluid img-circle" src="{{ $data->profile->avatar }}" />
+                                    <img class="img-fluid img-circle" src="{{ $data->profile->avatar }}">
                                     <div class="username">{{ $data->profile->name }}</div>
                                     <div class="description">
                                         <ul class="list-inline m-0">
-                                            @if(($data->base_status_id == 7))
-                                                <li class="list-inline-item">{{ $data->timestamp }}</li>
-                                                <li class="list-inline-item">{{ $data->timestamp_for_human }}</li>
-                                            @elseif(($data->base_status_id == 8))
-                                                <li class="list-inline-item">Since {{ $data->timestamp_for_human }}</li>
-                                                <li class="list-inline-item badge badge-danger">{{ number_format($data->concurrent) }} watching</li>
-                                            @elseif(($data->base_status_id == 9) || ($data->base_status_id == 10))
-                                                <li class="list-inline-item">{{ $data->timestamp }}</li>
-                                                <li class="list-inline-item">{{ $data->timestamp_for_human }}</li>
-                                                <li class="list-inline-item badge badge-dark">{{ $data->duration }}</li>
-                                            @endif
+                                            <li class="list-inline-item">{{ $data->timestamp_for_human }}</li>
                                         </ul>
                                     </div>
                                 </div>

@@ -13,11 +13,16 @@
             {{ $slot }}
         </div>
     </div>
-    @if(isset($background))
-        <div class="vv-body-bg absolute inset-0 max-h-[1144px] {{ $background }} bg-no-repeat bg-top bg-cover -z-10 opacity-10 dark:opacity-100">
-            <div class="absolute inset-0 bg-black mix-blend-color z-[1]"></div>
-            <div class="absolute inset-0 dark:bg-gray-900 mix-blend-multiply z-[2]"></div>
-            <div class="absolute inset-0 dark:bg-gray-600 mix-blend-screen z-[3] opacity-40"></div>
-        </div>
+    <div class="vv-body-bg absolute inset-0 max-h-[1144px] {{ $backgroundClass }} bg-no-repeat bg-top bg-cover -z-10 opacity-10 dark:opacity-100">
+        <div class="absolute inset-0 bg-black mix-blend-color z-[1]"></div>
+        <div class="absolute inset-0 dark:bg-gray-900 mix-blend-multiply z-[2]"></div>
+        <div class="absolute inset-0 dark:bg-gray-600 mix-blend-screen z-[3] opacity-40"></div>
+    </div>
+    @if($background == 'custom')
+        <style>
+            .bg-custom-this-page {
+                background-image: url('{{ $backgroundURL }}');
+            }
+        </style>
     @endif
 </div>

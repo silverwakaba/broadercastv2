@@ -8,7 +8,7 @@
                             <!-- Placeholder -->
                         </div>
                         <div class="widget-user-image">
-                            <img class="img-circle elevation-5" src="{{ $data->avatar }}" />
+                            <img class="img-circle elevation-5" src="{{ $data->avatar }}">
                         </div>
                         <div class="card-footer text-truncate">
                             <div class="description-block">

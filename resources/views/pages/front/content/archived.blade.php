@@ -1,7 +1,9 @@
-@extends('layout.front')
+@extends('layout.app')
 @section('title', 'Archived Content')
 @section('content')
-    <x-Valkivid.Container.Main>
-        <x-Valkivid.Live.Content title="Past and Archived Content" :feeds="$datas" />
-    </x-Valkivid.Container.Main>
+    <x-Adminlte.Content>
+        <x-Adminlte.Card>
+            <x-Adminlte.CardFeed col="4" :feeds="$datas" />
+        </x-Adminlte.Card>
+    </x-Adminlte.Content>
 @endsection

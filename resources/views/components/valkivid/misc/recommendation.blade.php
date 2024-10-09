@@ -6,7 +6,7 @@
                 <h4 class="font-bold text-2xl sm:text-3xl md:text-2xl md:leading-none leading-none lg:text-3xl xl:text-[42px]">Watch Archive</h4>
             </div>
             <img class="absolute -z-10 right-0 top-0 bottom-0 object-cover object-left max-w-[39%]" src="https://static.silverspoon.me/system/internal/image/misc/wakava/batch1/wakava-(6)-320x320.png" alt="Bored Illustration">
-            <a href="{{ route('creator.archived') }}" class="block absolute inset-0"></a>
+            <a href="{{ route('content.archived') }}" class="block absolute inset-0"></a>
         </div>
     </div>
     <div class="col-span-full md:col-span-6">

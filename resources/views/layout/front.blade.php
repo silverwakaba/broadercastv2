@@ -18,18 +18,17 @@
         <link href="https://static.silverspoon.me/system/internal/template/valkvid/3.0.1/vendors/common/swiper/css/swiper-bundle.min.css" rel="stylesheet">
         <link href="https://static.silverspoon.me/system/internal/template/valkvid/3.0.1/css/style.min.css" rel="stylesheet">
         <link href="https://static.silverspoon.me/system/internal/template/valkvid/3.0.1/css/custom.css" rel="stylesheet">
-        @vite(['resources/css/app.css'])
     </head>
     <body class="relative z-10 antialiased font-base text-gray-500 text-sm font-medium lg:text-base h-full bg-white dark:bg-gray-900 dark:text-gray">
-        <div id="site-wrapper" class="flex flex-col h-full js-site-wrapper">
+        <div class="flex flex-col h-full js-site-wrapper" id="site-wrapper">
             <x-Valkivid.Main />
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/jscroll@2.4.1/jquery.jscroll.min.js"></script>
+        <script src="https://static.silverspoon.me/system/vendor/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://static.silverspoon.me/system/vendor/jscroll/2.4.1/dist/jquery.jscroll.min.js"></script>
         <script src="https://static.silverspoon.me/system/internal/template/valkvid/3.0.1/vendors/common/glightbox/js/glightbox.min.js"></script>
         <script src="https://static.silverspoon.me/system/internal/template/valkvid/3.0.1/vendors/common/swiper/js/swiper-bundle.min.js"></script>
         <script src="https://static.silverspoon.me/system/internal/template/valkvid/3.0.1/js/common.min.js"></script>
         <script src="https://static.silverspoon.me/system/internal/template/valkvid/3.0.1/js/init.min.js"></script>
-        @vite(['resources/js/app.js'])
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
     </body>
 </html>

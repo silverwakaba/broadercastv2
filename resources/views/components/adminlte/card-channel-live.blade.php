@@ -4,12 +4,12 @@
             <div class="col">
                 <div class="card card-widget">
                     <a href="{{ $data->activity->link }}" target="_blank">
-                        <img src="{{ $data->activity->thumbnail }}" class="card-img-top" />
+                        <img src="{{ $data->activity->thumbnail }}" class="card-img-top">
                     </a>
                     <a href="{{ $data->channel->link }}" class="text-light" target="_blank">
                         <div class="card-header">
                             <div class="user-block">
-                                <img class="img-fluid img-circle" src="{{ $data->avatar }}" />
+                                <img class="img-fluid img-circle" src="{{ $data->avatar }}">
                                 <div class="username">{{ $data->name }}</div>
                                 <div class="description">
                                     <ul class="list-inline m-0">

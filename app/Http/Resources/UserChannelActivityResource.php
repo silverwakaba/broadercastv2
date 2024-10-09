@@ -63,7 +63,7 @@ class UserChannelActivityResource extends JsonResource{
             'actual_start_for_human'    => $this->actual_start ? Carbon::parse($this->actual_start)->diffForHumans() : null,
             'actual_end'                => $this->actual_end ? Carbon::parse($this->actual_end)->format('d M Y, g:i A') : null,
             'actual_end_for_human'      => $this->actual_end ? Carbon::parse($this->actual_end)->diffForHumans() : null,
-            'duration'                  => $this->base_status_id == 8 ? BaseHelper::timeInterval($this->published) : CarbonInterval::create($this->duration)->format('%H:%I:%S'),
+            'duration'                  => $this->base_status_id == 8 ? BaseHelper::timeInterval($this->actual_start) : CarbonInterval::create($this->duration)->format('%H:%I:%S'),
             'timestamp'                 => $this->timestamp(),
             'timestamp_for_human'       => $this->timestampForHuman(),
             'user'                      => new UserResource($this->whenLoaded('belongsToUser')),

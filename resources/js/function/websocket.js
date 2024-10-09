@@ -1,4 +1,4 @@
-Pusher.logToConsole = true;
+Pusher.logToConsole = false;
 
 // Base Channel
 var baseChannel = Echo.channel('baseChannel');
