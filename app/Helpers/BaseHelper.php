@@ -62,7 +62,7 @@ class BaseHelper{
     public static function socks5Proxy(){
         $proxy = Arr::shuffle([
             'socks5://ipv4.id.1.spn.my.id:12053',
-            'socks5://ipv4.de.2.spn.my.id:12053',
+            // 'socks5://ipv4.de.2.spn.my.id:12053',
         ]);
 
         // Get first array

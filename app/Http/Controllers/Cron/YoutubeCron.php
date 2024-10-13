@@ -24,39 +24,20 @@ use Illuminate\Support\Facades\Http;
 class YoutubeCron extends Controller{
     // Debug
     public function fetchDebug(Request $request){
-        // Channel
-        if(Str::contains($request->mode, 'channel-fetch')){
-            return YoutubeAPIRepositories::fetchChannels($request->id, $request->key);
-        }
-        elseif(Str::contains($request->mode, 'channel-scrape')){
-            return YoutubeAPIRepositories::scrapeLLChannels($request->id);
-        }
+        // Main sspn apikey: AIzaSyCG2E8UACFHwuvVhb45dukAPkC0Agwj9WQ
 
-        // Playlist
-        elseif(Str::contains($request->mode, 'playlist-fetch')){
-            return YoutubeAPIRepositories::fetchPlaylistItems($request->id, $request->token, $request->key);
-        }
+        return YoutubeRepositories::fetchStreamStatusViaAPI();
 
-        // Video
-        elseif(Str::contains($request->mode, 'video-fetch')){
-            return YoutubeAPIRepositories::fetchVideos($request->id, $request->key);
-        }
-        elseif(Str::contains($request->mode, 'video-scrape')){
-            return YoutubeAPIRepositories::scrapeVideos($request->id);
-        }
+        // Main way to filter array and then make decision
+        // $http = YoutubeAPIRepositories::scrapeLLVideos('7qjtZ8nr6BI,6DWJ1p-7ah4,D5oJXZxUc0s');
 
-        // Stream
-        elseif(Str::contains($request->mode, 'stream-check')){
-            return YoutubeRepositories::fetchVideoViaScraper($request->id);
-        }
+        // $collection = collect($http['items']);
 
-        elseif(Str::contains($request->mode, 'pub')){
-            return Http::asForm()->post('https://pubsubhubbub.appspot.com/subscribe', [
-                'hub.mode'      => 'subscribe',
-                'hub.topic'     => 'https://www.youtube.com/feeds/videos.xml?channel_id=UCp6993wxpyDPHUpavwDFqgg',
-                'hub.callback'  => 'http://broadercast.test/debug/youtube?mode=pub',
-            ]);
-        }
+        // $filtered = $collection->where('contentDetails.duration', '=', 0)->pluck('id');
+
+        // $result = $filtered->all();
+        
+        // return implode(',', $result);
     }
 
     // Archive initialization
@@ -115,7 +96,7 @@ class YoutubeCron extends Controller{
                     YoutubeRepositories::fetchVideoViaScraper($chunk->identifier);
 
                     // Update live streaming that have missing metadata
-                    YoutubeRepositories::userFeedLiveMissingMetadata();
+                    // YoutubeRepositories::userFeedLiveMissingMetadata();
                 }
                 catch(\Throwable $th){}
             }

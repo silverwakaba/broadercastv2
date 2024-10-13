@@ -109,7 +109,7 @@
 @if(request()->routeIs('apps.*'))
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <a href="{{ route('index') }}" class="brand-link">
-            <img src="{{ config('app.cdn_static_url') . '/system/internal/image/logo/vtual/logo-50px.png' }}" class="brand-image img-circle elevation-3">
+            <img src="{{ config('app.cdn_static_url') . '/system/internal/image/logo/vtual/logo-50.png' }}" class="brand-image img-circle elevation-3">
             <span class="brand-text">{{ config('app.name', 'vTual') }}</span>
         </a>
         <div class="sidebar">

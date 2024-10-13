@@ -79,14 +79,7 @@ class YoutubeAPIRepositories{
         try{
             // Via Official Lemnos noKey, through Tor Socks5 Network
             if(($apiKey == null)){
-                $http = Http::
-                // withOptions([
-                //     // 'proxy' => BaseHelper::socks5Proxy(),
-
-                //     'proxy' => 'socks5://ipv4.id.1.spn.my.id:12053',
-
-                // ])->
-                get(Str::of('https://yt.lemnoslife.com/noKey/')->append($function), $data);
+                $http = Http::get(Str::of('https://yt.lemnoslife.com/noKey/')->append($function), $data);
 
                 if((Arr::hasAny($http, self::errorCode()) == false) && ($http->ok() == true)){
                     return array_merge(self::signature('llHost'), $http->json());
@@ -102,13 +95,11 @@ class YoutubeAPIRepositories{
             // Via Private Lemnos Scraper
             elseif(($apiKey == 'scraperLL')){
                 $endpoint = [
-                    '1st' => 'https://llde.spn.my.id/',
-                    '2nd' => 'https://llid.spn.my.id/',
+                    '2nd' => 'https://yts2.spn.my.id/', // We only use yts2 endpoint, because yts1 server using ARM cpu and it's sucks
                 ];
 
                 $responses = Http::pool(fn (Pool $pool) => [
-                    $pool->as('1stR')->get(Str::of($endpoint['1st'])->append($function), $data),
-                    $pool->as('2ndR')->get(Str::of($endpoint['2nd'])->append($function), $data),
+                    $pool->as('2ndR')->timeout(60 * 5)->get(Str::of($endpoint['2nd'])->append($function), $data),
                 ]);
 
                 foreach($responses as $key => $response){
@@ -222,11 +213,18 @@ class YoutubeAPIRepositories{
     }
 
     // Video
-    public static function scrapeLLVideos($videoID, $apiKey = 'scraperLL'){
+    public static function scrapeLLVideos($videoID, $part = null, $apiKey = 'scraperLL'){
+        if($part != null){
+            $parts = $part;
+        }
+        else{
+            $parts = "contentDetails,music,musics,short,snippet,statistics,status,activity,isPaidPromotion,isPremium,isMemberOnly,isOriginal,isRestricted,explicitLyrics";
+        }
+
         $params = [
             'id'            => "$videoID",
             'maxResults'    => 50,
-            'part'          => "contentDetails,music,musics,short,snippet,statistics,status,activity,isPaidPromotion,isPremium,isMemberOnly,isOriginal,isRestricted,explicitLyrics",
+            'part'          => $parts,
         ];
 
         return self::apiCall($params, 'videos', $apiKey);
@@ -239,29 +237,37 @@ class YoutubeAPIRepositories{
     **/
 
     public static function scrapeVideos($videoID){
-        $http = Http::withOptions([
-            'proxy' => BaseHelper::socks5Proxy(),
-        ])->get('https://www.youtube.com/watch', [
-            'v' => $videoID,
-        ])->body();
+        try{
+            $http = Http::
+            // withOptions([
+            //     'proxy' => BaseHelper::socks5Proxy(),
+            // ])->
+            get('https://www.youtube.com/watch', [
+                'v' => $videoID,
+            ])->body();
 
-        // return [$http];
+            $id = Str::betweenFirst($http, '{"liveStreamabilityRenderer":{"videoId":"', '",');
+            $title = Str::betweenFirst($http, '"title":"', '",');
+            $concurrent = (int) Str::betweenFirst($http, '"originalViewCount":"', '"');
 
-        $id = Str::betweenFirst($http, '{"liveStreamabilityRenderer":{"videoId":"', '",');
-        $title = Str::betweenFirst($http, '"title":"', '",');
-        $concurrent = (int) Str::betweenFirst($http, '"originalViewCount":"', '"');
-
-        if((Str::of($http)->contains(self::errorKeyword()) == false)){
-            return [
-                'id'            => $id,
-                'live'          => (Str::length($id) == 11) ? true : false,
-                'concurrent'    => $concurrent,
-                'title'         => (Str::length($id) <= 100) ? $title : null,
-                'timezone'      => config('app.timezone'),
-            ];
+            if((Str::of($http)->contains(self::errorKeyword()) == false)){
+                return [
+                    'success'       => true,
+                    'id'            => $id,
+                    'item'          => $videoID,
+                    'live'          => (Str::length($id) == 11) ? true : false,
+                    'concurrent'    => $concurrent,
+                    'title'         => (Str::length($id) <= 100) ? $title : null,
+                ];
+            }
+            else{
+                return [
+                    'success'       => false,
+                ];
+            }
         }
-        else{
-            return "Chaban";
+        catch(\Throwable $th){
+            return $th;
         }
     }
 }

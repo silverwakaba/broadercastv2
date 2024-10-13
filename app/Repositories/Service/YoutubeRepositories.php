@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Client\Pool;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 
@@ -79,7 +80,7 @@ class YoutubeRepositories{
      * ----------------------------
     **/
 
-    // Verify Channel
+    // Verify Channel - API Usage Check: Passed
     public static function verifyChannel($channelID, $uniqueID, $id, $back = null){
         try{
             $checkViaChannel = Str::contains($channelID, "https://www.youtube.com/channel/");
@@ -248,8 +249,8 @@ class YoutubeRepositories{
                 'users_link_tracker_id' => $userLT->id,
             ];
 
-            // Hardcoded to 'AIzaSyA5-XF2wJ0RcQCiD1OIgPNDHqn1mFg1fmI' as for debugging, if already ok then use the YoutubeAPIRepositories::apiKey() instead
-            $http = YoutubeAPIRepositories::fetchPlaylistItems($userLT->playlist, $pageToken, YoutubeAPIRepositories::apiKey());
+            // Hardcoded to 'AIzaSyCG2E8UACFHwuvVhb45dukAPkC0Agwj9WQ' as for debugging, if already ok then use the YoutubeAPIRepositories::apiKey() instead
+            $http = YoutubeAPIRepositories::fetchPlaylistItems($userLT->playlist, $pageToken, 'AIzaSyCG2E8UACFHwuvVhb45dukAPkC0Agwj9WQ');
 
             if(isset($http['items'])){
                 foreach($http['items'] AS $data){
@@ -260,6 +261,7 @@ class YoutubeRepositories{
                                     'base_status_id' => 6,
                                     'identifier'     => $data['contentDetails']['videoId'],
                                     'title'          => $data['snippet']['title'],
+                                    'concurrent'     => isset($data['liveStreamingDetails']['concurrentViewers']) ? $data['liveStreamingDetails']['concurrentViewers'] : 0,
                                     'published'      => Carbon::parse($data['snippet']['publishedAt'])->timezone(config('app.timezone'))->toDateTimeString(),
                                 ])
                             );
@@ -358,7 +360,7 @@ class YoutubeRepositories{
                 $isOffline = true;
 
                 // Via v3 API
-                $viaAPI = YoutubeAPIRepositories::fetchVideos($videoID);
+                $viaAPI = YoutubeAPIRepositories::fetchVideos($videoID, null);
 
                 // Direct as in we use HTTP Client to fetch the Page Directly
                 $viaScraperDirect = YoutubeAPIRepositories::scrapeVideos($videoID);
@@ -419,6 +421,75 @@ class YoutubeRepositories{
         }
     }
 
+    public static function fetchStreamStatusViaAPI(){
+        $streamLoadDay = 7;
+
+        try{
+            $datas = UserFeed::where([
+                ['base_link_id', '=', 2],
+                // ['base_status_id', '=', 8], // Uncomment buat dijadiin debug. Comment buat dijadiin global checker.
+            ])->whereBetween('schedule', [
+                Carbon::now()->timezone(config('app.timezone'))->subDays($streamLoadDay)->startOfDay()->toDateTimeString(),
+                Carbon::now()->timezone(config('app.timezone'))->endOfDay()->toDateTimeString(),
+            ])->select('identifier')->take(50)->get();
+
+            $videoID = implode(',', ($datas)->pluck('identifier')->toArray());
+
+            if(($datas) && isset($datas) && ($datas->count() >= 1)){
+                $viaScraperInternal = YoutubeAPIRepositories::scrapeLLVideos($videoID, 'contentDetails,statistics');
+                $collectionScraperInternal = collect($viaScraperInternal['items']);
+                $filterScraperInternal = $collectionScraperInternal->where('contentDetails.duration', '=', 0);
+                $resultScraperInternal = $filterScraperInternal->all();
+
+                if(($resultScraperInternal) && isset($resultScraperInternal) && (count($resultScraperInternal) >= 1)){
+                    foreach($resultScraperInternal as $possibleLiveItem){
+                        $userF = self::userFeed($possibleLiveItem['id']);
+                        
+                        $userF->update([
+                            'base_status_id'    => 8,
+                            'concurrent'        => $possibleLiveItem['statistics']['viewCount'],
+                        ]);
+                    }
+                }
+                else{
+                    $viaAPI = YoutubeAPIRepositories::fetchVideos($videoID, 'AIzaSyCG2E8UACFHwuvVhb45dukAPkC0Agwj9WQ');
+                    $collectionAPIExternal = collect($viaAPI['items']);
+                    $resultAPIExternal = $collectionAPIExternal->all();
+
+                    foreach($resultAPIExternal as $possibleArchiveItem){
+                        $userF = self::userFeed($possibleArchiveItem['id']);
+
+                        $userF->update([
+                            'base_status_id'    => self::userFeedStatus($possibleArchiveItem),
+                            'concurrent'        => isset($possibleArchiveItem['liveStreamingDetails']['concurrentViewers']) ? $possibleArchiveItem['liveStreamingDetails']['concurrentViewers'] : 0,
+                            'thumbnail'         => self::userThumbnailMultiple($possibleArchiveItem),
+                            'title'             => $possibleArchiveItem['snippet']['title'],
+                            'description'       => isset($possibleArchiveItem['snippet']['description']) ? $possibleArchiveItem['snippet']['description'] : null,
+                            'actual_start'      => isset($possibleArchiveItem['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($possibleArchiveItem['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
+                            'actual_end'        => isset($possibleArchiveItem['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($possibleArchiveItem['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
+                            'duration'          => isset($possibleArchiveItem['contentDetails']['duration']) ? $possibleArchiveItem['contentDetails']['duration'] : "P0D",
+                        ]);
+
+                        if((isset($possibleArchiveItem['liveStreamingDetails']['actualEndTime'])) && (Carbon::parse($possibleArchiveItem['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString() >= $userF->belongsToUserLinkTracker()->select('updated_at')->first()->updated_at)){
+                            $userF->belongsToUserLinkTracker()->update([
+                                'updated_at' => Carbon::parse($possibleArchiveItem['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString(),
+                            ]);
+                        }
+                    }
+                }
+
+                return self::fetchStreamStatusViaAPIRepeater();
+            }
+        }
+        catch(\Throwable $th){
+            // return $th;
+        }
+    }
+
+    public static function fetchStreamStatusViaAPIRepeater(){
+        return self::fetchStreamStatusViaAPI();
+    }
+
     /**
      * ----------------------------
      * Manage Data
@@ -440,7 +511,7 @@ class YoutubeRepositories{
             if(($datas) && isset($datas) && ($datas->count() >= 1)){
                 $videoID = implode(',', ($datas)->pluck('identifier')->toArray());
     
-                $http = YoutubeAPIRepositories::fetchVideos($videoID);
+                $http = YoutubeAPIRepositories::fetchVideos($videoID, 'AIzaSyCG2E8UACFHwuvVhb45dukAPkC0Agwj9WQ'); // Nanti ngecek lewat bagian sini bisa langsung ngambil concurrent apa nggak
     
                 if($http['pageInfo']['totalResults'] >= 1){
                     foreach($http['items'] AS $data){
@@ -689,6 +760,18 @@ class YoutubeRepositories{
 
         $last_key = array_key_last($data['snippet']['thumbnails']);
         foreach($data['snippet']['thumbnails'] as $key => $thumbnails){
+            if($key == $last_key){
+                $thumbnail = $thumbnails['url'];
+            }
+        }
+
+        return (isset($thumbnail) && ($thumbnail != null)) ? BaseHelper::getOnlyPath($thumbnail, BaseHelper::analyzeDomain($thumbnail, 'extension')) : null;
+    }
+
+    public static function userThumbnailMultiple($datas){
+        $last_key = array_key_last($datas['snippet']['thumbnails']);
+        
+        foreach($datas['snippet']['thumbnails'] as $key => $thumbnails){
             if($key == $last_key){
                 $thumbnail = $thumbnails['url'];
             }
