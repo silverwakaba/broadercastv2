@@ -34,7 +34,7 @@
                 <p>If you have further questions, please let us know. We thank you for your attention and cooperation.</p>
             </div>
         </x-Adminlte.Card>
-        <x-Adminlte.CardForm title="Verify" button="Submit">  
+        <x-Adminlte.CardForm title="Verify" button="Submit" captcha="1">  
             <x-Form.Input name="unique" type="text" text="Unique Detail" :value="$secret" readonly />
             <x-Form.Input name="service" type="text" text="Service" :value="$datas->belongsToBaseLink->name" readonly />
             <x-Form.Input name="channel" type="text" text="Channel" :value="$datas->link" readonly />

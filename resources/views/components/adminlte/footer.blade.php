@@ -55,6 +55,9 @@
                     <h4>External</h4>
                     <ul class="list-unstyled">
                         <li>
+                            <a href="https://bsky.app/profile/vtual.net" target="_blank" class="text-light">Bluesky</a>
+                        </li>
+                        <li>
                             <a href="https://status.silverspoon.me" target="_blank" class="text-light">Status</a>
                         </li>
                     </ul>

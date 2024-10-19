@@ -7,6 +7,8 @@ use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class CardForm extends Component{
+    public $formID;
+    public $captcha;
     public string $title;
     public string $outline;
     public string $button;
@@ -17,7 +19,9 @@ class CardForm extends Component{
     /**
      * Create a new component instance.
      */
-    public function __construct($title = '', $outline = '', $button = '', $action = '', $method = '', $encode = ''){
+    public function __construct($formID = '', $captcha = '', $title = '', $outline = '', $button = '', $action = '', $method = '', $encode = ''){
+        $this->formID = md5(now());
+        $this->captcha = ($captcha == '1') ? true : false;
         $this->title = $title;
         $this->outline = $outline;
         $this->button = $button ? $button : 'Add';

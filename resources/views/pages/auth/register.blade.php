@@ -3,7 +3,7 @@
 @section('content')
     <x-Adminlte.Content>
         <x-Adminlte.Card>
-            <form method="POST">
+            <form id="theRegisterForm" method="POST">
                 <div class="form-row">
                     <x-form.input name="email" type="email" text="Email" />
                     <x-form.input name="password" type="password" text="Password" />
@@ -15,7 +15,7 @@
                         <x-form.checkbox name="terms" value="1">I agree to <a href="https://help.silverspoon.me/docs/silverspoon/tos" target="_blank">Terms</a> and <a href="https://help.silverspoon.me/docs/silverspoon/privacy" target="_blank">Privacy</a></x-form.checkbox>
                     </div>
                     <div class="col-4">
-                        <button class="btn btn-block btn-primary" type="submit">Register</button>
+                        <x-Form.Hcaptcha id="theRegisterForm" button="Register" class="btn btn-block btn-primary" />
                     </div>
                 </div>
             </form>

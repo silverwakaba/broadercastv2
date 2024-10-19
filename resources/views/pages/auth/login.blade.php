@@ -3,7 +3,7 @@
 @section('content')
     <x-Adminlte.Content>
         <x-Adminlte.Card>
-            <form action="{{ url()->current() }}" method="POST">
+            <form id="theLoginForm" action="{{ url()->current() }}" method="POST">
                 <div class="form-row">
                     <x-form.input name="email" type="email" text="Email" />
                     <x-form.input name="password" type="password" text="Password" />
@@ -14,7 +14,7 @@
                         <x-form.checkbox name="remember" value="1">Remember Me</x-form.checkbox>
                     </div>
                     <div class="col-4">
-                        <button class="btn btn-block btn-primary" type="submit">Login</button>
+                        <x-Form.Hcaptcha id="theLoginForm" button="Login" class="btn btn-block btn-primary" />
                     </div>
                 </div>
             </form>

@@ -5,7 +5,7 @@
         <x-Adminlte.Callout class="info">
             <h5>Notes before simping!</h5>
             <ol class="m-0">
-                <li>This page only showcasing scheduled content from the creators you follow.</li>
+                <li>This page only showcasing archived live content from the creators you follow.</li>
                 <li>Follow different creators for more content.</li>
             </ol>
         </x-Adminlte.Callout>

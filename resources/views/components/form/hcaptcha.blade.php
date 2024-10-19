@@ -1,0 +1,1 @@
+{!! HCaptcha::displaySubmit($id, $button, ['data-theme' => 'dark', 'class' => $class]) !!}

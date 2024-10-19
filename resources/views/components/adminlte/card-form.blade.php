@@ -1,4 +1,4 @@
-<form action="{{ $action }}" method="{{ $method }}" enctype="{{ $encode }}">
+<form id="{{ $formID }}" action="{{ $action }}" method="{{ $method }}" enctype="{{ $encode }}">
     <div @class(["card", "card-outline card-$outline" => $outline])>
         @if($title)
             <div class="card-header p-0 border-bottom-0">
@@ -18,7 +18,11 @@
         </div>
         <div class="card-footer text-right p-2">
             <button type="reset" class="btn btn-danger">Reset</button>    
-            <button type="submit" class="btn btn-success">{{ $button }}</button>
+            @if($captcha == true)
+                <x-Form.Hcaptcha :id="$formID" :button="$button" class="btn btn-success" />
+            @else
+                <button type="submit" class="btn btn-success">{{ $button }}</button>
+            @endif
             <input type="hidden" name="_token" class="d-none" value="{{ csrf_token() }}" readonly />
         </div>
     </div>

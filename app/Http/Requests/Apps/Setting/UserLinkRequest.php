@@ -19,8 +19,9 @@ class UserLinkRequest extends FormRequest{
      */
     public function rules() : array{
         return [
-            'service'   => ['required'],
-            'link'      => ['required', 'url'],
+            'service'               => ['required'],
+            'link'                  => ['required', 'url'],
+            'h-captcha-response'    => ['required', 'HCaptcha'],
         ];
     }
 }

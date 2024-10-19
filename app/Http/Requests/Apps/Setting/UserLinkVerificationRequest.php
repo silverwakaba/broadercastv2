@@ -19,10 +19,11 @@ class UserLinkVerificationRequest extends FormRequest{
      */
     public function rules() : array{
         return [
-            'unique'    => ['nullable'],
-            'service'   => ['required'],
-            'channel'   => ['required'],
-            'terms'     => ['accepted'],
+            'unique'                => ['nullable'],
+            'service'               => ['required'],
+            'channel'               => ['required'],
+            'terms'                 => ['accepted'],
+            'h-captcha-response'    => ['required', 'HCaptcha'],
         ];
     }
 }

@@ -88,6 +88,15 @@ class BaseLinkSeeder extends Seeder{
                 'url_content'       => null,
                 'url_thumbnail'     => null,
             ],
+            [
+                'base_decision_id'  => '2',
+                'users_id'          => '1',
+                'checking'          => false,
+                'name'              => "Bluesky",
+                'icon'              => null,
+                'url_content'       => null,
+                'url_thumbnail'     => null,
+            ],
 
             // Tips
             [

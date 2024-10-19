@@ -64,21 +64,28 @@ class YoutubeAPIRepositories{
 
     // API Key
     public static function apiKey(){
-        // Use for hardcode debug to see usage
-        // return $hardcode = 'AIzaSyCG2E8UACFHwuvVhb45dukAPkC0Agwj9WQ';
+        // $datas = BaseAPI::where([
+        //     ['base_link_id', '=', '2'],
+        // ])->select('client_key')->inRandomOrder()->first()->client_key;
 
-        $datas = BaseAPI::where([
-            ['base_link_id', '=', '2'],
-        ])->select('client_key')->inRandomOrder()->first()->client_key;
+        // return $datas;
 
-        return $datas;
+        // For hardcode debug purpose to track and see real life usage
+        return $datas = 'AIzaSyCG2E8UACFHwuvVhb45dukAPkC0Agwj9WQ';
     }
 
     // API Call via Internal Routing Rules
     public static function apiCall($data, $function, $apiKey = null){
+        if($apiKey == null){
+            // Redirect request to gApis endpoint if $apiKey is null
+            $apiKey = self::apiKey();
+        }
+
         try{
-            // Via Official Lemnos noKey, through Tor Socks5 Network
+            // Via Official Lemnos noKey - This motherfucker is already dead. Don't remove for future reference, but don't use either!
             if(($apiKey == null)){
+                return null;
+
                 $http = Http::get(Str::of('https://yt.lemnoslife.com/noKey/')->append($function), $data);
 
                 if((Arr::hasAny($http, self::errorCode()) == false) && ($http->ok() == true)){
@@ -99,7 +106,7 @@ class YoutubeAPIRepositories{
                 ];
 
                 $responses = Http::pool(fn (Pool $pool) => [
-                    $pool->as('2ndR')->timeout(60 * 5)->get(Str::of($endpoint['2nd'])->append($function), $data),
+                    $pool->as('2ndR')->timeout(60 * 5)->get(Str::of($endpoint['2nd'])->append($function), $data), // at least 5 mins timeout for max 50 videos
                 ]);
 
                 foreach($responses as $key => $response){

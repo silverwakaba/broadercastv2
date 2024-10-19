@@ -23,6 +23,7 @@ class RegisterRequest extends FormRequest{
             'password'              => ['required', 'string'],
             'password_confirmation' => ['required', 'string', 'same:password'],
             'terms'                 => ['accepted'],
+            'h-captcha-response'    => ['required', 'HCaptcha'],
         ];
     }
 }
