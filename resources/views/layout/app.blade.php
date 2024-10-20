@@ -25,7 +25,7 @@
         <div class="wrapper">
             <x-Adminlte.Main />
         </div>
-        {!! \App\Helpers\BaseHelper::hcaptchaRender() !!}
+        {!! HCaptcha::renderJs('en') !!}
         <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/jscroll@2.4.1/jquery.jscroll.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>

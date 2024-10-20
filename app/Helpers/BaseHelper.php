@@ -212,8 +212,4 @@ class BaseHelper{
 
         return self::resourceToJson($xml);
     }
-
-    public static function hcaptchaRender(){
-        return HCaptcha::renderJs('en');
-    }
 }
