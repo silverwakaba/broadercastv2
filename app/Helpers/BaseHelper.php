@@ -11,6 +11,8 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Http;
 
+use Scyllaly\HCaptcha\Facades\HCaptcha;
+
 class BaseHelper{
     public static function adler32($value = ''){
         if(!$value){
@@ -209,5 +211,9 @@ class BaseHelper{
         $xml = simplexml_load_string($http->getBody(), 'SimpleXMLElement', LIBXML_NOCDATA);
 
         return self::resourceToJson($xml);
+    }
+
+    public static function hcaptchaRender(){
+        return HCaptcha::renderJs('en');
     }
 }
