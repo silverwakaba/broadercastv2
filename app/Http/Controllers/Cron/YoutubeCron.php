@@ -14,21 +14,13 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
-// 
-// use App\Helpers\BaseHelper;
-// use Illuminate\Support\Arr;
-// use Illuminate\Support\Str;
-// use GuzzleHttp\Client;
-// use Illuminate\Support\Facades\Http;
-// use Illuminate\Support\Facades\Log;
-
 class YoutubeCron extends Controller{
     // Debug
     public function fetchDebug(Request $request){
-        // return YoutubeAPIRepositories::fetchPlaylistItems('UU-WX1CXssCtCtc2TNIRnJzg');
+        return YoutubeRepositories::fetchProfile();
     }
 
-    // Archive initialization - Ok
+    // Archive Initialization
     public function init(){
         UserLinkTracker::where([
             ['base_link_id', '=', 2],
@@ -46,19 +38,19 @@ class YoutubeCron extends Controller{
 
     // Archive Metadata
     public function metadata(){
-        // Fetch acrhive via Youtube XML Feed - Ok
+        // Fetch acrhive via Youtube XML Feed
         YoutubeRepositories::fetchArchiveViaFeed();
 
         // Update archive metadata after fetching { API and XML Feed } from Youtube - Ok
         YoutubeRepositories::userFeedInit();
     }
 
-    // Feed Checker - Ok
+    // Feed Checker
     public function checker(){
         YoutubeRepositories::fetchStreamStatusViaAPI();
     }
 
-    // Profiler - Ok
+    // Profiler
     public function profiler(){
         return YoutubeRepositories::fetchProfile();
     }

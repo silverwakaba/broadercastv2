@@ -138,6 +138,7 @@ class YoutubeRepositories{
                                 'joined'        => Carbon::parse($data['snippet']['publishedAt'])->timezone(config('app.timezone'))->toDateTimeString(),
                             ];
 
+                            // Admin and Moderator can Directly Mark Link Tracker as Verified
                             if((auth()->user()->hasRole('Admin|Moderator'))){
                                 $userLink->update([
                                     'base_decision_id' => 2,
@@ -200,7 +201,7 @@ class YoutubeRepositories{
      * ----------------------------
     **/
 
-    // Fetch Initial Archive via API
+    // Fetch Initial Archive via API (Need Repeater Since it isn't Directly Chunked)
     public static function fetchArchiveViaAPI($channelID, $userID, $pageToken = null){
         try{
             $userLT = self::userLinkTracker($channelID, $userID, false);
@@ -272,13 +273,13 @@ class YoutubeRepositories{
         }
     }
 
-    // Fetch Ongoing Archive via XML Feed
+    // Fetch Ongoing Archive via Youtube XML Feed (Need to Learn and Invest Knowledge on PubSubHubBub for XML Webhook Checker and Stop Using a Pooler Like This)
     public static function fetchArchiveViaFeed(){
         try{
             UserLinkTracker::where([
                 ['base_link_id', '=', 2],
                 ['initialized', '=', true],
-            ])->select('identifier', 'users_id', 'base_link_id', 'id')->chunkById(100, function(Collection $chunks){
+            ])->select('id', 'identifier', 'users_id', 'base_link_id')->chunkById(100, function(Collection $chunks){
                 foreach($chunks as $chunk){
                     $http = YoutubeAPIRepositories::fetchFeeds($chunk->identifier);
 
@@ -315,7 +316,7 @@ class YoutubeRepositories{
      * ----------------------------
     **/
 
-    // User feed init
+    // User Feed Init
     public static function userFeedInit(){
         try{
             $datas = UserFeed::where([
@@ -360,7 +361,7 @@ class YoutubeRepositories{
 
     // Fetch streaming status
     public static function fetchStreamStatusViaAPI(){
-        $day = 3;
+        $day = 3; // 3 days back + today + 3 days next. Total 7 days to load.
         $subDay = Carbon::now()->timezone(config('app.timezone'))->subDays($day)->startOfDay()->toDateTimeString();
         $addDay = Carbon::now()->timezone(config('app.timezone'))->addDays($day)->endOfDay()->toDateTimeString();
 
@@ -373,14 +374,13 @@ class YoutubeRepositories{
                 ['base_link_id', '=', 2],
                 ['actual_end', '=', null],
                 ['duration', '!=', "P0D"],
-            ])->whereIn('base_status_id', ['7', '8'])->whereNotIn('base_status_id', ['5'])
-            ->select('id', 'identifier', 'published', 'schedule')
-            ->chunkById(50, function(Collection $chunks) use($subDay, $addDay){
+            ])->whereIn('base_status_id', ['7', '8'])->whereNotIn('base_status_id', ['5'])->select('id', 'identifier', 'published', 'schedule')->chunkById(50, function(Collection $chunks) use($subDay, $addDay){
                 $dbCollection = collect($chunks);
                 $dbCollectionFilter = $dbCollection->whereBetween('published', [$subDay, $addDay])->whereBetween('schedule', [$subDay, $addDay])->pluck('identifier');
                 $dbCollectionResult = $dbCollectionFilter->all();
-                $videoIDFromDatabase = implode(',', ($dbCollectionResult)); // Debug ID: $videoIDFromDatabase = "O0xrNFFrL5U,-nQcxe2nzmI,ASDCFEGTHVX,ASDCFEGT458";
+                $videoIDFromDatabase = implode(',', ($dbCollectionResult)); // Debug ID by Hardcode: $videoIDFromDatabase = "O0xrNFFrL5U,-nQcxe2nzmI,ASDCFEGTHVX,ASDCFEGT458";
 
+                // Only Doing a Check if Filtered `$dbCollectionResult` Returning at Least Single Record
                 if(($dbCollectionResult) && isset($dbCollectionResult) && (count($dbCollectionResult) >= 1)){
                     $http = YoutubeAPIRepositories::fetchVideos($videoIDFromDatabase);
                     $httpCollection = collect($http['items']);
@@ -390,7 +390,7 @@ class YoutubeRepositories{
                     $httpCollectionPluckerResult = $httpCollectionPlucker->all();
                     $videoIDFromYoutube = implode(',', ($httpCollectionPluckerResult));
 
-                    // Proses Update blabla
+                    // We Dd Fun Update
                     foreach($httpCollectionResult as $possibleArchiveItem){
                         $userF = self::userFeed($possibleArchiveItem['id']);
 
@@ -412,11 +412,12 @@ class YoutubeRepositories{
                         }
                     }
 
-                    // Proses Hapus Video Yang Gak Ada
+                    // Comparing Video ID from Database and Video ID from Youtube
                     $missingVideo = array_diff(
                         explode(',', $videoIDFromDatabase), explode(',', $videoIDFromYoutube)
                     );
 
+                    // If Video is Being Unavailable Midway (Not Being Able to Changed From 'Live' to 'Archived') Then it Will Be Deleted
                     if(($missingVideo) && isset($missingVideo) && (count($missingVideo) >= 1)){
                         UserFeed::whereIn('identifier', $missingVideo)->delete();
                     }
@@ -424,7 +425,6 @@ class YoutubeRepositories{
             });
         }
         catch(\Throwable $th){
-            Log::error($th);
             // throw $th;
         }
     }
@@ -435,7 +435,7 @@ class YoutubeRepositories{
             $datas = UserLinkTracker::where([
                 ['base_link_id', '=', 2],
                 ['initialized', '=', true],
-            ])->select('identifier')->chunkById(50, function(Collection $chunks){
+            ])->select('id', 'identifier')->chunkById(50, function(Collection $chunks){
                 $channelID = implode(',', ($chunks)->pluck('identifier')->toArray());
                 
                 if(($chunks) && isset($chunks) && ($chunks->count() >= 1)){
