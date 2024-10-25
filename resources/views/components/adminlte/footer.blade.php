@@ -38,10 +38,10 @@
                     <h4>Legal</h4>
                     <ul class="list-unstyled">
                         <li>
-                            <a href="https://help.silverspoon.me/docs/silverspoon/tos" target="_blank" class="text-light">Terms of Service</a>
+                            <a href="https://help.silverspoon.me/docs/vtual/tos" target="_blank" class="text-light">Terms of Service</a>
                         </li>
                         <li>
-                            <a href="https://help.silverspoon.me/docs/silverspoon/privacy" target="_blank" class="text-light">Privacy Policy</a>
+                            <a href="https://help.silverspoon.me/docs/vtual/privacy" target="_blank" class="text-light">Privacy Policy</a>
                         </li>
                         <li>
                             <a href="https://help.silverspoon.me/docs/silverspoon/report" target="_blank" class="text-light">Report</a>
@@ -56,6 +56,9 @@
                     <ul class="list-unstyled">
                         <li>
                             <a href="https://bsky.app/profile/vtual.net" target="_blank" class="text-light">Bluesky</a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-light">Discord</a>
                         </li>
                         <li>
                             <a href="https://status.silverspoon.me" target="_blank" class="text-light">Status</a>
