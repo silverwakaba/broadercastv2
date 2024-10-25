@@ -15,17 +15,11 @@
                                 <h5 class="description-header">{{ $data->name }}</h5>
                                 <span class="description-text">{{ $data->link->name }} Channel</span>
                             </div>
-                            <div class="row row-cols-1 row-cols-md-3">
+                            <div class="row row-cols-1 row-cols-md-2">
                                 <div class="col">
                                     <div class="description-block">
                                         <h5 class="description-header">{{ number_format($data->subscriber) }}</h5>
                                         <span class="description-text">SUBSCRIBER</span>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="description-block">
-                                        <h5 class="description-header">{{ number_format($data->content) }}</h5>
-                                        <span class="description-text">CONTENT</span>
                                     </div>
                                 </div>
                                 <div class="col">

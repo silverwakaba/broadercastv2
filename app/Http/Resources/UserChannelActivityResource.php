@@ -40,7 +40,7 @@ class UserChannelActivityResource extends JsonResource{
         }
         elseif($this->base_link_id == 2){
             $link = Str::replace('[insertID]', $this->identifier, 'https://www.youtube.com/watch?v=[insertID]');
-            $thumbnail = Str::replace('[insertID]', $this->identifier, Str::of(config('app.cdn_cache_youtube_thumbnail'))->append('/vi/' . $this->identifier .'/maxresdefault.jpg')); // $this->thumbnail
+            $thumbnail = Str::replace('[insertID]', $this->identifier, Str::of(config('app.cdn_cache_youtube_thumbnail') . '/')->append($this->thumbnail));
         }
         else{
             $link = '#';

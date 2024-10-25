@@ -37,6 +37,13 @@ class BaseAPISeeder extends Seeder{
             [
                 'base_link_id'  => 2,
                 'client_id'     => null,
+                'client_key'    => "AIzaSyCG2E8UACFHwuvVhb45dukAPkC0Agwj9WQ", // Main Youtube key
+                'client_secret' => null,
+                'bearer'        => null,
+            ],
+            [
+                'base_link_id'  => 2,
+                'client_id'     => null,
                 'client_key'    => "AIzaSyA5-XF2wJ0RcQCiD1OIgPNDHqn1mFg1fmI",
                 'client_secret' => null,
                 'bearer'        => null,

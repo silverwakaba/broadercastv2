@@ -139,7 +139,7 @@
                         <strong>External Link</strong>
                         <ul class="list-inline m-0 my-3">
                             @foreach($links AS $link)
-                                <li class="list-inline-item">
+                                <li class="list-inline-item bg-white">
                                     <a href="{{ $link->link }}" class="btn btn-sm btn-link border p-2" data-toggle="tooltip" data-placement="top" title="{{ $link->service->name }}" target="_blank">
                                         <img height="25" width="25" src="{{ $link->service->logo }}">
                                     </a>

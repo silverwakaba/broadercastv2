@@ -70,8 +70,9 @@ class YoutubeAPIRepositories{
 
         // return $datas;
 
-        // For hardcode debug purpose to track and see real life usage
-        return $datas = 'AIzaSyCG2E8UACFHwuvVhb45dukAPkC0Agwj9WQ';
+        $datas = 'AIzaSyCG2E8UACFHwuvVhb45dukAPkC0Agwj9WQ';
+
+        return $datas;
     }
 
     // API Call via Internal Routing Rules
@@ -82,7 +83,7 @@ class YoutubeAPIRepositories{
         }
 
         try{
-            // Via Official Lemnos noKey - This motherfucker is already dead. Don't remove for future reference, but don't use either!
+            // Via Official Lemnos noKey - This motherfucker dead already. Not removed for future reference, but don't use it either!
             if(($apiKey == null)){
                 return null;
 

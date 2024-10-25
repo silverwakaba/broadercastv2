@@ -17,7 +17,7 @@ use Illuminate\Support\Collection;
 class YoutubeCron extends Controller{
     // Debug
     public function fetchDebug(Request $request){
-        return YoutubeRepositories::fetchProfile();
+        return YoutubeAPIRepositories::apiKey();
     }
 
     // Archive Initialization
