@@ -17,9 +17,10 @@ class UserSeeder extends Seeder{
         // $faker = \Faker\Factory::create();
             
         User::create([
-            'base_status_id'    => '6',
+            'base_status_id'    => '1',
             'confirmed'         => true,
             'identifier'        => BaseHelper::adler32(),
+            'name'              => 'Kurokuma Wakaba',
             'email'             => 'a@a.a',
             'password'          => bcrypt('123456789'),
         ])->assignRole('Admin');

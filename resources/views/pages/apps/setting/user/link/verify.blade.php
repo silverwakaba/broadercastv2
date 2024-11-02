@@ -6,11 +6,11 @@
             <div class="lead">
                 <p>Please read the guidelines and requirements regarding the process of verifying the {{ $datas->belongsToBaseLink->name }} link that you have added, so that it can be included in our future crawler distribution:</p>
                 <ol>
-                    <li>To maintain security, account privacy and trust; <u>This process does not require any form of authentication process</u> between {{ $datas->belongsToBaseLink->name }} and {{ config('app.name') }}. This means we do not have any access to your account in any way possible, both now and in the future.</li>
+                    <li>To maintain security, account privacy and trust; <u>This process <em class="text-danger">does not implement or require</em> any form of authentication process</u> between {{ $datas->belongsToBaseLink->name }} and {{ config('app.name') }}, such as <a href="https://en.wikipedia.org/wiki/OAuth" target="_blank">OAuth</a>. This means we do not have any access to your account in any way possible, both now and in the future.</li>
                     <li>Instead we need you to <u>add an unique detail</u>, specifically in the <u>description section</u> of your channel.</li>
                     <li>After that, <u>our crawler will try to match</u> the data. If a match is found, then your {{ $datas->belongsToBaseLink->name }} channel will <u>automatically be marked as verified</u> and will start to be <u>crawled on our timeline</u>.</li>
-                    <li>The verification <u>process will take place automatically</u> and the <u>results will appear immediately</u>.</li>
-                    <li>After the verification process is successful, <u>you are allowed to delete the unique detail</u> because it is no longer needed.</li>
+                    <li>The verification <u>process will take place automatically</u> and the <u>results will appear immediately</u>. No need to wait for manual approval.</li>
+                    <li>After the verification process is successful, <u>you are allowed to remove/delete the unique detail from your description section</u> because it is no longer needed.</li>
                     <li>
                         <span>The link structure you enter should be formatted like one of these:</span>
                         <ul>
@@ -34,7 +34,7 @@
                 <p>If you have further questions, please let us know. We thank you for your attention and cooperation.</p>
             </div>
         </x-Adminlte.Card>
-        <x-Adminlte.CardForm title="Verify" button="Submit" captcha="1">  
+        <x-Adminlte.CardForm title="Verify" button="Submit" captcha="1">
             <x-Form.Input name="unique" type="text" text="Unique Detail" :value="$secret" readonly />
             <x-Form.Input name="service" type="text" text="Service" :value="$datas->belongsToBaseLink->name" readonly />
             <x-Form.Input name="channel" type="text" text="Channel" :value="$datas->link" readonly />

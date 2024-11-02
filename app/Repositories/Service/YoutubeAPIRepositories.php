@@ -78,12 +78,12 @@ class YoutubeAPIRepositories{
     // API Call via Internal Routing Rules
     public static function apiCall($data, $function, $apiKey = null){
         if($apiKey == null){
-            // Redirect request to gApis endpoint if $apiKey is null
+            // Basically redirect request to gApis endpoint if $apiKey is null
             $apiKey = self::apiKey();
         }
 
         try{
-            // Via Official Lemnos noKey - This motherfucker dead already. Not removed for future reference, but don't use it either!
+            // Via Official Lemnos noKey - This motherfucker dead already
             if(($apiKey == null)){
                 return null;
 
@@ -103,11 +103,11 @@ class YoutubeAPIRepositories{
             // Via Private Lemnos Scraper
             elseif(($apiKey == 'scraperLL')){
                 $endpoint = [
-                    '2nd' => 'https://yts2.spn.my.id/', // We only use yts2 endpoint, because yts1 server using ARM cpu and it's sucks
+                    '1st' => 'https://yts.spn.my.id/',
                 ];
 
                 $responses = Http::pool(fn (Pool $pool) => [
-                    $pool->as('2ndR')->timeout(60 * 5)->get(Str::of($endpoint['2nd'])->append($function), $data), // at least 5 mins timeout for max 50 videos
+                    $pool->as('1stR')->timeout(60 * 5)->get(Str::of($endpoint['1st'])->append($function), $data), // at least 5 mins timeout for max 50 videos
                 ]);
 
                 foreach($responses as $key => $response){
@@ -115,7 +115,7 @@ class YoutubeAPIRepositories{
                         return array_merge(self::signature('llScraper:' . $key), $response->json());
                     }
                     else{
-                        return self::apiRecall($data, $function);
+                        return array_merge(self::signature('llScraper:' . $key), $response->json());
                     }
                 }
             }
@@ -124,18 +124,20 @@ class YoutubeAPIRepositories{
             else{
                 $params = array_merge($data, ['key' => $apiKey]);
 
-                $http = Http::get(Str::of('https://www.googleapis.com/youtube/v3/')->append($function), $params);
+                if(((isset($params['id'])) && ($params['id'] != null)) || ((isset($params['playlistId'])) && ($params['playlistId'] != null))){
+                    $http = Http::get(Str::of('https://www.googleapis.com/youtube/v3/')->append($function), $params);
 
-                if((Arr::hasAny($http, self::errorCode()) == false) && ($http->ok() == true)){
-                    return array_merge(self::signature('gApis', $apiKey), $http->json());
-                }
-                else{
-                    return self::apiRecall($data, $function);
+                    if((Arr::hasAny($http, self::errorCode()) == false) && ($http->ok() == true)){
+                        return array_merge(self::signature('gApis', $apiKey), $http->json());
+                    }
+                    else{
+                        // 
+                    }
                 }
             }
         }
         catch(\Throwable $th){
-            return $th;
+            // throw $th;
         }
     }
 

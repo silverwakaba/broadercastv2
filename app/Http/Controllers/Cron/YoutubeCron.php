@@ -17,7 +17,13 @@ use Illuminate\Support\Collection;
 class YoutubeCron extends Controller{
     // Debug
     public function fetchDebug(Request $request){
-        return YoutubeAPIRepositories::apiKey();
+        // return YoutubeAPIRepositories::fetchChannels('ABC');
+        
+        return YoutubeAPIRepositories::fetchPlaylistItems('ABC', 'DEF');
+        
+        // return YoutubeAPIRepositories::fetchFeeds('ABC');
+        
+        // return YoutubeAPIRepositories::fetchVideos();
     }
 
     // Archive Initialization

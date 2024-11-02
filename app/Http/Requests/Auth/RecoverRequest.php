@@ -19,8 +19,9 @@ class RecoverRequest extends FormRequest{
      */
     public function rules() : array{
         return [
-            'email' => ['required', 'email'],
-            'terms' => ['accepted'],
+            'email'                 => ['required', 'email'],
+            'terms'                 => ['accepted'],
+            'h-captcha-response'    => ['required', 'HCaptcha'],
         ];
     }
 }

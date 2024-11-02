@@ -115,6 +115,8 @@ class YoutubeRepositories{
 
                 if(($channelIDS !== null) && (Str::of($channelIDS)->length() == 24)){
                     if($countChannel == 0){
+                        return "ABC";
+
                         $http = YoutubeAPIRepositories::fetchChannels($channelIDS);
 
                         if($http['pageInfo']['totalResults'] >= 1){
@@ -189,8 +191,6 @@ class YoutubeRepositories{
             }
         }
         catch(\Throwable $th){
-            return $th;
-            // redirect karena action
             return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Something went wrong, please try again.', 'error');
         }
     }

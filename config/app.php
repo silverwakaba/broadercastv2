@@ -22,12 +22,12 @@ return [
     |
     */
 
-    'cdn_private_url'               => env('APP_PRIVATE_CDN_URL', 'https://vault.spnd.uk'),
-    'cdn_public_url'                => env('APP_PUBLIC_CDN_URL', 'https://library.spnd.uk'),
-    'cdn_static_url'                => env('APP_STATIC_CDN_URL', 'https://static.silverspoon.me'),
-    'cdn_cache_twitch'              => env('APP_CDN_CACHE_TWITCH', 'https://static-cdn.jtvnw.net'),
-    'cdn_cache_youtube_profile'     => env('APP_CACHE_YOUTUBE_PROFILE', 'https://yt3.ggpht.com'),
-    'cdn_cache_youtube_thumbnail'   => env('APP_CACHE_YOUTUBE_THUMBNAIL', 'https://i.ytimg.com'),
+    'cdn_public_url'                => env('APP_PUBLIC_CDN_URL',            'https://pub.spnd.uk'),
+    'cdn_private_url'               => env('APP_PRIVATE_CDN_URL',           'https://vault.spnd.uk'),
+    'cdn_static_url'                => env('APP_STATIC_CDN_URL',            'https://static.pub.spnd.uk'),
+    'cdn_cache_twitch'              => env('APP_CDN_CACHE_TWITCH',          'https://static-cdn.jtvnw.net'),
+    'cdn_cache_youtube_profile'     => env('APP_CACHE_YOUTUBE_PROFILE',     'https://yt3.ggpht.com'),
+    'cdn_cache_youtube_thumbnail'   => env('APP_CACHE_YOUTUBE_THUMBNAIL',   'https://i.ytimg.com'),
 
     /*
     |--------------------------------------------------------------------------

@@ -1,9 +1,9 @@
 @extends('layout.app')
-@section('title', 'Reset')
+@section('title', 'Reset Password')
 @section('content')
     <x-Adminlte.Content>
         <x-Adminlte.Card>
-            <form method="POST">
+            <form id="theResetForm" method="POST">
                 <div class="form-row">
                     <x-form.input name="token" type="text" text="Token" :value="$datas->token" readonly />
                     <x-form.input name="new_password" type="password" text="New Password" />
@@ -16,7 +16,7 @@
                         <x-form.checkbox name="terms" value="1">I agree to <a href="https://help.silverspoon.me/docs/vtual/authentication/recovery" target="_blank">Account Recovery</a> policy</x-form.checkbox>
                     </div>
                     <div class="col-4">
-                        <button class="btn btn-block btn-danger" type="submit">Reset</button>
+                        <x-Form.Hcaptcha id="theResetForm" button="Reset" class="btn btn-block btn-primary" />
                     </div>
                 </div>
             </form>

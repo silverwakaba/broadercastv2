@@ -23,6 +23,7 @@ class ResetRequest extends FormRequest{
             'new_password'              => ['required', 'string'],
             'new_password_confirmation' => ['required', 'string', 'same:new_password'],
             'terms'                     => ['accepted'],
+            'h-captcha-response'        => ['required', 'HCaptcha'],
         ];
     }
 }
