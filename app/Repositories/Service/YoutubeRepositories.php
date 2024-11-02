@@ -115,8 +115,6 @@ class YoutubeRepositories{
 
                 if(($channelIDS !== null) && (Str::of($channelIDS)->length() == 24)){
                     if($countChannel == 0){
-                        return "ABC";
-
                         $http = YoutubeAPIRepositories::fetchChannels($channelIDS);
 
                         if($http['pageInfo']['totalResults'] >= 1){
