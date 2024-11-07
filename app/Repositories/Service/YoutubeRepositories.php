@@ -271,7 +271,7 @@ class YoutubeRepositories{
         }
     }
 
-    // Fetch Ongoing Archive via Youtube XML Feed (Need to Learn and Invest Knowledge on PubSubHubBub for XML Webhook Checker and Stop Using a Pooler Like This)
+    // Fetch Ongoing Archive via Youtube XML Feed (Need to Learn and Invest Knowledge on PubSubHubBub for XML Webhook Checker and Stop Using Stupid Pooler Like This)
     public static function fetchArchiveViaFeed(){
         try{
             UserLinkTracker::where([
@@ -279,29 +279,45 @@ class YoutubeRepositories{
                 ['initialized', '=', true],
             ])->select('id', 'identifier', 'users_id', 'base_link_id')->chunkById(100, function(Collection $chunks){
                 foreach($chunks as $chunk){
-                    $http = YoutubeAPIRepositories::fetchFeeds($chunk->identifier);
+                    // Get Existed Video ID From Internal Database
+                    $intFeeds = UserFeed::where('users_id', '=', $chunk->users_id)->orderBy('published', 'DESC')->take(20)->get()->pluck('identifier')->all();
+                    $initID = '';
 
-                    $userLTs = [
-                        'users_id'              => $chunk->users_id,
-                        'base_link_id'          => $chunk->base_link_id,
-                        'users_link_tracker_id' => $chunk->id,
-                    ];
+                    // Append Required String (the 'yt:video:' for reference) to Video ID, with Blank Space as Delimiter
+                    foreach($intFeeds as $ints){
+                        $initID .= Str::of('yt:video:')->append($ints . ' ');
+                    }
 
-                    if(isset($http->entry)){
-                        foreach($http->entry AS $data){
+                    // Squish Delimiter to Remove Extra Array - Dumb Way But It Is What It Is
+                    $videoIDFromDatabase = explode(' ', Str::squish($initID));
+
+                    // Fetch Video ID From External Youtube Feeds
+                    $extFeeds = YoutubeAPIRepositories::fetchFeeds($chunk->identifier);
+                    $extCollection = collect($extFeeds->entry);
+                    $extCollectionFilter = $extCollection->whereNotIn('id', $videoIDFromDatabase);
+                    $extCollectionResult = $extCollectionFilter->all();
+
+                    // We Now Only Insert New Video That Isn't Available From Internal Database So No More Duplicated Entry
+                    if(($extCollectionResult) && isset($extCollectionResult) && (count($extCollectionResult) >= 1)){
+                        foreach($extCollectionResult as $possibleNewItem){
+                            $userLTs = [
+                                'users_id'              => $chunk->users_id,
+                                'base_link_id'          => $chunk->base_link_id,
+                                'users_link_tracker_id' => $chunk->id,
+                            ];
+        
                             UserFeed::insertOrIgnore(
                                 array_merge($userLTs, [
                                     'base_status_id' => 6,
-                                    'identifier'     => Str::afterLast($data->id, ':'),
-                                    'title'          => $data->title,
-                                    'published'      => Carbon::parse($data->published)->timezone(config('app.timezone'))->toDateTimeString(),
+                                    'identifier'     => Str::afterLast($possibleNewItem->id, ':'),
+                                    'title'          => $possibleNewItem->title,
+                                    'published'      => Carbon::parse($possibleNewItem->published)->timezone(config('app.timezone'))->toDateTimeString(),
                                 ])
                             );
                         }
                     }
                 }
             });
-
         }
         catch(\Throwable $th){
             // return $th;
@@ -388,7 +404,7 @@ class YoutubeRepositories{
                     $httpCollectionPluckerResult = $httpCollectionPlucker->all();
                     $videoIDFromYoutube = implode(',', ($httpCollectionPluckerResult));
 
-                    // We Dd Fun Update
+                    // We Do Fun Update
                     foreach($httpCollectionResult as $possibleArchiveItem){
                         $userF = self::userFeed($possibleArchiveItem['id']);
 

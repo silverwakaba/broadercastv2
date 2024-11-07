@@ -19,11 +19,13 @@ class YoutubeCron extends Controller{
     public function fetchDebug(Request $request){
         // return YoutubeAPIRepositories::fetchChannels('ABC');
         
-        return YoutubeAPIRepositories::fetchPlaylistItems('ABC', 'DEF');
+        // return YoutubeAPIRepositories::fetchPlaylistItems('ABC', 'DEF');
         
         // return YoutubeAPIRepositories::fetchFeeds('ABC');
         
         // return YoutubeAPIRepositories::fetchVideos();
+
+        // return YoutubeRepositories::fetchArchiveViaFeed();
     }
 
     // Archive Initialization

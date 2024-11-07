@@ -11,8 +11,6 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Http;
 
-use Scyllaly\HCaptcha\Facades\HCaptcha;
-
 class BaseHelper{
     public static function adler32($value = ''){
         if(!$value){
@@ -96,9 +94,9 @@ class BaseHelper{
 
     public static function httpProxy($url, $query = null, $option = null){
         /**
-         * -------------------------------------------------------------------------------------------------
-         * Not being used anymore, since it's definitely incure request costs. But kept for future reference
-         * -------------------------------------------------------------------------------------------------
+         * -------------------------------------------------------------------------------------------------------------
+         * Not being used anymore, since it's definitely incure request costs. But the code is kept for future reference
+         * -------------------------------------------------------------------------------------------------------------
         **/
 
         if(Str::of($url)->isUrl() == true){
