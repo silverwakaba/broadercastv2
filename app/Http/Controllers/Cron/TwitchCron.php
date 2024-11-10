@@ -16,16 +16,7 @@ use Illuminate\Support\Collection;
 class TwitchCron extends Controller{
     // Debug
     public function fetchDebug(){
-        // return TwitchAPIRepositories::createToken('7rrc3ifer1dcw4178d5iylqt7k0yzs', 'f9t4j1yitz8vy47lrsa9bfdut1cdah'); // Ok so commented
-        // return TwitchAPIRepositories::validateToken('f9t4j1yitz8vy47lrsa9bfdut1cdah', 'qv4fu7ggy8xm7kcrp2tz9dk42unmk7');  // Ok so commented
-
-        // return TwitchAPIRepositories::fetchProfile('ran_hinokuma');
-        return TwitchAPIRepositories::fetchChannel('517857559');
-        // return TwitchAPIRepositories::fetchSubscriber('517857559');
-        // return TwitchAPIRepositories::fetchStream('517857559');
-        // return TwitchAPIRepositories::fetchVideo('517857559');
-
-        // return TwitchRepositories::fetchVideo(null, 517857559, null);
+        // 
     }
 
     // MISC
