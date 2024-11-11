@@ -53,7 +53,6 @@ Route::group(['prefix' => '/'], function(){
 
         // Claim
         Route::get('@{id}/claim', [FrontCreatorController::class, 'claim'])->name('creator.claim');
-        
         Route::get('@{id}/claim-via/{ch}', [FrontCreatorController::class, 'claimVia'])->name('creator.claim.via');
         Route::post('@{id}/claim-via/{ch}', [FrontCreatorController::class, 'claimViaPost']);//->middleware(['throttle:1,60']);
 
@@ -186,7 +185,7 @@ Route::group(['prefix' => '/'], function(){
 
                 // Verify
                 Route::get('verify/{did}', [ManagerUserController::class, 'linkVerify'])->name('apps.manager.link.verify');
-                Route::post('verify/{did}', [ManagerUserController::class, 'linkVerifyPost'])->middleware(['throttle:2,60']); // 2 request per 60 minutes
+                Route::post('verify/{did}', [ManagerUserController::class, 'linkVerifyPost']);//->middleware(['throttle:2,60']); // 2 request per 60 minutes
 
                 // Delete
                 Route::get('delete/{did}', [ManagerUserController::class, 'linkDelete'])->name('apps.manager.link.delete');
