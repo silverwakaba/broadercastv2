@@ -6,7 +6,7 @@
             <div class="lead">
                 <p>Please read the guidelines and requirements regarding the process of verifying the {{ $datas->belongsToBaseLink->name }} link that you have added, so that it can be included in our future crawler distribution:</p>
                 <ol>
-                    <li>To maintain security, account privacy and trust; <u>This process <em class="text-danger">does not implement or require</em> any form of authentication process</u> between {{ $datas->belongsToBaseLink->name }} and {{ config('app.name') }}, such as <a href="https://en.wikipedia.org/wiki/OAuth" target="_blank">OAuth</a>. This means we do not have any access to your account in any way possible, both now and in the future.</li>
+                    <li>To maintain security, account privacy and trust; <u>This process <em class="text-danger">does not implement or require</em> any form of authentication process</u> between {{ $datas->belongsToBaseLink->name }} and {{ config('app.name') }}, such as <a href="https://en.wikipedia.org/wiki/OAuth" target="_blank">OAuth</a>. This means <u>we do not have any access to your account in any way possible</u>, both now and in the future.</li>
                     <li>Instead we need you to <u>add an unique detail</u>, specifically in the <u>description section</u> of your channel.</li>
                     <li>After that, <u>our crawler will try to match</u> the data. If a match is found, then your {{ $datas->belongsToBaseLink->name }} channel will <u>automatically be marked as verified</u> and will start to be <u>crawled on our timeline</u>.</li>
                     <li>The verification <u>process will take place automatically</u> and the <u>results will appear immediately</u>. No need to wait for manual approval.</li>
@@ -18,7 +18,7 @@
                                 <li><span class="badge badge-secondary">{{ $link }}</span></li>
                             @endforeach
                         </ul>
-                        <span>Please only use and submit one of the above formats.</span>
+                        <span>Please only use and submit one of the above formats!</span>
                     </li>
                     <li>If the link structure doesn't match as in the example, you can still <u><a href="{{ route('apps.manager.link.edit', ['did' => request()->did]) }}">make a changes</a></u> before submitting.</li>
                     <li>To avoid the possibility of abuse, the <u>submission process can only be done twice every hour</u>. Please use this feature wisely.</li>

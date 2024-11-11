@@ -115,65 +115,69 @@ class YoutubeRepositories{
 
                 if(($channelIDS !== null) && (Str::of($channelIDS)->length() == 24)){
                     if($countChannel == 0){
-                        $http = YoutubeAPIRepositories::fetchChannels($channelIDS);
+                        if(!isset($scrapeChannel)){
+                            $channelHandler = Str::of($channelID)->afterLast('/');
 
-                        if($http['pageInfo']['totalResults'] >= 1){
-                            foreach($http['items'] AS $data);
-                
-                            $createNew = [
-                                'users_id'      => $userLink->users_id,
-                                'users_link_id' => $linkID,
-                                'base_link_id'  => $userLink->base_link_id,
-                                'identifier'    => $data['id'],
-                                'handler'       => $data['snippet']['customUrl'],
-                                'playlist'      => $data['contentDetails']['relatedPlaylists']['uploads'],
-                                'trailer'       => isset($data['brandingSettings']['channel']['unsubscribedTrailer']) ? $data['brandingSettings']['channel']['unsubscribedTrailer'] : null,
-                                'name'          => $data['snippet']['title'],
-                                'avatar'        => self::userThumbnail($http),
-                                'banner'        => isset($data['brandingSettings']['image']['bannerExternalUrl']) ? self::userBanner($http) : null,
-                                'description'   => isset($data['snippet']['description']) ? $data['snippet']['description'] : null,
-                                'content'       => $data['statistics']['videoCount'] ? $data['statistics']['videoCount'] : 0,
-                                'view'          => $data['statistics']['viewCount'] ? $data['statistics']['viewCount'] : 0,
-                                'subscriber'    => $data['statistics']['hiddenSubscriberCount'] == false ? $data['statistics']['subscriberCount'] : 0,
-                                'joined'        => Carbon::parse($data['snippet']['publishedAt'])->timezone(config('app.timezone'))->toDateTimeString(),
-                            ];
+                            $scrapeChannel = YoutubeAPIRepositories::scrapeLLChannels($channelHandler);
+                        }
 
-                            // Admin and Moderator can Directly Mark Link Tracker as Verified
-                            if((auth()->user()->hasRole('Admin|Moderator'))){
+                        $scrapedData = collect($scrapeChannel['items'])->first();
+
+                        $checkUnique = Str::contains($scrapedData['about']['description'], $uniqueID);
+
+                        if((isset($checkUnique) && $checkUnique == true) xor (auth()->user()->hasRole('Admin|Moderator'))){
+                            $http = YoutubeAPIRepositories::fetchChannels($channelIDS);
+
+                            if($http['pageInfo']['totalResults'] >= 1){
+                                $singleHttp = collect($http['items'])->first();
+
+                                $createNew = [
+                                    'users_id'      => $userLink->users_id,
+                                    'users_link_id' => $linkID,
+                                    'base_link_id'  => $userLink->base_link_id,
+                                    'identifier'    => $singleHttp['id'],
+                                    'handler'       => $singleHttp['snippet']['customUrl'],
+                                    'playlist'      => $singleHttp['contentDetails']['relatedPlaylists']['uploads'],
+                                    'trailer'       => isset($singleHttp['brandingSettings']['channel']['unsubscribedTrailer']) ? $singleHttp['brandingSettings']['channel']['unsubscribedTrailer'] : null,
+                                    'name'          => $singleHttp['snippet']['title'],
+                                    'avatar'        => self::userThumbnail($http),
+                                    'banner'        => isset($singleHttp['brandingSettings']['image']['bannerExternalUrl']) ? self::userBanner($http) : null,
+                                    'description'   => isset($singleHttp['snippet']['description']) ? $singleHttp['snippet']['description'] : null,
+                                    'content'       => $singleHttp['statistics']['videoCount'] ? $singleHttp['statistics']['videoCount'] : 0,
+                                    'view'          => $singleHttp['statistics']['viewCount'] ? $singleHttp['statistics']['viewCount'] : 0,
+                                    'subscriber'    => $singleHttp['statistics']['hiddenSubscriberCount'] == false ? $singleHttp['statistics']['subscriberCount'] : 0,
+                                    'joined'        => Carbon::parse($singleHttp['snippet']['publishedAt'])->timezone(config('app.timezone'))->toDateTimeString(),
+                                ];
+                            }
+                        }
+
+                        // Admin and Moderator can Directly Mark Link Tracker as Verified
+                        if((auth()->user()->hasRole('Admin|Moderator'))){
+                            $userLink->update([
+                                'base_decision_id' => 2,
+                            ]);
+                            
+                            $userLink->hasOneUserLinkTracker()->create($createNew);
+            
+                            // Redirect
+                            return RedirectHelper::routeBack($back, 'success', 'Channel Verification', 'verify');
+                        }
+
+                        // But Normal User Need to Provide Unique ID and Then Will Be Checked
+                        else{
+                            if((isset($checkUnique) && $checkUnique == true)){
                                 $userLink->update([
                                     'base_decision_id' => 2,
                                 ]);
-                                
+        
                                 $userLink->hasOneUserLinkTracker()->create($createNew);
-
+        
                                 // Redirect
                                 return RedirectHelper::routeBack($back, 'success', 'Channel Verification', 'verify');
                             }
                             else{
-                                $checkUnique = Str::contains($data['snippet']['description'], $uniqueID);
-
-                                if($checkUnique == true){
-                                    if($limitChannel <= 1){
-                                        $userLink->update([
-                                            'base_decision_id' => 2,
-                                        ]);
-
-                                        $userLink->hasOneUserLinkTracker()->create($createNew);
-            
-                                        // Redirect
-                                        return RedirectHelper::routeBack($back, 'success', 'Channel Verification', 'verify');
-                                    }
-                                    else{
-                                        return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Because currently we only allow one YouTube tracker per creator, thus we have to cancel this verification process.', 'error');
-                                    }
-                                }
-                                else{
-                                    return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. We were able to find your channel but we did not find your unique code.', 'error');
-                                }
+                                return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. We were able to find your channel but we did not find your unique code.', 'error');
                             }
-                        }
-                        else{
-                            return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. And it seems we can not find your channel.', 'error');
                         }
                     }
                     else{
@@ -183,13 +187,35 @@ class YoutubeRepositories{
                 else{
                     return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. So please check again whether the link structure you submitted complies with the guidelines or not.', 'error');
                 }
+                
             }
             else{
                 return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. As this link does not looks like YouTube.', 'error');
             }
         }
         catch(\Throwable $th){
-            return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Something went wrong, please try again.', 'error');
+            return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Because something went wrong, please try again.', 'error');
+        }
+    }
+
+    // Verify Channel
+    public static function claimViaChannel($channelID, $uniqueID, $id, $back = null){
+        try{
+            $scrapeChannel = YoutubeAPIRepositories::scrapeLLChannels('@AkiRosenthal');
+
+            $scrapedData = collect($scrapeChannel['items'])->first();
+
+            $checkUnique = Str::contains($scrapedData['about']['description'], $uniqueID);
+
+            if((isset($checkUnique) && $checkUnique == true)){
+                return "Ada dan kirim email";
+            }
+            else{
+                return RedirectHelper::routeBack(null, 'danger', 'Profile Claim. Because we did not find your unique code.', 'error');
+            }
+        }
+        catch(\Throwable $th){
+            return RedirectHelper::routeBack(null, 'danger', 'Profile Claim. Because something went wrong, please try again.', 'error');
         }
     }
 

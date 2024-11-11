@@ -7,10 +7,14 @@ use App\Http\Controllers\Controller;
 use App\Helpers\BasedataHelper;
 use App\Helpers\RedirectHelper;
 use App\Http\Requests\Front\DiscoveryRequest;
+use App\Http\Requests\Front\Creator\ClaimRequest;
 use App\Repositories\Base\CookiesRepositories;
 use App\Repositories\Front\Creator\UserProfileRepositories;
+use App\Repositories\Service\TwitchRepositories;
+use App\Repositories\Service\YoutubeRepositories;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cookie;
 
 class CreatorController extends Controller{
@@ -144,6 +148,81 @@ class CreatorController extends Controller{
         return $datas = UserProfileRepositories::updateRelationship([
             'identifier' => $id,
         ]);
+    }
+
+    public function claim($id){
+        $profile = UserProfileRepositories::getProfile([
+            'identifier'    => $id,
+            'with'          => [
+                'belongsToBaseStatus',
+            ],
+            'option'        => [
+                'sgu' => true, // Ref: SGU = System Generated User
+            ],
+        ]);
+
+        $tracker = UserProfileRepositories::getLinkTracker([
+            'with'  => [
+                'belongsToBaseLink',
+                'belongsToUserLink',
+            ],
+            'query' => [
+                ['users_id', '=', $profile->id],
+            ],
+        ]);
+
+        return view('pages/front/creator/claim', [
+            'profile'   => $profile,
+            'tracker'   => $tracker,
+            'secret'    => Str::of('vtl#')->append($id),
+        ]);
+    }
+
+    public function claimVia($id, $ch){
+        $profile = UserProfileRepositories::getProfile([
+            'identifier'    => $id,
+            'with'          => [
+                'belongsToBaseStatus',
+            ],
+            'option'        => [
+                'sgu' => true, // Ref: SGU = System Generated User
+            ],
+        ]);
+
+        $tracker = UserProfileRepositories::getLinkTracker([
+            'with'  => [
+                'belongsToBaseLink',
+                'belongsToUserLink',
+            ],
+            'query' => [
+                ['users_id', '=', $profile->id],
+                ['identifier', '=', $ch],
+            ],
+        ]);
+
+        if((isset($profile)) && (isset($tracker)) && (count($tracker->data) == 1)){
+            return view('pages/front/creator/claim-via', [
+                'profile'   => $profile,
+                'tracker'   => $tracker,
+                'secret'    => Str::of('vtl#')->append($id),
+            ]);
+        }
+        else{
+            return abort(404);
+        }
+    }
+
+    public function claimViaPost(ClaimRequest $request, $id, $ch){
+        if($request->service == 'Twitch'){
+            // return TwitchRepositories::verifyChannel($request->channel, auth()->user()->id, $id, [
+            //     'route' => 'apps.manager.link',
+            // ]);
+        }
+        elseif($request->service == 'YouTube'){
+            return YoutubeRepositories::claimViaChannel($request->identifier, $request->unique, $id, [
+                'route' => 'index',
+            ]);
+        }
     }
 
     public function channel($id){

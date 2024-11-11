@@ -27,6 +27,7 @@ use App\Repositories\Service\TwitchRepositories;
 use App\Repositories\Service\YoutubeRepositories;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class UserController extends Controller{
     // Constructor
@@ -210,7 +211,7 @@ class UserController extends Controller{
 
         return view('pages/apps/setting/user/link/verify', [
             'backURI'   => $this->backLink,
-            'secret'    => 'vtl#' . BaseHelper::adler32(auth()->user()->id . date('d m Y') . $datas->belongsToBaseLink->name),
+            'secret'    => Str::of('vtl#')->append(BaseHelper::adler32(auth()->user()->id . date('d m Y') . $datas->belongsToBaseLink->name)),
             'structure' => $structure,
             'datas'     => $datas,
         ]);
@@ -218,12 +219,12 @@ class UserController extends Controller{
 
     public function linkVerifyPost(UserLinkVerificationRequest $request, $id){
         if($request->service == 'Twitch'){
-            return TwitchRepositories::verifyChannel($request->channel, auth()->user()->id, $id, [
+            return TwitchRepositories::verifyChannel($request->channel, $request->unique, $id, [
                 'route' => 'apps.manager.link',
             ]);
         }
         elseif($request->service == 'YouTube'){
-            return YoutubeRepositories::verifyChannel($request->channel, auth()->user()->id, $id, [
+            return YoutubeRepositories::verifyChannel($request->channel, $request->unique, $id, [
                 'route' => 'apps.manager.link',
             ]);
         }

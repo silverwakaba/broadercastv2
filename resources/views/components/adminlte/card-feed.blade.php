@@ -7,9 +7,11 @@
                         <div class="tube-post">
                             <a href="{{ $data->link }}" class="embed-responsive embed-responsive-16by9" target="_blank">
                                 <img src="{{ $data->thumbnail }}" title="{{ $data->title }}" class="card-img-top embed-responsive-item">
-                                <span class="vid-time bg-secondary text-white p-1"><i class="fas fa-clock"></i> {{ $data->duration }}</span>
                                 @if(($data->base_status_id == 8))
-                                    <span class="vid-view bg-danger text-white p-1"><i class="fas fa-eye"></i> {{ number_format($data->concurrent) }}</span>
+                                    <span class="vid-view bg-danger text-white p-1">{{ number_format($data->concurrent) }}</span>
+                                @endif
+                                @if(($data->base_status_id != 6) || ($data->base_status_id != 7))
+                                    <span class="vid-time bg-secondary text-white p-1">{{ $data->duration }}</span>
                                 @endif
                             </a>
                         </div>

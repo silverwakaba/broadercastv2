@@ -30,9 +30,15 @@ class UserProfileRepositories{
     public static function getProfile(array $data){
         $datas = User::with(isset($data['with']) ? $data['with'] : [])->where([
             ['identifier', '=', $data['identifier']],
-        ])->firstOrFail();
+        ]);
 
-        return BaseHelper::resourceToJson(new UserResource($datas));
+        if((isset($data['option']['sgu'])) && ($data['option']['sgu'] == true)){
+            $datas->where('base_status_id', '=', 11);
+        }
+
+        $newDatas = $datas->firstOrFail();
+
+        return BaseHelper::resourceToJson(new UserResource($newDatas));
     }
 
     // Relationship

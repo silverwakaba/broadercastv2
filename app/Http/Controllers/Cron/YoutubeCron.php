@@ -26,6 +26,8 @@ class YoutubeCron extends Controller{
         // return YoutubeAPIRepositories::fetchVideos();
 
         // return YoutubeRepositories::fetchArchiveViaFeed();
+
+        return YoutubeAPIRepositories::scrapeLLChannels('@wakaba69');
     }
 
     // Archive Initialization

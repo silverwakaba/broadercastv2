@@ -9,6 +9,7 @@ use Illuminate\View\Component;
 class Input extends Component{
     public int $col;
     public string $name;
+    public string $help;
     public string $type;
     public string $text;
     public $value;
@@ -16,8 +17,9 @@ class Input extends Component{
     /**
      * Create a new component instance.
      */
-    public function __construct($name, $type, $text, $value = '', $col = ''){
+    public function __construct($name, $type, $text, $help = '', $value = '', $col = ''){
         $this->name = $name;
+        $this->help = $help;
         $this->type = $type;
         $this->text = $text;
         $this->value = $value ? $value : null;
