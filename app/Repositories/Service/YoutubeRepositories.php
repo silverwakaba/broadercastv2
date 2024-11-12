@@ -5,6 +5,8 @@ namespace App\Repositories\Service;
 use App\Helpers\BaseHelper;
 use App\Helpers\RedirectHelper;
 
+use App\Mail\UserClaimEmail;
+
 use App\Models\BaseAPI;
 use App\Models\User;
 use App\Models\UserFeed;
@@ -19,6 +21,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 
 //
 use Illuminate\Support\Facades\Log;
@@ -84,27 +87,42 @@ class YoutubeRepositories{
     public static function verifyChannel($channelID, $uniqueID, $id, $back = null){
         try{
             $checkViaChannel = Str::contains($channelID, "https://www.youtube.com/channel/");
+            $checkViaCID = Str::contains($channelID, "https://www.youtube.com/c/");
             $checkViaHandler = Str::contains($channelID, "https://www.youtube.com/@");
 
-            if($checkViaChannel xor $checkViaHandler){
-                if($checkViaChannel == true){
+            if($checkViaChannel || $checkViaCID || $checkViaHandler){
+                if($checkViaChannel == true){ // <<< Ok
                     $channelIDS = Str::of($channelID)->afterLast('/');
                 }
-                elseif($checkViaHandler == true){
-                    $channelHandler = Str::of($channelID)->afterLast('@');
+                elseif($checkViaCID == true){ // <<< Ok
+                    $channelHandler = Str::of($channelID)->afterLast('/c/');
 
-                    $scrapeChannel = YoutubeAPIRepositories::scrapeLLChannels('@' . $channelHandler);
+                    $scrapeChannel = YoutubeAPIRepositories::scrapeLLChannels('/c/' . $channelHandler);
+
+                    $scrapedChannel = collect($scrapeChannel['items'])->first();
 
                     if(count($scrapeChannel['items']) == 1){
-                        foreach($scrapeChannel['items'] as $dataChannel);
-
-                        $channelIDS = $dataChannel['id'];
+                        $channelIDS = $scrapedChannel['id'];
                     }
                     else{
                         $channelIDS = null;
                     }
                 }
-                else{
+                elseif($checkViaHandler == true){ // <<< Ok
+                    $channelHandler = Str::of($channelID)->afterLast('@');
+
+                    $scrapeChannel = YoutubeAPIRepositories::scrapeLLChannels('@' . $channelHandler);
+
+                    $scrapedChannel = collect($scrapeChannel['items'])->first();
+                    
+                    if(count($scrapeChannel['items']) == 1){
+                        $channelIDS = $scrapedChannel['id'];
+                    }
+                    else{
+                        $channelIDS = null;
+                    }
+                }
+                else{ // <<< Ok
                     $channelIDS = null;
                 }
 
@@ -163,7 +181,7 @@ class YoutubeRepositories{
                             return RedirectHelper::routeBack($back, 'success', 'Channel Verification', 'verify');
                         }
 
-                        // But Normal User Need to Provide Unique ID and Then Will Be Checked
+                        // But Normal User Need to Provide Unique ID and Then It Will Be Checked
                         else{
                             if((isset($checkUnique) && $checkUnique == true)){
                                 $userLink->update([
@@ -194,21 +212,52 @@ class YoutubeRepositories{
             }
         }
         catch(\Throwable $th){
+            // Redirect Because This Is An Action
             return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Because something went wrong, please try again.', 'error');
         }
     }
 
-    // Verify Channel
-    public static function claimViaChannel($channelID, $uniqueID, $id, $back = null){
+    // Claim Account via Channel
+    public static function claimViaChannel($channelID, $uniqueID, $id, $email, $back = null){
         try{
-            $scrapeChannel = YoutubeAPIRepositories::scrapeLLChannels('@AkiRosenthal');
+            $scrapeChannel = YoutubeAPIRepositories::scrapeLLChannels($channelID);
 
             $scrapedData = collect($scrapeChannel['items'])->first();
 
             $checkUnique = Str::contains($scrapedData['about']['description'], $uniqueID);
 
             if((isset($checkUnique) && $checkUnique == true)){
-                return "Ada dan kirim email";
+                $user = UserLinkTracker::where('identifier', '=', $channelID)->select('users_id')->first();
+
+                if($user){
+                    $request = $user->hasManyThroughUserRequest()->where([
+                        ['base_request_id', '=', 3],
+                        ['users_id', '=', $user->users_id],
+                        ['token', '!=', null],
+                    ])->first();
+        
+                    if($request){
+                        $mId = $request->id;
+                    }
+                    else{
+                        $cmId = $user->hasManyThroughUserRequest()->create([
+                            'base_request_id'   => 3,
+                            'users_id'          => $user->users_id,
+                            'token'             => BaseHelper::adler32(),
+                        ]);
+        
+                        $mId = $cmId->id;
+                    }
+        
+                    Mail::to($email)->send(new UserClaimEmail($mId));
+        
+                    return RedirectHelper::routeBack($back, 'success', 'Claim', 'claim');
+                }
+                else{
+                    return RedirectHelper::routeBackWithErrors([
+                        'email' => "Something went wrong. Please try again.",
+                    ]);
+                }
             }
             else{
                 return RedirectHelper::routeBack(null, 'danger', 'Profile Claim. Because we did not find your unique code.', 'error');

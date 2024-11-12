@@ -11,7 +11,7 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 // implements ShouldQueue
-class UserRecoveryEmail extends Mailable{
+class UserClaimEmail extends Mailable{
     use Queueable, SerializesModels;
 
     public $mId;
@@ -26,20 +26,20 @@ class UserRecoveryEmail extends Mailable{
     /**
      * Get the message envelope.
      */
-    public function envelope() : Envelope{
+    public function envelope(): Envelope{
         return new Envelope(
-            subject: 'Recover Your Account',
+            subject: 'Complete Your Account Claim',
         );
     }
 
     /**
      * Get the message content definition.
      */
-    public function content() : Content{
+    public function content(): Content{
         $datas = UserRequest::select('token')->where('id', '=', $this->mId)->first();
 
         return new Content(
-            view: 'mailer.recovery',
+            view: 'mailer.account-claim',
             with: [
                 // 'datas' => $datas,
                 'token' => $datas->token,
@@ -52,7 +52,7 @@ class UserRecoveryEmail extends Mailable{
      *
      * @return array<int, \Illuminate\Mail\Mailables\Attachment>
      */
-    public function attachments() : array{
+    public function attachments(): array{
         return [];
     }
 }

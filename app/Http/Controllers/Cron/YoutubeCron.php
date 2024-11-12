@@ -14,6 +14,10 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
+// 
+
+use App\Models\User;
+
 class YoutubeCron extends Controller{
     // Debug
     public function fetchDebug(Request $request){
@@ -27,7 +31,11 @@ class YoutubeCron extends Controller{
 
         // return YoutubeRepositories::fetchArchiveViaFeed();
 
-        return YoutubeAPIRepositories::scrapeLLChannels('@wakaba69');
+        // return YoutubeAPIRepositories::scrapeLLChannels('@wakaba69');
+
+        // $usr = User::where('id', '=', 1)->first();
+
+        // return $usr->hasRole('Gigolo');
     }
 
     // Archive Initialization

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Front\Creator;
+namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -19,12 +19,12 @@ class ClaimRequest extends FormRequest{
      */
     public function rules() : array{
         return [
-            'unique'                => ['nullable'],
-            'service'               => ['nullable'],
-            'identifier'            => ['nullable'],
-            'email'                 => ['required', 'email'],
-            'terms'                 => ['accepted'],
-            'h-captcha-response'    => ['required', 'HCaptcha'],
+            'email'                     => ['required', 'email'],
+            'new_email'                 => ['required', 'email', 'min:5', 'max:255', 'unique:users,email'],
+            'new_password'              => ['required', 'string'],
+            'new_password_confirmation' => ['required', 'string', 'same:new_password'],
+            'terms'                     => ['accepted'],
+            'h-captcha-response'        => ['required', 'HCaptcha'],
         ];
     }
 }

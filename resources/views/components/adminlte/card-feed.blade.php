@@ -10,9 +10,7 @@
                                 @if(($data->base_status_id == 8))
                                     <span class="vid-view bg-danger text-white p-1">{{ number_format($data->concurrent) }}</span>
                                 @endif
-                                @if(($data->base_status_id != 6) || ($data->base_status_id != 7))
-                                    <span class="vid-time bg-secondary text-white p-1">{{ $data->duration }}</span>
-                                @endif
+                                <span class="vid-time bg-secondary text-white p-1">{{ $data->duration }}</span>
                             </a>
                         </div>
                         <a href="{{ $data->user->page }}" class="text-light" title="{{ $data->profile->name }}">

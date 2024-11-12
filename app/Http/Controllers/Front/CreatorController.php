@@ -219,8 +219,8 @@ class CreatorController extends Controller{
             // ]);
         }
         elseif($request->service == 'YouTube'){
-            return YoutubeRepositories::claimViaChannel($request->identifier, $request->unique, $id, [
-                'route' => 'index',
+            return YoutubeRepositories::claimViaChannel($request->identifier, $request->unique, $id, $request->email, [
+                'route' => 'login',
             ]);
         }
     }

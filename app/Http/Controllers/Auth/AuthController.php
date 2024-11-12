@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Helpers\BaseHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\ClaimRequest;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\RecoverRequest;
@@ -65,9 +66,9 @@ class AuthController extends Controller{
 
     public function resetPost(ResetRequest $request){
         return UserAuthRepositories::reset([
-            'token'     => $request->token,
-            'email'     => $request->email,
-            'password'  => $request->password,
+            'token'         => $request->token,
+            'email'         => $request->email,
+            'new_password'  => $request->new_password,
         ], 'apps.front.index');
     }
 
@@ -75,6 +76,26 @@ class AuthController extends Controller{
     public function verify(Request $request){
         return UserAuthRepositories::verify([
             'id' => $request->id,
+        ], 'apps.front.index');
+    }
+
+    // Claim
+    public function claim(Request $request){
+        $datas = UserAuthRepositories::getClaim([
+            'id' => $request->id,
+        ]);
+
+        return view('pages/auth/claim', [
+            'datas' => $datas,
+        ]);
+    }
+
+    public function claimPost(ClaimRequest $request){
+        return UserAuthRepositories::claim([
+            'token'         => $request->token,
+            'email'         => $request->email,
+            'new_email'     => $request->new_email,
+            'new_password'  => $request->new_password,
         ], 'apps.front.index');
     }
 

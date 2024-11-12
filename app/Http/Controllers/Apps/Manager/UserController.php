@@ -205,6 +205,7 @@ class UserController extends Controller{
         elseif($datas->belongsToBaseLink->name == 'YouTube'){
             $structure = [
                 'https://www.youtube.com/@wakaba69',
+                // 'https://www.youtube.com/c/channelID',
                 'https://www.youtube.com/channel/UCIRQxP7jORi6jsLt0HmUmqQ',
             ];
         }

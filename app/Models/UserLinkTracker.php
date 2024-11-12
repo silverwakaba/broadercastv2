@@ -68,6 +68,10 @@ class UserLinkTracker extends Model{
         return $this->hasManyThrough(UserFeed::class, User::class, 'id', 'base_link_id', 'base_link_id', 'id');
     }
 
+    public function hasManyThroughUserRequest(){
+        return $this->hasManyThrough(UserRequest::class, User::class, 'id', 'users_id', 'users_id', 'id');
+    }
+
     // public function belongsToActiveStream(){
     //     return $this->belongsTo(UserFeed::class, 'users_feed_id', 'id');
     // }

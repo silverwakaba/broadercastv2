@@ -35,7 +35,12 @@ class RedirectHelper{
         elseif($mode == "recover"){
             $modeMessage = "account recovery";
 
-            $guide = "Please check your email to to continue with the next step.";
+            $guide = "Please check your email to to continue with the next step regarding account recover.";
+        }
+        elseif($mode == "claim"){
+            $modeMessage = "account claim";
+
+            $guide = "Please check your email to to continue with the next step regarding account claim.";
         }
         elseif($mode == "reset"){
             $modeMessage = "password reset";

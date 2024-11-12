@@ -131,7 +131,7 @@ class YoutubeAPIRepositories{
                         return array_merge(self::signature('gApis', $apiKey), $http->json());
                     }
                     else{
-                        // 
+                        // Do nothing
                     }
                 }
             }
@@ -205,6 +205,7 @@ class YoutubeAPIRepositories{
     // Channel
     public static function scrapeLLChannels($channelID, $apiKey = 'scraperLL'){
         $length = Str::length($channelID);
+        $containCID = Str::contains($channelID, ['/c/']);
         $containAtSymbol = Str::contains($channelID, ['@']);
 
         $params = [
@@ -212,8 +213,11 @@ class YoutubeAPIRepositories{
             'part'          => "snippet,upcomingEvents,about,approval,membership",
         ];
 
-        if(($length == 24) && ($containAtSymbol == false)){
+        if(($length == 24) && ($containCID == false) && ($containAtSymbol == false)){
             $params['id'] = $channelID;
+        }
+        elseif(($length >= 1) && ($containCID == true) && ($containAtSymbol == false)){
+            $params['cId'] = Str::of($channelID)->afterLast('/c/');
         }
         else{
             $params['handle'] = $channelID;

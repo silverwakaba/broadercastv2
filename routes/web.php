@@ -109,14 +109,18 @@ Route::group(['prefix' => '/'], function(){
 
         // Recover
         Route::get('recover', [AuthController::class, 'recover'])->name('recover');
-        Route::post('recover', [AuthController::class, 'recoverPost'])->middleware(['throttle:2,1']);
+        Route::post('recover', [AuthController::class, 'recoverPost']);//->middleware(['throttle:2,1']);
 
         // Reset
-        Route::get('reset', [AuthController::class, 'reset'])->name('reset');
+        Route::get('reset', [AuthController::class, 'reset'])->name('reset')->withoutMiddleware(['guest']);
         Route::post('reset', [AuthController::class, 'resetPost']);
 
         // Verify
         Route::get('verify', [AuthController::class, 'verify'])->name('verify')->withoutMiddleware(['guest']);
+
+        // Claim
+        Route::get('claim', [AuthController::class, 'claim'])->name('claim')->withoutMiddleware(['guest']);
+        Route::post('claim', [AuthController::class, 'claimPost']);
 
         // Logout
         Route::get('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware(['guest']);

@@ -10,7 +10,8 @@
                     <li><strong>"Registered Generated User"</strong> (or simply "RGU"), which refers to users who independently register their accounts by themself.</li>
                 </ol>
                 <p>The features and functions of an SGU account are similar to those of a regular RGU account, offers the same experience. However, it is important to note that the access rights for these SGU accounts are significantly disabled before being claimed by the owner.</p>
-                <p>Once claimed, the SGU account will transition into a manageable RGU account, allowing for further account management, administration and oversight.</p>
+                <p>Despite this, one of the key advantages is that creators added as SGU accounts can appear in our system feed without needing to take any action themselves. This seamless integration allows them to gain visibility effortlessly.</p>
+                <p>When the time comes for them to manage their own accounts, they have the option to do so, ensuring they can take control of their presence whenever they feel ready. Once claimed, the SGU account will transition into a manageable RGU account, allowing for further account management, administration and oversight.</p>
                 <p>If you are the owner or a representative intending to manage this <strong><u>"{{ $profile->name }}"</u></strong> user account, please follow the guidelines provided below:</p>
                 <ol>
                     <li>
@@ -56,7 +57,7 @@
                         </ul>
                         <span>Simply select one channel to be used as the basis for the final decision.</span>
                     </li>
-                    <li>Further instructions will be explained on the next page.</li>
+                    <li>Complete the claim process on the next page.</li>
                     <li>Contact us if you need further assistance.</li>
                 </ol>
             </div>
