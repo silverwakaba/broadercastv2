@@ -6,6 +6,7 @@ use App\Helpers\BaseHelper;
 use App\Helpers\RedirectHelper;
 
 use App\Mail\UserRecoveryEmail;
+use App\Mail\UserVerifyEmail;
 
 use App\Models\User;
 use App\Models\UserRequest;
@@ -22,11 +23,6 @@ class UserAuthRepositories{
         }
 
         $user = User::create($data)->assignRole($role);
-
-        $user->hasOneUserRequest()->create([
-            'base_request_id'   => 1,
-            'users_id'          => $user->id,
-        ]);
 
         return RedirectHelper::routeBack($back, 'success', 'Registration', 'register');
     }
@@ -47,7 +43,10 @@ class UserAuthRepositories{
 
     // Recover
     public static function recover(array $data, $back){
-        $user = User::where('email', '=', $data['email'])->first();
+        $user = User::where([
+            ['email', '=', $data['email']],
+            ['confirmed', '=', true],
+        ])->first();
 
         if($user){
             $request = $user->hasOneUserRequest()->where([
@@ -69,7 +68,7 @@ class UserAuthRepositories{
                 $mId = $cmId->id;
             }
 
-            Mail::to($data['email'])->send(new UserRecoveryEmail($mId));
+            Mail::mailer('mailerdefault')->to($data['email'])->send(new UserRecoveryEmail($mId));
 
             return RedirectHelper::routeBack($back, 'success', 'Recover', 'recover');
         }
@@ -118,11 +117,17 @@ class UserAuthRepositories{
 
     // Verify
     public static function verify(array $data, $back){
-        $email = BaseHelper::decrypt($data['id']);
+        $request = UserRequest::with([
+            'belongsToUser'
+        ])->where([
+            ['base_request_id', '=', 1],
+            ['token', '=', $data['id']],
+        ])->firstOrFail();
 
-        $user = User::where('email', '=', $email)->first();
+        $user = $request->belongsToUser;
         
         $user->update([
+            'confirmed'         => true,
             'email_verified_at' => Carbon::now()->timezone(config('app.timezone'))->toDateTimeString(),
         ]);
 
@@ -133,8 +138,51 @@ class UserAuthRepositories{
         request()->session()->regenerateToken();
 
         Auth::loginUsingId($user->id);
+
+        $request->update([
+            'token' => null,
+        ]);
         
         return RedirectHelper::routeBack($back, 'success', 'Verify', 'verify');
+    }
+
+    // Verify Resend
+    public static function verifyResend(array $data, $back){
+        $user = User::where([
+            ['email', '=', $data['email']],
+            ['confirmed', '=', false],
+            ['email_verified_at', '=', null],
+        ])->first();
+
+        if($user){
+            $request = $user->hasOneUserRequest()->where([
+                ['base_request_id', '=', 1],
+                ['users_id', '=', $user->id],
+                ['token', '!=', null],
+            ])->first();
+
+            if($request){
+                $mId = $request->id;
+            }
+            else{
+                $cmId = $user->hasOneUserRequest()->create([
+                    'base_request_id'   => 2,
+                    'users_id'          => $user->id,
+                    'token'             => BaseHelper::adler32(),
+                ]);
+
+                $mId = $cmId->id;
+            }
+
+            Mail::mailer('mailerdefault')->to($data['email'])->send(new UserVerifyEmail($mId));
+
+            return RedirectHelper::routeBack($back, 'success', 'Verify', 'reverify');
+        }
+        else{
+            return RedirectHelper::routeBackWithErrors([
+                'email' => "Something went wrong. Please try again.",
+            ]);
+        }
     }
 
     // Claim

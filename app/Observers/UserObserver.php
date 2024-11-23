@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Helpers\BaseHelper;
 use App\Mail\UserVerifyEmail;
 
 use App\Models\User;
@@ -14,15 +15,43 @@ class UserObserver{
      * Handle the User "created" event.
      */
     public function created(User $user) : void{
+        // Avatar
         $user->hasOneUserAvatar()->create([
             'users_id' => $user->id,
         ]);
 
+        // Biodata
         $user->hasOneUserBiodata()->create([
             'users_id' => $user->id,
         ]);
 
-        // Mail::to($user->email)->send(new UserVerifyEmail($user->id));
+        // Some action, like SGU, don't need and trigger this action
+        try{
+            // Request
+            $request = $user->hasOneUserRequest()->where([
+                ['base_request_id', '=', 1],
+                ['users_id', '=', $user->id],
+                ['token', '!=', null],
+            ])->first();
+
+            if($request){
+                $mId = $request->id;
+            }
+            else{
+                $cmId = $user->hasOneUserRequest()->create([
+                    'base_request_id'   => 1,
+                    'users_id'          => $user->id,
+                    'token'             => BaseHelper::adler32(),
+                ]);
+
+                $mId = $cmId->id;
+            }
+
+            if($mId){
+                Mail::mailer('mailerdefault')->to($user->email)->send(new UserVerifyEmail($mId));
+            }
+        }
+        catch(\Throwable $th){}
 
         // UserCreated::dispatch($user);
     }

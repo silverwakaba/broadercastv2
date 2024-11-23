@@ -249,7 +249,7 @@ class YoutubeRepositories{
                         $mId = $cmId->id;
                     }
         
-                    Mail::to($email)->send(new UserClaimEmail($mId));
+                    Mail::mailer('mailerha')->to($email)->send(new UserClaimEmail($mId));
         
                     return RedirectHelper::routeBack($back, 'success', 'Claim', 'claim');
                 }
@@ -508,7 +508,7 @@ class YoutubeRepositories{
 
                     // If Video is Being Unavailable Midway (Not Being Able to Changed From 'Live' to 'Archived') Then it Will Be Deleted
                     if(($missingVideo) && isset($missingVideo) && (count($missingVideo) >= 1)){
-                        UserFeed::whereIn('identifier', $missingVideo)->delete();
+                        UserFeed::where('base_status_id', '=', 8)->whereIn('identifier', $missingVideo)->delete();
                     }
                 }
             });

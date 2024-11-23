@@ -46,6 +46,7 @@ class TwitchAPIRepositories{
     // API Key
     public static function apiKey(){
         $apiKey = BaseAPI::where([
+            ['id', '=', 1],
             ['base_link_id', '=', 1],
         ])->select('client_id', 'client_secret', 'bearer')->inRandomOrder()->first();
 
@@ -58,61 +59,43 @@ class TwitchAPIRepositories{
         $newClientSecret = isset($client_secret) ? $client_secret : null;
         $newBearerToken = isset($bearer) ? $bearer : null;
 
+        // return $data;
+
         try{
-            $errorCode = self::errorCode();
-
-            $signature = [
-                'fetchFrom' => 'twitch',
-            ];
-
             // Endpoint
             if((Str::contains($function, ['oauth2']) == true)){
-                // Twitch identity manager
-                $endpoint = [
-                    '1st' => 'https://id.twitch.tv/',
-                ];
+                // Twitch API Identity Manager
+                $endpoint = 'https://id.twitch.tv/';
             }
             else{
-                // Twitch API endpoint
-                $endpoint = [
-                    '1st' => 'https://api.twitch.tv/helix/',
-                ];
+                // Twitch API Helix
+                $endpoint = 'https://api.twitch.tv/helix/';
             }
 
-            // Method
+            // Make an API Call
             if((Str::contains($function, ['oauth2/token']) == true)){
-                // Post token request
-                $responses = Http::pool(fn (Pool $pool) => [
-                    $pool->as('1stR')->post(Str::of($endpoint['1st'])->append($function), $data),
-                ]);
+                $http = Http::post(Str::of($endpoint)->append($function), $data);
             }
             else{
-                // Get data
-                $responses = Http::pool(fn (Pool $pool) => [
-                    $pool->as('1stR')->acceptJson()->withHeaders([
-                        'Authorization' => 'Bearer ' . $bearer,
-                        'Client-Id'     => $client_id,
-                    ])->get(Str::of($endpoint['1st'])->append($function), $data),
-                ]);
+                $http = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . $bearer,
+                    'Client-Id'     => $client_id,
+                ])->get(Str::of($endpoint)->append($function) . $data);
             }
 
-            foreach($responses as $response){
-                if(Arr::hasAny($response, $errorCode) == false){
-                    return array_merge(['status' => $response->status()], $signature, $response->json());
-                }
-                else{
-                    return self::apiRecall($data, $function, $newClientID, $newClientSecret, $newBearerToken);
-                }
+            if(Arr::hasAny($http, self::errorCode()) == false){
+                return array_merge(['status' => $http->status()], $http->json());
+            }
+            else{
+
+                return $http->json();
+
+                // Repeat and shine
+                // return self::apiRecall($data, $function, $newClientID, $newClientSecret, $newBearerToken);
             }
         }
         catch(\Throwable $th){
-            return $th;
-
-            // return [
-            //     'success'   => false,
-            //     'message'   => 'Something is error. Please try again later.',
-            // ];
-
+            throw $th;
             return self::apiRecall($data, $function, $newClientID, $newClientSecret, $newBearerToken);
         }
     }
@@ -147,28 +130,26 @@ class TwitchAPIRepositories{
         return self::apiCall(null, 'oauth2/validate', null, $client_secret, $bearer);
     }
 
-    // Fetch Profile | $client_id, $bearer, $id = null
-    public static function fetchProfile($channelID){
-        if((isset($channelID) && $channelID !== null)){
-            if(is_string($channelID)){
-                $params = [
-                    'login' => $channelID,
-                ];
-            }
-            else{
-                $params = [
-                    'id' => $channelID,
-                ];
-            }
-        }
-        else{
-            return [
-                'status'    => 400,
-                'message'   => 'Provide at least one parameter.',
-            ];
-        }
+    // Fetch Profile By ID
+    public static function fetchProfileByID($id){
+        $params = [
+            'id' => $id,
+        ];
 
-        return self::apiCall($params, 'users', self::apiKey()->client_id, null, self::apiKey()->bearer);
+        $query = self::paramsQuery($params, 'id');
+
+        return self::apiCall($query, 'users', self::apiKey()->client_id, null, self::apiKey()->bearer);
+    }
+
+    // Fetch Profile By Handler
+    public static function fetchProfileByHandler($id){
+        $params = [
+            'login' => $id,
+        ];
+
+        $query = self::paramsQuery($params, 'login');
+
+        return self::apiCall($query, 'users', self::apiKey()->client_id, null, self::apiKey()->bearer);
     }
 
     // Fetch Channel
@@ -177,7 +158,9 @@ class TwitchAPIRepositories{
             'broadcaster_id' => $id,
         ];
 
-        return self::apiCall($params, 'channels', self::apiKey()->client_id, null, self::apiKey()->bearer);
+        $query = self::paramsQuery($params, 'broadcaster_id');
+
+        return self::apiCall($query, 'channels', self::apiKey()->client_id, null, self::apiKey()->bearer);
     }
 
     // Fetch Subscriber
@@ -186,7 +169,9 @@ class TwitchAPIRepositories{
             'broadcaster_id' => $id,
         ];
 
-        return self::apiCall($params, 'channels/followers', self::apiKey()->client_id, null, self::apiKey()->bearer);
+        $query = self::paramsQuery($params, 'broadcaster_id');
+
+        return self::apiCall($query, 'channels/followers', self::apiKey()->client_id, null, self::apiKey()->bearer);
     }
 
     // Fetch Stream
@@ -196,7 +181,21 @@ class TwitchAPIRepositories{
             'user_id'   => $id,
         ];
 
-        return self::apiCall($params, 'streams', self::apiKey()->client_id, null, self::apiKey()->bearer);
+        $query = self::paramsQuery($params, 'user_id');
+
+        return self::apiCall($query, 'streams', self::apiKey()->client_id, null, self::apiKey()->bearer);
+    }
+
+    // Fetch Stream
+    public static function fetchStreamByHandler($id = null){
+        $params = [
+            'type'          => "live",
+            'user_login'    => $id,
+        ];
+
+        $query = self::paramsQuery($params, 'user_login');
+
+        return self::apiCall($query, 'streams', self::apiKey()->client_id, null, self::apiKey()->bearer);
     }
 
     // Fetch Video
@@ -205,20 +204,14 @@ class TwitchAPIRepositories{
         $params = [
             'id'        => $videoID,
             'user_id'   => $userID,
+            'sort'      => 'time',
         ];
 
-        $http = self::apiCall($params, 'videos', self::apiKey()->client_id, null, self::apiKey()->bearer);
+        $query = self::paramsQuery($params, 'user_id');
 
-        if(($videoID == null) && ($streamID != null)){
-            foreach($http['data'] as $datas){
-                if($datas['stream_id'] == $streamID){
-                    return $datas;
-                }
-            }
-        }
-        else{
-            return $http;
-        }
+        $http = self::apiCall($query, 'videos', self::apiKey()->client_id, null, self::apiKey()->bearer);
+
+        return collect($http['data'])->where('stream_id', '=', $streamID)->first();
     }
 
     /**
@@ -227,5 +220,34 @@ class TwitchAPIRepositories{
      * ----------------------------
     **/
 
-    // Not yet defined
+    // Scrape
+
+    /**
+     * ------------------------------
+     * Get & process part of the data
+     * ------------------------------
+    **/
+
+    public static function paramsQuery($data, $key){
+        $needDelimiter = Str::contains($data[$key], [',']);
+        $filteredData = Arr::query(Arr::except($data, [$key]));
+
+        if(isset($needDelimiter) && $needDelimiter == true){
+            $idDelimiter = explode(',', $data[$key]);
+            $idDelimiterNew = '';
+
+            foreach($idDelimiter as $ids){
+                $idDelimiterNew .= Str::of($key)->append('=' . $ids . '&');
+            }
+
+            $cleanDelimiter = Str::chopEnd($idDelimiterNew, '&');
+
+            $query = Str::of($filteredData . '&')->append($cleanDelimiter);
+        }
+        else{
+            $query = Arr::query($data);
+        }
+
+        return Str::start($query, '?');
+    }
 }

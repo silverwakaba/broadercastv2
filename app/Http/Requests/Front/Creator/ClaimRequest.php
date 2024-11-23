@@ -24,7 +24,7 @@ class ClaimRequest extends FormRequest{
             'identifier'            => ['nullable'],
             'email'                 => ['required', 'email'],
             'terms'                 => ['accepted'],
-            'h-captcha-response'    => ['required', 'HCaptcha'],
+            // 'h-captcha-response'    => ['required', 'HCaptcha'],
         ];
     }
 }

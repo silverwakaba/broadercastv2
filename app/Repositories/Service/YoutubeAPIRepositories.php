@@ -64,13 +64,10 @@ class YoutubeAPIRepositories{
 
     // API Key
     public static function apiKey(){
-        // $datas = BaseAPI::where([
-        //     ['base_link_id', '=', '2'],
-        // ])->select('client_key')->inRandomOrder()->first()->client_key;
-
-        // return $datas;
-
-        $datas = 'AIzaSyCG2E8UACFHwuvVhb45dukAPkC0Agwj9WQ';
+        $datas = BaseAPI::where([
+            ['base_link_id', '=', 2],
+            ['client_key', '=', 'AIzaSyCG2E8UACFHwuvVhb45dukAPkC0Agwj9WQ'],
+        ])->select('client_key')->inRandomOrder()->first()->client_key;
 
         return $datas;
     }

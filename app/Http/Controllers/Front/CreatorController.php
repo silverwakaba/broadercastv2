@@ -204,7 +204,10 @@ class CreatorController extends Controller{
             return view('pages/front/creator/claim-via', [
                 'profile'   => $profile,
                 'tracker'   => $tracker,
-                'secret'    => Str::of('vtl#')->append($id),
+                
+                'secret'    => '概',
+                // 'secret'    => Str::of('vtl#')->append($id),
+                
             ]);
         }
         else{
@@ -214,9 +217,9 @@ class CreatorController extends Controller{
 
     public function claimViaPost(ClaimRequest $request, $id, $ch){
         if($request->service == 'Twitch'){
-            // return TwitchRepositories::verifyChannel($request->channel, auth()->user()->id, $id, [
-            //     'route' => 'apps.manager.link',
-            // ]);
+            return TwitchRepositories::claimViaChannel($request->identifier, $request->unique, $id, $request->email, [
+                'route' => 'login',
+            ]);
         }
         elseif($request->service == 'YouTube'){
             return YoutubeRepositories::claimViaChannel($request->identifier, $request->unique, $id, $request->email, [

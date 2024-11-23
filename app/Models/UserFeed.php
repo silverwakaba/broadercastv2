@@ -25,6 +25,7 @@ class UserFeed extends Model{
         'actual_start',
         'actual_end',
         'duration',
+        'reference',
     ];
 
     public function belongsToUser(){

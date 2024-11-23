@@ -19,12 +19,12 @@
                     <x-form.input name="new_password_confirmation" type="password" text="New Password Confirmation (Retype)" />
                 </div>
                 <div class="row">
-                    <div class="col-8">
+                    <div class="col-md-8">
                         <input type="hidden" name="_token" class="d-none" value="{{ csrf_token() }}" readonly />
                         <input type="hidden" name="email" class="d-none" value="{{ $datas->belongsToUser->email }}" readonly />
                         <x-form.checkbox name="terms" value="1">I agree to <a href="https://help.silverspoon.me/docs/vtual/authentication/claim" target="_blank">Account Claim</a> policy</x-form.checkbox>
                     </div>
-                    <div class="col-4">
+                    <div class="col-md-4">
                         <x-Form.Hcaptcha id="theClaimForm" button="Claim" class="btn btn-block btn-primary" />
                     </div>
                 </div>
@@ -32,10 +32,10 @@
             <div class="social-auth-links text-center">
                 <p>- OR -</p>
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-md-6">
                         <p><a href="{{ route('register') }}" class="btn btn-block btn-secondary">Register new account</a></p>
                     </div>
-                    <div class="col-6">
+                    <div class="col-md-6">
                         <p><a href="{{ route('login') }}" class="btn btn-block btn-success">Login with an existing account</a></p>
                     </div>
                 </div>

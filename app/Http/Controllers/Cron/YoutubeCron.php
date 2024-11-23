@@ -4,9 +4,8 @@ namespace App\Http\Controllers\Cron;
 
 use App\Http\Controllers\Controller;
 
-use App\Models\BaseAPI;
-use App\Models\UserFeed;
 use App\Models\UserLinkTracker;
+
 use App\Repositories\Service\YoutubeRepositories;
 use App\Repositories\Service\YoutubeAPIRepositories;
 
@@ -14,28 +13,10 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
-// 
-
-use App\Models\User;
-
 class YoutubeCron extends Controller{
     // Debug
-    public function fetchDebug(Request $request){
-        // return YoutubeAPIRepositories::fetchChannels('ABC');
-        
-        // return YoutubeAPIRepositories::fetchPlaylistItems('ABC', 'DEF');
-        
-        // return YoutubeAPIRepositories::fetchFeeds('ABC');
-        
-        // return YoutubeAPIRepositories::fetchVideos();
-
-        // return YoutubeRepositories::fetchArchiveViaFeed();
-
-        // return YoutubeAPIRepositories::scrapeLLChannels('@wakaba69');
-
-        // $usr = User::where('id', '=', 1)->first();
-
-        // return $usr->hasRole('Gigolo');
+    public function fetchDebug(){
+        // 
     }
 
     // Archive Initialization

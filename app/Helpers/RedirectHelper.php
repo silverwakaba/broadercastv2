@@ -32,6 +32,11 @@ class RedirectHelper{
             
             $guide = "Please check your email to verify your account.";
         }
+        elseif($mode == "reverify"){
+            $modeMessage = "user verification";
+            
+            $guide = "Please check your email to verify your account.";
+        }
         elseif($mode == "recover"){
             $modeMessage = "account recovery";
 

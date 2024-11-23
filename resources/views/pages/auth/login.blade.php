@@ -9,11 +9,11 @@
                     <x-form.input name="password" type="password" text="Password" />
                 </div>
                 <div class="row">
-                    <div class="col-8">
+                    <div class="col-md-8">
                         <input type="hidden" name="_token" class="d-none" value="{{ csrf_token() }}" readonly />
                         <x-form.checkbox name="remember" value="1">Remember Me</x-form.checkbox>
                     </div>
-                    <div class="col-4">
+                    <div class="col-md-4">
                         <x-Form.Hcaptcha id="theLoginForm" button="Login" class="btn btn-block btn-primary" />
                     </div>
                 </div>
@@ -21,10 +21,13 @@
             <div class="social-auth-links text-center">
                 <p>- OR -</p>
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-md-4">
                         <p><a href="{{ route('register') }}" class="btn btn-block btn-secondary">Register new account</a></p>
                     </div>
-                    <div class="col-6">
+                    <div class="col-md-4">
+                        <p><a href="{{ route('verify.resend') }}" class="btn btn-block btn-success">Resend Verification Code</a></p>
+                    </div>
+                    <div class="col-md-4">
                         <p><a href="{{ route('recover') }}" class="btn btn-block btn-danger">Recover access to an existing account</a></p>
                     </div>
                 </div>

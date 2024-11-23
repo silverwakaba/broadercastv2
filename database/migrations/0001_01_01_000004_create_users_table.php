@@ -12,6 +12,7 @@ return new class extends Migration{
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->foreignId('base_status_id')->references('id')->on('base_status');
+            $table->boolean('2fa')->default(false);
             $table->boolean('confirmed')->default(false);
             $table->string('identifier')->unique();
             $table->string('name')->nullable();

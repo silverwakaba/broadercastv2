@@ -29,18 +29,18 @@ use App\Http\Controllers\Front\ContentController as FrontContentController;
 use App\Http\Controllers\Front\CreatorController as FrontCreatorController;
 
 // Debug | Please comment before deployment to prods
-use App\Http\Controllers\Cron\TwitchCron;
-use App\Http\Controllers\Cron\YoutubeCron;
+// use App\Http\Controllers\Cron\TwitchCron;
+// use App\Http\Controllers\Cron\YoutubeCron;
 
 Route::group(['prefix' => '/'], function(){
     // Index
     Route::get('/', [FrontController::class, 'index'])->name('index');
 
     // Debug
-    Route::group(['prefix' => 'debug'], function(){
-        Route::get('twitch', [TwitchCron::class, 'fetchDebug']);
-        Route::get('youtube', [YoutubeCron::class, 'fetchDebug']);
-    });
+    // Route::group(['prefix' => 'debug'], function(){
+    //     Route::get('twitch', [TwitchCron::class, 'fetchDebug']);
+    //     Route::get('youtube', [YoutubeCron::class, 'fetchDebug']);
+    // });
 
     // Creator
     Route::group(['prefix' => 'creator'], function(){
@@ -54,10 +54,10 @@ Route::group(['prefix' => '/'], function(){
         // Claim
         Route::get('@{id}/claim', [FrontCreatorController::class, 'claim'])->name('creator.claim');
         Route::get('@{id}/claim-via/{ch}', [FrontCreatorController::class, 'claimVia'])->name('creator.claim.via');
-        Route::post('@{id}/claim-via/{ch}', [FrontCreatorController::class, 'claimViaPost']);//->middleware(['throttle:1,60']);
+        Route::post('@{id}/claim-via/{ch}', [FrontCreatorController::class, 'claimViaPost'])->middleware(['throttle:2,60']);
 
         // Follow and Unfollow - Update Relationship
-        Route::get('@{id}/rels', [FrontCreatorController::class, 'rels'])->name('creator.rels')->middleware(['auth']);
+        Route::get('@{id}/rels', [FrontCreatorController::class, 'rels'])->name('creator.rels')->middleware(['auth', 'throttle:100,60']);
 
         // Live
         Route::get('live', [FrontCreatorController::class, 'live'])->name('creator.live');
@@ -76,6 +76,7 @@ Route::group(['prefix' => '/'], function(){
         Route::post('setting', [FrontCreatorController::class, 'settingPost']);
     });
 
+    // Content
     Route::group(['prefix' => 'content'], function(){
         // Live
         Route::get('live', [FrontContentController::class, 'live'])->name('content.live');
@@ -92,9 +93,6 @@ Route::group(['prefix' => '/'], function(){
         // Setting
         Route::get('setting', [FrontContentController::class, 'setting'])->name('content.setting');
         Route::post('setting', [FrontContentController::class, 'settingPost']);
-
-        // Watch
-        Route::get('@{id}', [FrontContentController::class, 'watch'])->name('content.watch');
     });
 
     // Auth
@@ -109,18 +107,23 @@ Route::group(['prefix' => '/'], function(){
 
         // Recover
         Route::get('recover', [AuthController::class, 'recover'])->name('recover');
-        Route::post('recover', [AuthController::class, 'recoverPost']);//->middleware(['throttle:2,1']);
+        Route::post('recover', [AuthController::class, 'recoverPost'])->middleware(['throttle:2,1']);
 
         // Reset
         Route::get('reset', [AuthController::class, 'reset'])->name('reset')->withoutMiddleware(['guest']);
-        Route::post('reset', [AuthController::class, 'resetPost']);
+        Route::post('reset', [AuthController::class, 'resetPost'])->withoutMiddleware(['guest']);
 
         // Verify
-        Route::get('verify', [AuthController::class, 'verify'])->name('verify')->withoutMiddleware(['guest']);
+        Route::group(['prefix' => 'verify', 'excluded_middleware' => ['guest']], function(){
+            Route::get('/', [AuthController::class, 'verify'])->name('verify');
+
+            Route::get('resend', [AuthController::class, 'verifyResend'])->name('verify.resend');
+            Route::post('resend', [AuthController::class, 'verifyResendPost'])->middleware(['throttle:2,1']);
+        });
 
         // Claim
         Route::get('claim', [AuthController::class, 'claim'])->name('claim')->withoutMiddleware(['guest']);
-        Route::post('claim', [AuthController::class, 'claimPost']);
+        Route::post('claim', [AuthController::class, 'claimPost'])->withoutMiddleware(['guest']);
 
         // Logout
         Route::get('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware(['guest']);
@@ -166,6 +169,10 @@ Route::group(['prefix' => '/'], function(){
             Route::get('content', [ManagerUserController::class, 'content'])->name('apps.manager.content');
             Route::post('content', [ManagerUserController::class, 'contentPost']);
 
+            // Email
+            Route::get('email', [ManagerUserController::class, 'email'])->name('apps.manager.email');
+            Route::post('email', [ManagerUserController::class, 'emailPost']);
+
             // Gender
             Route::get('gender', [ManagerUserController::class, 'gender'])->name('apps.manager.gender');
             Route::post('gender', [ManagerUserController::class, 'genderPost']);
@@ -199,9 +206,15 @@ Route::group(['prefix' => '/'], function(){
                 Route::post('delete/{did}/confirm', [ManagerUserController::class, 'linkDeleteConfirmPost']);
             });
 
+            // Password
+
             // Persona
             Route::get('persona', [ManagerUserController::class, 'race'])->name('apps.manager.persona');
             Route::post('persona', [ManagerUserController::class, 'racePost']);
+
+            // Verify Email
+
+            // Verify Profile
         });
 
         // Master Data

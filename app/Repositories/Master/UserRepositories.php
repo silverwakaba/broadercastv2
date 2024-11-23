@@ -29,8 +29,8 @@ class UserRepositories{
             'base_status_id'    => 11,
             'confirmed'         => true,
             'identifier'        => BaseHelper::adler32(),
-            'email'             => Str::of(BaseHelper::adler32(password_hash(now(), PASSWORD_DEFAULT)))->append('@example.com'),
-            'password'          => password_hash(now(), PASSWORD_DEFAULT),
+            'email'             => BaseHelper::randomEmail(),
+            'password'          => BaseHelper::randomPassword(),
         ];
 
         $create = array_merge(

@@ -2,8 +2,7 @@
 
 namespace App\Mail;
 
-use App\Models\User;
-use App\Helpers\BaseHelper;
+use App\Models\UserRequest;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -37,13 +36,13 @@ class UserVerifyEmail extends Mailable{
      * Get the message content definition.
      */
     public function content() : Content{
-        $datas = User::select('email')->where('id', '=', $this->mId)->first();
+        $datas = UserRequest::select('token')->where('id', '=', $this->mId)->first();
 
         return new Content(
             view: 'mailer.verify',
             with: [
                 // 'datas' => $datas,
-                'email' => BaseHelper::encrypt($datas->email),
+                'token' => $datas->token,
             ],
         );
     }

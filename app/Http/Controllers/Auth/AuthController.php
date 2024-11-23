@@ -79,6 +79,17 @@ class AuthController extends Controller{
         ], 'apps.front.index');
     }
 
+    // Verify Resend
+    public function verifyResend(){
+        return view('pages/auth/resend-verify');
+    }
+
+    public function verifyResendPost(RecoverRequest $request){
+        return UserAuthRepositories::verifyResend([
+            'email' => $request->email,
+        ], 'login');
+    }
+
     // Claim
     public function claim(Request $request){
         $datas = UserAuthRepositories::getClaim([

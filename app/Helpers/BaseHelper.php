@@ -20,6 +20,46 @@ class BaseHelper{
         return hash("adler32", $value);
     }
 
+    public static function suffixEmail(){
+        $suffix = [
+            'blondmail.com',
+            'chapsmail.com',
+            'clowmail.com',
+            'dropjar.com',
+            'example.com',
+            'fivermail.com',
+            'getairmail.com',
+            'getmule.com',
+            'getnada.com',
+            'gimpmail.com',
+            'givmail.com',
+            'guysmail.com',
+            'inboxbear.com',
+            'replyloop.com',
+            'robot-mail.com',
+            'spicysoda.com',
+            'tafmail.com',
+            'temptami.com',
+            'tupmail.com',
+            'vomoto.com',
+        ];
+
+        return Arr::random($suffix);
+    }
+
+    public static function randomEmail(){
+        return Str::of(self::adler32(self::randomPassword()) . '@')->append(self::suffixEmail());
+    }
+
+    public static function randomPassword(){
+        $now = now();
+        $uuid = Str::uuid();
+        $ulid = Str::ulid();
+        $encrypt = Crypt::encryptString("$now $uuid $ulid");
+
+        return password_hash($encrypt, PASSWORD_DEFAULT);
+    }
+
     public static function analyzeDomain($url, $catch, $subTLD = false){
         if(Str::isUrl($url) == true){
             $url = Str::chopStart($url, ['http://', 'https://']);

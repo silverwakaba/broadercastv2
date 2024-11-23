@@ -27,53 +27,20 @@ class TwitchCron extends Controller{
 
     // Channel Initialization
     public function init(){
-        UserLinkTracker::where([
-            ['base_link_id', '=', 1],
-            ['initialized', '=', false],
-        ])->select('identifier', 'users_id')->chunk(100, function(Collection $chunks){
-            foreach($chunks as $chunk){
-                try{
-                    // Update Subscriber Count
-                    TwitchRepositories::updateSubscriber($chunk->identifier, $chunk->users_id);
-                }
-                catch(\Throwable $th){}
-            }
-        });
+        TwitchRepositories::updateSubscriber(false);
     }
 
     // Channel Activity Checker
     public function checker(){
-        UserLinkTracker::where([
-            ['base_link_id', '=', 1],
-            ['initialized', '=', true],
-        ])->select('identifier', 'handler', 'users_id')->chunk(100, function(Collection $chunks){
-            foreach($chunks as $chunk){
-                try{
-                    // Update Activity
-                    TwitchRepositories::fetchChannelActivity($chunk->handler, $chunk->identifier, $chunk->users_id);
-                }
-                catch(\Throwable $th){}
-            }
-        });
+        TwitchRepositories::checkChannelActivity();
+        
+        TwitchRepositories::updateChannelActivity();
     }
 
     // Profiler
     public function profiler(){
-        UserLinkTracker::where([
-            ['base_link_id', '=', 1],
-            ['initialized', '=', true],
-        ])->select('identifier', 'users_id')->chunk(100, function(Collection $chunks){
-            foreach($chunks as $chunk){
-                try{
-                    // Update Profile
-                    $id = (int) $chunk->identifier;
-                    TwitchRepositories::updateProfile($id, $chunk->users_id);
+        TwitchRepositories::updateProfile();
 
-                    // Update Subscriber
-                    TwitchRepositories::updateSubscriber($chunk->identifier, $chunk->users_id);
-                }
-                catch(\Throwable $th){}
-            }
-        });
+        TwitchRepositories::updateSubscriber(true);
     }
 }

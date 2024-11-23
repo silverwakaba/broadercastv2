@@ -22,6 +22,7 @@ class User extends Authenticatable{
      */
     protected $fillable = [
         'base_status_id',
+        '2fa',
         'confirmed',
         'identifier',
         'name',

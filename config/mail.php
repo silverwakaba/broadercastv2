@@ -35,7 +35,6 @@ return [
     */
 
     'mailers' => [
-
         'smtp' => [
             'transport' => 'smtp',
             'url' => env('MAIL_URL'),
@@ -46,16 +45,38 @@ return [
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN'),
+        ],
 
-            // 'stream' => [
-            //     'ssl' => [
-            //         'allow_self_signed' => true,
-            //         'verify_peer' => false,
-            //         'verify_peer_name' => false,
-            //     ],
-            // ],
+        // Mailer Default
+        'mailerdefault' => [
+            'transport'     => 'smtp',
+            'url'           => env('MAILER_DEFAULT_URL'),
+            'host'          => env('MAILER_DEFAULT_HOST', 'notify.spnd.uk'),
+            'port'          => env('MAILER_DEFAULT_PORT', 587),
+            'encryption'    => env('MAILER_DEFAULT_ENCRYPTION', 'tls'),
+            'username'      => env('MAILER_DEFAULT_USERNAME'),
+            'password'      => env('MAILER_DEFAULT_PASSWORD'),
+            'timeout'       => null,
+            'from'          => [
+                'name'      => env('MAILER_DEFAULT_NAME', 'vTual Mailer'),
+                'address'   => env('MAILER_DEFAULT_USERNAME'),
+            ],
+        ],
 
-            // 'verify_peer_name' => false,
+        // Mailer High Availability
+        'mailerha' => [
+            'transport'     => 'smtp',
+            'url'           => env('MAILER_HA_URL'),
+            'host'          => env('MAILER_HA_HOST', 'smtp-relay.brevo.com'),
+            'port'          => env('MAILER_HA_PORT', 587),
+            'encryption'    => env('MAILER_HA_ENCRYPTION', 'tls'),
+            'username'      => env('MAILER_HA_USERNAME'),
+            'password'      => env('MAILER_HA_PASSWORD'),
+            'timeout'       => null,
+            'from'          => [
+                'name'      => env('MAILER_HA_NAME', 'vTual Mailer HA'),
+                'address'   => env('MAILER_HA_ADDRESS'),
+            ],
         ],
 
         'ses' => [
@@ -91,7 +112,6 @@ return [
                 'log',
             ],
         ],
-
     ],
 
     /*

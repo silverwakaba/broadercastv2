@@ -5,6 +5,8 @@ namespace App\Repositories\Service;
 use App\Helpers\BaseHelper;
 use App\Helpers\RedirectHelper;
 
+use App\Mail\UserClaimEmail;
+
 use App\Models\BaseAPI;
 use App\Models\User;
 use App\Models\UserFeed;
@@ -16,8 +18,10 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Client\Pool;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 
 class TwitchRepositories{
     /**
@@ -28,22 +32,19 @@ class TwitchRepositories{
 
     // Update Twitch Bearer Token
     public static function updateBearerToken(){
-        $datas = BaseAPI::where('base_link_id', '=', '1')->select('client_id', 'client_secret', 'bearer')->get();
+        $data = BaseAPI::where([
+            ['base_link_id', '=', 1],
+            ['client_id', '=', '7rrc3ifer1dcw4178d5iylqt7k0yzs'],
+        ])->first();
 
-        foreach($datas AS $data){
-            $validate = TwitchAPIRepositories::validateToken($data->client_secret, $data->bearer);
+        $validate = TwitchAPIRepositories::validateToken($data->client_secret, $data->bearer);
 
-            if($validate['status'] !== 200){
-                $reauth = TwitchAPIRepositories::createToken($data->client_id, $data->client_secret);
+        if($validate['status'] !== 200){
+            $reauth = TwitchAPIRepositories::createToken($data->client_id, $data->client_secret);
 
-                BaseAPI::where([
-                    ['base_link_id', '=', '1'],
-                    ['client_id', '=', $data->client_id],
-                    ['client_secret', '=', $data->client_secret],
-                ])->update([
-                    'bearer' => $reauth['access_token'],
-                ]);
-            }
+            $data->update([
+                'bearer' => $reauth['access_token'],
+            ]);
         }
     }
 
@@ -95,37 +96,39 @@ class TwitchRepositories{
 
             if($checkViaChannel){
                 if($checkViaChannel == true){
-                    $checkChannel = Str::of($channelID)->afterLast('/');
+                    $channelIDS = Str::of($channelID)->afterLast('/');
                 }
                 else{
-                    $checkChannel = null;
+                    $channelIDS = null;
                 }
 
                 $linkID = BaseHelper::decrypt($id);
                 $userLink = UserLink::find($linkID);
-                $countChannel = self::userLinkTrackerChecker($checkChannel);
+                $countChannel = self::userLinkTrackerChecker($channelIDS);
                 $limitChannel = self::userLinkTrackerCounter($userLink->users_id);
 
-                if(($checkChannel !== null) && (Str::of($checkChannel)->length() <= 25)){
-                    $channeru = (string) $checkChannel;
-                    $http = TwitchAPIRepositories::fetchProfile($channeru);
+                if(($channelIDS !== null) && (Str::of($channelIDS)->length() <= 25)){
+                    $idLmao = (string) $channelIDS;
+                    $http = TwitchAPIRepositories::fetchProfileByHandler($idLmao);
 
                     if(count($http['data']) >= 1){
-                        foreach($http['data'] AS $data);
+                        $singleHttp = collect($http['data'])->first();
 
                         $createNew = [
                             'users_id'      => $userLink->users_id,
                             'users_link_id' => $linkID,
                             'base_link_id'  => $userLink->base_link_id,
-                            'identifier'    => $data['id'],
-                            'handler'       => $data['login'],
+                            'identifier'    => $singleHttp['id'],
+                            'handler'       => $singleHttp['login'],
                             'playlist'      => null,
-                            'name'          => $data['display_name'],
-                            'avatar'        => BaseHelper::getOnlyPath($data['profile_image_url'], '.net/'),
-                            'banner'        => ($data['offline_image_url'] != null) ? BaseHelper::getOnlyPath($data['offline_image_url'], '.net/') : null,
-                            'joined'        => Carbon::parse($data['created_at'])->timezone(config('app.timezone'))->toDateTimeString(),
+                            'name'          => $singleHttp['display_name'],
+                            'description'   => $singleHttp['description'],
+                            'avatar'        => self::userAvatarBanner($singleHttp['profile_image_url']),
+                            'banner'        => ($singleHttp['offline_image_url'] != null) ? self::userAvatarBanner($singleHttp['offline_image_url']) : null,
+                            'joined'        => Carbon::parse($singleHttp['created_at'])->timezone(config('app.timezone'))->toDateTimeString(),
                         ];
 
+                        // Admin and Moderator can Directly Mark Link Tracker as Verified
                         if((auth()->user()->hasRole('Admin|Moderator'))){
                             $userLink->update([
                                 'base_decision_id' => 2,
@@ -136,10 +139,12 @@ class TwitchRepositories{
                             // Redirect
                             return RedirectHelper::routeBack($back, 'success', 'Channel Verification', 'verify');
                         }
-                        else{
-                            $checkUnique = Str::contains($data['description'], $uniqueID);
 
-                            if($checkUnique == true){
+                        // But Normal User Need to Provide Unique ID and Then It Will Be Checked
+                        else{
+                            $checkUnique = Str::contains($singleHttp['description'], $uniqueID);
+
+                            if((isset($checkUnique) && $checkUnique == true)){
                                 if($limitChannel <= 1){
                                     $userLink->update([
                                         'base_decision_id' => 2,
@@ -158,6 +163,7 @@ class TwitchRepositories{
                                 return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. We were able to find your channel but we did not find your unique code.', 'error');
                             }
                         }
+
                     }
                     else{
                         return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. And it seems we can not find your channel.', 'error');
@@ -172,41 +178,59 @@ class TwitchRepositories{
             }
         }
         catch(\Throwable $th){
-            // redirect
-            return $th;
+            // Redirect Because This Is An Action
+            return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Because something went wrong, please try again.', 'error');
         }
     }
 
-    /**
-     * ----------------------------
-     * Fetch Data
-     * ----------------------------
-    **/
+    // Claim Account via Channel
+    public static function claimViaChannel($channelID, $uniqueID, $id, $email, $back = null){
+        try{
+            $idLmao = (int) $channelID;
+            $http = TwitchAPIRepositories::fetchProfileByID($idLmao);
 
-    // Fetch Profile
-    public static function fetchProfile($channelID){
-        // return self::apiCall('profile', $params);
-        return TwitchAPIRepositories::fetchProfile($channelID);
-    }
+            $httpCollection = collect($http['data'])->first();
 
-    // Fetch Subscriber
-    public static function fetchSubscriber($channelID){
-        return TwitchAPIRepositories::fetchSubscriber($channelID);
-    }
+            $checkUnique = Str::contains($httpCollection['description'], $uniqueID);
 
-    // Fetch Activity
-    public static function fetchChannel($channelID){
-        return TwitchAPIRepositories::fetchChannel($channelID);
-    }
+            if((isset($checkUnique) && $checkUnique == true)){
+                $user = UserLinkTracker::where('identifier', '=', $channelID)->select('users_id')->first();
 
-    // Fetch Stream via API
-    public static function fetchStream($channelID){
-        return TwitchAPIRepositories::fetchStream($channelID);
-    }
+                if($user){
+                    $request = $user->hasManyThroughUserRequest()->where([
+                        ['base_request_id', '=', 3],
+                        ['users_id', '=', $user->users_id],
+                        ['token', '!=', null],
+                    ])->first();
 
-    // Fetch Stream via API
-    public static function fetchVideo($videoID = null, $channelID = null, $streamID = null){
-        return TwitchAPIRepositories::fetchStream($channelID, $videoID, $streamID);
+                    if($request){
+                        $mId = $request->id;
+                    }
+                    else{
+                        $cmId = $user->hasManyThroughUserRequest()->create([
+                            'base_request_id'   => 3,
+                            'users_id'          => $user->users_id,
+                            'token'             => BaseHelper::adler32(),
+                        ]);
+        
+                        $mId = $cmId->id;
+                    }
+        
+                    Mail::mailer('mailerha')->to($email)->send(new UserClaimEmail($mId));
+        
+                    return RedirectHelper::routeBack($back, 'success', 'Claim', 'claim');
+                }
+                else{
+                    return RedirectHelper::routeBackWithErrors([
+                        'email' => "Something went wrong. Please try again.",
+                    ]);
+                }
+            }
+        }
+        catch(\Throwable $th){
+            throw $th;
+            return RedirectHelper::routeBack(null, 'danger', 'Profile Claim. Because something went wrong, please try again.', 'error');
+        }
     }
 
     /**
@@ -215,138 +239,236 @@ class TwitchRepositories{
      * ----------------------------
     **/
 
-    public static function updateProfile($channelID, $userID){
+    // Update Profile
+    public static function updateProfile(){
         try{
-            $http = self::fetchProfile($channelID);
+            UserLinkTracker::where([
+                ['base_link_id', '=', 1],
+                // ['initialized', '=', true],
+            ])->select('id', 'identifier', 'users_id')->chunkById(100, function(Collection $chunks){
+                $channelID = implode(',', ($chunks)->pluck('identifier')->toArray());
 
-            foreach($http['data'] as $data){
-                $tracker = new UserLinkTracker();
-                
-                $tracker->timestamps = false;
-                $tracker->where([
-                    ['users_id', '=', $userID],
-                    ['identifier', '=', $channelID],
-                    ['base_link_id', '=', 1],
-                ])->update([
-                    'name'      => $data['display_name'],
-                    'handler'   => $data['login'],
-                    'name'      => $data['display_name'],
-                    'avatar'    => BaseHelper::getOnlyPath($data['profile_image_url'], '.net/'),
-                    'banner'    => ($data['offline_image_url'] != null) ? BaseHelper::getOnlyPath($data['offline_image_url'], '.net/') : null,
-                ]);
-            }
+                if(($chunks) && isset($chunks) && ($chunks->count() >= 1)){
+                    $http = TwitchAPIRepositories::fetchProfileByID($channelID);
+                    $collectionHTTP = collect($http['data']);
+                    $resultHTTP = $collectionHTTP->all();
+
+                    if(($resultHTTP) && isset($resultHTTP) && (count($resultHTTP) >= 1)){
+                        foreach($resultHTTP as $channel){
+                            $tracker = new UserLinkTracker();
+                            
+                            $tracker->timestamps = false;
+                            $tracker->where([
+                                ['identifier', '=', $channel['id']],
+                                ['base_link_id', '=', 1]
+                            ])->update([
+                                'name'          => $channel['display_name'],
+                                'description'   => $channel['description'],
+                                'handler'       => $channel['login'],
+                                'avatar'        => self::userAvatarBanner($channel['profile_image_url']),
+                                'banner'        => ($channel['offline_image_url'] != null) ? self::userAvatarBanner($channel['offline_image_url']) : null,
+                            ]);
+                        }
+                    }
+                }
+            });
         }
         catch(\Throwable $th){
-            //return $th;
+            throw $th;
         }
     }
 
     // Update Subscriber
-    public static function updateSubscriber($channelID, $userID){
+    public static function updateSubscriber($initState){
         try{
-            $http = self::fetchSubscriber($channelID);
-
-            $tracker = new UserLinkTracker();
-                        
-            $tracker->timestamps = false;
-            $tracker->where([
-                ['users_id', '=', $userID],
-                ['identifier', '=', $channelID],
+            UserLinkTracker::where([
                 ['base_link_id', '=', 1],
-            ])->update([
-                'initialized'   => true,
-                'subscriber'    => isset($http['total']) ? $http['total'] : 0,
-            ]);
-        }
-        catch(\Throwable $th){
-            //return $th;
-        }
-    }
+                ['initialized', '=', $initState],
+            ])->select('id', 'initialized', 'identifier', 'users_id')->chunkById(100, function(Collection $chunks){
+                foreach($chunks as $chunk){
+                    $http = TwitchAPIRepositories::fetchSubscriber($chunk->identifier);
 
-    // Fetch and Update Channel Activity, such as streaming activity
-    public static function fetchChannelActivity($channelIDStr, $channelIDInt, $userID){
-        try{
-            $http = Http::get('https://www.twitch.tv/' . $channelIDStr)->body();
+                    $update = [
+                        'subscriber' => $http['total'],
+                    ];
 
-            $live = Str::betweenFirst($http, ',"isLiveBroadcast":', '}}');
-            $title = Str::betweenFirst($http, '"description":"', '",');
-            $tracker = self::userLinkTracker($channelIDInt, $userID);
-
-            if((Str::of($live)->contains(['true'])) && (Str::length($title) <= 140)){
-                $stream = self::fetchStream($channelIDInt);
-
-                if(isset($stream) && count($stream['data']) >= 1){
-                    foreach($stream['data'] as $data){
-                        UserFeed::updateOrCreate(['identifier' => $data['id']], [
-                            'users_id'              => $userID,
-                            'base_link_id'          => 1,
-                            'users_link_tracker_id' => $tracker->id,
-                            'base_status_id'        => 8,
-                            'base_feed_type_id'     => null,
-                            'concurrent'            => $data['viewer_count'],
-                            'identifier'            => $data['id'],
-                            'thumbnail'             => null,
-                            'title'                 => $data['title'],
-                            'published'             => Carbon::parse($data['started_at'])->timezone(config('app.timezone'))->toDateTimeString(),
-                            'schedule'              => null,
-                            'actual_start'          => Carbon::parse($data['started_at'])->timezone(config('app.timezone'))->toDateTimeString(),
-                            'actual_end'            => null,
-                            'duration'              => "P0D",
-                        ]);
+                    if(($chunk->initialized == false)){
+                        $update['initialized'] = true;
                     }
-                }
-                else{
-                    $live = self::userFeedLive($tracker->id, $tracker->users_id);
 
-                    foreach($live as $check){
-                        self::wrapChannelActivity($channelIDInt, $check->identifier);
-                    }
+                    $chunk->update($update);
                 }
-            }
-            else{
-                $live = self::userFeedLive($tracker->id, $tracker->users_id);
-
-                foreach($live as $check){
-                    self::wrapChannelActivity($channelIDInt, $check->identifier);
-                }
-            }
+            });
         }
         catch(\Throwable $th){
             // return $th;
         }
     }
 
-    // Wrap finished streaming
-    public static function wrapChannelActivity($channelID, $streamID){
+    // Check and Update Channel Activity | Tahap optimasi, opsional menggunakan Proxy
+    public static function checkChannelActivity(){
         try{
-            $feed = UserFeed::where([
-                ['identifier', '=', $streamID],
-                ['base_status_id', '=', 8],
-            ])->first();
+            $activeFeed = UserFeed::select('reference')->whereIn('base_status_id', ['6', '8'])->get();
+            $activeFeedCollection = collect($activeFeed)->pluck('reference')->all();
+            
+            UserLinkTracker::where([
+                ['base_link_id', '=', 1],
+                ['initialized', '=', true],
+            ])->whereNotIn('identifier', $activeFeedCollection)->select('id', 'identifier', 'handler', 'users_id')->chunkById(100, function(Collection $chunks){
+                foreach($chunks as $channel){
+                    $http = Http::get('https://www.twitch.tv/' . $channel->handler)->body();
 
-            if(isset($feed) && ($feed->base_status_id == 8)){
-                $http = self::fetchVideo(null, $channelID, $streamID);
+                    $live = Str::betweenFirst($http, ',"isLiveBroadcast":', '}}');
+                    $title = Str::betweenFirst($http, '"description":"', '",');
 
-                if(Str::contains($http['thumbnail_url'], '/_404/404_processing_%{width}x%{height}.png') == false){
-                    $feed->update([
-                        'base_status_id'    => 9,
-                        'concurrent'        => 0,
-                        'identifier'        => $http['id'],
-                        'thumbnail'         => Str::replace('%{width}x%{height}', '1280x720', BaseHelper::getOnlyPath($http['thumbnail_url'], '.net/')),
-                        'title'             => $http['title'],
-                        'duration'          => Str::of('PT')->append(Str::of($http['duration'])->upper()),
-                    ]);
+                    if((Str::of($live)->contains(['true'])) && (Str::length($title) <= 140)){
+                        $tmpID = $channel->identifier;
+                        $tracker = self::userLinkTracker($channel->identifier, $channel->users_id);
 
-                    if((isset($http['created_at'])) && (Carbon::parse($http['created_at'])->timezone(config('app.timezone'))->toDateTimeString() >= $feed->belongsToUserLinkTracker()->select('updated_at')->first()->updated_at)){
-                        $feed->belongsToUserLinkTracker()->update([
-                            'updated_at' => Carbon::parse($http['created_at'])->timezone(config('app.timezone'))->toDateTimeString(),
-                        ]);
+                        $checkPlaceholder = $tracker->hasManyThroughUserFeed()->where([
+                            ['users_feed.users_id', '=', $channel->users_id],
+                            ['users_feed.base_link_id', '=', 1],
+                        ])->whereIn('users_feed.base_status_id', ['6', '8'])->get();
+
+                        if(isset($checkPlaceholder) && count($checkPlaceholder) == 0){
+                            $tracker->hasManyThroughUserFeed()->updateOrCreate(['users_feed.identifier' => $tmpID], [
+                                'users_id'              => $channel->users_id,
+                                'base_link_id'          => 1,
+                                'users_link_tracker_id' => $channel->id,
+                                'base_status_id'        => 6,
+                                'base_feed_type_id'     => null,
+                                'concurrent'            => 0,
+                                'identifier'            => BaseHelper::adler32($tmpID),
+                                'thumbnail'             => null,
+                                'title'                 => $title,
+                                'published'             => Carbon::now()->timezone(config('app.timezone'))->toDateTimeString(),
+                                'schedule'              => null,
+                                'actual_start'          => Carbon::now()->timezone(config('app.timezone'))->toDateTimeString(),
+                                'actual_end'            => null,
+                                'duration'              => "P0D",
+                                'reference'             => $tmpID,
+                            ]);
+                        }
                     }
                 }
-            }
+            });
         }
         catch(\Throwable $th){
-            // return $th;
+            throw $th;
         }
+    }
+
+    // Update Channel Activity | Tahap optimasi
+    public static function updateChannelActivity(){
+        try{
+            UserFeed::with([
+                'belongsToUserLinkTracker'
+            ])->where([
+                ['base_link_id', '=', 1],
+                ['actual_end', '=', null],
+                ['duration', '=', "P0D"],
+            ])->whereIn('base_status_id', ['6', '8'])->select('id', 'identifier', 'users_id', 'base_status_id', 'users_link_tracker_id', 'reference')->chunkById(100, function(Collection $chunks) use(&$combinedData){
+                foreach($chunks as $feed){
+                    $combinedData[] = [
+                        'status'            => $feed->base_status_id,
+                        'user_id'           => $feed->users_id,
+                        'user_handler'      => $feed->belongsToUserLinkTracker->handler,
+                        'user_identifier'   => $feed->belongsToUserLinkTracker->identifier,
+                        'videos_id'         => $feed->identifier,
+                        'videos_reference'  => $feed->reference,
+                    ];
+                }
+
+                // Data From Database
+                $dbCollection = collect($combinedData)->pluck('videos_reference')->all();
+                $channelIDFromDatabase = implode(',', $dbCollection);
+
+                // Do an Action if Data is Present
+                if(($dbCollection) && isset($dbCollection) && (count($dbCollection) >= 1)){
+                    // API Call
+                    $fetchStream = TwitchAPIRepositories::fetchStream($channelIDFromDatabase);
+                    $fetchStreamCollection = collect($fetchStream['data'])->all();
+
+                    // List of Twitch Streamers Who Are Currently Streaming Based On Twitch
+                    $channelIsStreamingOnTwitch = collect($fetchStreamCollection)->pluck('user_id')->all();
+                    $channelIsStreamingOnTwitchCollection = implode(',', ($channelIsStreamingOnTwitch));
+
+                    // Inactive Streamer
+                    $inactiveStream = array_diff(
+                        $dbCollection, $channelIsStreamingOnTwitch
+                    );
+
+                    // Active Streamer
+                    $activeStream = array_diff(
+                        $dbCollection, $inactiveStream
+                    );
+
+                    // Processing Live Streaming
+                    $activeStreamCollection = collect($fetchStreamCollection)->whereIn('user_id', $activeStream)->all();
+
+                    if(($activeStreamCollection) && isset($activeStreamCollection) && (count($activeStreamCollection) >= 1)){
+                        foreach($activeStreamCollection as $stream){
+                            $userFeedStreaming = UserFeed::where([
+                                ['reference', '=', $stream['user_id']],
+                            ])->first();
+
+                            $userFeedStreaming->update([
+                                'base_status_id'    => 8,
+                                'identifier'        => $stream['id'],
+                                'concurrent'        => $stream['viewer_count'],
+                                'title'             => $stream['title'],
+                                'published'         => Carbon::parse($stream['started_at'])->timezone(config('app.timezone'))->toDateTimeString(),
+                                'actual_start'      => Carbon::parse($stream['started_at'])->timezone(config('app.timezone'))->toDateTimeString(),
+                            ]);
+                        }
+                    }
+
+                    // Processing Offline Live Streaming
+                    $inactiveStreamCollection = collect($combinedData)->whereIn('videos_reference', $inactiveStream)->all();
+
+                    if(($inactiveStreamCollection) && isset($inactiveStreamCollection) && (count($inactiveStreamCollection) >= 1)){
+                        foreach($inactiveStreamCollection as $archive){
+                            $fetchVideo = TwitchAPIRepositories::fetchVideo($archive['user_identifier'], null, $archive['videos_id']);
+
+                            $userFeedArchive = UserFeed::where([
+                                ['reference', '=', $archive['videos_reference']],
+                            ])->first();
+
+                            if(($userFeedArchive->base_status_id == 8)){
+                                $userFeedArchive->update([
+                                    'base_status_id'    => 9,
+                                    'identifier'        => $fetchVideo['id'],
+                                    'concurrent'        => 0,
+                                    'thumbnail'         => self::userAvatarBanner(Str::replace('%{width}x%{height}', '1280x720', $fetchVideo['thumbnail_url'])),
+                                    'title'             => $fetchVideo['title'],
+                                    'description'       => $fetchVideo['description'],
+                                    'published'         => Carbon::parse($fetchVideo['created_at'])->timezone(config('app.timezone'))->toDateTimeString(),
+                                    'actual_start'      => Carbon::parse($fetchVideo['created_at'])->timezone(config('app.timezone'))->toDateTimeString(),
+                                    'duration'          => Str::of('PT')->append(Str::of($fetchVideo['duration'])->upper()),
+                                    'reference'         => null,
+                                ]);
+                            }
+                            else{
+                                $userFeedArchive->delete();
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        catch(\Throwable $th){
+            throw $th;
+        }
+    }
+
+    /**
+     * ------------------------------
+     * Get & process part of the data
+     * ------------------------------
+    **/
+
+    // User Banner
+    public static function userAvatarBanner($datas){
+        return (isset($datas) && ($datas != null)) ? BaseHelper::getOnlyPath($datas, BaseHelper::analyzeDomain($datas, 'extension')) : null;
     }
 }

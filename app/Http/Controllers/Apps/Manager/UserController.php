@@ -49,7 +49,7 @@ class UserController extends Controller{
 
     // Biodata
     public function biodata(){
-        $datas = UserProfileRepositories::getProfile([
+        return $datas = UserProfileRepositories::getProfile([
             'id'    => auth()->user()->id,
             'with'  => ['hasOneUserBiodata'],
         ], false);
@@ -91,6 +91,15 @@ class UserController extends Controller{
             'id'    => auth()->user()->id,
             'data'  => $request->content,
         ]);
+    }
+
+    // Email
+    public function email(){
+        return auth()->user()->email;
+    }
+
+    public function emailPost(Request $request){
+        // 
     }
 
     // Gender
@@ -205,7 +214,6 @@ class UserController extends Controller{
         elseif($datas->belongsToBaseLink->name == 'YouTube'){
             $structure = [
                 'https://www.youtube.com/@wakaba69',
-                // 'https://www.youtube.com/c/channelID',
                 'https://www.youtube.com/channel/UCIRQxP7jORi6jsLt0HmUmqQ',
             ];
         }
