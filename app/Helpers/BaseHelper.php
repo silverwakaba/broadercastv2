@@ -101,43 +101,26 @@ class BaseHelper{
 
     public static function socks5Proxy(){
         $proxy = Arr::shuffle([
-            'socks5://ipv4.id.1.spn.my.id:12053',
-            // 'socks5://ipv4.de.2.spn.my.id:12053',
+            // DeluxHost - DE
+            'socks5://85.208.9.45:12053',
+            'socks5://85.208.9.143:12053',
         ]);
 
-        // Get first array
         return $proxy[0];
     }
 
     public static function getOnlyPath($url, $after){
         return Str::of($url)->after($after . '/');
-
-        // Old, unreliable code
-        // $datas = Str::contains($url, [
-        //     // Youtube Avatar and Banner
-        //     'https://yt3.ggpht.com', 'https://yt3.googleusercontent.com', 'https://lh3.googleusercontent.com',
-            
-        //     // Youtube Thumbnail
-        //     'https://i.ytimg.com',
-
-        //     // Twitch All-Static
-        //     'https://static-cdn.jtvnw.net'
-        // ]);
-
-        // if(($datas == true)){
-        //     return Str::of($url)->after($after . '/');
-        // }
-        // else{
-        //     return $url;
-        // }
     }
 
     public static function httpProxy($url, $query = null, $option = null){
         /**
-         * -------------------------------------------------------------------------------------------------------------
-         * Not being used anymore, since it's definitely incure request costs. But the code is kept for future reference
-         * -------------------------------------------------------------------------------------------------------------
+         * --------------------------------------------------------------------------------------------------------
+         * Not being used anymore, since it's incure a lot of request costs. The code is kept for future reference.
+         * --------------------------------------------------------------------------------------------------------
         **/
+
+        return null;
 
         if(Str::of($url)->isUrl() == true){
             // 30 secs timeout

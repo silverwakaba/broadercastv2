@@ -54,8 +54,8 @@ return [
             'host'          => env('MAILER_DEFAULT_HOST', 'notify.spnd.uk'),
             'port'          => env('MAILER_DEFAULT_PORT', 587),
             'encryption'    => env('MAILER_DEFAULT_ENCRYPTION', 'tls'),
-            'username'      => env('MAILER_DEFAULT_USERNAME'),
-            'password'      => env('MAILER_DEFAULT_PASSWORD'),
+            'username'      => env('MAILER_DEFAULT_USERNAME', null),
+            'password'      => env('MAILER_DEFAULT_PASSWORD', null),
             'timeout'       => null,
             'from'          => [
                 'name'      => env('MAILER_DEFAULT_NAME', 'vTual Mailer'),

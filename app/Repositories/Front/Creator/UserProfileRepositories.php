@@ -234,14 +234,14 @@ class UserProfileRepositories{
         if(
             (isset($data['option']['orderType']))
             &&
-            (Str::contains($data['option']['orderType'], ['live', 'archive']))
+            (Str::contains($data['option']['orderType'], ['live', 'archive'])) // Live, Archive
         ){
             $datas->orderBy('actual_start', CookiesRepositories::actualStart());
         }
         elseif(
             (isset($data['option']['orderType']))
             &&
-            (Str::contains($data['option']['orderType'], ['schedule']))
+            (Str::contains($data['option']['orderType'], ['schedule'])) // Schedule
         ){
             $datas->orderBy('schedule', CookiesRepositories::schedule());
 
@@ -252,7 +252,7 @@ class UserProfileRepositories{
         elseif(
             (isset($data['option']['orderType']))
             &&
-            (Str::contains($data['option']['orderType'], ['all']))
+            (Str::contains($data['option']['orderType'], ['all'])) // All
         ){
             $datas->orderByRaw("CASE WHEN schedule IS NULL THEN 0 ELSE 1 END DESC")->orderBy('schedule', 'DESC')->orderBy('actual_start', 'DESC')->orderBy('published', 'DESC');
         }

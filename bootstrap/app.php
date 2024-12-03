@@ -10,14 +10,18 @@ return Application::configure(basePath: dirname(__DIR__))
         api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
         channels: __DIR__.'/../routes/channels.php',
-        health: '/mentalhealth',
+        health: '/mental-health',
     )
     ->withMiddleware(function(Middleware $middleware){
         // Alias Middleware
         $middleware->alias([
+            // Role-related
             'role'                  => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission'            => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission'    => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+
+            // Checker
+            'link_signature'        => \App\Http\Middleware\LinkSignature::class,
         ]);
     })
     ->withExceptions(function(Exceptions $exceptions){

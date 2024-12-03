@@ -9,6 +9,10 @@ use App\Repositories\Front\Creator\UserProfileRepositories;
 use Illuminate\Http\Request;
 
 class FrontController extends Controller{
+    public function fetchDebug(){
+        return "Hi";
+    }
+
     // Index
     public function index(){
         // Live

@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Queue\SerializesModels;
 
 // implements ShouldQueue
@@ -41,8 +42,9 @@ class UserClaimEmail extends Mailable{
         return new Content(
             view: 'mailer.account-claim',
             with: [
-                // 'datas' => $datas,
-                'token' => $datas->token,
+                'routeTo' => URL::temporarySignedRoute(
+                    'claim', now()->addMinutes(30), ['id' => $datas->token]
+                ),
             ],
         );
     }

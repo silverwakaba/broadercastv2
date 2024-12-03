@@ -100,7 +100,8 @@ class YoutubeAPIRepositories{
             // Via Private Lemnos Scraper
             elseif(($apiKey == 'scraperLL')){
                 $endpoint = [
-                    '1st' => 'https://yts.spn.my.id/',
+                    // '1st' => 'https://yts.spn.my.id/',
+                    '1st' => 'https://yts-shared.spn.my.id/',
                 ];
 
                 $responses = Http::pool(fn (Pool $pool) => [

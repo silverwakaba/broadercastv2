@@ -17,9 +17,13 @@
                     <li>
                         <span>We will assume that you are the owner or representative of this <strong><u>"{{ $profile->name }}"</u></strong> user account that has full access to manage the following channels:</span>
                         <ul>
-                            @foreach($tracker->data as $channel)
-                                <li>{{ $channel->name }} (on <a href="{{ $channel->channel->link }}" target="_blank">{{ $channel->link->name }}</a>)</li>
-                            @endforeach
+                            @if(($tracker->data) && (count($tracker->data) >= 1))
+                                @foreach($tracker->data as $channel)
+                                    <li>{{ $channel->name }} (on <a href="{{ $channel->channel->link }}" target="_blank">{{ $channel->link->name }}</a>)</li>
+                                @endforeach
+                            @else
+                                <li>No Channels Found</li>
+                            @endif
                         </ul>
                         <span>If you are not, then please stop here!</span>
                     </li>
@@ -51,9 +55,13 @@
                     <li>
                         <span>You can make a claim through one of the channels below:</span>
                         <ul>
-                            @foreach($tracker->data as $channel)
+                            @if(($tracker->data) && (count($tracker->data) >= 1))
+                                @foreach($tracker->data as $channel)
                                 <li>{{ $channel->name }} (on <a href="{{ $channel->channel->link }}" target="_blank">{{ $channel->link->name }}</a>) | <a href="{{ route('creator.claim.via', ['id' => $profile->identifier, 'ch' => $channel->identifier]) }}" target="_blank">Click here to make a claim through this channel</a></li>
-                            @endforeach
+                                @endforeach
+                            @else
+                                <li>No Channels Found</li>
+                            @endif
                         </ul>
                         <span>Simply select one channel to be used as the basis for the final decision.</span>
                     </li>

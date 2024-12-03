@@ -23,9 +23,6 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 
-//
-use Illuminate\Support\Facades\Log;
-
 class YoutubeRepositories{
     /**
      * ----------------------------
@@ -39,6 +36,7 @@ class YoutubeRepositories{
             ['base_link_id', '=', 2],
             ['users_id', '=', $userID],
             ['identifier', '=', $channelID],
+            ['archived', '=', false],
         ]);
 
         if(isset($initialized)){
@@ -91,10 +89,10 @@ class YoutubeRepositories{
             $checkViaHandler = Str::contains($channelID, "https://www.youtube.com/@");
 
             if($checkViaChannel || $checkViaCID || $checkViaHandler){
-                if($checkViaChannel == true){ // <<< Ok
+                if($checkViaChannel == true){
                     $channelIDS = Str::of($channelID)->afterLast('/');
                 }
-                elseif($checkViaCID == true){ // <<< Ok
+                elseif($checkViaCID == true){
                     $channelHandler = Str::of($channelID)->afterLast('/c/');
 
                     $scrapeChannel = YoutubeAPIRepositories::scrapeLLChannels('/c/' . $channelHandler);
@@ -108,7 +106,7 @@ class YoutubeRepositories{
                         $channelIDS = null;
                     }
                 }
-                elseif($checkViaHandler == true){ // <<< Ok
+                elseif($checkViaHandler == true){
                     $channelHandler = Str::of($channelID)->afterLast('@');
 
                     $scrapeChannel = YoutubeAPIRepositories::scrapeLLChannels('@' . $channelHandler);
@@ -122,7 +120,7 @@ class YoutubeRepositories{
                         $channelIDS = null;
                     }
                 }
-                else{ // <<< Ok
+                else{
                     $channelIDS = null;
                 }
 
@@ -184,14 +182,19 @@ class YoutubeRepositories{
                         // But Normal User Need to Provide Unique ID and Then It Will Be Checked
                         else{
                             if((isset($checkUnique) && $checkUnique == true)){
-                                $userLink->update([
-                                    'base_decision_id' => 2,
-                                ]);
-        
-                                $userLink->hasOneUserLinkTracker()->create($createNew);
-        
-                                // Redirect
-                                return RedirectHelper::routeBack($back, 'success', 'Channel Verification', 'verify');
+                                if($limitChannel <= 1){
+                                    $userLink->update([
+                                        'base_decision_id' => 2,
+                                    ]);
+            
+                                    $userLink->hasOneUserLinkTracker()->create($createNew);
+            
+                                    // Redirect
+                                    return RedirectHelper::routeBack($back, 'success', 'Channel Verification', 'verify');
+                                }
+                                else{
+                                    return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Because currently we only allow one YouTube tracker per creator, thus we have to cancel this verification process.', 'error');
+                                }
                             }
                             else{
                                 return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. We were able to find your channel but we did not find your unique code.', 'error');
@@ -332,7 +335,6 @@ class YoutubeRepositories{
             }
         }
         catch(\Throwable $th){
-            // Log::error($th);
             // return $th;
         }
     }
@@ -352,6 +354,7 @@ class YoutubeRepositories{
             UserLinkTracker::where([
                 ['base_link_id', '=', 2],
                 ['initialized', '=', true],
+                ['archived', '=', false],
             ])->select('id', 'identifier', 'users_id', 'base_link_id')->chunkById(100, function(Collection $chunks){
                 foreach($chunks as $chunk){
                     // Get Existed Video ID From Internal Database

@@ -41,7 +41,6 @@ class UserVerifyEmail extends Mailable{
         return new Content(
             view: 'mailer.verify',
             with: [
-                // 'datas' => $datas,
                 'token' => $datas->token,
             ],
         );

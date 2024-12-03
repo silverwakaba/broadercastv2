@@ -30,17 +30,18 @@ use App\Http\Controllers\Front\CreatorController as FrontCreatorController;
 
 // Debug | Please comment before deployment to prods
 // use App\Http\Controllers\Cron\TwitchCron;
-// use App\Http\Controllers\Cron\YoutubeCron;
+use App\Http\Controllers\Cron\YoutubeCron;
 
 Route::group(['prefix' => '/'], function(){
     // Index
     Route::get('/', [FrontController::class, 'index'])->name('index');
 
     // Debug
-    // Route::group(['prefix' => 'debug'], function(){
-    //     Route::get('twitch', [TwitchCron::class, 'fetchDebug']);
-    //     Route::get('youtube', [YoutubeCron::class, 'fetchDebug']);
-    // });
+    Route::group(['prefix' => 'debug'], function(){
+        // Route::get('general', [FrontController::class, 'fetchDebug']);
+        // Route::get('twitch', [TwitchCron::class, 'fetchDebug']);
+        Route::get('youtube', [YoutubeCron::class, 'fetchDebug']);
+    });
 
     // Creator
     Route::group(['prefix' => 'creator'], function(){
@@ -110,7 +111,7 @@ Route::group(['prefix' => '/'], function(){
         Route::post('recover', [AuthController::class, 'recoverPost'])->middleware(['throttle:2,1']);
 
         // Reset
-        Route::get('reset', [AuthController::class, 'reset'])->name('reset')->withoutMiddleware(['guest']);
+        Route::get('reset', [AuthController::class, 'reset'])->name('reset')->middleware(['signed'])->withoutMiddleware(['guest']);
         Route::post('reset', [AuthController::class, 'resetPost'])->withoutMiddleware(['guest']);
 
         // Verify
@@ -169,7 +170,7 @@ Route::group(['prefix' => '/'], function(){
             Route::get('content', [ManagerUserController::class, 'content'])->name('apps.manager.content');
             Route::post('content', [ManagerUserController::class, 'contentPost']);
 
-            // Email
+            // Email - Belum Selesai
             Route::get('email', [ManagerUserController::class, 'email'])->name('apps.manager.email');
             Route::post('email', [ManagerUserController::class, 'emailPost']);
 
@@ -207,14 +208,12 @@ Route::group(['prefix' => '/'], function(){
             });
 
             // Password
+            // Route::get('password', [ManagerUserController::class, 'email'])->name('apps.manager.password');
+            // Route::post('password', [ManagerUserController::class, 'emailPost']);
 
             // Persona
             Route::get('persona', [ManagerUserController::class, 'race'])->name('apps.manager.persona');
             Route::post('persona', [ManagerUserController::class, 'racePost']);
-
-            // Verify Email
-
-            // Verify Profile
         });
 
         // Master Data

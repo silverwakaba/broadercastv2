@@ -59,8 +59,6 @@ class TwitchAPIRepositories{
         $newClientSecret = isset($client_secret) ? $client_secret : null;
         $newBearerToken = isset($bearer) ? $bearer : null;
 
-        // return $data;
-
         try{
             // Endpoint
             if((Str::contains($function, ['oauth2']) == true)){
@@ -87,11 +85,7 @@ class TwitchAPIRepositories{
                 return array_merge(['status' => $http->status()], $http->json());
             }
             else{
-
-                return $http->json();
-
-                // Repeat and shine
-                // return self::apiRecall($data, $function, $newClientID, $newClientSecret, $newBearerToken);
+                return self::apiRecall($data, $function, $newClientID, $newClientSecret, $newBearerToken);
             }
         }
         catch(\Throwable $th){

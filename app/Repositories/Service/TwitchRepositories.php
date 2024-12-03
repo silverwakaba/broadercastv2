@@ -108,65 +108,70 @@ class TwitchRepositories{
                 $limitChannel = self::userLinkTrackerCounter($userLink->users_id);
 
                 if(($channelIDS !== null) && (Str::of($channelIDS)->length() <= 25)){
-                    $idLmao = (string) $channelIDS;
-                    $http = TwitchAPIRepositories::fetchProfileByHandler($idLmao);
+                    if($countChannel == 0){
+                        $idLmao = (string) $channelIDS;
+                        $http = TwitchAPIRepositories::fetchProfileByHandler($idLmao);
 
-                    if(count($http['data']) >= 1){
-                        $singleHttp = collect($http['data'])->first();
+                        if(count($http['data']) >= 1){
+                            $singleHttp = collect($http['data'])->first();
 
-                        $createNew = [
-                            'users_id'      => $userLink->users_id,
-                            'users_link_id' => $linkID,
-                            'base_link_id'  => $userLink->base_link_id,
-                            'identifier'    => $singleHttp['id'],
-                            'handler'       => $singleHttp['login'],
-                            'playlist'      => null,
-                            'name'          => $singleHttp['display_name'],
-                            'description'   => $singleHttp['description'],
-                            'avatar'        => self::userAvatarBanner($singleHttp['profile_image_url']),
-                            'banner'        => ($singleHttp['offline_image_url'] != null) ? self::userAvatarBanner($singleHttp['offline_image_url']) : null,
-                            'joined'        => Carbon::parse($singleHttp['created_at'])->timezone(config('app.timezone'))->toDateTimeString(),
-                        ];
+                            $createNew = [
+                                'users_id'      => $userLink->users_id,
+                                'users_link_id' => $linkID,
+                                'base_link_id'  => $userLink->base_link_id,
+                                'identifier'    => $singleHttp['id'],
+                                'handler'       => $singleHttp['login'],
+                                'playlist'      => null,
+                                'name'          => $singleHttp['display_name'],
+                                'description'   => $singleHttp['description'],
+                                'avatar'        => self::userAvatarBanner($singleHttp['profile_image_url']),
+                                'banner'        => ($singleHttp['offline_image_url'] != null) ? self::userAvatarBanner($singleHttp['offline_image_url']) : null,
+                                'joined'        => Carbon::parse($singleHttp['created_at'])->timezone(config('app.timezone'))->toDateTimeString(),
+                            ];
 
-                        // Admin and Moderator can Directly Mark Link Tracker as Verified
-                        if((auth()->user()->hasRole('Admin|Moderator'))){
-                            $userLink->update([
-                                'base_decision_id' => 2,
-                            ]);
-                            
-                            $userLink->hasOneUserLinkTracker()->create($createNew);
+                            // Admin and Moderator can Directly Mark Link Tracker as Verified
+                            if((auth()->user()->hasRole('Admin|Moderator'))){
+                                $userLink->update([
+                                    'base_decision_id' => 2,
+                                ]);
+                                
+                                $userLink->hasOneUserLinkTracker()->create($createNew);
 
-                            // Redirect
-                            return RedirectHelper::routeBack($back, 'success', 'Channel Verification', 'verify');
-                        }
+                                // Redirect
+                                return RedirectHelper::routeBack($back, 'success', 'Channel Verification', 'verify');
+                            }
 
-                        // But Normal User Need to Provide Unique ID and Then It Will Be Checked
-                        else{
-                            $checkUnique = Str::contains($singleHttp['description'], $uniqueID);
+                            // But Normal User Need to Provide Unique ID and Then It Will Be Checked
+                            else{
+                                $checkUnique = Str::contains($singleHttp['description'], $uniqueID);
 
-                            if((isset($checkUnique) && $checkUnique == true)){
-                                if($limitChannel <= 1){
-                                    $userLink->update([
-                                        'base_decision_id' => 2,
-                                    ]);
+                                if((isset($checkUnique) && $checkUnique == true)){
+                                    if($limitChannel <= 1){
+                                        $userLink->update([
+                                            'base_decision_id' => 2,
+                                        ]);
 
-                                    $userLink->hasOneUserLinkTracker()->create($createNew);
-        
-                                    // Redirect
-                                    return RedirectHelper::routeBack($back, 'success', 'Channel Verification', 'verify');
+                                        $userLink->hasOneUserLinkTracker()->create($createNew);
+            
+                                        // Redirect
+                                        return RedirectHelper::routeBack($back, 'success', 'Channel Verification', 'verify');
+                                    }
+                                    else{
+                                        return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Because currently we only allow one YouTube tracker per creator, thus we have to cancel this verification process.', 'error');
+                                    }
                                 }
                                 else{
-                                    return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Because currently we only allow one YouTube tracker per creator, thus we have to cancel this verification process.', 'error');
+                                    return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. We were able to find your channel but we did not find your unique code.', 'error');
                                 }
                             }
-                            else{
-                                return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. We were able to find your channel but we did not find your unique code.', 'error');
-                            }
-                        }
 
+                        }
+                        else{
+                            return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. And it seems we can not find your channel.', 'error');
+                        }
                     }
                     else{
-                        return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. And it seems we can not find your channel.', 'error');
+                        return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Because we found that this channel has been successfully verified by other users, thus we have to cancel this verification process.', 'error');
                     }
                 }
                 else{
@@ -244,7 +249,8 @@ class TwitchRepositories{
         try{
             UserLinkTracker::where([
                 ['base_link_id', '=', 1],
-                // ['initialized', '=', true],
+                ['initialized', '=', true],
+                ['archived', '=', false],
             ])->select('id', 'identifier', 'users_id')->chunkById(100, function(Collection $chunks){
                 $channelID = implode(',', ($chunks)->pluck('identifier')->toArray());
 
@@ -284,6 +290,7 @@ class TwitchRepositories{
             UserLinkTracker::where([
                 ['base_link_id', '=', 1],
                 ['initialized', '=', $initState],
+                ['archived', '=', false],
             ])->select('id', 'initialized', 'identifier', 'users_id')->chunkById(100, function(Collection $chunks){
                 foreach($chunks as $chunk){
                     $http = TwitchAPIRepositories::fetchSubscriber($chunk->identifier);
@@ -314,9 +321,12 @@ class TwitchRepositories{
             UserLinkTracker::where([
                 ['base_link_id', '=', 1],
                 ['initialized', '=', true],
+                ['archived', '=', false],
             ])->whereNotIn('identifier', $activeFeedCollection)->select('id', 'identifier', 'handler', 'users_id')->chunkById(100, function(Collection $chunks){
                 foreach($chunks as $channel){
-                    $http = Http::get('https://www.twitch.tv/' . $channel->handler)->body();
+                    $http = Http::withOptions([
+                        'proxy' => BaseHelper::socks5Proxy(),
+                    ])->get('https://www.twitch.tv/' . $channel->handler)->body();
 
                     $live = Str::betweenFirst($http, ',"isLiveBroadcast":', '}}');
                     $title = Str::betweenFirst($http, '"description":"', '",');

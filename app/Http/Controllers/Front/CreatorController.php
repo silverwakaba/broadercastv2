@@ -204,10 +204,7 @@ class CreatorController extends Controller{
             return view('pages/front/creator/claim-via', [
                 'profile'   => $profile,
                 'tracker'   => $tracker,
-                
-                'secret'    => '概',
-                // 'secret'    => Str::of('vtl#')->append($id),
-                
+                'secret'    => Str::of('vtl#')->append($id),
             ]);
         }
         else{
