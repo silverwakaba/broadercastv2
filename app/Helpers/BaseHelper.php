@@ -5,7 +5,9 @@ namespace App\Helpers;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use App\Models\BaseLink;
+use App\Models\BaseProxyHost;
 use App\Models\User;
+use Illuminate\Http\Client\Pool;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Crypt;
@@ -99,14 +101,34 @@ class BaseHelper{
         )->format('%H:%I:%S');
     }
 
-    public static function socks5Proxy(){
-        $proxy = Arr::shuffle([
-            // DeluxHost - DE
-            'socks5://85.208.9.45:12053',
-            'socks5://85.208.9.143:12053',
-        ]);
+    public static function baseProxy(){
+        $datas = BaseProxyHost::where([
+            ['base_proxy_type_id', '=', 1],
+            ['online', '=', true],
+        ])->select('host')->inRandomOrder()->first();
 
-        return $proxy[0];
+        return Str::replace('http://', 'socks5://', $datas['host']);
+    }
+
+    public static function baseYTS(){
+        $mainYTS = BaseProxyHost::where([
+            ['base_proxy_type_id', '=', 2],
+            ['online', '=', true],
+            ['host', '=', 'http://yts.spn.my.id'],
+        ])->select('host')->first();
+
+        if(($mainYTS) && $mainYTS->count() >= 1){
+            return $mainYTS['host'];
+        }
+        else{
+            $backupYTS = BaseProxyHost::where([
+                ['base_proxy_type_id', '=', 2],
+                ['online', '=', true],
+                ['host', '!=', 'http://yts.spn.my.id'],
+            ])->select('host')->inRandomOrder()->first();
+
+            return $backupYTS['host'];
+        }
     }
 
     public static function getOnlyPath($url, $after){

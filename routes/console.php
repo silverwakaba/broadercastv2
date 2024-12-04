@@ -6,6 +6,12 @@ use Illuminate\Support\Facades\Schedule;
 // onOneServer()
 
 /**
+ * Base / General Block
+**/
+
+Schedule::command('app:cron-proxy-host-checker')->everyFiveMinutes()->timezone('Asia/Jakarta')->runInBackground(); // everyFiveMinutes
+
+/**
  * YouTube Block
 **/
 

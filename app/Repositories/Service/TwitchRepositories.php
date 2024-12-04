@@ -233,7 +233,6 @@ class TwitchRepositories{
             }
         }
         catch(\Throwable $th){
-            throw $th;
             return RedirectHelper::routeBack(null, 'danger', 'Profile Claim. Because something went wrong, please try again.', 'error');
         }
     }
@@ -280,7 +279,7 @@ class TwitchRepositories{
             });
         }
         catch(\Throwable $th){
-            throw $th;
+            // throw $th;
         }
     }
 
@@ -325,7 +324,7 @@ class TwitchRepositories{
             ])->whereNotIn('identifier', $activeFeedCollection)->select('id', 'identifier', 'handler', 'users_id')->chunkById(100, function(Collection $chunks){
                 foreach($chunks as $channel){
                     $http = Http::withOptions([
-                        'proxy' => BaseHelper::socks5Proxy(),
+                        'proxy' => BaseHelper::baseProxy(),
                     ])->get('https://www.twitch.tv/' . $channel->handler)->body();
 
                     $live = Str::betweenFirst($http, ',"isLiveBroadcast":', '}}');
@@ -364,7 +363,7 @@ class TwitchRepositories{
             });
         }
         catch(\Throwable $th){
-            throw $th;
+            // throw $th;
         }
     }
 
@@ -467,7 +466,7 @@ class TwitchRepositories{
             });
         }
         catch(\Throwable $th){
-            throw $th;
+            // throw $th;
         }
     }
 

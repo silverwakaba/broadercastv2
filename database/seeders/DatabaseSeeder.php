@@ -27,6 +27,8 @@ class DatabaseSeeder extends Seeder{
             BaseSortSeeder::class,
             BaseTimezoneSeeder::class,
             BaseCountrySeeder::class,
+            BaseProxyTypeSeeder::class,
+            BaseProxyHostSeeder::class,
         ]);
     }
 }

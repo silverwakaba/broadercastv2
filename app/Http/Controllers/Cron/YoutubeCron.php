@@ -16,6 +16,7 @@ use Illuminate\Support\Collection;
 class YoutubeCron extends Controller{
     // Debug
     public function fetchDebug(){
+        // return YoutubeAPIRepositories::scrapeLLChannels('@lisahanabusa');
         // self::init();
         // self::metadata();
         // self::checker();

@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class FrontController extends Controller{
     public function fetchDebug(){
-        return "Hi";
+        // 
     }
 
     // Index

@@ -99,22 +99,13 @@ class YoutubeAPIRepositories{
 
             // Via Private Lemnos Scraper
             elseif(($apiKey == 'scraperLL')){
-                $endpoint = [
-                    // '1st' => 'https://yts.spn.my.id/',
-                    '1st' => 'https://yts-shared.spn.my.id/',
-                ];
+                $http = Http::timeout(60 * 5)->get(Str::of(BaseHelper::baseYTS() . '/')->append($function), $data);
 
-                $responses = Http::pool(fn (Pool $pool) => [
-                    $pool->as('1stR')->timeout(60 * 5)->get(Str::of($endpoint['1st'])->append($function), $data), // at least 5 mins timeout for max 50 videos
-                ]);
-
-                foreach($responses as $key => $response){
-                    if(($response->ok() == true)){
-                        return array_merge(self::signature('llScraper:' . $key), $response->json());
-                    }
-                    else{
-                        return array_merge(self::signature('llScraper:' . $key), $response->json());
-                    }
+                if(($http->ok() == true)){
+                    return array_merge(self::signature('llScraper:' . BaseHelper::baseYTS()), $http->json());
+                }
+                else{
+                    // Do nothing
                 }
             }
 
@@ -250,11 +241,9 @@ class YoutubeAPIRepositories{
 
     public static function scrapeVideos($videoID){
         try{
-            $http = Http::
-            // withOptions([
-            //     'proxy' => BaseHelper::socks5Proxy(),
-            // ])->
-            get('https://www.youtube.com/watch', [
+            $http = Http::withOptions([
+                'proxy' => BaseHelper::baseProxy(),
+            ])->get('https://www.youtube.com/watch', [
                 'v' => $videoID,
             ])->body();
 
