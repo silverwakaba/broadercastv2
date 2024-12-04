@@ -164,6 +164,9 @@
                                     <x-Adminlte.NavLink icon="1" route="apps.manager.content" value="Content" />
                                 </li>
                                 <li class="nav-item">
+                                    <x-Adminlte.NavLink icon="1" route="apps.manager.email" value="Email" />
+                                </li>
+                                <li class="nav-item">
                                     <x-Adminlte.NavLink icon="1" route="apps.manager.gender" value="Gender" />
                                 </li>
                                 <li class="nav-item">
@@ -171,6 +174,9 @@
                                 </li>
                                 <li class="nav-item">
                                     <x-Adminlte.NavLink icon="1" route="apps.manager.link" value="Link" />
+                                </li>
+                                <li class="nav-item">
+                                    <x-Adminlte.NavLink icon="1" route="apps.manager.password" value="Password" />
                                 </li>
                                 <li class="nav-item">
                                     <x-Adminlte.NavLink icon="1" route="apps.manager.persona" value="Persona" />

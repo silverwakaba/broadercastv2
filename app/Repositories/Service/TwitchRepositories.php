@@ -183,7 +183,6 @@ class TwitchRepositories{
             }
         }
         catch(\Throwable $th){
-            // Redirect Because This Is An Action
             return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Because something went wrong, please try again.', 'error');
         }
     }
@@ -311,7 +310,7 @@ class TwitchRepositories{
         }
     }
 
-    // Check and Update Channel Activity | Tahap optimasi, opsional menggunakan Proxy
+    // Check and Update Channel Activity
     public static function checkChannelActivity(){
         try{
             $activeFeed = UserFeed::select('reference')->whereIn('base_status_id', ['6', '8'])->get();
@@ -367,7 +366,7 @@ class TwitchRepositories{
         }
     }
 
-    // Update Channel Activity | Tahap optimasi
+    // Update Channel Activity
     public static function updateChannelActivity(){
         try{
             UserFeed::with([

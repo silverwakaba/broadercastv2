@@ -192,6 +192,15 @@ class BaseHelper{
         }
     }
 
+    public static function getCustomizedIdentifier($identifier){
+        if((Str::length($identifier) == 8) && (Str::contains($identifier, ['.', '-']) == false)){
+            return null;
+        }
+        else{
+            return Str::after($identifier, '.');
+        }
+    }
+
     public static function setIdentifier($name, $before = null, $after = null){
         $slug = Str::of($name)->slug('-');
 

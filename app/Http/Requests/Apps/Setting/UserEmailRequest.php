@@ -4,7 +4,7 @@ namespace App\Http\Requests\Apps\Setting;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UserAvatarRequest extends FormRequest{
+class UserEmailRequest extends FormRequest{
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -19,7 +19,10 @@ class UserAvatarRequest extends FormRequest{
      */
     public function rules() : array{
         return [
-            'avatar' => ['required', 'image', 'max:512'],
+            'email'                 => ['required', 'email', 'unique:users'],
+            'password'              => ['required', 'string', 'current_password:web'],
+            'terms'                 => ['accepted'],
+            'h-captcha-response'    => ['required', 'HCaptcha'],
         ];
     }
 }

@@ -170,13 +170,17 @@ Route::group(['prefix' => '/'], function(){
             Route::get('content', [ManagerUserController::class, 'content'])->name('apps.manager.content');
             Route::post('content', [ManagerUserController::class, 'contentPost']);
 
-            // Email - Belum Selesai
+            // Email
             Route::get('email', [ManagerUserController::class, 'email'])->name('apps.manager.email');
             Route::post('email', [ManagerUserController::class, 'emailPost']);
 
             // Gender
             Route::get('gender', [ManagerUserController::class, 'gender'])->name('apps.manager.gender');
             Route::post('gender', [ManagerUserController::class, 'genderPost']);
+
+            // Handler
+            Route::get('handler', [ManagerUserController::class, 'handler'])->name('apps.manager.handler');
+            Route::post('handler', [ManagerUserController::class, 'handlerPost']);
 
             // Language
             Route::get('language', [ManagerUserController::class, 'language'])->name('apps.manager.language');
@@ -197,7 +201,7 @@ Route::group(['prefix' => '/'], function(){
 
                 // Verify
                 Route::get('verify/{did}', [ManagerUserController::class, 'linkVerify'])->name('apps.manager.link.verify');
-                Route::post('verify/{did}', [ManagerUserController::class, 'linkVerifyPost']);//->middleware(['throttle:2,60']); // 2 request per 60 minutes
+                Route::post('verify/{did}', [ManagerUserController::class, 'linkVerifyPost'])->middleware(['throttle:2,60']);
 
                 // Delete
                 Route::get('delete/{did}', [ManagerUserController::class, 'linkDelete'])->name('apps.manager.link.delete');
@@ -208,8 +212,8 @@ Route::group(['prefix' => '/'], function(){
             });
 
             // Password
-            // Route::get('password', [ManagerUserController::class, 'email'])->name('apps.manager.password');
-            // Route::post('password', [ManagerUserController::class, 'emailPost']);
+            Route::get('password', [ManagerUserController::class, 'password'])->name('apps.manager.password');
+            Route::post('password', [ManagerUserController::class, 'passwordPost']);
 
             // Persona
             Route::get('persona', [ManagerUserController::class, 'race'])->name('apps.manager.persona');

@@ -215,7 +215,6 @@ class YoutubeRepositories{
             }
         }
         catch(\Throwable $th){
-            // Redirect Because This Is An Action
             return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Because something went wrong, please try again.', 'error');
         }
     }
@@ -446,7 +445,6 @@ class YoutubeRepositories{
             });
         }
         catch(\Throwable $th){
-            Log::error($th);
             // return $th;
         }
     }

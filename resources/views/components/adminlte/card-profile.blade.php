@@ -13,13 +13,15 @@
             <img class="profile-user-img img-fluid img-circle" src="{{ $profile->avatar->path }}">
             <h3 class="profile-username" data-toggle="tooltip" data-placement="top" title="{{ $profile->name }}">{{ $profile->name_preview }}</h3>
             <p class="text-muted text-center">{{ $profile->title_temp }}</p>
-            <p class="text-center">
-                @if((isset($profile->followed->followed)) && ($profile->followed->followed == true))
-                    <a href="{{ route('creator.rels', ['id' => $profile->identifier]) }}" class="btn btn-block btn-danger" data-toggle="tooltip" data-placement="top" title="Stop showing their activity from your timeline">Unfollow</a>
-                @else
-                    <a href="{{ route('creator.rels', ['id' => $profile->identifier]) }}" class="btn btn-block btn-success" data-toggle="tooltip" data-placement="top" title="Start showing their activity to your timeline">Follow</a>
-                @endif
-            </p>
+            @auth
+                <p class="text-center">
+                    @if((isset($profile->followed->followed)) && ($profile->followed->followed == true))
+                        <a href="{{ route('creator.rels', ['id' => $profile->identifier]) }}" class="btn btn-block btn-danger" data-toggle="tooltip" data-placement="top" title="Stop showing their activity from your timeline">Unfollow</a>
+                    @else
+                        <a href="{{ route('creator.rels', ['id' => $profile->identifier]) }}" class="btn btn-block btn-success" data-toggle="tooltip" data-placement="top" title="Start showing their activity to your timeline">Follow</a>
+                    @endif
+                </p>
+            @endauth
         </div>
         <ul class="list-group">
             <li class="list-group-item text-center bg-secondary">

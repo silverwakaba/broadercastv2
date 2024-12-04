@@ -10,17 +10,23 @@ use App\Helpers\BasedataHelper;
 use App\Http\Requests\Apps\Setting\UserAvatarRequest;
 use App\Http\Requests\Apps\Setting\UserBiodataRequest;
 use App\Http\Requests\Apps\Setting\UserContentRequest;
+use App\Http\Requests\Apps\Setting\UserEmailRequest;
+use App\Http\Requests\Apps\Setting\UserHandlerRequest;
 use App\Http\Requests\Apps\Setting\UserLinkRequest;
 use App\Http\Requests\Apps\Setting\UserLinkDeleteRequest;
 use App\Http\Requests\Apps\Setting\UserLinkVerificationRequest;
+use App\Http\Requests\Apps\Setting\UserPasswordRequest;
 
 use App\Repositories\Setting\UserRepositories;
 use App\Repositories\Setting\UserAvatarRepositories;
 use App\Repositories\Setting\UserBiodataRepositories;
 use App\Repositories\Setting\UserContentRepositories;
+use App\Repositories\Setting\UserEmailRepositories;
 use App\Repositories\Setting\UserGenderRepositories;
+use App\Repositories\Setting\UserHandlerRepositories;
 use App\Repositories\Setting\UserLanguageRepositories;
 use App\Repositories\Setting\UserLinkRepositories;
+use App\Repositories\Setting\UserPasswordRepositories;
 use App\Repositories\Setting\UserProfileRepositories;
 use App\Repositories\Setting\UserRaceRepositories;
 use App\Repositories\Service\TwitchRepositories;
@@ -49,7 +55,7 @@ class UserController extends Controller{
 
     // Biodata
     public function biodata(){
-        return $datas = UserProfileRepositories::getProfile([
+        $datas = UserProfileRepositories::getProfile([
             'id'    => auth()->user()->id,
             'with'  => ['hasOneUserBiodata'],
         ], false);
@@ -95,11 +101,31 @@ class UserController extends Controller{
 
     // Email
     public function email(){
-        return auth()->user()->email;
+        return view('pages/apps/setting/user/email', [
+            'backURI' => $this->back,
+        ]);
     }
 
-    public function emailPost(Request $request){
-        // 
+    public function emailPost(UserEmailRequest $request){
+        return UserEmailRepositories::update([
+            'id'    => auth()->user()->id,
+            'email' => $request->email,
+        ]);
+    }
+
+    // Handler
+    public function handler(){
+        return view('pages/apps/setting/user/handler', [
+            'backURI'   => $this->back,
+            'handler'   => BaseHelper::getCustomizedIdentifier(auth()->user()->identifier),
+        ]);
+    }
+
+    public function handlerPost(UserHandlerRequest $request){
+        return UserHandlerRepositories::update([
+            'id'        => auth()->user()->id,
+            'handler'   => $request->handler,
+        ]);
     }
 
     // Gender
@@ -270,6 +296,20 @@ class UserController extends Controller{
             'uid'           => auth()->user()->id,
             'identifier'    => $request->identifier,
         ], 'apps.manager.link');
+    }
+
+    // Password
+    public function password(){
+        return view('pages/apps/setting/user/password', [
+            'backURI' => $this->back,
+        ]);
+    }
+
+    public function passwordPost(UserPasswordRequest $request){
+        return UserPasswordRepositories::update([
+            'id'            => auth()->user()->id,
+            'new_password'  => $request->new_password,
+        ]);
     }
 
     // Race
