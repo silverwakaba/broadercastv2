@@ -102,7 +102,7 @@ class YoutubeAPIRepositories{
                 $http = Http::timeout(60 * 5)->get(Str::of(BaseHelper::baseYTS() . '/')->append($function), $data);
 
                 if(($http->ok() == true)){
-                    return array_merge(self::signature('llScraper:' . BaseHelper::baseYTS()), $http->json());
+                    return array_merge(self::signature(BaseHelper::baseYTS(), null), $http->json());
                 }
                 else{
                     // Do nothing

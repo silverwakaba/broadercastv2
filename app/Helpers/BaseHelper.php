@@ -131,7 +131,7 @@ class BaseHelper{
         ])->select('host')->first();
 
         if(($mainYTS) && $mainYTS->count() >= 1){
-            return $mainYTS['host'];
+            $newHost = $mainYTS['host'];
         }
         else{
             $backupYTS = BaseProxyHost::where([
@@ -140,8 +140,10 @@ class BaseHelper{
                 ['host', '!=', 'http://yts.spn.my.id'],
             ])->select('host')->inRandomOrder()->first();
 
-            return $backupYTS['host'];
+            $newHost = $backupYTS['host'];
         }
+
+        return Str::replace('http://', 'https://', $newHost);
     }
 
     public static function getOnlyPath($url, $after){
