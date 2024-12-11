@@ -15,7 +15,8 @@ class UserSeeder extends Seeder{
         // User::factory(1)->create();
 
         // $faker = \Faker\Factory::create();
-            
+        
+        // Waka
         User::create([
             'base_status_id'    => '1',
             'confirmed'         => true,
@@ -25,12 +26,14 @@ class UserSeeder extends Seeder{
             'password'          => bcrypt('123456789'),
         ])->assignRole('Admin');
 
-        // User::create([
-        //     'base_status_id'    => '6',
-        //     'confirmed'         => false,
-        //     'identifier'        => BaseHelper::adler32(),
-        //     'email'             => 'b@a.a',
-        //     'password'          => bcrypt('123456789'),
-        // ])->assignRole('User');
+        // Robot
+        User::create([
+            'base_status_id'    => '1',
+            'confirmed'         => true,
+            'identifier'        => 'robot404',
+            'name'              => 'Robot',
+            'email'             => BaseHelper::randomEmail(),
+            'password'          => BaseHelper::randomPassword(),
+        ]);
     }
 }

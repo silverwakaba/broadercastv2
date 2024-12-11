@@ -54,10 +54,23 @@ class BaseHelper{
     }
 
     public static function randomPassword(){
-        $now = now();
-        $uuid = Str::uuid();
-        $ulid = Str::ulid();
-        $encrypt = Crypt::encryptString("$now $uuid $ulid");
+        $array = [
+            Str::uuid(),
+            Str::ulid(),
+            Str::password(150),
+            Str::password(200),
+            Carbon::now(),
+        ];
+
+        $shuffle = Arr::shuffle($array);
+
+        $original = implode('', $shuffle);
+
+        $reverse = Str::reverse($original);
+
+        $append = Str::of($original)->append($reverse);
+
+        $encrypt = Crypt::encryptString($append);
 
         return password_hash($encrypt, PASSWORD_DEFAULT);
     }
