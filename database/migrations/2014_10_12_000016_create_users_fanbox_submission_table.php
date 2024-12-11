@@ -14,7 +14,7 @@ return new class extends Migration{
             $table->foreignId('users_fanbox_id')->references('id')->on('users_fanbox')->onDelete('cascade');
             $table->foreignId('users_id')->references('id')->on('users')->onDelete('cascade');
             $table->boolean('anonymous')->default(false);
-            $table->string('message');
+            $table->longText('message');
         });
     }
 

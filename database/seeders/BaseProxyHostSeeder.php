@@ -17,17 +17,7 @@ class BaseProxyHostSeeder extends Seeder{
             [
                 'base_proxy_type_id'    => 1,
                 'online'                => false,
-                'host'                  => 'http://85.208.9.45:12053',
-            ],
-            [
-                'base_proxy_type_id'    => 1,
-                'online'                => false,
-                'host'                  => 'http://85.208.9.143:12053',
-            ],
-            [
-                'base_proxy_type_id'    => 1,
-                'online'                => false,
-                'host'                  => 'http://103.76.129.30:12053',
+                'host'                  => 'http://176.116.18.49:12053',
             ],
 
             // YTS
@@ -35,21 +25,6 @@ class BaseProxyHostSeeder extends Seeder{
                 'base_proxy_type_id'    => 2,
                 'online'                => false,
                 'host'                  => 'http://yts.spn.my.id',
-            ],
-            [
-                'base_proxy_type_id'    => 2,
-                'online'                => false,
-                'host'                  => 'http://yts-1.spn.my.id',
-            ],
-            [
-                'base_proxy_type_id'    => 2,
-                'online'                => false,
-                'host'                  => 'http://yts-2.spn.my.id',
-            ],
-            [
-                'base_proxy_type_id'    => 2,
-                'online'                => false,
-                'host'                  => 'http://yts-3.spn.my.id',
             ],
         ]);
     }

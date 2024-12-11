@@ -170,6 +170,9 @@
                                     <x-Adminlte.NavLink icon="1" route="apps.manager.gender" value="Gender" />
                                 </li>
                                 <li class="nav-item">
+                                    <x-Adminlte.NavLink icon="1" route="apps.manager.handler" value="Handler" />
+                                </li>
+                                <li class="nav-item">
                                     <x-Adminlte.NavLink icon="1" route="apps.manager.language" value="Language" />
                                 </li>
                                 <li class="nav-item">

@@ -17,6 +17,7 @@ return new class extends Migration{
             $table->boolean('public')->default(false);
             $table->boolean('attachment')->default(false);
             $table->string('title');
+            $table->longText('description');
             $table->timestamps();
         });
     }
