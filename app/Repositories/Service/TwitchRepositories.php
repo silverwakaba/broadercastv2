@@ -333,30 +333,23 @@ class TwitchRepositories{
                         $tmpID = $channel->identifier;
                         $tracker = self::userLinkTracker($channel->identifier, $channel->users_id);
 
-                        $checkPlaceholder = $tracker->hasManyThroughUserFeed()->where([
-                            ['users_feed.users_id', '=', $channel->users_id],
-                            ['users_feed.base_link_id', '=', 1],
-                        ])->whereIn('users_feed.base_status_id', ['6', '8'])->get();
-
-                        if(isset($checkPlaceholder) && count($checkPlaceholder) == 0){
-                            $tracker->hasManyThroughUserFeed()->updateOrCreate(['users_feed.identifier' => $tmpID], [
-                                'users_id'              => $channel->users_id,
-                                'base_link_id'          => 1,
-                                'users_link_tracker_id' => $channel->id,
-                                'base_status_id'        => 6,
-                                'base_feed_type_id'     => null,
-                                'concurrent'            => 0,
-                                'identifier'            => BaseHelper::adler32($tmpID),
-                                'thumbnail'             => null,
-                                'title'                 => $title,
-                                'published'             => Carbon::now()->timezone(config('app.timezone'))->toDateTimeString(),
-                                'schedule'              => null,
-                                'actual_start'          => Carbon::now()->timezone(config('app.timezone'))->toDateTimeString(),
-                                'actual_end'            => null,
-                                'duration'              => "P0D",
-                                'reference'             => $tmpID,
-                            ]);
-                        }
+                        $tracker->hasManyThroughUserFeed()->updateOrCreate(['users_feed.identifier' => $tmpID], [
+                            'users_id'              => $channel->users_id,
+                            'base_link_id'          => 1,
+                            'users_link_tracker_id' => $channel->id,
+                            'base_status_id'        => 6,
+                            'base_feed_type_id'     => null,
+                            'concurrent'            => 0,
+                            'identifier'            => BaseHelper::adler32($tmpID),
+                            'thumbnail'             => null,
+                            'title'                 => $title,
+                            'published'             => Carbon::now()->timezone(config('app.timezone'))->toDateTimeString(),
+                            'schedule'              => null,
+                            'actual_start'          => Carbon::now()->timezone(config('app.timezone'))->toDateTimeString(),
+                            'actual_end'            => null,
+                            'duration'              => "P0D",
+                            'reference'             => $tmpID,
+                        ]);
                     }
                 }
             });
@@ -442,19 +435,24 @@ class TwitchRepositories{
                                 ['reference', '=', $archive['videos_reference']],
                             ])->first();
 
-                            if(($userFeedArchive->base_status_id == 8)){
-                                $userFeedArchive->update([
-                                    'base_status_id'    => 9,
-                                    'identifier'        => $fetchVideo['id'],
-                                    'concurrent'        => 0,
-                                    'thumbnail'         => self::userAvatarBanner(Str::replace('%{width}x%{height}', '1280x720', $fetchVideo['thumbnail_url'])),
-                                    'title'             => $fetchVideo['title'],
-                                    'description'       => $fetchVideo['description'],
-                                    'published'         => Carbon::parse($fetchVideo['created_at'])->timezone(config('app.timezone'))->toDateTimeString(),
-                                    'actual_start'      => Carbon::parse($fetchVideo['created_at'])->timezone(config('app.timezone'))->toDateTimeString(),
-                                    'duration'          => Str::of('PT')->append(Str::of($fetchVideo['duration'])->upper()),
-                                    'reference'         => null,
-                                ]);
+                            if(($fetchVideo) && isset($fetchVideo) && (count($fetchVideo) >= 1)){
+                                if(($userFeedArchive->base_status_id == 8)){
+                                    $userFeedArchive->update([
+                                        'base_status_id'    => 9,
+                                        'identifier'        => $fetchVideo['id'],
+                                        'concurrent'        => 0,
+                                        'thumbnail'         => self::userAvatarBanner(Str::replace('%{width}x%{height}', '1280x720', $fetchVideo['thumbnail_url'])),
+                                        'title'             => $fetchVideo['title'],
+                                        'description'       => $fetchVideo['description'],
+                                        'published'         => Carbon::parse($fetchVideo['created_at'])->timezone(config('app.timezone'))->toDateTimeString(),
+                                        'actual_start'      => Carbon::parse($fetchVideo['created_at'])->timezone(config('app.timezone'))->toDateTimeString(),
+                                        'duration'          => Str::of('PT')->append(Str::of($fetchVideo['duration'])->upper()),
+                                        'reference'         => null,
+                                    ]);
+                                }
+                                else{
+                                    $userFeedArchive->delete();
+                                }
                             }
                             else{
                                 $userFeedArchive->delete();
@@ -465,7 +463,7 @@ class TwitchRepositories{
             });
         }
         catch(\Throwable $th){
-            // throw $th;
+            throw $th;
         }
     }
 

@@ -344,10 +344,15 @@ class UserController extends Controller{
             'with'  => ['belongsToBaseLink', 'hasOneUserLinkTracker'],
         ]);
 
-        return view('pages/apps/setting/user/link/delete', [
-            'backURI'   => $this->backLink,
-            'datas'     => $datas,
-        ]);
+        if(isset($datas->hasOneUserLinkTracker)){
+            return view('pages/apps/setting/user/link/delete', [
+                'backURI'   => $this->backLink,
+                'datas'     => $datas,
+            ]);
+        }
+        else{
+            return redirect()->route('apps.master.user.manage.link.delete', ['did' => $did, 'uid' => request()->uid]);
+        }
     }
 
     public function linkDeleteConfirmPost(UserLinkDeleteRequest $request, $uid, $did){

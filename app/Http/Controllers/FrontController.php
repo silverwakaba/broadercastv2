@@ -8,9 +8,19 @@ use App\Repositories\Front\Creator\UserProfileRepositories;
 
 use Illuminate\Http\Request;
 
+//
+use App\Helpers\BaseHelper;
+use Illuminate\Support\Facades\Http;
+
 class FrontController extends Controller{
     public function fetchDebug(){
-        // 
+        $http = Http::withOptions([
+            'proxy' => BaseHelper::baseProxy(),
+        ])->get('https://www.twitch.tv/hiiragitsurugi')->body();
+
+        return [
+            $http
+        ];
     }
 
     // Index

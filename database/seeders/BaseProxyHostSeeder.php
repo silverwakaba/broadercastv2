@@ -16,14 +16,14 @@ class BaseProxyHostSeeder extends Seeder{
             // Tor
             [
                 'base_proxy_type_id'    => 1,
-                'online'                => false,
+                'online'                => true,
                 'host'                  => 'http://176.116.18.49:12053',
             ],
 
             // YTS
             [
                 'base_proxy_type_id'    => 2,
-                'online'                => false,
+                'online'                => true,
                 'host'                  => 'http://yts.spn.my.id',
             ],
         ]);

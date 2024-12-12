@@ -116,8 +116,10 @@ Route::group(['prefix' => '/'], function(){
 
         // Verify
         Route::group(['prefix' => 'verify', 'excluded_middleware' => ['guest']], function(){
+            // Verify
             Route::get('/', [AuthController::class, 'verify'])->name('verify');
 
+            // Resend Verify
             Route::get('resend', [AuthController::class, 'verifyResend'])->name('verify.resend');
             Route::post('resend', [AuthController::class, 'verifyResendPost'])->middleware(['throttle:2,1']);
         });
