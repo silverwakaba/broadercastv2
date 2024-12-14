@@ -16,9 +16,7 @@ use Illuminate\Support\Collection;
 class YoutubeCron extends Controller{
     // Debug
     public function fetchDebug(){
-        // self::init();
-        // self::metadata();
-        // self::checker();
+        // 
     }
 
     // Archive Initialization

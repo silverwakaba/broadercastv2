@@ -27,4 +27,4 @@ Schedule::command('app:cron-youtube-fetch-profile')->daily()->timezone('Asia/Jak
 Schedule::command('app:cron-twitch-initial')->everyTenMinutes()->timezone('Asia/Jakarta')->runInBackground(); // everyTenMinutes
 Schedule::command('app:cron-twitch-checker')->everyThreeMinutes()->timezone('Asia/Jakarta')->runInBackground(); // everyThreeMinutes
 Schedule::command('app:cron-twitch-fetch-profile')->daily()->timezone('Asia/Jakarta')->runInBackground(); // daily
-Schedule::command('app:cron-twitch-fetch-misc')->daily()->timezone('Asia/Jakarta')->runInBackground(); // daily
+Schedule::command('app:cron-twitch-fetch-misc')->everySixHours($minutes = 0)->timezone('Asia/Jakarta')->runInBackground(); // everySixHours, because once daily isn't enough

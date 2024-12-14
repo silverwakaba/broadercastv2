@@ -99,7 +99,8 @@ class YoutubeAPIRepositories{
 
             // Via Private Lemnos Scraper
             elseif(($apiKey == 'scraperLL')){
-                $http = Http::timeout(60 * 5)->get(Str::of(BaseHelper::baseYTS() . '/')->append($function), $data);
+                // Instances is hidden behind Basic Auth for personal use
+                $http = Http::withBasicAuth('vtual', 'PasswordKuat123-AFK')->timeout(60 * 5)->get(Str::of(BaseHelper::baseYTS() . '/')->append($function), $data);
 
                 if(($http->ok() == true)){
                     return array_merge(self::signature(BaseHelper::baseYTS(), null), $http->json());
