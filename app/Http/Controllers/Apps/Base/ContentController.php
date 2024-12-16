@@ -24,6 +24,8 @@ class ContentController extends Controller{
                 'model'     => $this->model,
                 'resource'  => $this->resource,
                 'route'     => 'apps.base.content',
+                'query'     => ['decision'],
+                'orderBy'   => ['name', 'ASC'],
                 'with'      => ['belongsToBaseDecision', 'hasOneUser'],
             ]);
         }

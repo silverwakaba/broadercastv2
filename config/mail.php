@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Mailer
@@ -14,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'log'),
+    'default' => env('MAIL_MAILER', 'failover'),
 
     /*
     |--------------------------------------------------------------------------
@@ -35,47 +34,59 @@ return [
     */
 
     'mailers' => [
+        // Custom SMTP
         'smtp' => [
-            'transport' => 'smtp',
-            'url' => env('MAIL_URL'),
-            'host' => env('MAIL_HOST', '127.0.0.1'),
-            'port' => env('MAIL_PORT', 2525),
-            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
-            'username' => env('MAIL_USERNAME'),
-            'password' => env('MAIL_PASSWORD'),
-            'timeout' => null,
-            'local_domain' => env('MAIL_EHLO_DOMAIN'),
-        ],
-
-        // Mailer Default
-        'mailerdefault' => [
             'transport'     => 'smtp',
-            'url'           => env('MAILER_DEFAULT_URL'),
             'host'          => env('MAILER_DEFAULT_HOST', 'notify.spnd.uk'),
             'port'          => env('MAILER_DEFAULT_PORT', 587),
             'encryption'    => env('MAILER_DEFAULT_ENCRYPTION', 'tls'),
-            'username'      => env('MAILER_DEFAULT_USERNAME', null),
+            'username'      => env('MAILER_DEFAULT_USERNAME'),
             'password'      => env('MAILER_DEFAULT_PASSWORD', null),
             'timeout'       => null,
+
+            // Useless when using failover mode
             'from'          => [
-                'name'      => env('MAILER_DEFAULT_NAME', 'vTual Mailer'),
-                'address'   => env('MAILER_DEFAULT_USERNAME'),
+                // SMTP
+                // 'name'      => env('MAILER_DEFAULT_NAME', 'vTual Mailer'),
+                // 'address'   => env('MAILER_DEFAULT_USERNAME', 'vtual@no-reply.spnd.uk'),
+                
+                // Mailtrap
+                'name'      => env('MAIL_FROM_NAME', 'vTual Mailer'),
+                'address'   => env('MAIL_FROM_ADDRESS', 'vtual@no-reply.spnd.uk'),
             ],
         ],
 
-        // Mailer High Availability
-        'mailerha' => [
+        // Mail Backup 1 - Brevo Free-Tier
+        'brevo' => [
             'transport'     => 'smtp',
-            'url'           => env('MAILER_HA_URL'),
-            'host'          => env('MAILER_HA_HOST', 'smtp-relay.brevo.com'),
-            'port'          => env('MAILER_HA_PORT', 587),
-            'encryption'    => env('MAILER_HA_ENCRYPTION', 'tls'),
-            'username'      => env('MAILER_HA_USERNAME'),
-            'password'      => env('MAILER_HA_PASSWORD'),
+            'host'          => env('MAILER_BACKUP_1_HOST', 'smtp-relay.brevo.com'),
+            'port'          => env('MAILER_BACKUP_1_PORT', 587),
+            'encryption'    => env('MAILER_BACKUP_1_ENCRYPTION', 'tls'),
+            'username'      => env('MAILER_BACKUP_1_USERNAME'),
+            'password'      => env('MAILER_BACKUP_1_PASSWORD'),
             'timeout'       => null,
+
+            // Useless when using failover mode
             'from'          => [
-                'name'      => env('MAILER_HA_NAME', 'vTual Mailer HA'),
-                'address'   => env('MAILER_HA_ADDRESS'),
+                'name'      => env('MAILER_BACKUP_1_NAME', 'vTual Mailer'),
+                'address'   => env('MAILER_BACKUP_1_ADDRESS', 'vtual@no-reply.spnd.uk'),
+            ],
+        ],
+
+        // Mail Backup 2 - Zepto Paid-Tier
+        'zepto' => [
+            'transport'     => 'smtp',
+            'host'          => env('MAILER_BACKUP_2_HOST', 'smtp.zeptomail.com'),
+            'port'          => env('MAILER_BACKUP_2_PORT', 587),
+            'encryption'    => env('MAILER_BACKUP_2_ENCRYPTION', 'tls'),
+            'username'      => env('MAILER_BACKUP_2_USERNAME'),
+            'password'      => env('MAILER_BACKUP_2_PASSWORD'),
+            'timeout'       => null,
+
+            // Useless when using failover mode
+            'from'          => [
+                'name'      => env('MAILER_BACKUP_2_NAME', 'vTual Mailer'),
+                'address'   => env('MAILER_BACKUP_2_ADDRESS', 'vtual@no-reply-backup-1.spnd.uk'),
             ],
         ],
 
@@ -105,11 +116,12 @@ return [
             'transport' => 'array',
         ],
 
+        // Email Failover - Scheme: smtp > free-tier > paid tier
         'failover' => [
             'transport' => 'failover',
             'mailers' => [
-                'smtp',
-                'log',
+                'smtp', 'brevo',
+                // 'zepto' // not yet paid
             ],
         ],
     ],
@@ -126,8 +138,7 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => env('MAIL_FROM_NAME', 'Example'),
+        'name'      => env('MAIL_FROM_NAME', 'vTual Mailer'),
+        'address'   => env('MAIL_FROM_ADDRESS', 'vtual@no-reply.spnd.uk'),
     ],
-
 ];

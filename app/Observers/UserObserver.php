@@ -25,7 +25,7 @@ class UserObserver{
             'users_id' => $user->id,
         ]);
 
-        // Some action, like SGU, don't need and trigger this action
+        // Some action, like SGU, don't need to trigger this action
         try{
             // Request
             $request = $user->hasOneUserRequest()->where([
@@ -48,7 +48,7 @@ class UserObserver{
             }
 
             if($mId){
-                Mail::mailer('mailerdefault')->to($user->email)->send(new UserVerifyEmail($mId));
+                Mail::to($user->email)->send(new UserVerifyEmail($mId));
             }
         }
         catch(\Throwable $th){}

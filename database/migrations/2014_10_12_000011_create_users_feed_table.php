@@ -26,7 +26,7 @@ return new class extends Migration{
             $table->dateTime('actual_start')->nullable();
             $table->dateTime('actual_end')->nullable();
             $table->string('duration')->nullable();
-            $table->string('reference')->nullable(); // For the fucking sake of Twitch (and prob other too)
+            $table->string('reference')->nullable();
         });
     }
 

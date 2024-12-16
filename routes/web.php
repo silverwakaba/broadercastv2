@@ -16,6 +16,8 @@ use App\Http\Controllers\Apps\Base\ContentController as BaseContentController;
 use App\Http\Controllers\Apps\Base\GenderController as BaseGenderController;
 use App\Http\Controllers\Apps\Base\LanguageController as BaseLanguageController;
 use App\Http\Controllers\Apps\Base\LinkController as BaseLinkController;
+use App\Http\Controllers\Apps\Base\ProxyHostController as BaseProxyHostController;
+use App\Http\Controllers\Apps\Base\ProxyTypeController as BaseProxyTypeController;
 use App\Http\Controllers\Apps\Base\RaceController as BaseRaceController;
 
 // Manager
@@ -50,12 +52,12 @@ Route::group(['prefix' => '/'], function(){
         Route::post('/', [FrontCreatorController::class, 'indexSearch']);
 
         // Profile
-        Route::get('@{id}', [FrontCreatorController::class, 'profile'])->name('creator.profile');
+        Route::get('{id}', [FrontCreatorController::class, 'profile'])->name('creator.profile');
 
         // Claim
-        Route::get('@{id}/claim', [FrontCreatorController::class, 'claim'])->name('creator.claim');
-        Route::get('@{id}/claim-via/{ch}', [FrontCreatorController::class, 'claimVia'])->name('creator.claim.via');
-        Route::post('@{id}/claim-via/{ch}', [FrontCreatorController::class, 'claimViaPost'])->middleware(['throttle:2,60']);
+        Route::get('{id}/claim', [FrontCreatorController::class, 'claim'])->name('creator.claim');
+        Route::get('{id}/claim-via/{ch}', [FrontCreatorController::class, 'claimVia'])->name('creator.claim.via');
+        Route::post('{id}/claim-via/{ch}', [FrontCreatorController::class, 'claimViaPost'])->middleware(['throttle:2,60']);
 
         // Follow and Unfollow - Update Relationship
         Route::get('@{id}/rels', [FrontCreatorController::class, 'rels'])->name('creator.rels')->middleware(['auth', 'throttle:100,60']);
@@ -127,6 +129,9 @@ Route::group(['prefix' => '/'], function(){
         // Claim
         Route::get('claim', [AuthController::class, 'claim'])->name('claim')->withoutMiddleware(['guest']);
         Route::post('claim', [AuthController::class, 'claimPost'])->withoutMiddleware(['guest']);
+
+        // 2FA
+        Route::get('2fa', [AuthController::class, 'login2FA'])->name('2fa')->middleware(['signed'])->withoutMiddleware(['guest']);
 
         // Logout
         Route::get('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware(['guest']);
@@ -222,7 +227,7 @@ Route::group(['prefix' => '/'], function(){
             Route::post('persona', [ManagerUserController::class, 'racePost']);
         });
 
-        // Master Data
+        // Master Data - Need to be secured using WAF
         Route::group(['prefix' => 'master-data', 'middleware' => ['role:Admin']], function(){
             // Master data index
             Route::get('/', [AppsController::class, 'master'])->name('apps.master.index');
@@ -316,7 +321,7 @@ Route::group(['prefix' => '/'], function(){
                 Route::get('decision/{id}', [BaseLinkController::class, 'decision'])->name('apps.base.link.decision');
             });
 
-            // Master data - Base Persona Type
+            // Master data - Base Persona-Race Type
             Route::group(['prefix' => 'persona-type'], function(){
                 // Index
                 Route::get('/', [BaseRaceController::class, 'index'])->name('apps.base.persona.index');
@@ -332,6 +337,37 @@ Route::group(['prefix' => '/'], function(){
                 // Decision
                 Route::get('delete/{id}', [BaseRaceController::class, 'delete'])->name('apps.base.persona.delete');
                 Route::get('decision/{id}', [BaseRaceController::class, 'decision'])->name('apps.base.persona.decision');
+            });
+
+            // Master data - Base Proxy
+            Route::group(['prefix' => 'proxy'], function(){
+                // Master data - Base Proxy Type
+                Route::group(['prefix' => 'type'], function(){
+                    // Index
+                    Route::get('/', [BaseProxyTypeController::class, 'index'])->name('apps.base.proxy.type.index');
+
+                    // Add
+                    Route::get('add', [BaseProxyTypeController::class, 'add'])->name('apps.base.proxy.type.add');
+                    Route::post('add', [BaseProxyTypeController::class, 'addPost']);
+
+                    // Edit
+                    Route::get('edit/{id}', [BaseProxyTypeController::class, 'edit'])->name('apps.base.proxy.type.edit');
+                    Route::post('edit/{id}', [BaseProxyTypeController::class, 'editPost']);
+
+                    // Delete
+                    Route::get('delete/{id}', [BaseProxyTypeController::class, 'delete'])->name('apps.base.proxy.type.delete');
+                });
+
+                // Master data - Base Proxy Host
+                Route::group(['prefix' => 'host'], function(){
+                    // Index
+                    Route::get('/', [BaseProxyHostController::class, 'index'])->name('apps.base.proxy.host.index');
+
+                    // MISC
+                    Route::get('add', [BaseProxyHostController::class, 'add'])->name('apps.base.proxy.host.add');
+                    Route::get('edit/{id}', [BaseProxyHostController::class, 'edit'])->name('apps.base.proxy.host.edit');
+                    Route::get('delete/{id}', [BaseProxyHostController::class, 'edit'])->name('apps.base.proxy.host.delete');
+                });
             });
 
             // Master data - User

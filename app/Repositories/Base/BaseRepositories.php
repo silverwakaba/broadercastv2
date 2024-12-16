@@ -8,16 +8,24 @@ use Yajra\DataTables\Facades\DataTables;
 
 class BaseRepositories{
     public static function datatable(array $data){
-        $datas = $data['model']::with(isset($data['with']) ? $data['with'] : [])->whereIn(
-            'base_decision_id', [2, 3, 6]
-        )->orderBy('name', 'ASC')->get();
+        $datas = $data['model']::with(isset($data['with']) ? $data['with'] : []);
 
-        return DataTables::of($datas)->setTransformer(function($datas) use($data){
+        if(isset($data['query']) && count(array_keys($data['query'], 'decision')) >= 1){
+            $datas->whereIn('base_decision_id', [2, 3, 6]);
+        }
+
+        if(isset($data['orderBy'])){
+            $datas->orderBy($data['orderBy'][0], $data['orderBy'][1]);
+        }
+        
+        $newDatas = $datas->get();
+
+        return DataTables::of($newDatas)->setTransformer(function($newDatas) use($data){
             return [
-                'datas'  => $data['resource']::make($datas)->resolve(),
+                'datas'  => $data['resource']::make($newDatas)->resolve(),
                 'action' => view('datatable.action-mod', [
-                    'id'        => BaseHelper::encrypt($datas->id),
-                    'decision'  => $datas->base_decision_id,
+                    'id'        => BaseHelper::encrypt($newDatas->id),
+                    'decision'  => $newDatas->base_decision_id,
                     'route'     => $data['route'],
                 ])->render(),
             ];

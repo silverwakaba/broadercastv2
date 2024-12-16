@@ -42,6 +42,12 @@ class AuthController extends Controller{
         ]);
     }
 
+    public function login2FA(Request $request){
+        return UserAuthRepositories::login2FA([
+            'id' => $request->id,
+        ], 'apps.front.index');
+    }
+
     // Recover
     public function recover(){
         return view('pages/auth/recover');

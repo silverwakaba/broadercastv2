@@ -22,6 +22,8 @@ class LinkController extends Controller{
                 'model'     => $this->model,
                 'resource'  => $this->resource,
                 'route'     => 'apps.base.link',
+                'query'     => ['decision'],
+                'orderBy'   => ['name', 'ASC'],
                 'with'      => ['belongsToBaseDecision', 'hasOneUser'],
             ]);
         }
@@ -80,6 +82,6 @@ class LinkController extends Controller{
         return BaseRepositories::delete([
             'id'    => $id,
             'model' => $this->model,
-        ], $this->back);
+        ], $this->back, 'Link Type');
     }
 }

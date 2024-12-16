@@ -269,7 +269,7 @@ class YoutubeAPIRepositories{
             }
         }
         catch(\Throwable $th){
-            return $th;
+            // return $th;
         }
     }
 }

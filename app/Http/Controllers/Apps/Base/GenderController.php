@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Http\Controllers\Apps\Base;
-
 use App\Http\Controllers\Controller;
+
 use App\Http\Requests\Apps\Base\GenderRequest;
 use App\Repositories\Base\BaseRepositories;
+
 use Illuminate\Http\Request;
 
 class GenderController extends Controller{
@@ -22,6 +23,8 @@ class GenderController extends Controller{
                 'model'     => $this->model,
                 'resource'  => $this->resource,
                 'route'     => 'apps.base.gender',
+                'query'     => ['decision'],
+                'orderBy'   => ['name', 'ASC'],
                 'with'      => ['belongsToBaseDecision', 'hasOneUser'],
             ]);
         }

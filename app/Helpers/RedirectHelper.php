@@ -27,10 +27,21 @@ class RedirectHelper{
         elseif($mode == "unfollow"){
             $modeMessage = "unfollowing " . Str::of($title)->apa();
         }
+
         elseif($mode == "register"){
             $modeMessage = "user registration";
             
             $guide = "Please check your email to verify your account.";
+        }
+        elseif($mode == "2falogin"){
+            $modeMessage = "user login via 2FA";
+            
+            $guide = "Please check your email to login securely to your account via 2FA.";
+        }
+        elseif($mode == "2faloginsuccess"){
+            $modeMessage = "user login via 2FA";
+            
+            $guide = "Thank you and enjoy additional security.";
         }
         elseif($mode == "reverify"){
             $modeMessage = "user verification";

@@ -150,63 +150,6 @@ class BaseHelper{
         return Str::of($url)->after($after . '/');
     }
 
-    public static function httpProxy($url, $query = null, $option = null){
-        /**
-         * --------------------------------------------------------------------------------------------------------
-         * Not being used anymore, since it's incure a lot of request costs. The code is kept for future reference.
-         * --------------------------------------------------------------------------------------------------------
-        **/
-
-        return null;
-
-        if(Str::of($url)->isUrl() == true){
-            // 30 secs timeout
-            $http = Http::timeout(30);
-
-            $outputURL = null;
-            $endpointURL = null;
-
-            // Query string
-            if($query == null){
-                $outputURL = $url;
-            }
-            else{
-                $outputURL = Str::of(Str::finish($url, '?'))->append(urldecode(http_build_query($query, null, '&')));
-            }
-
-            // Proxy option - Deploy and set Hono API Bridger to Cloudflare Pages
-            if(!isset($option['proxy']) ?? $option['proxy'] == false){
-                $endpointURL = $outputURL;
-            }
-            else{
-                $proxyURL = 'https://apibridger.silverspoon.me/misc/proxy?key=penikmatKesulitan&url';
-
-                $endpointURL = Str::of(Str::finish($proxyURL, '='))->append($outputURL);
-            }
-
-            // SOCKS option - TOR might be blocked on many case and wouldn't really recommend, unless Cloudflare Pages is fucked up, or at least isn't available anymore
-            if(isset($option['socks']) ?? $option['socks'] == true){
-                $http->withOptions([
-                    'proxy' => [
-                        'http'  => 'socks5://103.76.129.3:12053',
-                        'https' => 'socks5://103.76.129.3:12053',
-                    ],
-                ]);
-            }
-
-            // Return result based on method
-            if($option['method'] == 'GET'){
-                return $http->get($endpointURL);
-            }
-            else{
-                return null;
-            }
-        }
-        else{
-            return null;
-        }
-    }
-
     public static function getCustomizedIdentifier($identifier){
         if((Str::length($identifier) == 8) && (Str::contains($identifier, ['.', '-']) == false)){
             return null;

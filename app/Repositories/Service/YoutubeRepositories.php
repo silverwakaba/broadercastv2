@@ -252,7 +252,7 @@ class YoutubeRepositories{
                         $mId = $cmId->id;
                     }
         
-                    Mail::mailer('mailerha')->to($email)->send(new UserClaimEmail($mId));
+                    Mail::to($email)->send(new UserClaimEmail($mId));
         
                     return RedirectHelper::routeBack($back, 'success', 'Claim', 'claim');
                 }

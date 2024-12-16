@@ -22,6 +22,8 @@ class RaceController extends Controller{
                 'model'     => $this->model,
                 'resource'  => $this->resource,
                 'route'     => 'apps.base.persona',
+                'query'     => ['decision'],
+                'orderBy'   => ['name', 'ASC'],
                 'with'      => ['belongsToBaseDecision', 'hasOneUser'],
             ]);
         }

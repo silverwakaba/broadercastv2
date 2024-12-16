@@ -22,6 +22,8 @@ class LanguageController extends Controller{
                 'model'     => $this->model,
                 'resource'  => $this->resource,
                 'route'     => 'apps.base.language',
+                'query'     => ['decision'],
+                'orderBy'   => ['name', 'ASC'],
                 'with'      => ['belongsToBaseDecision', 'hasOneUser'],
             ]);
         }

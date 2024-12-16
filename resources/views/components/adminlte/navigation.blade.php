@@ -213,6 +213,12 @@
                                         <x-Adminlte.NavLink icon="1" route="apps.base.persona.index" value="Persona Type" />
                                     </li>
                                     <li class="nav-item">
+                                        <x-Adminlte.NavLink icon="1" route="apps.base.proxy.type.index" value="Proxy Type" />
+                                    </li>
+                                    <li class="nav-item">
+                                        <x-Adminlte.NavLink icon="1" route="apps.base.proxy.host.index" value="Proxy Host" />
+                                    </li>
+                                    <li class="nav-item">
                                         <x-Adminlte.NavLink icon="1" route="apps.master.user.index" value="User Account" />
                                     </li>
                                 </ul>

@@ -220,7 +220,7 @@ class TwitchRepositories{
                         $mId = $cmId->id;
                     }
         
-                    Mail::mailer('mailerha')->to($email)->send(new UserClaimEmail($mId));
+                    Mail::to($email)->send(new UserClaimEmail($mId));
         
                     return RedirectHelper::routeBack($back, 'success', 'Claim', 'claim');
                 }
@@ -463,7 +463,7 @@ class TwitchRepositories{
             });
         }
         catch(\Throwable $th){
-            throw $th;
+            // throw $th;
         }
     }
 
