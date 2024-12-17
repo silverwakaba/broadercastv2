@@ -108,6 +108,9 @@ Route::group(['prefix' => '/'], function(){
         Route::get('login', [AuthController::class, 'login'])->name('login');
         Route::post('login', [AuthController::class, 'loginPost'])->middleware(['throttle:5,1']);
 
+        // 2FA
+        Route::get('2fa', [AuthController::class, 'login2FA'])->name('2fa')->middleware(['signed'])->withoutMiddleware(['guest']);
+
         // Recover
         Route::get('recover', [AuthController::class, 'recover'])->name('recover');
         Route::post('recover', [AuthController::class, 'recoverPost'])->middleware(['throttle:2,1']);
@@ -129,9 +132,6 @@ Route::group(['prefix' => '/'], function(){
         // Claim
         Route::get('claim', [AuthController::class, 'claim'])->name('claim')->withoutMiddleware(['guest']);
         Route::post('claim', [AuthController::class, 'claimPost'])->withoutMiddleware(['guest']);
-
-        // 2FA
-        Route::get('2fa', [AuthController::class, 'login2FA'])->name('2fa')->middleware(['signed'])->withoutMiddleware(['guest']);
 
         // Logout
         Route::get('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware(['guest']);

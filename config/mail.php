@@ -34,6 +34,21 @@ return [
     */
 
     'mailers' => [
+        // Debug SMTP
+        'debug' => [
+            'transport'     => 'smtp',
+            'host'          => env('MAILER_DEBUG_HOST', 'sandbox.smtp.mailtrap.io'),
+            'port'          => env('MAILER_DEBUG_PORT', 2525),
+            'encryption'    => env('MAILER_DEBUG_ENCRYPTION', 'tls'),
+            'username'      => env('MAILER_DEBUG_USERNAME'),
+            'password'      => env('MAILER_DEBUG_PASSWORD', null),
+            'timeout'       => null,
+            'from'          => [
+                'name'      => env('MAIL_FROM_NAME', 'vTual Mailer Debug'),
+                'address'   => env('MAIL_FROM_ADDRESS', 'vtual@debug.net'),
+            ],
+        ],
+
         // Custom SMTP
         'smtp' => [
             'transport'     => 'smtp',
@@ -46,13 +61,8 @@ return [
 
             // Useless when using failover mode
             'from'          => [
-                // SMTP
-                // 'name'      => env('MAILER_DEFAULT_NAME', 'vTual Mailer'),
-                // 'address'   => env('MAILER_DEFAULT_USERNAME', 'vtual@no-reply.spnd.uk'),
-                
-                // Mailtrap
-                'name'      => env('MAIL_FROM_NAME', 'vTual Mailer'),
-                'address'   => env('MAIL_FROM_ADDRESS', 'vtual@no-reply.spnd.uk'),
+                'name'      => env('MAILER_DEFAULT_NAME', 'vTual Mailer'),
+                'address'   => env('MAILER_DEFAULT_USERNAME', 'vtual@no-reply.spnd.uk'),
             ],
         ],
 
@@ -73,7 +83,7 @@ return [
             ],
         ],
 
-        // Mail Backup 2 - Zepto Paid-Tier
+        // Mail Backup 2 - Zepto Paid-Tier (TBA)
         'zepto' => [
             'transport'     => 'smtp',
             'host'          => env('MAILER_BACKUP_2_HOST', 'smtp.zeptomail.com'),
