@@ -1,5 +1,5 @@
 <aside class="control-sidebar control-sidebar-dark">
-    <!--  -->
+    <!-- Ngapain disini bang? Gabut bat awokawok. -->
 </aside>
 <footer class="main-footer">
     <div class="row">
@@ -61,7 +61,10 @@
                             <a href="#" class="text-light">Discord</a>
                         </li>
                         <li>
-                            <a href="https://status.silverspoon.me" target="_blank" class="text-light">Status</a>
+                            <a href="https://status.silverspoon.me" target="_blank" class="text-light">Status History</a>
+                        </li>
+                        <li>
+                            <a href="https://ping.pe/www.vtual.net" target="_blank" class="text-light">Status Ping</a>
                         </li>
                     </ul>
                 </div>

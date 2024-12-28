@@ -6,7 +6,7 @@ use App\Helpers\BaseHelper;
 use App\Helpers\BaseMailer;
 use App\Helpers\RedirectHelper;
 
-use App\Mail\User2FAEmail; // rename as User2FALoginEmail
+use App\Mail\User2FAEmail; // rename as User2FALoginEmail later
 use App\Mail\UserRecoveryEmail;
 use App\Mail\UserVerifyEmail;
 
@@ -37,30 +37,32 @@ class UserAuthRepositories{
                 ['2fa', '=', true],
             ])->whereNotNull('email_verified_at')->first();
 
-            $request = $secured->hasOneUserRequest()->where([
-                ['base_request_id', '=', 4],
-                ['users_id', '=', $secured->id],
-                ['token', '!=', null],
-            ])->first();
-
             if($secured){
-                if($request){
-                    $mId = $request->id;
+                $request = $secured->hasOneUserRequest()->where([
+                    ['base_request_id', '=', 4],
+                    ['users_id', '=', $secured->id],
+                    ['token', '!=', null],
+                ])->first();
+    
+                if($secured){
+                    if($request){
+                        $mId = $request->id;
+                    }
+                    else{
+                        $cmId = $secured->hasOneUserRequest()->create([
+                            'base_request_id'   => 4,
+                            'users_id'          => $secured->id,
+                            'token'             => BaseHelper::adler32(),
+                        ]);
+                    
+                        $mId = $cmId->id;
+                    }
+    
+                    Mail::to($data['email'])->send(new User2FAEmail($mId));
                 }
-                else{
-                    $cmId = $secured->hasOneUserRequest()->create([
-                        'base_request_id'   => 4,
-                        'users_id'          => $secured->id,
-                        'token'             => BaseHelper::adler32(),
-                    ]);
-                
-                    $mId = $cmId->id;
-                }
-
-                Mail::to($data['email'])->send(new User2FAEmail($mId));
 
                 Auth::logout();
- 
+     
                 request()->session()->invalidate();
                 
                 request()->session()->regenerateToken();
@@ -69,7 +71,7 @@ class UserAuthRepositories{
             }
             else{
                 request()->session()->regenerate();
-
+    
                 return RedirectHelper::routeIntended(route('apps.front.index'));
             }
         }

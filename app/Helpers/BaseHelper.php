@@ -57,9 +57,9 @@ class BaseHelper{
         $array = [
             Str::uuid(),
             Str::ulid(),
+            Str::orderedUuid(),
             Str::password(150),
             Str::password(200),
-            Carbon::now(),
         ];
 
         $shuffle = Arr::shuffle($array);
@@ -70,7 +70,9 @@ class BaseHelper{
 
         $append = Str::of($original)->append($reverse);
 
-        $encrypt = Crypt::encryptString($append);
+        $deduplicate = Str::deduplicate($append, '-xxXXxx-');
+
+        $encrypt = Crypt::encryptString($deduplicate);
 
         return password_hash($encrypt, PASSWORD_DEFAULT);
     }

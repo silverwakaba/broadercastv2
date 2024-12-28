@@ -21,6 +21,9 @@ class RedirectHelper{
         elseif($mode == "delete"){
             $modeMessage = "deletes to $title";
         }
+        elseif($mode == "deactivate"){
+            $modeMessage = "deactivates to $title";
+        }
         elseif($mode == "follow"){
             $modeMessage = "following " . Str::of($title)->apa();
         }

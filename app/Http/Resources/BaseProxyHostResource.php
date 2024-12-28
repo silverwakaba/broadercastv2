@@ -17,7 +17,6 @@ class BaseProxyHostResource extends JsonResource{
             'type'      => new BaseProxyTypeResource($this->whenLoaded('belongsToBaseProxyType')),
             'host'      => $this->host,
             'online'    => $this->online == true ? '<i class="fas fa-circle text-success"></i>' : '<i class="fas fa-circle text-danger"></i>',
-            
         ];
     }
 }

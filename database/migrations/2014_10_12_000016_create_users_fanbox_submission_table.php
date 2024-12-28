@@ -15,6 +15,7 @@ return new class extends Migration{
             $table->foreignId('users_id')->references('id')->on('users')->onDelete('cascade');
             $table->boolean('anonymous')->default(false);
             $table->longText('message');
+            $table->timestamps();
         });
     }
 

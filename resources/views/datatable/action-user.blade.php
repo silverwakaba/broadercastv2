@@ -5,6 +5,7 @@
             <a href="{{ route($route . '.edit', ['id' => $id]) }}" @class(["dropdown-item"])><i class="fas fa-edit"></i> Edit</a>
         @endif
         @if(Route::has($route . '.delete'))
+            <div class="dropdown-divider"></div>
             <a href="{{ route($route . '.delete', ['id' => $id]) }}" @class(["dropdown-item"])><i class="fas fa-trash"></i> Delete</a>
         @endif
     </div>

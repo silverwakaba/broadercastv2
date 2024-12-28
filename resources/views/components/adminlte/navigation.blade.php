@@ -167,6 +167,9 @@
                                     <x-Adminlte.NavLink icon="1" route="apps.manager.email" value="Email" />
                                 </li>
                                 <li class="nav-item">
+                                    <x-Adminlte.NavLink icon="1" route="apps.manager.fanbox.index" value="Fanbox" />
+                                </li>
+                                <li class="nav-item">
                                     <x-Adminlte.NavLink icon="1" route="apps.manager.gender" value="Gender" />
                                 </li>
                                 <li class="nav-item">

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class UserFanboxSubmission extends Model{
     protected $table = 'users_fanbox_submission';
     protected $primaryKey = 'id';
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = [
         'users_fanbox_id',
@@ -16,8 +16,16 @@ class UserFanboxSubmission extends Model{
         'message',
     ];
 
-    public function belongsToUser(){
+    public function belongsToUser(){ // The one who answer the question
         return $this->belongsTo(User::class, 'users_id');
+    }
+
+    public function hasOneThroughUser(){  // The one who make the question
+        return $this->hasOneThrough(User::class, UserFanbox::class, 'id', 'id', 'users_fanbox_id', 'users_id',);
+    }
+
+    public function hasOneThroughUserAvatar(){
+        return $this->hasOneThrough(UserAvatar::class, User::class, 'id', 'users_id', 'users_id', 'id');
     }
 
     public function belongsToUserFanbox(){

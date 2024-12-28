@@ -21,6 +21,8 @@ use App\Http\Controllers\Apps\Base\ProxyTypeController as BaseProxyTypeControlle
 use App\Http\Controllers\Apps\Base\RaceController as BaseRaceController;
 
 // Manager
+use App\Http\Controllers\Apps\Manager\FanboxController as ManagerFanboxController;
+use App\Http\Controllers\Apps\Manager\FanboxSubmissionController as ManagerFanboxSubmissionController;
 use App\Http\Controllers\Apps\Manager\UserController as ManagerUserController;
 
 // Master Data
@@ -29,6 +31,7 @@ use App\Http\Controllers\Apps\Master\UserController as MasterUserController;
 // Front
 use App\Http\Controllers\Front\ContentController as FrontContentController;
 use App\Http\Controllers\Front\CreatorController as FrontCreatorController;
+use App\Http\Controllers\Front\FanboxController as FrontFanboxController;
 
 // Debug | Please comment before deployment to prods
 // use App\Http\Controllers\Cron\TwitchCron;
@@ -96,6 +99,20 @@ Route::group(['prefix' => '/'], function(){
         // Setting
         Route::get('setting', [FrontContentController::class, 'setting'])->name('content.setting');
         Route::post('setting', [FrontContentController::class, 'settingPost']);
+    });
+
+    // Fanbox
+    Route::group(['prefix' => 'fanbox'], function(){
+        // Index
+        // Route::get('/', [FrontFanboxController::class, 'index'])->name('fanbox.index');
+
+        // Add
+        Route::get('{id}', [FrontFanboxController::class, 'answer'])->name('fanbox.answer');
+        Route::post('{id}', [FrontFanboxController::class, 'answerPost']);
+
+        // Edit
+        Route::get('{id}/{did}', [FrontFanboxController::class, 'answerEdit'])->name('fanbox.answer.edit');
+        Route::post('{id}/{did}', [FrontFanboxController::class, 'answerEditPost']);
     });
 
     // Auth
@@ -180,6 +197,29 @@ Route::group(['prefix' => '/'], function(){
             // Email
             Route::get('email', [ManagerUserController::class, 'email'])->name('apps.manager.email');
             Route::post('email', [ManagerUserController::class, 'emailPost']);
+
+            // Fanbox
+            Route::group(['prefix' => 'fanbox'], function(){
+                // Index
+                Route::get('/', [ManagerFanboxController::class, 'index'])->name('apps.manager.fanbox.index');
+
+                // Add
+                Route::get('add', [ManagerFanboxController::class, 'add'])->name('apps.manager.fanbox.add');
+                Route::post('add', [ManagerFanboxController::class, 'addPost']);
+
+                // Edit
+                Route::get('edit/{id}', [ManagerFanboxController::class, 'edit'])->name('apps.manager.fanbox.edit');
+                Route::post('edit/{id}', [ManagerFanboxController::class, 'editPost']);
+
+                // Delete
+                Route::get('delete/{id}', [ManagerFanboxController::class, 'delete'])->name('apps.manager.fanbox.delete');
+
+                // View
+                Route::get('{id}', [ManagerFanboxSubmissionController::class, 'index'])->name('apps.manager.fanbox.submission.view');
+
+                // Delete
+                Route::get('{id}/delete', [ManagerFanboxSubmissionController::class, 'delete'])->name('apps.manager.fanbox.submission.delete')->middleware(['signed']);
+            });
 
             // Gender
             Route::get('gender', [ManagerUserController::class, 'gender'])->name('apps.manager.gender');
