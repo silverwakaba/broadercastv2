@@ -18,11 +18,12 @@ class UserFanboxSubmissionResource extends JsonResource{
         return [
             'id'            => $this->id,
             'anonymous'     => $this->anonymous,
-            'message'       => Str::markdown($this->message, ['html_input' => 'strip']),
+            'message'       => $this->message,
+            'message_md'    => Str::markdown($this->message, ['html_input' => 'strip']),
             'created_at'    => Carbon::parse($this->created_at)->format('d M Y, g:i A'),
             'userWhoAsked'  => new UserResource($this->whenLoaded('hasOneThroughUser')),
             'userWhoAnswer' => new UserFanboxAnswerResource($this->whenLoaded('belongsToUser'), $this->anonymous),
-            'avatar'        => new UserAvatarResource($this->whenLoaded('hasOneThroughUserAvatar')),
+            'avatar'        => new UserAvatarFanboxResource($this->whenLoaded('hasOneThroughUserAvatar'), $this->anonymous),
             'fanbox'        => new UserFanboxResource($this->whenLoaded('belongsToUserFanbox')),
         ];
     }

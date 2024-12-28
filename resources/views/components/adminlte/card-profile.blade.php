@@ -56,7 +56,7 @@
             <li class="list-group-item">
                 <strong>About</strong>
                 @if($profile->biodata->biography)
-                    {!! $profile->biodata->biography !!}
+                    <div>{!! $profile->biodata->biography !!}</div>
                 @else
                     <p class="m-0">Nothing known about this creator</p>
                 @endif

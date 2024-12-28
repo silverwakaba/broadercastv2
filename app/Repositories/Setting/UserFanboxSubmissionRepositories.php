@@ -101,8 +101,6 @@ class UserFanboxSubmissionRepositories{
 
     // Delete
     public static function delete(array $data){
-        // return $data;
-
         $datas = self::find([
             'did' => BaseHelper::encrypt($data['did']),
         ]);
@@ -113,7 +111,7 @@ class UserFanboxSubmissionRepositories{
             return redirect(urldecode($data['page']));
         }
         else{
-            return redirect()->route('apps.manager.fanbox.submission.view', ['id' => $data['id']]);
+            return redirect()->route('apps.manager.fanbox.view', ['id' => $data['id']]);
         }
     }
 }

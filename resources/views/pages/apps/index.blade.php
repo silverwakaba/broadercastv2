@@ -3,7 +3,7 @@
 @section('content')
     <x-Adminlte.Content>
         <x-Adminlte.Card>
-            ABC
+            <p>~ TBA ~</p>
         </x-Adminlte.Card>
     </x-Adminlte.Content>
 @endsection

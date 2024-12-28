@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Helpers\BaseHelper;
 use App\Helpers\BasedataHelper;
 
+use App\Http\Requests\Apps\Setting\UserFanboxSubmissionRequest;
+
 use App\Repositories\Setting\UserFanboxRepositories;
 use App\Repositories\Setting\UserFanboxSubmissionRepositories;
 
@@ -31,7 +33,7 @@ class FanboxController extends Controller{
         ]);
     }
 
-    public function answerPost(Request $request, $id){
+    public function answerPost(UserFanboxSubmissionRequest $request, $id){
         return UserFanboxSubmissionRepositories::upsert([
             'id'        => $id,
             'anonymous' => $request->anonymous,
@@ -45,7 +47,7 @@ class FanboxController extends Controller{
             'id'        => $id,
             'did'       => $did,
             'resource'  => true,
-            'with'      => ['hasOneThroughUser', 'hasOneThroughUserAvatar', 'belongsToUserFanbox'], // 'belongsToUser'
+            'with'      => ['hasOneThroughUser', 'hasOneThroughUserAvatar', 'belongsToUserFanbox'],
         ]);
 
         return view('pages/front/fanbox/answer/edit', [
@@ -54,7 +56,7 @@ class FanboxController extends Controller{
         ]);
     }
 
-    public function answerEditPost(Request $request, $id, $did){
+    public function answerEditPost(UserFanboxSubmissionRequest $request, $id, $did){
         return UserFanboxSubmissionRepositories::upsert([
             'id'        => $id,
             'anonymous' => $request->anonymous,

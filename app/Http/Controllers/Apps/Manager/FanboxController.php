@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Helpers\BaseHelper;
 use App\Helpers\BasedataHelper;
 
+use App\Http\Requests\Apps\Setting\UserFanboxRequest;
+
 use App\Repositories\Setting\UserFanboxRepositories;
 
 use Illuminate\Http\Request;
@@ -40,7 +42,7 @@ class FanboxController extends Controller{
         ]);
     }
 
-    public function addPost(Request $request){
+    public function addPost(UserFanboxRequest $request){
         return UserFanboxRepositories::upsert([
             'users_id'      => auth()->user()->id,
             'public'        => (boolean) $request->public,
@@ -63,7 +65,7 @@ class FanboxController extends Controller{
         ]);
     }
 
-    public function editPost(Request $request, $id){
+    public function editPost(UserFanboxRequest $request, $id){
         return UserFanboxRepositories::upsert([
             'public'        => (boolean) $request->public,
             'active'        => (boolean) $request->active,

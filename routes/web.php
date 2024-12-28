@@ -215,10 +215,10 @@ Route::group(['prefix' => '/'], function(){
                 Route::get('delete/{id}', [ManagerFanboxController::class, 'delete'])->name('apps.manager.fanbox.delete');
 
                 // View
-                Route::get('{id}', [ManagerFanboxSubmissionController::class, 'index'])->name('apps.manager.fanbox.submission.view');
+                Route::get('{id}', [ManagerFanboxSubmissionController::class, 'index'])->name('apps.manager.fanbox.view');
 
                 // Delete
-                Route::get('{id}/delete', [ManagerFanboxSubmissionController::class, 'delete'])->name('apps.manager.fanbox.submission.delete')->middleware(['signed']);
+                Route::get('{id}/delete', [ManagerFanboxSubmissionController::class, 'delete'])->name('apps.manager.fanbox.delete-submission')->middleware(['signed']);
             });
 
             // Gender

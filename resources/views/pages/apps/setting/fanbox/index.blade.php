@@ -32,6 +32,11 @@
                 },
                 {
                     data: "datas.title",
+                    render: function(data, type, row){
+                        return `
+                            <a href="${ row['datas']['page'] }" target="_blank">${ row['datas']['title'] }</a>
+                        `;
+                    },
                 },
                 {
                     data: "datas.active",

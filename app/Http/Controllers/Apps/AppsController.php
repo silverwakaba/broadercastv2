@@ -18,6 +18,6 @@ class AppsController extends Controller{
 
     // Apps Manager Index
     public function manager(){
-        return view('pages/apps/master');
+        return view('pages/apps/manager');
     }
 }

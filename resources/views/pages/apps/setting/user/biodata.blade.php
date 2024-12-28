@@ -13,7 +13,7 @@
             </ol>
         </x-Adminlte.Callout>
         <x-Adminlte.CardForm button="Change">
-            <x-Form.Input name="name" type="text" text="Name [this one]" :value="$datas->name" placeholder="Your stage or real name is fine..." />
+            <x-Form.Input name="name" type="text" text="Name" :value="$datas->name" placeholder="Your stage or real name is fine..." />
             <x-Form.Textarea name="nickname" text="Nickname" :value="$datas->hasOneUserBiodata->nickname" placeholder="Have another name? Separate into new lines!" />
             <x-Form.Input name="dob" type="date" text="Date of Birth" :value="$datas->hasOneUserBiodata->dob" />
             <x-Form.Input name="dod" type="date" text="Date of Debut" :value="$datas->hasOneUserBiodata->dod" />
