@@ -83,6 +83,15 @@ class CreatorController extends Controller{
 
     // Profile
     public function profile($id){
+        // Search
+        $sort = BasedataHelper::baseSort();
+        $timezone = BasedataHelper::baseTimezone();
+        $timezone_value = CookiesRepositories::timezone();
+        $live_value = CookiesRepositories::actualStart();
+        $schedule_value = CookiesRepositories::schedule();
+        $vod_value = CookiesRepositories::published();
+        $streamTitle = request()->title;
+
         // Profile
         $profile = UserProfileRepositories::getProfile([
             'identifier'    => $id,
@@ -117,7 +126,8 @@ class CreatorController extends Controller{
             ],
         ]);
 
-        $feed = UserProfileRepositories::getFeed([
+        // Live Feed
+        $liveFeed = UserProfileRepositories::getFeed([
             'with'  => [
                 'belongsToUser',
                 'hasOneThroughUserLink',
@@ -125,21 +135,86 @@ class CreatorController extends Controller{
             ],
             'query' => [
                 ['users_id', '=', $profile->id],
+                ['base_status_id', '=', 8],
+                ['title', 'like', '%' . $streamTitle . '%'],
             ],
-            'option'     => [
-                'take'       => 3,
-                'orderType'  => 'all',
-                'pagination' => [
-                    'type' => 'normal',
+            'option'        => [
+                'take'          => 3,
+                'orderType'     => 'live',
+                'pagination'    => [
+                    'type'  => 'normal',
+                ],
+            ],
+        ]);
+
+        // Schedule Feed
+        $scheduleFeed = UserProfileRepositories::getFeed([
+            'with'  => [
+                'belongsToUser',
+                'hasOneThroughUserLink',
+                'belongsToUserLinkTracker',
+            ],
+            'query' => [
+                ['users_id', '=', $profile->id],
+                ['base_status_id', '=', 7],
+                ['title', 'like', '%' . $streamTitle . '%'],
+            ],
+            'option'        => [
+                'take'          => 3,
+                'orderType'     => 'schedule',
+                'pagination'    => [
+                    'type'  => 'normal',
+                ],
+            ],
+        ]);
+
+        // Archived and VOD Feed
+        $archivodFeed = UserProfileRepositories::getFeed([
+            'with'  => [
+                'belongsToUser',
+                'hasOneThroughUserLink',
+                'belongsToUserLinkTracker',
+            ],
+            'query' => [
+                ['users_id', '=', $profile->id],
+                ['title', 'like', '%' . $streamTitle . '%'],
+            ],
+            'option'        => [
+                'take'          => 3,
+                'orderType'     => 'archivod',
+                'pagination'    => [
+                    'type'  => 'normal',
                 ],
             ],
         ]);
 
         return view('pages/front/creator/profile', [
-            'profile'   => $profile,
-            'link'      => $link,
-            'tracker'   => $tracker,
-            'feed'      => $feed,
+            'sort'              => $sort,
+            'timezone'          => $timezone,
+            'timezone_value'    => $timezone_value,
+            'live_value'        => $live_value,
+            'schedule_value'    => $schedule_value,
+            'vod_value'         => $vod_value,
+            'profile'           => $profile,
+            'link'              => $link,
+            'tracker'           => $tracker,
+            'liveFeed'          => $liveFeed,
+            'scheduleFeed'      => $scheduleFeed,
+            'archivodFeed'      => $archivodFeed,
+        ]);
+    }
+
+    public function profilePost(Request $request, $id){
+        $expire = (60 * 24) * 30;
+
+        Cookie::queue('timezone', $request->timezone, $expire);
+        Cookie::queue('actual_start', $request->live_content, $expire);
+        Cookie::queue('schedule', $request->schedule_content, $expire);
+        Cookie::queue('published', $request->vod_content, $expire);
+
+        return redirect()->route('creator.profile', [
+            'id'    => $id,
+            'title' => $request->title,
         ]);
     }
 

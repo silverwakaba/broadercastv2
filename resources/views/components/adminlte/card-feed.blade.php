@@ -1,4 +1,4 @@
-<div @class(["scrolling-pagination" => isset($feeds->links)])>
+<div @class(["scrolling-pagination" => isset($feeds->links->next)])>
     <div @class(["row row-cols-1", "row-cols-lg-$col" => count($feeds->data) >= 1])>
         @if(($feeds) && (count($feeds->data) >= 1))
             @foreach($feeds->data AS $data)
@@ -10,7 +10,9 @@
                                 @if(($data->base_status_id == 8))
                                     <span class="vid-view bg-danger text-white p-1">{{ number_format($data->concurrent) }}</span>
                                 @endif
-                                <span class="vid-time bg-secondary text-white p-1">{{ $data->duration }}</span>
+                                @if(($data->base_status_id == 8) || ($data->base_status_id == 9) || ($data->base_status_id == 10))
+                                    <span class="vid-time bg-secondary text-white p-1">{{ $data->duration }}</span>
+                                @endif
                             </a>
                         </div>
                         <a href="{{ $data->user->page }}" class="text-light" title="{{ $data->profile->name }}">

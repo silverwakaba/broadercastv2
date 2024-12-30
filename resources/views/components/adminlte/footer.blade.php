@@ -55,16 +55,16 @@
                     <h4>External</h4>
                     <ul class="list-unstyled">
                         <li>
-                            <a href="https://bsky.app/profile/vtual.net" target="_blank" class="text-light">Bluesky</a>
+                            <a href="{{ route('go.bsky') }}" target="_blank" class="text-light">Bluesky</a>
                         </li>
                         <li>
                             <a href="#" class="text-light">Discord</a>
                         </li>
                         <li>
-                            <a href="https://status.silverspoon.me" target="_blank" class="text-light">Status History</a>
+                            <a href="{{ route('go.status') }}" target="_blank" class="text-light">Status History</a>
                         </li>
                         <li>
-                            <a href="https://ping.pe/www.vtual.net" target="_blank" class="text-light">Status Ping</a>
+                            <a href="{{ route('go.ping') }}" target="_blank" class="text-light">Status Ping</a>
                         </li>
                     </ul>
                 </div>

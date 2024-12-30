@@ -230,32 +230,31 @@ class UserProfileRepositories{
             $datas->has('belongsToUserRelationFollowed');
         }
 
-        // Order By
-        if(
-            (isset($data['option']['orderType']))
-            &&
-            (Str::contains($data['option']['orderType'], ['live', 'archive'])) // Live, Archive
-        ){
+        // Order by Live or Archive
+        if((isset($data['option']['orderType'])) && (Str::contains($data['option']['orderType'], ['live', 'archive']))){
             $datas->orderBy('actual_start', CookiesRepositories::actualStart());
         }
-        elseif(
-            (isset($data['option']['orderType']))
-            &&
-            (Str::contains($data['option']['orderType'], ['schedule'])) // Schedule
-        ){
+
+        // Order by Schedule
+        elseif((isset($data['option']['orderType'])) && (Str::contains($data['option']['orderType'], ['schedule']))){
             $datas->orderBy('schedule', CookiesRepositories::schedule());
 
             if((isset($data['option']['dayLoad']))){
                 $datas->whereBetween('schedule', [Carbon::now()->toDateTimeString(), Carbon::now()->addDays($data['option']['dayLoad'])->toDateTimeString()]);
             }
         }
-        elseif(
-            (isset($data['option']['orderType']))
-            &&
-            (Str::contains($data['option']['orderType'], ['all'])) // All
-        ){
+
+        // Order by Unspecified as Past Content
+        elseif((isset($data['option']['orderType'])) && (Str::contains($data['option']['orderType'], ['archivod']))){
+            $datas->whereIn('base_status_id', [9, 10])->orderBy('published', CookiesRepositories::published());
+        }
+
+        // Order by All
+        elseif((isset($data['option']['orderType'])) && (Str::contains($data['option']['orderType'], ['all']))){
             $datas->orderByRaw("CASE WHEN schedule IS NULL THEN 0 ELSE 1 END DESC")->orderBy('schedule', 'DESC')->orderBy('actual_start', 'DESC')->orderBy('published', 'DESC');
         }
+
+        // Order by Other condition, unspecified
         else{
             $datas->orderBy('published', CookiesRepositories::published());
         }

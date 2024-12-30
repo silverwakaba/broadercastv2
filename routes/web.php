@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
+// Redirect
+use App\Http\Controllers\API\RedirectController;
+
 // General
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\Auth\AuthController;
@@ -48,6 +51,20 @@ Route::group(['prefix' => '/'], function(){
     //     Route::get('youtube', [YoutubeCron::class, 'fetchDebug']);
     // });
 
+    // Redirect
+    Route::group(['prefix' => 'go'], function(){
+        // Bsky
+        Route::get('bsky', [RedirectController::class, 'bsky'])->name('go.bsky');
+
+        // Discord
+
+        // Ping
+        Route::get('ping', [RedirectController::class, 'ping'])->name('go.ping');
+
+        // Status
+        Route::get('status', [RedirectController::class, 'status'])->name('go.status');
+    });
+
     // Creator
     Route::group(['prefix' => 'creator'], function(){
         // Index
@@ -56,6 +73,7 @@ Route::group(['prefix' => '/'], function(){
 
         // Profile
         Route::get('{id}', [FrontCreatorController::class, 'profile'])->name('creator.profile');
+        Route::post('{id}', [FrontCreatorController::class, 'profilePost']);
 
         // Claim
         Route::get('{id}/claim', [FrontCreatorController::class, 'claim'])->name('creator.claim');

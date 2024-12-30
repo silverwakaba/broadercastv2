@@ -141,7 +141,7 @@ class YoutubeRepositories{
 
                         $checkUnique = Str::contains($scrapedData['about']['description'], $uniqueID);
 
-                        if((isset($checkUnique) && $checkUnique == true) xor (auth()->user()->hasRole('Admin|Moderator'))){
+                        if((isset($checkUnique) && $checkUnique == true) || (auth()->user()->hasRole('Admin|Moderator'))){
                             $http = YoutubeAPIRepositories::fetchChannels($channelIDS);
 
                             if($http['pageInfo']['totalResults'] >= 1){
@@ -167,38 +167,44 @@ class YoutubeRepositories{
                             }
                         }
 
-                        // Admin and Moderator can Directly Mark Link Tracker as Verified
-                        if((auth()->user()->hasRole('Admin|Moderator'))){
-                            $userLink->update([
-                                'base_decision_id' => 2,
-                            ]);
-                            
-                            $userLink->hasOneUserLinkTracker()->create($createNew);
-            
-                            // Redirect
-                            return RedirectHelper::routeBack($back, 'success', 'Channel Verification', 'verify');
-                        }
+                        // Create corespondence channel
+                        if(isset($createNew) && ($createNew)){
+                            // Admin and Moderator can Directly Mark Link Tracker as Verified
+                            if((auth()->user()->hasRole('Admin|Moderator'))){
+                                $userLink->update([
+                                    'base_decision_id' => 2,
+                                ]);
+                                
+                                $userLink->hasOneUserLinkTracker()->create($createNew);
+                
+                                // Redirect
+                                return RedirectHelper::routeBack($back, 'success', 'Channel Verification', 'verify');
+                            }
 
-                        // But Normal User Need to Provide Unique ID and Then It Will Be Checked
-                        else{
-                            if((isset($checkUnique) && $checkUnique == true)){
-                                if($limitChannel <= 1){
-                                    $userLink->update([
-                                        'base_decision_id' => 2,
-                                    ]);
-            
-                                    $userLink->hasOneUserLinkTracker()->create($createNew);
-            
-                                    // Redirect
-                                    return RedirectHelper::routeBack($back, 'success', 'Channel Verification', 'verify');
+                            // But Normal User Need to Provide Unique ID and Then It Will Be Checked
+                            else{
+                                if((isset($checkUnique) && $checkUnique == true)){
+                                    if($limitChannel <= 1){
+                                        $userLink->update([
+                                            'base_decision_id' => 2,
+                                        ]);
+                
+                                        $userLink->hasOneUserLinkTracker()->create($createNew);
+                
+                                        // Redirect
+                                        return RedirectHelper::routeBack($back, 'success', 'Channel Verification', 'verify');
+                                    }
+                                    else{
+                                        return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Because currently we only allow one YouTube tracker per creator, thus we have to cancel this verification process.', 'error');
+                                    }
                                 }
                                 else{
-                                    return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Because currently we only allow one YouTube tracker per creator, thus we have to cancel this verification process.', 'error');
+                                    return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. We were able to find your channel but we did not find your unique code.', 'error');
                                 }
                             }
-                            else{
-                                return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. We were able to find your channel but we did not find your unique code.', 'error');
-                            }
+                        }
+                        else{
+                            return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Because we can not fetch data related to this channel, please try again later.', 'error');
                         }
                     }
                     else{
