@@ -21,7 +21,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2.0/dist/css/adminlte.min.css">
     </head>
-    <body @class(["hold-transition", "dark-mode", "layout-navbar-fixed", "layout-fixed sidebar-mini" => request()->routeIs('apps.*'), "layout-top-nav" => !request()->routeIs('apps.*')])>
+    <body @class(["hold-transition", "dark-mode", "layout-navbar-fixed", "layout-top-nav" => !request()->routeIs('apps.*')])>
         <div class="wrapper">
             <x-Adminlte.Main />
         </div>

@@ -57,6 +57,7 @@ Route::group(['prefix' => '/'], function(){
         Route::get('bsky', [RedirectController::class, 'bsky'])->name('go.bsky');
 
         // Discord
+        // TBA
 
         // Ping
         Route::get('ping', [RedirectController::class, 'ping'])->name('go.ping');
