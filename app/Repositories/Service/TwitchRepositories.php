@@ -314,7 +314,7 @@ class TwitchRepositories{
     public static function checkChannelActivity(){
         try{
             $activeFeed = UserFeed::select('reference')->whereIn('base_status_id', ['6', '8'])->get();
-            $activeFeedCollection = collect($activeFeed)->pluck('reference')->all();
+            $activeFeedCollection = collect($activeFeed)->pluck('reference')->filter()->all();
             
             UserLinkTracker::where([
                 ['base_link_id', '=', 1],
@@ -325,6 +325,8 @@ class TwitchRepositories{
                     $http = Http::withOptions([
                         'proxy' => BaseHelper::baseProxy(),
                     ])->get('https://www.twitch.tv/' . $channel->handler)->body();
+
+                    // dd($http);
 
                     $live = Str::betweenFirst($http, ',"isLiveBroadcast":', '}}');
                     $title = Str::betweenFirst($http, '"description":"', '",');
@@ -355,7 +357,7 @@ class TwitchRepositories{
             });
         }
         catch(\Throwable $th){
-            // throw $th;
+            throw $th;
         }
     }
 
