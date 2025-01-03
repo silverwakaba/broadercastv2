@@ -16,11 +16,9 @@ class FrontController extends Controller{
     public function fetchDebug(){
         $http = Http::withOptions([
             'proxy' => BaseHelper::baseProxy(),
-        ])->get('https://www.twitch.tv/hiiragitsurugi')->body();
+        ])->get('http://ip-api.com/json')->json();
 
-        return [
-            $http
-        ];
+        return $http;
     }
 
     // Index

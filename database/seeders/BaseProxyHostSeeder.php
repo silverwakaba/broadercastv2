@@ -17,7 +17,7 @@ class BaseProxyHostSeeder extends Seeder{
             [
                 'base_proxy_type_id'    => 1,
                 'online'                => true,
-                'host'                  => 'http://176.116.18.49:12053',
+                'host'                  => 'http://103.76.129.3:12053',
             ],
 
             // YTS
