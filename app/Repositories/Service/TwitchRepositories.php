@@ -357,7 +357,7 @@ class TwitchRepositories{
             });
         }
         catch(\Throwable $th){
-            throw $th;
+            // throw $th;
         }
     }
 
