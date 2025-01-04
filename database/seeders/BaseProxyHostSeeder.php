@@ -17,7 +17,7 @@ class BaseProxyHostSeeder extends Seeder{
             [
                 'base_proxy_type_id'    => 1,
                 'online'                => true,
-                'host'                  => 'http://103.76.129.3:12053',
+                'host'                  => 'http://localhost:9050', // Host @ PH24 or something else other than Oracle
             ],
 
             // YTS
