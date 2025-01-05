@@ -19,6 +19,7 @@ class ContentController extends Controller{
         $datas = UserProfileRepositories::getFeed([
             'with'      => [
                 'belongsToUser',
+                'belongsToBaseLink',
                 'hasOneThroughUserLink',
                 'belongsToUserLinkTracker',
             ],
@@ -44,6 +45,7 @@ class ContentController extends Controller{
         $datas = UserProfileRepositories::getFeed([
             'with'      => [
                 'belongsToUser',
+                'belongsToBaseLink',
                 'hasOneThroughUserLink',
                 'belongsToUserLinkTracker',
             ],
@@ -70,6 +72,7 @@ class ContentController extends Controller{
         $datas = UserProfileRepositories::getFeed([
             'with'      => [
                 'belongsToUser',
+                'belongsToBaseLink',
                 'hasOneThroughUserLink',
                 'belongsToUserLinkTracker',
             ],
@@ -95,6 +98,7 @@ class ContentController extends Controller{
         $datas = UserProfileRepositories::getFeed([
             'with'      => [
                 'belongsToUser',
+                'belongsToBaseLink',
                 'hasOneThroughUserLink',
                 'belongsToUserLinkTracker',
             ],

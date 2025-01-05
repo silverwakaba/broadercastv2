@@ -1,6 +1,6 @@
 <div @class(["scrolling-pagination" => isset($feeds->links->next)])>
     <div @class(["row row-cols-1", "row-cols-lg-$col" => count($feeds->data) >= 1])>
-        @if(($feeds) && (count($feeds->data) >= 1))
+        @if(isset($feeds) && ($feeds) && (count($feeds->data) >= 1))
             @foreach($feeds->data AS $data)
                 <div class="col">
                     <div class="card card-widget">
@@ -22,6 +22,9 @@
                                     <div class="username">{{ $data->profile->name }}</div>
                                     <div class="description">
                                         <ul class="list-inline m-0">
+                                            @if(isset($data->service))
+                                                <li class="list-inline-item">On {{ $data->service->name }}</li>
+                                            @endif
                                             <li class="list-inline-item">{{ $data->timestamp_for_human }}</li>
                                         </ul>
                                     </div>

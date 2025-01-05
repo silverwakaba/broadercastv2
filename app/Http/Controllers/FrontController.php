@@ -27,6 +27,7 @@ class FrontController extends Controller{
         $live = UserProfileRepositories::getFeed([
             'with'      => [
                 'belongsToUser',
+                'belongsToBaseLink',
                 'hasOneThroughUserLink',
                 'belongsToUserLinkTracker',
             ],
@@ -44,6 +45,7 @@ class FrontController extends Controller{
         $schedule = UserProfileRepositories::getFeed([
             'with'      => [
                 'belongsToUser',
+                'belongsToBaseLink',
                 'hasOneThroughUserLink',
                 'belongsToUserLinkTracker',
             ],

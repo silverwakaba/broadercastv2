@@ -130,6 +130,7 @@ class CreatorController extends Controller{
         $liveFeed = UserProfileRepositories::getFeed([
             'with'  => [
                 'belongsToUser',
+                'belongsToBaseLink',
                 'hasOneThroughUserLink',
                 'belongsToUserLinkTracker',
             ],
@@ -151,6 +152,7 @@ class CreatorController extends Controller{
         $scheduleFeed = UserProfileRepositories::getFeed([
             'with'  => [
                 'belongsToUser',
+                'belongsToBaseLink',
                 'hasOneThroughUserLink',
                 'belongsToUserLinkTracker',
             ],
@@ -172,6 +174,7 @@ class CreatorController extends Controller{
         $archivodFeed = UserProfileRepositories::getFeed([
             'with'  => [
                 'belongsToUser',
+                'belongsToBaseLink',
                 'hasOneThroughUserLink',
                 'belongsToUserLinkTracker',
             ],

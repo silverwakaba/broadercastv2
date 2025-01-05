@@ -20,6 +20,7 @@ class SimpingController extends Controller{
         $live = UserProfileRepositories::getFeed([
             'with'      => [
                 'belongsToUser',
+                'belongsToBaseLink',
                 'hasOneThroughUserLink',
                 'belongsToUserLinkTracker',
             ],
@@ -40,6 +41,7 @@ class SimpingController extends Controller{
         $schedule = UserProfileRepositories::getFeed([
             'with'      => [
                 'belongsToUser',
+                'belongsToBaseLink',
                 'hasOneThroughUserLink',
                 'belongsToUserLinkTracker',
             ],
@@ -68,6 +70,7 @@ class SimpingController extends Controller{
         $datas = UserProfileRepositories::getFeed([
             'with'      => [
                 'belongsToUser',
+                'belongsToBaseLink',
                 'hasOneThroughUserLink',
                 'belongsToUserLinkTracker',
             ],
@@ -94,6 +97,7 @@ class SimpingController extends Controller{
         $datas = UserProfileRepositories::getFeed([
             'with'      => [
                 'belongsToUser',
+                'belongsToBaseLink',
                 'hasOneThroughUserLink',
                 'belongsToUserLinkTracker',
             ],
@@ -121,6 +125,7 @@ class SimpingController extends Controller{
         $datas = UserProfileRepositories::getFeed([
             'with'      => [
                 'belongsToUser',
+                'belongsToBaseLink',
                 'hasOneThroughUserLink',
                 'belongsToUserLinkTracker',
             ],
@@ -146,6 +151,7 @@ class SimpingController extends Controller{
         $datas = UserProfileRepositories::getFeed([
             'with'      => [
                 'belongsToUser',
+                'belongsToBaseLink',
                 'hasOneThroughUserLink',
                 'belongsToUserLinkTracker',
             ],
