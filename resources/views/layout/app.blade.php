@@ -4,12 +4,23 @@
         <meta charset="utf-8">
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
-        <title>@yield('title', 'Page') | {{ config('app.name', 'vTual') }}</title>
-        <meta name="description" content="" />
-        <meta name="keywords" content="" />
-        <link rel="shortcut icon" href="https://static.silverspoon.me/system/internal/image/logo/vtual/logo-50.png">
-        <link rel="apple-touch-icon" sizes="120x120" href="https://static.silverspoon.me/system/internal/image/logo/vtual/logo-120.png">
-        <link rel="apple-touch-icon" sizes="152x152" href="https://static.silverspoon.me/system/internal/image/logo/vtual/logo-152.png">
+        <title>@yield('title', 'Page Title') | {{ config('app.name', 'vTual') }}</title>
+        <meta name="description" content="@yield('description', 'description')">
+        <meta name="keywords" content="@yield('keywords', config('app.keywords'))">
+        <meta name="robots" content="index, follow">
+        <link rel="shortcut icon" href="https://static.pub.spnd.uk/system/internal/image/logo/vtual/logo-50.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="https://static.pub.spnd.uk/system/internal/image/logo/vtual/logo-120.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="https://static.pub.spnd.uk/system/internal/image/logo/vtual/logo-152.png">
+        <meta property="og:title" content="@yield('title', 'Page Title') | {{ config('app.name', 'vTual') }}">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="{{ url()->current() }}">
+        <meta property="og:image" content="@yield('image', config('app.image'))">
+        <meta property="og:description" content="@yield('description', config('app.description'))">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="@yield('title', 'Page Title') | {{ config('app.name', 'vTual') }}">
+        <meta name="twitter:url" content="{{ url()->current() }}">
+        <meta name="twitter:image" content="@yield('image', config('app.image'))">
+        <meta name="twitter:description" content="@yield('description', config('app.description'))">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">

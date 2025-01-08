@@ -158,7 +158,7 @@ class TwitchAPIRepositories{
     }
 
     // Fetch Subscriber
-    public static function fetchSubscriber($id = null){
+    public static function fetchSubscriber($id = null){ // Actually follower and not a subscriber | Need to be revised? | Nah
         $params = [
             'broadcaster_id' => $id,
         ];

@@ -4,6 +4,9 @@
     <x-Adminlte.Content :previous="route('apps.master.user.index')">
         <div class="row row-cols-1 row-cols-lg-2">
             <div class="col">
+                <x-Adminlte.Box colors="bg-dark" icon="fas fa-external-link-square-alt" title="Visit Profile" content="Visit user profile" :link="$datas->page" />
+            </div>
+            <div class="col">
                 <x-Adminlte.Box colors="bg-dark" icon="fas fa-user" title="Affiliation" content="Manage user affiliation" :link="route('apps.master.user.manage.affiliation', ['uid' => request()->uid])" />
             </div>
             <div class="col">

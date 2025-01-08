@@ -1,5 +1,6 @@
 @extends('layout.app')
 @section('title', $datas->title)
+@section('description', "Answer and give your opinion about the fanbox created by " . $datas->user->name . " regarding the topic of $datas->title")
 @section('content')
     <x-Adminlte.Content :title="$datas->title">
         <x-Adminlte.Callout class="info">

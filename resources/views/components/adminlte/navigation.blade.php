@@ -9,11 +9,18 @@
         </ul>
         <ul class="navbar-nav ml-auto">
             @can('canLogin')
-                <x-Adminlte.NavDropdown>
+                <x-Adminlte.NavDropdown route="apps.usermenu.*">
                     <a id="dropdownSubMenuAccountMenu" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">
                         User Menu
                     </a>
                     <ul aria-labelledby="dropdownSubMenuAccountMenu" class="dropdown-menu border-0 shadow">
+                        <li class="nav-item">
+                            <x-Adminlte.NavLink route="apps.usermenu.email" mode="dropdown" value="Email" />
+                        </li>
+                        <li class="nav-item">
+                            <x-Adminlte.NavLink route="apps.usermenu.password" mode="dropdown" value="Password" />
+                        </li>
+                        <div class="dropdown-divider"></div>
                         <li class="nav-item">
                             <x-Adminlte.NavLink route="logout" mode="dropdown" value="Logout" />
                         </li>
@@ -66,9 +73,6 @@
                         <li class="nav-item">
                             <x-Adminlte.NavLink route="content.uploaded" mode="dropdown" value="Uploaded" />
                         </li>
-                        <li class="nav-item">
-                            <x-Adminlte.NavLink route="content.setting" mode="dropdown" value="Setting" />
-                        </li>
                     </ul>
                 </x-Adminlte.NavDropdown>
                 <x-Adminlte.NavDropdown route="creator.*">
@@ -78,6 +82,16 @@
                     <ul aria-labelledby="dropdownSubMenuCreators" class="dropdown-menu border-0 shadow">
                         <li class="nav-item">
                             <x-Adminlte.NavLink route="creator.index" mode="dropdown" value="Discover" />
+                        </li>
+                    </ul>
+                </x-Adminlte.NavDropdown>
+                <x-Adminlte.NavDropdown route="preference.content.setting">
+                    <a id="dropdownSubMenuPreferences" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">
+                        Preference
+                    </a>
+                    <ul aria-labelledby="dropdownSubMenuPreferences" class="dropdown-menu border-0 shadow">
+                        <li class="nav-item">
+                            <x-Adminlte.NavLink route="preference.content.setting" mode="dropdown" value="Content" />
                         </li>
                     </ul>
                 </x-Adminlte.NavDropdown>
@@ -127,12 +141,18 @@
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                     @can('canLogin')
                         <li class="nav-header">Apps</li>
-                        <x-Adminlte.NavTree route="apps.front.*, apps.simp.*">
+                        <x-Adminlte.NavTree route="apps.front.*">
                             <x-Adminlte.NavLink icon="1" parent="1" fa="fas fa-tablet-alt" value="Apps" />
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <x-Adminlte.NavLink icon="1" route="apps.front.index" value="Dashboard" />
                                 </li>
+                            </ul>
+                        </x-Adminlte.NavTree>
+                        <li class="nav-header">Simp</li>
+                        <x-Adminlte.NavTree route="apps.simp.*">
+                            <x-Adminlte.NavLink icon="1" parent="1" fa="fas fa-kiss-wink-heart" value="Simp" />
+                            <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <x-Adminlte.NavLink icon="1" route="apps.simp.live" value="Live" />
                                 </li>
@@ -164,9 +184,6 @@
                                     <x-Adminlte.NavLink icon="1" route="apps.manager.content" value="Content" />
                                 </li>
                                 <li class="nav-item">
-                                    <x-Adminlte.NavLink icon="1" route="apps.manager.email" value="Email" />
-                                </li>
-                                <li class="nav-item">
                                     <x-Adminlte.NavLink icon="1" route="apps.manager.fanbox.index" value="Fanbox" />
                                 </li>
                                 <li class="nav-item">
@@ -180,9 +197,6 @@
                                 </li>
                                 <li class="nav-item">
                                     <x-Adminlte.NavLink icon="1" route="apps.manager.link" value="Link" />
-                                </li>
-                                <li class="nav-item">
-                                    <x-Adminlte.NavLink icon="1" route="apps.manager.password" value="Password" />
                                 </li>
                                 <li class="nav-item">
                                     <x-Adminlte.NavLink icon="1" route="apps.manager.persona" value="Persona" />

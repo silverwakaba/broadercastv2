@@ -4,7 +4,7 @@
     <x-Adminlte.Content :previous="route('creator.claim', ['id' => $profile->identifier])">
         <x-Adminlte.CardForm title="Claim" button="Claim" captcha="0">
             @foreach($tracker->data as $channel)
-                <x-Form.Input name="email" type="email" text="Email" placeholder="Enter your email for further instruction regarding account access. THIS IS NOT FOR YOUR NEW EMAIL ACCESS AS IT'S A SEPARATE PROCESS!" />
+                <x-Form.Input name="email" type="email" text="Email" placeholder="Enter your email so that we can send you further instructions regarding account access. THIS IS NOT FOR YOUR NEW LOGIN EMAIL ACCESS AS IT'S FOR A SEPARATE PROCESS!" />
                 <x-Form.Input name="unique" type="text" text="Unique Detail" :value="$secret" readonly />
                 <x-Form.Input name="service" type="text" text="Service" :value="$channel->link->name" readonly />
                 <x-Form.Input name="identifier" type="text" text="Identifier" :value="$channel->identifier" readonly />

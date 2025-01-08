@@ -1,5 +1,6 @@
 @extends('layout.app')
 @section('title', 'VOD Content')
+@section('description', "Stay connected with our dynamic content library center! Dive into our extensive VOD library by various content creator. Join the action now!")
 @section('content')
     <x-Adminlte.Content>
         <x-Adminlte.Card>

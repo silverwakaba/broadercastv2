@@ -31,6 +31,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application Meta
+    |--------------------------------------------------------------------------
+    |
+    | Header and meta-related.
+    |
+    */
+
+    'image'         => env('APP_META_IMAGE',        ''),
+    'keywords'      => env('APP_META_KEYWORDS',     'vtual, vtuber, vtweeter, vtuberuprising, vtweeteruprising, virtualyoutuber, virtualcreator, statistic, aggregator, contentcreator'),
+    'description'   => env('APP_META_DESCRIPTION',  'The vTual network is a project designed to simplify the process of keeping up with your favorite content creators activity across platform like Twitch or YouTube. All in one convenient portal.'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Name
     |--------------------------------------------------------------------------
     |
@@ -146,8 +159,8 @@ return [
     */
 
     'maintenance' => [
-        'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
-        'store' => env('APP_MAINTENANCE_STORE', 'database'),
+        'driver'    => env('APP_MAINTENANCE_DRIVER', 'file'),
+        'store'     => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
 ];

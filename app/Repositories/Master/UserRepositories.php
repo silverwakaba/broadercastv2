@@ -28,7 +28,7 @@ class UserRepositories{
         $default = [
             'base_status_id'    => 11,
             'confirmed'         => true,
-            'identifier'        => BaseHelper::adler32(),
+            'identifier'        => BaseHelper::setIdentifier($data['name'], BaseHelper::adler32( now() )),
             'email'             => BaseHelper::randomEmail(),
             'password'          => BaseHelper::randomPassword(),
         ];
@@ -47,6 +47,6 @@ class UserRepositories{
 
         $datas = User::findOrFail($id);
 
-        return new UserResource($datas);
+        return BaseHelper::resourceToJson(new UserResource($datas));
     }
 }

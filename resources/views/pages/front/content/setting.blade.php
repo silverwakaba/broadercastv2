@@ -1,5 +1,6 @@
 @extends('layout.app')
 @section('title', 'Content Setting')
+@section('description', "Tailor your viewing experience by set up your content preferences and unlock a personalized feed that matches your interests here!")
 @section('content')
     <x-Adminlte.Content>
         <x-Adminlte.Callout class="info">

@@ -1,5 +1,7 @@
 @extends('layout.app')
 @section('title', $profile->name)
+@section('description', "Explore comprehensive profiles of $profile->name on vTual! You can access their biodata, video collections, ongoing livestreams and past livestream archive. Stay informed about $profile->name activity schedules and receive their latest updates.")
+@section('image', $profile->avatar->path)
 @section('content')
     <x-Adminlte.Content>
         <div class="row">

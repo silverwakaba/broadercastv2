@@ -228,6 +228,7 @@ class CreatorController extends Controller{
         ]);
     }
 
+    // Claim
     public function claim($id){
         $profile = UserProfileRepositories::getProfile([
             'identifier'    => $id,
@@ -301,9 +302,5 @@ class CreatorController extends Controller{
                 'route' => 'login',
             ]);
         }
-    }
-
-    public function channel($id){
-        // 
     }
 }

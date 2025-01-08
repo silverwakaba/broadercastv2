@@ -8,11 +8,6 @@ use App\Repositories\Front\Creator\UserProfileRepositories;
 
 use Illuminate\Http\Request;
 
-// Hapus
-use App\Models\User;
-use App\Models\UserFeed;
-use App\Models\UserRelation;
-
 class SimpingController extends Controller{
     // Timeline
     public function index(){

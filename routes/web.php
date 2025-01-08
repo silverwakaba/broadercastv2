@@ -79,27 +79,13 @@ Route::group(['prefix' => '/'], function(){
 
         // Claim
         Route::get('{id}/claim', [FrontCreatorController::class, 'claim'])->name('creator.claim');
-        Route::get('{id}/claim-via/{ch}', [FrontCreatorController::class, 'claimVia'])->name('creator.claim.via');
-        Route::post('{id}/claim-via/{ch}', [FrontCreatorController::class, 'claimViaPost'])->middleware(['throttle:2,60']);
+        
+        // >>>
+        Route::get('{id}/claim/{ch}', [FrontCreatorController::class, 'claimVia'])->name('creator.claim.via');
+        Route::post('{id}/claim/{ch}', [FrontCreatorController::class, 'claimViaPost'])->middleware(['throttle:2,60']);
 
         // Follow and Unfollow - Update Relationship
         Route::get('@{id}/rels', [FrontCreatorController::class, 'rels'])->name('creator.rels')->middleware(['auth', 'throttle:100,60']);
-
-        // Live
-        Route::get('live', [FrontCreatorController::class, 'live'])->name('creator.live');
-
-        // Scheduled
-        Route::get('scheduled', [FrontCreatorController::class, 'scheduled'])->name('creator.scheduled');
-
-        // Archived
-        Route::get('archived', [FrontCreatorController::class, 'archived'])->name('creator.archived');
-
-        // Uploaded VODs
-        Route::get('uploaded', [FrontCreatorController::class, 'uploaded'])->name('creator.uploaded');
-
-        // Setting
-        Route::get('setting', [FrontCreatorController::class, 'setting'])->name('creator.setting');
-        Route::post('setting', [FrontCreatorController::class, 'settingPost']);
     });
 
     // Content
@@ -117,7 +103,7 @@ Route::group(['prefix' => '/'], function(){
         Route::get('uploaded', [FrontContentController::class, 'uploaded'])->name('content.uploaded');
 
         // Setting
-        Route::get('setting', [FrontContentController::class, 'setting'])->name('content.setting');
+        Route::get('setting', [FrontContentController::class, 'setting'])->name('preference.content.setting');
         Route::post('setting', [FrontContentController::class, 'settingPost']);
     });
 
@@ -215,7 +201,7 @@ Route::group(['prefix' => '/'], function(){
             Route::post('content', [ManagerUserController::class, 'contentPost']);
 
             // Email
-            Route::get('email', [ManagerUserController::class, 'email'])->name('apps.manager.email');
+            Route::get('email', [ManagerUserController::class, 'email'])->name('apps.usermenu.email');
             Route::post('email', [ManagerUserController::class, 'emailPost']);
 
             // Fanbox
@@ -279,7 +265,7 @@ Route::group(['prefix' => '/'], function(){
             });
 
             // Password
-            Route::get('password', [ManagerUserController::class, 'password'])->name('apps.manager.password');
+            Route::get('password', [ManagerUserController::class, 'password'])->name('apps.usermenu.password');
             Route::post('password', [ManagerUserController::class, 'passwordPost']);
 
             // Persona

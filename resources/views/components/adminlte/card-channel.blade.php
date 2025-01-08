@@ -5,7 +5,7 @@
                 <div class="col text-truncate">
                     <div class="card card-widget widget-user">
                         <div class="widget-user-header" style="background: url('{{ $data->banner }}') center center;">
-                            <!-- Placeholder -->
+                            <!-- Blank Banner Placeholder -->
                         </div>
                         <div class="widget-user-image">
                             <img class="img-circle elevation-5" src="{{ $data->avatar }}">
@@ -15,19 +15,25 @@
                                 <h5 class="description-header">{{ $data->name }}</h5>
                                 <span class="description-text">{{ $data->link->name }} Channel</span>
                             </div>
-                            <div class="row row-cols-1 row-cols-md-2">
+                            <div @class(["row", "row-cols-1", "row-cols-md-2" => ($data->link->name != 'Twitch') ])>
                                 <div class="col">
                                     <div class="description-block">
                                         <h5 class="description-header">{{ number_format($data->subscriber) }}</h5>
-                                        <span class="description-text">SUBSCRIBER</span>
+                                        @if($data->link->name == 'Twitch')
+                                            <span class="description-text">FOLLOWER</span>
+                                        @else
+                                            <span class="description-text">SUBSCRIBER</span>
+                                        @endif
                                     </div>
                                 </div>
-                                <div class="col">
-                                    <div class="description-block">
-                                        <h5 class="description-header">{{ number_format($data->view) }}</h5>
-                                        <span class="description-text">TOTAL VIEW</span>
+                                @if($data->link->name != 'Twitch')
+                                    <div class="col">
+                                        <div class="description-block">
+                                            <h5 class="description-header">{{ number_format($data->view) }}</h5>
+                                            <span class="description-text">TOTAL VIEW</span>
+                                        </div>
                                     </div>
-                                </div>
+                                @endif
                             </div>
                             <div @class(["row", "row-cols-1" => isset($data->profile->page) xor isset($data->channel->link), "row-cols-xl-2" => isset($data->profile->page) && isset($data->channel->link), "mt-3"])>
                                 @if(isset($data->profile->page))

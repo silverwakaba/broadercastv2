@@ -1,5 +1,6 @@
 @extends('layout.app')
 @section('title', 'Creator Discovery')
+@section('description', "Unlock a treasure trove of entertainment! Explore our extensive library featuring your favorite content creators and discover new talents you will love by dive in and find your next obsession today!")
 @section('content')
     <x-Adminlte.Content>
         <div class="row">

@@ -48,7 +48,6 @@
                 <p>If you have further questions, please let us know. We thank you for your attention and cooperation.</p>
             </div>
         </x-Adminlte.Card>
-        
         <x-Adminlte.Card title="Claim">
             <div class="lead">
                 <ol>
