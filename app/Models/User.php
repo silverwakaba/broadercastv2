@@ -107,7 +107,7 @@ class User extends Authenticatable{
         return $this->belongsToMany(BaseLink::class, 'users_feed', 'users_id', 'base_link_id')->withPivot('identifier', 'title', 'published');
     }
 
-    public function belongsToUserRelationFollowed(){
+    public function belongsToUserRelationFollowed(){ // Can be used through "has('belongsToUserRelationFollowed')" method
         $uid = isset(auth()->user()->id) ? auth()->user()->id : 0;
 
         return $this->belongsTo(UserRelation::class, 'id', 'users_followed_id')->where([

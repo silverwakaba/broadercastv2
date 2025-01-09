@@ -14,6 +14,7 @@ use App\Http\Resources\UserRaceResource;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
 class UserResource extends JsonResource{
@@ -31,6 +32,7 @@ class UserResource extends JsonResource{
             'title_temp'    => $this->confirmed == true ? 'Verified Creator' : 'Unverified Creator',
             'identifier'    => $this->identifier,
             'page'          => route('creator.profile', $this->identifier),
+            'rels'          => URL::temporarySignedRoute('creator.rels', now()->addHours(1), $this->identifier),
             'name'          => $name,
             'name_preview'  => Str::limit($name, 15, ' (...)'),
             'deleted_at'    => $this->deleted_at,

@@ -55,7 +55,7 @@ class UserProfileRepositories{
             ]);
         }
 
-        return RedirectHelper::routeIntended(route('creator.profile', ['id' => $datas->identifier]));
+        return RedirectHelper::routeBack(null, 'info', 'user relation', 'update');
     }
 
     // Link
@@ -79,11 +79,7 @@ class UserProfileRepositories{
         )->whereIn('base_link_id', BaseHelper::getCheckedBaseLink());
 
         // Order By
-        if(
-            (isset($data['option']['orderType']))
-            &&
-            (Str::contains($data['option']['orderType'], ['discovery']))
-        ){
+        if((isset($data['option']['orderType'])) && (Str::contains($data['option']['orderType'], ['discovery']))){
             // Request filter
             $request = $data['filter']['request'];
 
@@ -120,15 +116,11 @@ class UserProfileRepositories{
                 });
             }
 
-            if(
-                ($subs_range_from !== null)
-                &&
-                ($subs_range_to !== null)
-            ){
+            if(($subs_range_from !== null) && ($subs_range_to !== null)){
                 $datas->whereBetween('subscriber', [$subs_range_from, $subs_range_to]);
             }
 
-            // Have their own base
+            // Have their own base affiliation
             if($affiliation !== null){
                 $datas->whereHas('hasManyThroughUserAffiliation', function($query) use($affiliation){
                     $query->whereIn('base_affiliation_id', $affiliation);
@@ -222,11 +214,7 @@ class UserProfileRepositories{
         );
 
         // Simping Mode
-        if(
-            (isset($data['option']['simping']))
-            &&
-            ($data['option']['simping'] == true)
-        ){
+        if((isset($data['option']['simping'])) && ($data['option']['simping'] == true)){
             $datas->has('belongsToUserRelationFollowed');
         }
 
@@ -289,5 +277,53 @@ class UserProfileRepositories{
         }
 
         return BaseHelper::resourceToJson(UserChannelActivityResource::collection($newDatas)->response()->getData());
+    }
+
+    public static function getFollowedUser(array $data, $datatable = false){
+        $datas = User::has('belongsToUserRelationFollowed');
+
+        // With
+        if(isset($data['with'])){
+            $datas->with($data['with']);
+        }
+
+        // Query
+        if(isset($data['query'])){
+            $datas->where($data['query']);
+        }
+
+        // Only takes
+        if(isset($data['option'])){
+            if(isset($data['option']['take']) && !isset($data['option']['pagination'])){
+                $datas->take($data['option']['take']);
+            }
+        }
+
+        $datas->orderBy('name', 'ASC');
+
+        // Paginate data retrieval
+        if(isset($data['option']['pagination'])){
+            if($data['option']['pagination']['type'] == 'normal'){
+                $newDatas = $datas->paginate($data['option']['take'])->withQueryString();
+            }
+            elseif($data['option']['pagination']['type'] == 'cursor'){
+                $newDatas = $datas->cursorPaginate($data['option']['take'])->withQueryString();
+            }
+            else{
+                $newDatas = $datas->paginate($data['option']['take'])->withQueryString();
+            }
+        }
+        else{
+            $newDatas = $datas->get();
+        }
+
+        // Not yet implemented with correct resources
+        // if($datatable == true){
+        //     return DataTables::of($newDatas)->setTransformer(function($newDatas){
+        //         return UserChannelActivityResource::make($newDatas)->resolve();
+        //     })->toJson();
+        // }
+
+        return BaseHelper::resourceToJson(UserResource::collection($newDatas)->response()->getData());
     }
 }

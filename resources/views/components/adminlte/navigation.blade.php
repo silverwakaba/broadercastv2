@@ -154,6 +154,9 @@
                             <x-Adminlte.NavLink icon="1" parent="1" fa="fas fa-kiss-wink-heart" value="Simp" />
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
+                                    <x-Adminlte.NavLink icon="1" route="apps.simp.index" value="Oshi" />
+                                </li>
+                                <li class="nav-item">
                                     <x-Adminlte.NavLink icon="1" route="apps.simp.live" value="Live" />
                                 </li>
                                 <li class="nav-item">

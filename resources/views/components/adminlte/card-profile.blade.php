@@ -16,9 +16,9 @@
             @auth
                 <p class="text-center">
                     @if((isset($profile->followed->followed)) && ($profile->followed->followed == true))
-                        <a href="{{ route('creator.rels', ['id' => $profile->identifier]) }}" class="btn btn-block btn-danger" data-toggle="tooltip" data-placement="top" title="Stop showing their activity from your timeline">Unfollow</a>
+                        <a href="{{ $profile->rels }}" class="btn btn-block btn-danger" data-toggle="tooltip" data-placement="top" title="Stop showing their activity from your timeline">Unfollow</a>
                     @else
-                        <a href="{{ route('creator.rels', ['id' => $profile->identifier]) }}" class="btn btn-block btn-success" data-toggle="tooltip" data-placement="top" title="Start showing their activity to your timeline">Follow</a>
+                        <a href="{{ $profile->rels }}" class="btn btn-block btn-success" data-toggle="tooltip" data-placement="top" title="Start showing their activity to your timeline">Follow</a>
                     @endif
                 </p>
             @endauth

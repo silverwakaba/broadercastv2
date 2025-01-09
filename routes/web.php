@@ -85,7 +85,7 @@ Route::group(['prefix' => '/'], function(){
         Route::post('{id}/claim/{ch}', [FrontCreatorController::class, 'claimViaPost'])->middleware(['throttle:2,60']);
 
         // Follow and Unfollow - Update Relationship
-        Route::get('@{id}/rels', [FrontCreatorController::class, 'rels'])->name('creator.rels')->middleware(['auth', 'throttle:100,60']);
+        Route::get('@{id}/rels', [FrontCreatorController::class, 'rels'])->name('creator.rels')->middleware(['auth', 'signed', 'throttle:100,60']);
     });
 
     // Content
@@ -169,6 +169,7 @@ Route::group(['prefix' => '/'], function(){
         Route::group(['prefix' => 'simp'], function(){
             // Index
             Route::get('/', [AppsSimpingController::class, 'index'])->name('apps.simp.index');
+            Route::post('/', [AppsSimpingController::class, 'indexPost']);
 
             // Live
             Route::get('live', [AppsSimpingController::class, 'live'])->name('apps.simp.live');

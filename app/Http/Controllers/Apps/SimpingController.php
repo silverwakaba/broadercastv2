@@ -8,55 +8,35 @@ use App\Repositories\Front\Creator\UserProfileRepositories;
 
 use Illuminate\Http\Request;
 
+// Hapus
+use App\Models\User;
+
 class SimpingController extends Controller{
-    // Timeline
+    // Index Timeline
     public function index(){
-        // Live
-        $live = UserProfileRepositories::getFeed([
+        $datas = UserProfileRepositories::getFollowedUser([
             'with'      => [
-                'belongsToUser',
-                'belongsToBaseLink',
-                'hasOneThroughUserLink',
-                'belongsToUserLinkTracker',
+                'hasOneUserAvatar',
             ],
             'query'     => [
-                ['base_status_id', '=', 8],
+                ['name', 'like', '%' . request()->name . '%'],
             ],
             'option'    => [
-                'take'       => 3,
-                'orderType'  => 'live',
-                'simping'    => true,
+                'take'       => 2,
                 'pagination' => [
                     'type' => 'normal',
                 ],
             ],
         ]);
-
-        // Upcoming Schedule
-        $schedule = UserProfileRepositories::getFeed([
-            'with'      => [
-                'belongsToUser',
-                'belongsToBaseLink',
-                'hasOneThroughUserLink',
-                'belongsToUserLinkTracker',
-            ],
-            'query'     => [
-                ['base_status_id', '=', 7],
-            ],
-            'option'    => [
-                'take'       => 3,
-                'orderType'  => 'schedule',
-                'dayLoad'    => 30,
-                'simping'    => true,
-                'pagination' => [
-                    'type' => 'normal',
-                ],
-            ],
-        ]);
-
+        
         return view('pages/apps/simp/index', [
-            'live'      => $live,
-            'schedule'  => $schedule,
+            'datas' => $datas,
+        ]);
+    }
+
+    public function indexPost(){
+        return redirect()->route('apps.simp.index', [
+            'name' => request()->name,
         ]);
     }
 
@@ -73,7 +53,7 @@ class SimpingController extends Controller{
                 ['base_status_id', '=', 8],
             ],
             'option'    => [
-                'take'       => 4,
+                'take'       => 3,
                 'orderType'  => 'live',
                 'simping'    => true,
                 'pagination' => [
