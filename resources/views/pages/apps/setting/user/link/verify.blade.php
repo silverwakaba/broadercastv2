@@ -12,7 +12,7 @@
                     <li>The verification <u>process will take place automatically</u> and the <u>results will appear immediately</u>. No need to wait for manual approval.</li>
                     <li>After the verification process is successful, <u>you are allowed to remove/delete the unique detail from your description section</u> because it is no longer needed.</li>
                     <li>
-                        <span>The link structure you enter for reference, <u>should be formatted like one of these</u>:</span>
+                        <span>For your reference, the link structure you enter <u>should be formatted like one of these</u>:</span>
                         <ul>
                             @foreach($structure AS $link)
                                 <li><span class="badge badge-secondary text-light text-monospace">{{ $link }}</span></li>
