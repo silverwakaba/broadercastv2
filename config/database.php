@@ -103,7 +103,11 @@ return [
         // Pgsql for queue
         'pgsql4queue' => [
             'driver'            => 'pgsql',
-            'url'               => env('DBQ_URL'),
+            'host'              => env('DBQ_HOST', '127.0.0.1'),
+            'port'              => env('DBQ_PORT', 5432),
+            'database'          => env('DBQ_DATABASE', 'laravel'),
+            'username'          => env('DBQ_USERNAME', 'root'),
+            'password'          => env('DBQ_PASSWORD', ''),
             'charset'           => env('DBQ_CHARSET', 'utf8'),
             'prefix'            => '',
             'prefix_indexes'    => true,
