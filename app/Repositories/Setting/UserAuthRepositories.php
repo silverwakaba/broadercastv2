@@ -38,34 +38,38 @@ class UserAuthRepositories{
             ])->whereNotNull('email_verified_at')->first();
 
             if($secured){
-                $request = $secured->hasOneUserRequest()->where([
-                    ['base_request_id', '=', 4],
-                    ['users_id', '=', $secured->id],
-                    ['token', '!=', null],
-                ])->first();
-    
-                if($secured){
-                    if($request){
-                        $mId = $request->id;
-                    }
-                    else{
-                        $cmId = $secured->hasOneUserRequest()->create([
-                            'base_request_id'   => 4,
-                            'users_id'          => $secured->id,
-                            'token'             => BaseHelper::adler32(),
-                        ]);
-                    
-                        $mId = $cmId->id;
-                    }
-    
-                    Mail::to($data['email'])->send(new User2FAEmail($mId));
-                }
-
                 Auth::logout();
      
                 request()->session()->invalidate();
                 
                 request()->session()->regenerateToken();
+
+                $request = $secured->hasOneUserRequest()->where([
+                    ['base_request_id', '=', 4],
+                    ['users_id', '=', $secured->id],
+                    ['token', '!=', null],
+                    ['created_at', '>=', Carbon::now()->subMinutes(5)->timezone(config('app.timezone'))->toDateTimeString()],
+                ])->latest()->first();
+
+                if(!$request){
+                    $newRequest = $secured->hasOneUserRequest()->create([
+                        'base_request_id'   => 4,
+                        'users_id'          => $secured->id,
+                        'token'             => BaseHelper::adler32(),
+                    ]);
+    
+                    try{
+                        Mail::to($data['email'])->send(new User2FAEmail($newRequest->id));
+                    }
+                    catch(\Throwable $th){
+                        // skip error
+                    }
+                }
+                else{
+                    return RedirectHelper::routeBackWithErrors([
+                        'email' => "You still have an unused 2FA token. Please check your email and use that token to grant the login securely or wait until " . Carbon::parse($request->created_at)->addMinutes(5)->timezone(config('app.timezone'))->format('d M Y, g:i A') . " before making another login request.",
+                    ]);
+                }
 
                 return RedirectHelper::routeBack('login', 'info', 'Login Securely', '2falogin');
             }
@@ -117,31 +121,37 @@ class UserAuthRepositories{
 
         if($user){
             $request = $user->hasOneUserRequest()->where([
-                ['base_request_id', '=', 2],
+                ['base_request_id', '=', 3],
                 ['users_id', '=', $user->id],
                 ['token', '!=', null],
-            ])->first();
+                ['created_at', '>=', Carbon::now()->subMinutes(30)->timezone(config('app.timezone'))->toDateTimeString()],
+            ])->latest()->first();
 
-            if($request){
-                $mId = $request->id;
-            }
-            else{
-                $cmId = $user->hasOneUserRequest()->create([
-                    'base_request_id'   => 2,
+            if(!$request){
+                $newRequest = $user->hasOneUserRequest()->create([
+                    'base_request_id'   => 3,
                     'users_id'          => $user->id,
                     'token'             => BaseHelper::adler32(),
                 ]);
 
-                $mId = $cmId->id;
+                try{
+                    Mail::to($data['email'])->send(new UserRecoveryEmail($newRequest->id));
+                }
+                catch(\Throwable $th){
+                    // skip error
+                }
             }
-
-            Mail::to($data['email'])->send(new UserRecoveryEmail($mId));
+            else{
+                return RedirectHelper::routeBackWithErrors([
+                    'email' => "You still have an unfinished request regarding account recovery. Please complete that request or wait until " . Carbon::parse($request->created_at)->addMinutes(30)->timezone(config('app.timezone'))->format('d M Y, g:i A') . " before making another request.",
+                ]);
+            }
 
             return RedirectHelper::routeBack($back, 'success', 'Recover', 'recover');
         }
         else{
             return RedirectHelper::routeBackWithErrors([
-                'email' => "Something went wrong. Please try again.",
+                'email' => "Sorry but this email address has not been verified yet, so the system need to cancels this request.",
             ]);
         }
     }
@@ -151,7 +161,7 @@ class UserAuthRepositories{
         return UserRequest::with([
             'belongsToUser'
         ])->where([
-            ['base_request_id', '=', 2],
+            ['base_request_id', '=', 3],
             ['token', '=', $data['id']],
         ])->firstOrFail();
     }
@@ -217,7 +227,6 @@ class UserAuthRepositories{
     public static function verifyResend(array $data, $back){
         $user = User::where([
             ['email', '=', $data['email']],
-            ['confirmed', '=', false],
             ['email_verified_at', '=', null],
         ])->first();
 
@@ -226,28 +235,34 @@ class UserAuthRepositories{
                 ['base_request_id', '=', 1],
                 ['users_id', '=', $user->id],
                 ['token', '!=', null],
-            ])->first();
+                ['created_at', '>=', Carbon::now()->subMinutes(30)->timezone(config('app.timezone'))->toDateTimeString()],
+            ])->latest()->first();
 
-            if($request){
-                $mId = $request->id;
-            }
-            else{
-                $cmId = $user->hasOneUserRequest()->create([
-                    'base_request_id'   => 2,
+            if(!$request){
+                $newRequest = $user->hasOneUserRequest()->create([
+                    'base_request_id'   => 1,
                     'users_id'          => $user->id,
                     'token'             => BaseHelper::adler32(),
                 ]);
 
-                $mId = $cmId->id;
+                try{
+                    Mail::to($data['email'])->send(new UserVerifyEmail($newRequest->id));
+                }
+                catch(\Throwable $th){
+                    // skip error
+                }
             }
-
-            Mail::to($data['email'])->send(new UserVerifyEmail($mId));
+            else{
+                return RedirectHelper::routeBackWithErrors([
+                    'email' => "You still have an unfinished request regarding email verification. Please complete that request or wait until " . Carbon::parse($request->created_at)->addMinutes(30)->timezone(config('app.timezone'))->format('d M Y, g:i A') . " before making another request.",
+                ]);
+            }
 
             return RedirectHelper::routeBack($back, 'success', 'Verify', 'reverify');
         }
         else{
             return RedirectHelper::routeBackWithErrors([
-                'email' => "Something went wrong. Please try again.",
+                'email' => "It looks like your email has been verified. No further action you can do here.",
             ]);
         }
     }
@@ -257,7 +272,7 @@ class UserAuthRepositories{
         return UserRequest::with([
             'belongsToUser'
         ])->where([
-            ['base_request_id', '=', 3],
+            ['base_request_id', '=', 10],
             ['token', '=', $data['id']],
         ])->firstOrFail();
     }

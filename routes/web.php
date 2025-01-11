@@ -46,11 +46,11 @@ Route::group(['prefix' => '/'], function(){
     Route::get('/', [FrontController::class, 'index'])->name('index');
 
     // Debug
-    Route::group(['prefix' => 'debug'], function(){
-        Route::get('general', [FrontController::class, 'fetchDebug']);
-        // Route::get('twitch', [TwitchCron::class, 'fetchDebug']);
-        // Route::get('youtube', [YoutubeCron::class, 'fetchDebug']);
-    });
+    // Route::group(['prefix' => 'debug'], function(){
+    //     Route::get('general', [FrontController::class, 'fetchDebug']);
+    //     // Route::get('twitch', [TwitchCron::class, 'fetchDebug']);
+    //     // Route::get('youtube', [YoutubeCron::class, 'fetchDebug']);
+    // });
 
     // Redirect
     Route::group(['prefix' => 'go'], function(){

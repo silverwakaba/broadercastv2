@@ -60,7 +60,12 @@ class UserRepositories{
                 'token'             => BaseHelper::adler32(),
             ]);
 
-            Mail::to($data['email'])->send(new UserRecoveryEmail($request->id));
+            try{
+                Mail::to($data['email'])->send(new UserRecoveryEmail($request->id));
+            }
+            catch(\Throwable $th){
+                // skip error
+            }
 
             return redirect()->route($back)->with('class', 'info')->with('message', 'Please check your email to continue.');
         }

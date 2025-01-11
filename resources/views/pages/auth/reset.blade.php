@@ -2,6 +2,16 @@
 @section('title', 'Reset Password')
 @section('content')
     <x-Adminlte.Content>
+        <x-Adminlte.Callout class="info">
+            <h5>A notes about your password!</h5>
+            <p>For account security, the password you use must meet the following requirements:</p>
+            <ol>
+                <li>Password must be at least 8 characters.</li>
+                <li>Password must be at least contain a symbol.</li>
+                <li>Password must be at least contain one uppercase and one lowercase letter.</li>
+            </ol>
+            <p>If you fail to follow these requirements, a more detailed error message will appear.</p>
+        </x-Adminlte.Callout>
         <x-Adminlte.Card>
             <form id="theResetForm" method="POST">
                 <div class="form-row">

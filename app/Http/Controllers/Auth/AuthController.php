@@ -14,6 +14,10 @@ use App\Repositories\Setting\UserAuthRepositories;
 
 use Illuminate\Http\Request;
 
+//
+use Carbon\Carbon;
+use App\Models\User;
+
 class AuthController extends Controller{
     // Register
     public function register(){

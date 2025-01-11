@@ -34,7 +34,7 @@ return [
     */
 
     'mailers' => [
-        // Debug SMTP
+        // Debug SMTP via MailTrap
         'debug' => [
             'transport'     => 'smtp',
             'host'          => env('MAILER_DEBUG_HOST', 'sandbox.smtp.mailtrap.io'),
@@ -49,7 +49,7 @@ return [
             ],
         ],
 
-        // Custom SMTP
+        // Custom SMTP via Owned Server (discontinued)
         'smtp' => [
             'transport'     => 'smtp',
             'host'          => env('MAILER_DEFAULT_HOST', 'notify.spnd.uk'),
@@ -58,46 +58,28 @@ return [
             'username'      => env('MAILER_DEFAULT_USERNAME'),
             'password'      => env('MAILER_DEFAULT_PASSWORD', null),
             'timeout'       => null,
-
-            // Useless when using failover mode
-            'from'          => [
-                'name'      => env('MAILER_DEFAULT_NAME', 'vTual Mailer'),
-                'address'   => env('MAILER_DEFAULT_USERNAME', 'vtual@no-reply.spnd.uk'),
-            ],
         ],
 
         // Mail Backup 1 - Brevo Free-Tier
         'brevo' => [
             'transport'     => 'smtp',
-            'host'          => env('MAILER_BACKUP_1_HOST', 'smtp-relay.brevo.com'),
-            'port'          => env('MAILER_BACKUP_1_PORT', 587),
-            'encryption'    => env('MAILER_BACKUP_1_ENCRYPTION', 'tls'),
-            'username'      => env('MAILER_BACKUP_1_USERNAME'),
-            'password'      => env('MAILER_BACKUP_1_PASSWORD'),
+            'host'          => env('MAILER_FAILOVER_1_HOST', 'smtp-relay.brevo.com'),
+            'port'          => env('MAILER_FAILOVER_1_PORT', 587),
+            'encryption'    => env('MAILER_FAILOVER_1_ENCRYPTION', 'tls'),
+            'username'      => env('MAILER_FAILOVER_1_USERNAME'),
+            'password'      => env('MAILER_FAILOVER_1_PASSWORD'),
             'timeout'       => null,
-
-            // Useless when using failover mode
-            'from'          => [
-                'name'      => env('MAILER_BACKUP_1_NAME', 'vTual Mailer'),
-                'address'   => env('MAILER_BACKUP_1_ADDRESS', 'vtual@no-reply.spnd.uk'),
-            ],
         ],
 
-        // Mail Backup 2 - Zepto Paid-Tier (TBA)
+        // Mail Backup 2 - Zepto Paid-Tier
         'zepto' => [
             'transport'     => 'smtp',
-            'host'          => env('MAILER_BACKUP_2_HOST', 'smtp.zeptomail.com'),
-            'port'          => env('MAILER_BACKUP_2_PORT', 587),
-            'encryption'    => env('MAILER_BACKUP_2_ENCRYPTION', 'tls'),
-            'username'      => env('MAILER_BACKUP_2_USERNAME'),
-            'password'      => env('MAILER_BACKUP_2_PASSWORD'),
+            'host'          => env('MAILER_FAILOVER_2_HOST', 'smtp.zeptomail.com'),
+            'port'          => env('MAILER_FAILOVER_2_PORT', 587),
+            'encryption'    => env('MAILER_FAILOVER_2_ENCRYPTION', 'tls'),
+            'username'      => env('MAILER_FAILOVER_2_USERNAME'),
+            'password'      => env('MAILER_FAILOVER_2_PASSWORD'),
             'timeout'       => null,
-
-            // Useless when using failover mode
-            'from'          => [
-                'name'      => env('MAILER_BACKUP_2_NAME', 'vTual Mailer'),
-                'address'   => env('MAILER_BACKUP_2_ADDRESS', 'vtual@no-reply-backup-1.spnd.uk'),
-            ],
         ],
 
         'ses' => [
@@ -126,12 +108,12 @@ return [
             'transport' => 'array',
         ],
 
-        // Email Failover - Scheme: smtp > free-tier > paid tier
+        // Email Failover - Scheme: smtp (discontinued) > free-tier > paid tier
         'failover' => [
             'transport' => 'failover',
             'mailers' => [
-                'smtp', 'brevo',
-                // 'zepto' // not yet paid
+                'brevo',
+                'zepto',
             ],
         ],
     ],
@@ -149,6 +131,6 @@ return [
 
     'from' => [
         'name'      => env('MAIL_FROM_NAME', 'vTual Mailer'),
-        'address'   => env('MAIL_FROM_ADDRESS', 'vtual@no-reply.spnd.uk'),
+        'address'   => env('MAIL_FROM_ADDRESS', 'noreply@vtual.net'),
     ],
 ];

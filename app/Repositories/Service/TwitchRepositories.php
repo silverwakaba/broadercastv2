@@ -219,8 +219,13 @@ class TwitchRepositories{
         
                         $mId = $cmId->id;
                     }
-        
-                    Mail::to($email)->send(new UserClaimEmail($mId));
+
+                    try{
+                        Mail::to($email)->send(new UserClaimEmail($mId));
+                    }
+                    catch(\Throwable $th){
+                        // skip error
+                    }
         
                     return RedirectHelper::routeBack($back, 'success', 'Claim', 'claim');
                 }
