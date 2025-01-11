@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Queue\SerializesModels;
 
 // implements ShouldQueue
-class User2FAEmail extends Mailable{
+class User2FAEmail extends Mailable implements ShouldQueue{
     use Queueable, SerializesModels;
 
     public $mId;

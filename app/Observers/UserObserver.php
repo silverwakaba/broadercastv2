@@ -25,7 +25,7 @@ class UserObserver{
             'users_id' => $user->id,
         ]);
 
-        // Some action, like SGU, don't need to trigger this action
+        // Some action, like when adding a SGU account, don't need to trigger this action. So it's not mandatory action and could be bypassed by utilizing try-catch block.
         try{
             // Request
             $request = $user->hasOneUserRequest()->where([
@@ -48,10 +48,17 @@ class UserObserver{
             }
 
             if($mId){
-                Mail::to($user->email)->send(new UserVerifyEmail($mId));
+                try{
+                    Mail::to($user->email)->send(new UserVerifyEmail($mId));
+                }
+                catch(\Throwable $th){
+                    // throw $th;
+                }
             }
         }
-        catch(\Throwable $th){}
+        catch(\Throwable $th){
+            // throw $th;
+        }
 
         // UserCreated::dispatch($user);
     }

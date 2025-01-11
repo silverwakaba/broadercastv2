@@ -11,7 +11,7 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
 // implements ShouldQueue
-class UserVerifyEmail extends Mailable{
+class UserVerifyEmail extends Mailable implements ShouldQueue{
     use Queueable, SerializesModels;
 
     public $mId;

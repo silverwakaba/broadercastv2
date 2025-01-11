@@ -29,11 +29,11 @@ return [
     */
 
     'connections' => [
-
         'sync' => [
             'driver' => 'sync',
         ],
 
+        // Queue via internal database
         'database' => [
             'driver' => 'database',
             'connection' => env('DB_QUEUE_CONNECTION', null),
@@ -41,6 +41,16 @@ return [
             'queue' => env('DB_QUEUE', 'default'),
             'retry_after' => env('DB_QUEUE_RETRY_AFTER', 90),
             'after_commit' => false,
+        ],
+
+        // Queue via external database
+        'databaseext' => [
+            'driver'        => 'database',
+            'connection'    => env('DB_QUEUE_CONNECTION', 'pgsql4queue'),
+            'table'         => env('DB_QUEUE_TABLE', 'jobs'),
+            'queue'         => env('DB_QUEUE', 'default'),
+            'retry_after'   => env('DB_QUEUE_RETRY_AFTER', 90),
+            'after_commit'  => false,
         ],
 
         'beanstalkd' => [
@@ -71,7 +81,6 @@ return [
             'block_for' => null,
             'after_commit' => false,
         ],
-
     ],
 
     /*

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Queue\SerializesModels;
 
 // implements ShouldQueue
-class UserRecoveryEmail extends Mailable{
+class UserRecoveryEmail extends Mailable implements ShouldQueue{
     use Queueable, SerializesModels;
 
     public $mId;
