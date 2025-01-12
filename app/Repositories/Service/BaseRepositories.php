@@ -3,12 +3,15 @@
 namespace App\Repositories\Service;
 
 use App\Models\BaseProxyHost;
+use App\Models\UserRequest;
 
 use Illuminate\Http\Client\Pool;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
+
+use Carbon\Carbon;
 
 class BaseRepositories{
     public static function initSetup(){
@@ -45,6 +48,20 @@ class BaseRepositories{
             BaseProxyHost::whereNotIn('id', $online)->update([
                 'online' => false,
             ]);
+        });
+    }
+
+    public static function userRequestCleanup(){
+        $carbon = new Carbon();
+
+        $data = UserRequest::select('id', 'created_at')->chunkById(100, function(Collection $chunks) use($carbon){
+            $compareData = $carbon->now()->subHour(1)->timezone(config('app.timezone'))->timestamp;
+            
+            foreach($chunks as $key => $chunk){
+                if($carbon->parse($chunk->created_at)->timestamp <= $compareData){
+                    $chunk->delete();
+                }
+            }
         });
     }
 }

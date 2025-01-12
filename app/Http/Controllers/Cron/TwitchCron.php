@@ -9,8 +9,6 @@ use App\Models\UserLinkTracker;
 use App\Repositories\Service\TwitchRepositories;
 use App\Repositories\Service\TwitchAPIRepositories;
 
-use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 class TwitchCron extends Controller{

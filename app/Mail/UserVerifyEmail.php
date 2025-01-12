@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Queue\SerializesModels;
 
 // implements ShouldQueue
@@ -41,7 +42,9 @@ class UserVerifyEmail extends Mailable implements ShouldQueue{
         return new Content(
             view: 'mailer.verify',
             with: [
-                'token' => $datas->token,
+                'routeTo' => URL::temporarySignedRoute(
+                    'verify', now()->addMinutes(60), ['id' => $datas->token]
+                ),
             ],
         );
     }

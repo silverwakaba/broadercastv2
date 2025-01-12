@@ -9,14 +9,12 @@ use App\Models\UserLinkTracker;
 use App\Repositories\Service\YoutubeRepositories;
 use App\Repositories\Service\YoutubeAPIRepositories;
 
-use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 class YoutubeCron extends Controller{
     // Debug
     public function fetchDebug(){
-        return YoutubeRepositories::fetchStreamStatusViaAPI();
+        // 
     }
 
     // Archive Initialization
@@ -40,7 +38,7 @@ class YoutubeCron extends Controller{
         // Fetch acrhive via Youtube XML Feed
         YoutubeRepositories::fetchArchiveViaFeed();
 
-        // Update archive metadata after fetching { API and XML Feed } from Youtube - Ok
+        // Update archive metadata after fetching { API and XML Feed } from Youtube
         YoutubeRepositories::userFeedInit();
     }
 

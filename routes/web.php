@@ -37,34 +37,52 @@ use App\Http\Controllers\Front\ContentController as FrontContentController;
 use App\Http\Controllers\Front\CreatorController as FrontCreatorController;
 use App\Http\Controllers\Front\FanboxController as FrontFanboxController;
 
-// Debug | Please comment before deployment to prods
-// use App\Http\Controllers\Cron\TwitchCron;
-// use App\Http\Controllers\Cron\YoutubeCron;
+// Debug
+use App\Http\Controllers\Cron\BaseCron;
+use App\Http\Controllers\Cron\TwitchCron;
+use App\Http\Controllers\Cron\YoutubeCron;
 
 Route::group(['prefix' => '/'], function(){
     // Index
     Route::get('/', [FrontController::class, 'index'])->name('index');
 
-    // Debug
-    // Route::group(['prefix' => 'debug'], function(){
-    //     Route::get('general', [FrontController::class, 'fetchDebug']);
-    //     // Route::get('twitch', [TwitchCron::class, 'fetchDebug']);
-    //     // Route::get('youtube', [YoutubeCron::class, 'fetchDebug']);
-    // });
+    // Auth
+    Route::group(['prefix' => 'auth', 'middleware' => ['guest']], function(){
+        // Register
+        Route::get('register', [AuthController::class, 'register'])->name('register');
+        Route::post('register', [AuthController::class, 'registerPost']);
 
-    // Redirect
-    Route::group(['prefix' => 'go'], function(){
-        // Bsky
-        Route::get('bsky', [RedirectController::class, 'bsky'])->name('go.bsky');
+        // Login
+        Route::get('login', [AuthController::class, 'login'])->name('login');
+        Route::post('login', [AuthController::class, 'loginPost'])->middleware(['throttle:5,1']);
 
-        // Discord
-        // TBA
+        // 2FA
+        Route::get('2fa', [AuthController::class, 'login2FA'])->name('2fa')->middleware(['signed'])->withoutMiddleware(['guest']);
 
-        // Ping
-        Route::get('ping', [RedirectController::class, 'ping'])->name('go.ping');
+        // Recover
+        Route::get('recover', [AuthController::class, 'recover'])->name('recover');
+        Route::post('recover', [AuthController::class, 'recoverPost'])->middleware(['throttle:2,1']);
 
-        // Status
-        Route::get('status', [RedirectController::class, 'status'])->name('go.status');
+        // Reset
+        Route::get('reset', [AuthController::class, 'reset'])->name('reset')->middleware(['signed'])->withoutMiddleware(['guest']);
+        Route::post('reset', [AuthController::class, 'resetPost'])->withoutMiddleware(['guest']);
+
+        // Verify
+        Route::group(['prefix' => 'verify', 'excluded_middleware' => ['guest']], function(){
+            // Verify
+            Route::get('/', [AuthController::class, 'verify'])->name('verify')->middleware(['signed']);
+
+            // Resend Verify
+            Route::get('resend', [AuthController::class, 'verifyResend'])->name('verify.resend');
+            Route::post('resend', [AuthController::class, 'verifyResendPost'])->middleware(['throttle:2,1']);
+        });
+
+        // Claim
+        Route::get('claim', [AuthController::class, 'claim'])->name('claim')->withoutMiddleware(['guest']);
+        Route::post('claim', [AuthController::class, 'claimPost'])->withoutMiddleware(['guest']);
+
+        // Logout
+        Route::get('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware(['guest']);
     });
 
     // Creator
@@ -119,45 +137,6 @@ Route::group(['prefix' => '/'], function(){
         // Edit
         Route::get('{id}/{did}', [FrontFanboxController::class, 'answerEdit'])->name('fanbox.answer.edit');
         Route::post('{id}/{did}', [FrontFanboxController::class, 'answerEditPost']);
-    });
-
-    // Auth
-    Route::group(['prefix' => 'auth', 'middleware' => ['guest']], function(){
-        // Register
-        Route::get('register', [AuthController::class, 'register'])->name('register');
-        Route::post('register', [AuthController::class, 'registerPost']);
-
-        // Login
-        Route::get('login', [AuthController::class, 'login'])->name('login');
-        Route::post('login', [AuthController::class, 'loginPost'])->middleware(['throttle:5,1']);
-
-        // 2FA
-        Route::get('2fa', [AuthController::class, 'login2FA'])->name('2fa')->middleware(['signed'])->withoutMiddleware(['guest']);
-
-        // Recover
-        Route::get('recover', [AuthController::class, 'recover'])->name('recover');
-        Route::post('recover', [AuthController::class, 'recoverPost'])->middleware(['throttle:2,1']);
-
-        // Reset
-        Route::get('reset', [AuthController::class, 'reset'])->name('reset')->middleware(['signed'])->withoutMiddleware(['guest']);
-        Route::post('reset', [AuthController::class, 'resetPost'])->withoutMiddleware(['guest']);
-
-        // Verify
-        Route::group(['prefix' => 'verify', 'excluded_middleware' => ['guest']], function(){
-            // Verify
-            Route::get('/', [AuthController::class, 'verify'])->name('verify');
-
-            // Resend Verify
-            Route::get('resend', [AuthController::class, 'verifyResend'])->name('verify.resend');
-            Route::post('resend', [AuthController::class, 'verifyResendPost'])->middleware(['throttle:2,1']);
-        });
-
-        // Claim
-        Route::get('claim', [AuthController::class, 'claim'])->name('claim')->withoutMiddleware(['guest']);
-        Route::post('claim', [AuthController::class, 'claimPost'])->withoutMiddleware(['guest']);
-
-        // Logout
-        Route::get('logout', [AuthController::class, 'logout'])->name('logout')->withoutMiddleware(['guest']);
     });
 
     // Apps
@@ -278,6 +257,21 @@ Route::group(['prefix' => '/'], function(){
         Route::group(['prefix' => 'master-data', 'middleware' => ['role:Admin']], function(){
             // Master data index
             Route::get('/', [AppsController::class, 'master'])->name('apps.master.index');
+
+            // Debug
+            Route::group(['prefix' => 'debug'], function(){
+                // Base
+                Route::get('cron', [BaseCron::class, 'fetchDebug']);
+
+                // General
+                Route::get('general', [FrontController::class, 'fetchDebug']);
+                
+                // Twitch
+                Route::get('twitch', [TwitchCron::class, 'fetchDebug']);
+                
+                // Youtube
+                Route::get('youtube', [YoutubeCron::class, 'fetchDebug']);
+            });
 
             // Master data - Base Affiliation
             Route::group(['prefix' => 'affiliation'], function(){
@@ -492,5 +486,20 @@ Route::group(['prefix' => '/'], function(){
                 // Route::get('delete/{id}', [MasterUserController::class, 'delete'])->name('apps.master.user.delete');
             });
         });
+    });
+
+    // Redirect
+    Route::group(['prefix' => 'go'], function(){
+        // Bsky
+        Route::get('bsky', [RedirectController::class, 'bsky'])->name('go.bsky');
+
+        // Discord
+        // TBA
+
+        // Ping
+        Route::get('ping', [RedirectController::class, 'ping'])->name('go.ping');
+
+        // Status
+        Route::get('status', [RedirectController::class, 'status'])->name('go.status');
     });
 });

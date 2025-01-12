@@ -204,7 +204,6 @@ class UserAuthRepositories{
         $user = $request->belongsToUser;
         
         $user->update([
-            'confirmed'         => true,
             'email_verified_at' => Carbon::now()->timezone(config('app.timezone'))->toDateTimeString(),
         ]);
 
