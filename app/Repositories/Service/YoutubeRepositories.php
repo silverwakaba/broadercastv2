@@ -477,22 +477,39 @@ class YoutubeRepositories{
                 ['actual_end', '=', null],
                 ['duration', '!=', "P0D"],
             ])->whereIn('base_status_id', ['7', '8'])->whereNotIn('base_status_id', ['5'])->select('id', 'identifier', 'published', 'schedule')->chunkById(50, function(Collection $chunks) use($subDay, $addDay){
+                // Collect the cunks
                 $dbCollection = collect($chunks);
-                $dbCollectionFilter = $dbCollection->whereBetween('published', [$subDay, $addDay])->whereBetween('schedule', [$subDay, $addDay])->pluck('identifier');
-                $dbCollectionResult = $dbCollectionFilter->all();
-                $videoIDFromDatabase = implode(',', ($dbCollectionResult)); // Debug ID by Hardcode: $videoIDFromDatabase = "O0xrNFFrL5U,-nQcxe2nzmI,ASDCFEGTHVX,ASDCFEGT458";
+                
+                // Filter via 'published' based on $subDay and $addDay
+                $dbCollectionFilterPublished = $dbCollection->whereBetween('published', [$subDay, $addDay])->pluck('identifier');
+                $dbCollectionResultPublished = $dbCollectionFilterPublished->all();
 
-                // Only Doing a Check if Filtered `$dbCollectionResult` Returning at Least Single Record
-                if(($dbCollectionResult) && isset($dbCollectionResult) && (count($dbCollectionResult) >= 1)){
+                // Filter via 'schedule' based on $subDay and $addDay
+                $dbCollectionFilterScheduled = $dbCollection->whereBetween('schedule', [$subDay, $addDay])->pluck('identifier');
+                $dbCollectionResultScheduled = $dbCollectionFilterScheduled->all();
+
+                // Merge the filter result...
+                $mergeResult = array_merge($dbCollectionResultPublished, $dbCollectionResultScheduled);
+                
+                // ...and make it unique
+                $uniqueResult = array_unique($mergeResult);
+                
+                // Final video id from database that will be processed
+                $videoIDFromDatabase = implode(',', ($uniqueResult));
+
+                // Only doing a check if filtered `$uniqueResult` returning at least a single record
+                if(($uniqueResult) && isset($uniqueResult) && (count($uniqueResult) >= 1)){
+                    // Make an api call
                     $http = YoutubeAPIRepositories::fetchVideos($videoIDFromDatabase);
                     $httpCollection = collect($http['items']);
                     $httpCollectionResult = $httpCollection->all();
 
+                    // Video ID from Youtube, to be used for comparison to Video ID from Dabatase
                     $httpCollectionPlucker = collect($httpCollectionResult)->pluck('id');
                     $httpCollectionPluckerResult = $httpCollectionPlucker->all();
                     $videoIDFromYoutube = implode(',', ($httpCollectionPluckerResult));
 
-                    // We Do Fun Update
+                    // We do fun update
                     foreach($httpCollectionResult as $possibleArchiveItem){
                         $userF = self::userFeed($possibleArchiveItem['id']);
 
@@ -519,7 +536,7 @@ class YoutubeRepositories{
                         explode(',', $videoIDFromDatabase), explode(',', $videoIDFromYoutube)
                     );
 
-                    // If Video is Being Unavailable Midway (Not Being Able to Changed From 'Live' to 'Archived') Then it Will Be Deleted
+                    // If Video is being unavailable midway (not being able to changed from 'Live' to 'Archived') then it will be deleted
                     if(($missingVideo) && isset($missingVideo) && (count($missingVideo) >= 1)){
                         UserFeed::where('base_status_id', '=', 8)->whereIn('identifier', $missingVideo)->delete();
                     }

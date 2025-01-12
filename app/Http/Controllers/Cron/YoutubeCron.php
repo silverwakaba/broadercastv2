@@ -16,7 +16,7 @@ use Illuminate\Support\Collection;
 class YoutubeCron extends Controller{
     // Debug
     public function fetchDebug(){
-        // 
+        return YoutubeRepositories::fetchStreamStatusViaAPI();
     }
 
     // Archive Initialization
