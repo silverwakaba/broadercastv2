@@ -1,5 +1,5 @@
 @extends('layout.app')
-@section('title', 'Change Email')
+@section('title', 'Change Handler')
 @section('content')
     <x-Adminlte.Content :previous="$backURI">
         <x-Adminlte.CardForm button="Change">

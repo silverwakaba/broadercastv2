@@ -19,6 +19,9 @@
                 <x-Adminlte.Box colors="bg-dark" icon="fas fa-user" title="Gender" content="Manage user gender" :link="route('apps.master.user.manage.gender', ['uid' => request()->uid])" />
             </div>
             <div class="col">
+                <x-Adminlte.Box colors="bg-dark" icon="fas fa-user" title="Handler" content="Manage user handler" :link="route('apps.master.user.manage.handler', ['uid' => request()->uid])" />
+            </div>
+            <div class="col">
                 <x-Adminlte.Box colors="bg-dark" icon="fas fa-user" title="Language" content="Manage user language" :link="route('apps.master.user.manage.language', ['uid' => request()->uid])" />
             </div>
             <div class="col">

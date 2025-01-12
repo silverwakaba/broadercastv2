@@ -10,6 +10,7 @@ use App\Http\Requests\Apps\Master\UserRequest;
 use App\Http\Requests\Apps\Setting\UserAvatarRequest;
 use App\Http\Requests\Apps\Setting\UserBiodataRequest;
 use App\Http\Requests\Apps\Setting\UserContentRequest;
+use App\Http\Requests\Apps\Setting\UserHandlerRequest;
 use App\Http\Requests\Apps\Setting\UserLinkRequest;
 use App\Http\Requests\Apps\Setting\UserLinkDeleteRequest;
 use App\Http\Requests\Apps\Setting\UserLinkVerificationRequest;
@@ -21,6 +22,7 @@ use App\Repositories\Setting\UserAvatarRepositories;
 use App\Repositories\Setting\UserBiodataRepositories;
 use App\Repositories\Setting\UserContentRepositories;
 use App\Repositories\Setting\UserGenderRepositories;
+use App\Repositories\Setting\UserHandlerRepositories;
 use App\Repositories\Setting\UserLanguageRepositories;
 use App\Repositories\Setting\UserLinkRepositories;
 use App\Repositories\Setting\UserProfileRepositories;
@@ -176,6 +178,23 @@ class UserController extends Controller{
         return UserGenderRepositories::sync([
             'id'    => $uid,
             'data'  => $request->gender,
+        ]);
+    }
+
+    // Handler
+    public function handler($uid){
+        return view('pages/apps/setting/user/handler', [
+            'backURI'   => $this->backManage,
+            'handler'   => null,
+        ]);
+    }
+
+    public function handlerPost(UserHandlerRequest $request, $uid){
+        $uid = BaseHelper::decrypt($uid);
+
+        return UserHandlerRepositories::update([
+            'id'        => $uid,
+            'handler'   => $request->handler,
         ]);
     }
 

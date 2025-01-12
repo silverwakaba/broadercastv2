@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Observers\UserObserver;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
-use Illuminate\Database\Eloquent\SoftDeletes;
+// use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -13,7 +13,8 @@ use Spatie\Permission\Traits\HasRoles;
 
 #[ObservedBy([UserObserver::class])]
 class User extends Authenticatable{
-    use HasFactory, Notifiable, HasRoles, SoftDeletes;
+    // use SoftDeletes;
+    use HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.

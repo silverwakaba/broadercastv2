@@ -451,6 +451,10 @@ Route::group(['prefix' => '/'], function(){
                     Route::get('language', [MasterUserController::class, 'language'])->name('apps.master.user.manage.language');
                     Route::post('language', [MasterUserController::class, 'languagePost']);
 
+                    // Handler
+                    Route::get('handler', [MasterUserController::class, 'handler'])->name('apps.master.user.manage.handler');
+                    Route::post('handler', [MasterUserController::class, 'handlerPost']);
+
                     // Link
                     Route::group(['prefix' => 'link'], function(){
                         // Index
