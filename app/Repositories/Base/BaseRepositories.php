@@ -32,7 +32,7 @@ class BaseRepositories{
         })->toJson();
     }
 
-    public static function upsert($model, array $data, $back = '', $id = '', $title = ''){
+    public static function upsert($model, array $data, $back = '', $id = null, $title = ''){
         if($id && $id !== null){
             $id = BaseHelper::decrypt($id);
         }

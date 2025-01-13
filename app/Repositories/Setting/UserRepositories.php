@@ -230,7 +230,7 @@ class UserRepositories{
         return back()->with('class', 'success')->with('message', "Your main language is changed successfully.");
     }
     
-    public static function upsertLink(array $data, $back = '', $id = ''){
+    public static function upsertLink(array $data, $back = '', $id = null){
         $checking = BaseLink::select('checking')->where([
             ['id', '=', $data['base_link_id']]
         ])->first();
