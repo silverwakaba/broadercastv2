@@ -21,6 +21,7 @@
                         <span>Please <u>only use and submit one of the above formats</u>! Outside the scope of the format, the verification process will always result in failure.</span>
                     </li>
                     <li>If the link structure doesn't match as in the example, you can still <u><a href="{{ route('apps.manager.link.edit', ['did' => request()->did]) }}">make a changes</a></u> before submitting. Do it <u>before the number of attempts runs out</u>!</li>
+                    <li><u>The link structure must be alphabetical</u>. if it contains non-alphabetical, such as kanji/hangul/etc writing system, our decoder cannot process it - Thus causes error.</li>
                     <li>To avoid the possibility of abuse, the <u>submission process can only be done twice every hour</u>. Please use this feature wisely.</li>
                     <li>If the verification attempt reaches the limit, <u>you have to wait until the number of attempts is reset</u> in the next period (every 1 hours, since the last time you tried to verify). <sup><a href="#">[?]</a></sup></li>
                     <li>

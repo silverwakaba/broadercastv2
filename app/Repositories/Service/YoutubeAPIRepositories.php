@@ -194,9 +194,11 @@ class YoutubeAPIRepositories{
 
     // Channel
     public static function scrapeLLChannels($channelID, $apiKey = 'scraperLL'){
-        $length = Str::length($channelID);
-        $containCID = Str::contains($channelID, ['/c/']);
-        $containAtSymbol = Str::contains($channelID, ['@']);
+        $channelIDs = urldecode($channelID);
+        
+        $length = Str::length($channelIDs);
+        $containCID = Str::contains($channelIDs, ['/c/']);
+        $containAtSymbol = Str::contains($channelIDs, ['@']);
 
         $params = [
             'maxResults'    => 50,
@@ -204,13 +206,13 @@ class YoutubeAPIRepositories{
         ];
 
         if(($length == 24) && ($containCID == false) && ($containAtSymbol == false)){
-            $params['id'] = $channelID;
+            $params['id'] = $channelIDs;
         }
         elseif(($length >= 1) && ($containCID == true) && ($containAtSymbol == false)){
-            $params['cId'] = Str::of($channelID)->afterLast('/c/');
+            $params['cId'] = Str::of($channelIDs)->afterLast('/c/');
         }
         else{
-            $params['handle'] = $channelID;
+            $params['handle'] = $channelIDs;
         }
 
         return self::apiCall($params, 'channels', $apiKey);

@@ -221,8 +221,7 @@ class YoutubeRepositories{
             }
         }
         catch(\Throwable $th){
-            return $th;
-            return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Because something went wrong, please try again.', 'error');
+            return RedirectHelper::routeBack(null, 'danger', 'Channel Verification. Something went wrong, please try again.', 'error');
         }
     }
 
