@@ -19,7 +19,7 @@ class RaceRequest extends FormRequest{
      */
     public function rules() : array{
         return [
-            'name' => ['required', 'string', 'min:5', 'max:255', 'unique:base_race'],
+            'name' => ['required', 'string', 'min:3', 'max:255', 'unique:base_race'],
         ];
     }
 }
