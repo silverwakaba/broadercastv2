@@ -328,7 +328,7 @@ class TwitchRepositories{
             ])->whereNotIn('identifier', $activeFeedCollection)->select('id', 'identifier', 'handler', 'users_id')->chunkById(100, function(Collection $chunks){
                 foreach($chunks as $channel){
                     $http = Http::withOptions([
-                        // 'proxy' => BaseHelper::baseProxy(),
+                        'proxy' => BaseHelper::baseProxy(),
                     ])->get('https://www.twitch.tv/' . $channel->handler)->body();
 
                     $live = Str::betweenFirst($http, ',"isLiveBroadcast":', '}}');
