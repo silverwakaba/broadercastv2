@@ -461,13 +461,13 @@ class TwitchRepositories{
 
                                 // If not it will be deleted
                                 else{
-                                    $userFeedArchive->delete();
+                                    // $userFeedArchive->delete();
                                 }
                             }
 
                             // If not it will be deleted
                             else{
-                                $userFeedArchive->delete();
+                                // $userFeedArchive->delete();
                             }
                         }
                     }
