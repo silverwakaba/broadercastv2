@@ -410,11 +410,6 @@ class TwitchRepositories{
                         $dbCollection, $inactiveStream
                     );
 
-                    // dd([
-                    //     'active'    => $activeStream,
-                    //     'inactive'  => $inactiveStream
-                    // ]);
-
                     // Processing live streaming data
                     $activeStreamCollection = collect($fetchStreamCollection)->whereIn('user_id', $activeStream)->all();
 
@@ -466,13 +461,13 @@ class TwitchRepositories{
 
                                 // If not it will be deleted
                                 else{
-                                    // $userFeedArchive->delete();
+                                    $userFeedArchive->delete();
                                 }
                             }
 
                             // If not it will be deleted
                             else{
-                                // $userFeedArchive->delete();
+                                $userFeedArchive->delete();
                             }
                         }
                     }
@@ -480,7 +475,7 @@ class TwitchRepositories{
             });
         }
         catch(\Throwable $th){
-            throw $th;
+            // throw $th;
         }
     }
 

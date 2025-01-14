@@ -14,7 +14,7 @@ use Illuminate\Support\Collection;
 class TwitchCron extends Controller{
     // Debug
     public function fetchDebug(){
-        return TwitchRepositories::updateChannelActivity();
+        // 
     }
 
     // MISC
