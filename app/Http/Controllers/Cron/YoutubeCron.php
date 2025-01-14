@@ -44,11 +44,11 @@ class YoutubeCron extends Controller{
 
     // Feed Checker
     public function checker(){
-        return YoutubeRepositories::fetchStreamStatusViaAPI();
+        YoutubeRepositories::fetchStreamStatusViaAPI();
     }
 
     // Profiler
     public function profiler(){
-        return YoutubeRepositories::fetchProfile();
+        YoutubeRepositories::fetchProfile();
     }
 }
