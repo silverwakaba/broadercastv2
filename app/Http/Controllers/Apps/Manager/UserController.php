@@ -188,8 +188,9 @@ class UserController extends Controller{
     // Link Add
     public function linkAdd(){
         return view('pages/apps/setting/user/link/add', [
-            'backURI'  => $this->backLink,
-            'services' => BasedataHelper::baseLink(),
+            'captcha'   => true,
+            'backURI'   => $this->backLink,
+            'services'  => BasedataHelper::baseLink(),
         ]);
     }
 
@@ -243,8 +244,14 @@ class UserController extends Controller{
                 'https://www.youtube.com/channel/UCIRQxP7jORi6jsLt0HmUmqQ',
             ];
         }
+        else{
+            $structure = [
+                'what r u doin blud?',
+            ];
+        }
 
         return view('pages/apps/setting/user/link/verify', [
+            'captcha'   => true,
             'backURI'   => $this->backLink,
             'secret'    => Str::of('vtl#')->append(BaseHelper::adler32(auth()->user()->id . date('d m Y') . $datas->belongsToBaseLink->name)),
             'structure' => $structure,

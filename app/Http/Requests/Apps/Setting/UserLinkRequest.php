@@ -18,10 +18,15 @@ class UserLinkRequest extends FormRequest{
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules() : array{
-        return [
-            'service'               => ['required'],
-            'link'                  => ['required', 'url'],
-            'h-captcha-response'    => ['required', 'HCaptcha'],
+        $default = [
+            'service'   => ['required'],
+            'link'      => ['required', 'url'],
         ];
+
+        if(!(auth()->user()->hasRole('Admin|Moderator'))){
+            $default['h-captcha-response'] = ['required', 'HCaptcha'];
+        }
+
+        return $request = $default;
     }
 }

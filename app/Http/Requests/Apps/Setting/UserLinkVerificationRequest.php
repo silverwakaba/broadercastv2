@@ -18,12 +18,17 @@ class UserLinkVerificationRequest extends FormRequest{
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules() : array{
-        return [
+        $default = [
             'unique'                => ['nullable'],
             'service'               => ['required'],
             'channel'               => ['required'],
             'terms'                 => ['accepted'],
-            'h-captcha-response'    => ['required', 'HCaptcha'],
         ];
+
+        if(!(auth()->user()->hasRole('Admin|Moderator'))){
+            $default['h-captcha-response'] = ['required', 'HCaptcha'];
+        }
+
+        return $request = $default;
     }
 }
