@@ -14,7 +14,7 @@ use Illuminate\Support\Collection;
 class YoutubeCron extends Controller{
     // Debug
     public function fetchDebug(){
-        // 
+        return self::checker();
     }
 
     // Archive Initialization
@@ -44,7 +44,7 @@ class YoutubeCron extends Controller{
 
     // Feed Checker
     public function checker(){
-        YoutubeRepositories::fetchStreamStatusViaAPI();
+        return YoutubeRepositories::fetchStreamStatusViaAPI();
     }
 
     // Profiler

@@ -343,6 +343,8 @@ class YoutubeRepositories{
                     self::fetchArchiveViaAPIRepeater($channelID, $userID, $nextToken);
                 }
             }
+
+            exit();
         }
         catch(\Throwable $th){
             // return $th;
@@ -404,6 +406,8 @@ class YoutubeRepositories{
                             );
                         }
                     }
+
+                    exit();
                 }
             });
         }
@@ -453,6 +457,8 @@ class YoutubeRepositories{
                         }
                     }
                 }
+
+                exit();
             });
         }
         catch(\Throwable $th){
@@ -540,6 +546,8 @@ class YoutubeRepositories{
                         UserFeed::where('base_status_id', '=', 8)->whereIn('identifier', $missingVideo)->delete();
                     }
                 }
+
+                exit();
             });
         }
         catch(\Throwable $th){
@@ -583,6 +591,8 @@ class YoutubeRepositories{
                             ]);
                         }
                     }
+
+                    exit();
                 }
             });
         }
