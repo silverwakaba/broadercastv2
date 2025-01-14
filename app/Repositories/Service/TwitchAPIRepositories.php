@@ -192,11 +192,12 @@ class TwitchAPIRepositories{
         return self::apiCall($query, 'streams', self::apiKey()->client_id, null, self::apiKey()->bearer);
     }
 
-    // Fetch Video
-    public static function fetchVideo($userID = null, $videoID = null, $streamID = null){
-        // id and user_id params are mutually exclusive, so that it can't be inserted together
+    // Fetch Video | Need to add some worthnoty notes since:
+    // This function only fetch and filter the first 20 video belongs to user AND not implementing pagination
+    // So if given video is AVAILABLE as the 21st video onwards, IT WILL be marked as UNAVAILABLE or NULL ARRAY
+    // Twitch don't store VOD that long, so i won't trying hard on this one either
+    public static function fetchVideo($userID, $kind = null, $theID = null){
         $params = [
-            'id'        => $videoID,
             'user_id'   => $userID,
             'sort'      => 'time',
         ];
@@ -205,7 +206,25 @@ class TwitchAPIRepositories{
 
         $http = self::apiCall($query, 'videos', self::apiKey()->client_id, null, self::apiKey()->bearer);
 
-        return collect($http['data'])->where('stream_id', '=', $streamID)->first();
+        // Showing all of the video belongs to user
+        if(($kind == null) && ($theID == null)){
+            return $http;
+        }
+
+        // Showing one video belongs to user based on video id
+        elseif(($kind == 'video') && ($theID != null)){
+            return collect($http['data'])->where('id', '=', $theID)->first();
+        }
+
+        // Showing one video belongs to user based on stream id
+        elseif(($kind == 'stream') && ($theID != null)){
+            return collect($http['data'])->where('stream_id', '=', $theID)->first();
+        }
+
+        // just for precaution
+        else{
+            return null;
+        }
     }
 
     /**

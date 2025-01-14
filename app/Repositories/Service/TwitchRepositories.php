@@ -328,10 +328,8 @@ class TwitchRepositories{
             ])->whereNotIn('identifier', $activeFeedCollection)->select('id', 'identifier', 'handler', 'users_id')->chunkById(100, function(Collection $chunks){
                 foreach($chunks as $channel){
                     $http = Http::withOptions([
-                        'proxy' => BaseHelper::baseProxy(),
+                        // 'proxy' => BaseHelper::baseProxy(),
                     ])->get('https://www.twitch.tv/' . $channel->handler)->body();
-
-                    // dd($http);
 
                     $live = Str::betweenFirst($http, ',"isLiveBroadcast":', '}}');
                     $title = Str::betweenFirst($http, '"description":"', '",');
@@ -376,6 +374,7 @@ class TwitchRepositories{
                 ['actual_end', '=', null],
                 ['duration', '=', "P0D"],
             ])->whereIn('base_status_id', ['6', '8'])->select('id', 'identifier', 'users_id', 'base_status_id', 'users_link_tracker_id', 'reference')->chunkById(100, function(Collection $chunks) use(&$combinedData){
+                // Do a looping to chunks and store it to $combinedData as an array
                 foreach($chunks as $feed){
                     $combinedData[] = [
                         'status'            => $feed->base_status_id,
@@ -387,31 +386,31 @@ class TwitchRepositories{
                     ];
                 }
 
-                // Data From Database
+                // Collect data from database as referenced from channel identifier, so that's the reason we add the stupid 'videos_reference' column
                 $dbCollection = collect($combinedData)->pluck('videos_reference')->all();
                 $channelIDFromDatabase = implode(',', $dbCollection);
 
-                // Do an Action if Data is Present
+                // Do an action if data is present
                 if(($dbCollection) && isset($dbCollection) && (count($dbCollection) >= 1)){
                     // API Call
                     $fetchStream = TwitchAPIRepositories::fetchStream($channelIDFromDatabase);
                     $fetchStreamCollection = collect($fetchStream['data'])->all();
 
-                    // List of Twitch Streamers Who Are Currently Streaming Based On Twitch
+                    // List of streamers who are currently streaming based On Twitch API
                     $channelIsStreamingOnTwitch = collect($fetchStreamCollection)->pluck('user_id')->all();
                     $channelIsStreamingOnTwitchCollection = implode(',', ($channelIsStreamingOnTwitch));
 
-                    // Inactive Streamer
+                    // List of inactive streamer
                     $inactiveStream = array_diff(
                         $dbCollection, $channelIsStreamingOnTwitch
                     );
 
-                    // Active Streamer
+                    // List of active streamer
                     $activeStream = array_diff(
                         $dbCollection, $inactiveStream
                     );
 
-                    // Processing Live Streaming
+                    // Processing live streaming data
                     $activeStreamCollection = collect($fetchStreamCollection)->whereIn('user_id', $activeStream)->all();
 
                     if(($activeStreamCollection) && isset($activeStreamCollection) && (count($activeStreamCollection) >= 1)){
@@ -431,22 +430,24 @@ class TwitchRepositories{
                         }
                     }
 
-                    // Processing Offline Live Streaming
+                    // Processing offline live streaming
                     $inactiveStreamCollection = collect($combinedData)->whereIn('videos_reference', $inactiveStream)->all();
 
                     if(($inactiveStreamCollection) && isset($inactiveStreamCollection) && (count($inactiveStreamCollection) >= 1)){
                         foreach($inactiveStreamCollection as $archive){
-                            $fetchVideo = TwitchAPIRepositories::fetchVideo($archive['user_identifier'], null, $archive['videos_id']);
+                            $fetchVideo = TwitchAPIRepositories::fetchVideo($archive['user_identifier'], 'stream', $archive['videos_id']);
 
                             $userFeedArchive = UserFeed::where([
-                                ['reference', '=', $archive['videos_reference']],
+                                ['identifier', '=', $fetchVideo['stream_id']],
                             ])->first();
 
+                            // If the video is found then we do an update to the feed
                             if(($fetchVideo) && isset($fetchVideo) && (count($fetchVideo) >= 1)){
+                                // If the feed is a live streaming, it will be updated afterward
                                 if(($userFeedArchive->base_status_id == 8)){
                                     $userFeedArchive->update([
                                         'base_status_id'    => 9,
-                                        'identifier'        => $fetchVideo['id'],
+                                        'identifier'        => $fetchVideo['id'], // the identifier will change from stream_id to video_id afterward
                                         'concurrent'        => 0,
                                         'thumbnail'         => self::userAvatarBanner(Str::replace('%{width}x%{height}', '1280x720', $fetchVideo['thumbnail_url'])),
                                         'title'             => $fetchVideo['title'],
@@ -457,10 +458,14 @@ class TwitchRepositories{
                                         'reference'         => null,
                                     ]);
                                 }
+
+                                // If not it will be deleted
                                 else{
                                     $userFeedArchive->delete();
                                 }
                             }
+
+                            // If not it will be deleted
                             else{
                                 $userFeedArchive->delete();
                             }
