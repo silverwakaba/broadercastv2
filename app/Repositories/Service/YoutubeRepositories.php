@@ -23,6 +23,9 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 
+// Debug-related
+use Illuminate\Support\Facades\Log;
+
 class YoutubeRepositories{
     /**
      * ----------------------------
@@ -461,13 +464,17 @@ class YoutubeRepositories{
     }
 
     // Fetch streaming status
+    // This shit probably not optimized but at least: It is safer to YouTube quota usage AND not blocking the chunk like the previous code either.
+    // This shit is done on prod. Holy fuck.
     public static function fetchStreamStatusViaAPI(){
+        // Define which data would be loaded based on date
         $day = 3; // 3 days back + today + 3 days next. Total 7 days to load.
         $subDay = Carbon::now()->timezone(config('app.timezone'))->subDays($day)->startOfDay()->toDateTimeString();
         $addDay = Carbon::now()->timezone(config('app.timezone'))->addDays($day)->endOfDay()->toDateTimeString();
 
         try{
-            $datas = UserFeed::where([
+            // First filter because fuck my life and server healthy
+            $filter = UserFeed::where([
                 ['base_link_id', '=', 2],
                 ['actual_end', '=', null],
                 ['duration', '=', "P0D"],
@@ -475,75 +482,82 @@ class YoutubeRepositories{
                 ['base_link_id', '=', 2],
                 ['actual_end', '=', null],
                 ['duration', '!=', "P0D"],
-            ])->whereIn('base_status_id', ['7', '8'])->whereNotIn('base_status_id', ['5'])->select('id', 'identifier', 'published', 'schedule')->chunkById(50, function(Collection $chunks) use($subDay, $addDay){
-                // Collect the cunks
-                $dbCollection = collect($chunks);
+            ])->whereNotIn('base_status_id', ['5'])->whereIn('base_status_id', ['7', '8'])->select('id', 'published', 'schedule')->get();
+
+            // Collect the filter
+            $dbCollection = collect($filter);
+
+            // Second filter via 'published' based on $subDay and $addDay
+            $dbCollectionFilterPublished = $dbCollection->whereBetween('published', [$subDay, $addDay])->pluck('id');
+            $dbCollectionResultPublished = $dbCollectionFilterPublished->all();
+
+            // Third filter via 'schedule' based on $subDay and $addDay
+            $dbCollectionFilterScheduled = $dbCollection->whereBetween('schedule', [$subDay, $addDay])->pluck('id');
+            $dbCollectionResultScheduled = $dbCollectionFilterScheduled->all();
+
+            // Merge the filter result...
+            $mergeResult = array_merge($dbCollectionResultPublished, $dbCollectionResultScheduled);
+            
+            // ...and make it unique after literally using three fucking filter
+            $uniqueResult = array_unique($mergeResult);
+
+            // Only doing an actual check if filtered `$uniqueResult` returning at least a single record
+            if(($uniqueResult) && isset($uniqueResult) && (count($uniqueResult) >= 1)){
+                // Video id from database, but we only need the array vault
+                $idToQuery = array_values($uniqueResult);
                 
-                // Filter via 'published' based on $subDay and $addDay
-                $dbCollectionFilterPublished = $dbCollection->whereBetween('published', [$subDay, $addDay])->pluck('identifier');
-                $dbCollectionResultPublished = $dbCollectionFilterPublished->all();
+                // We start the fun
+                $datas = UserFeed::whereIn('id', $idToQuery)->select('id', 'identifier')->chunkById(50, function(Collection $chunks){
+                    $videoIDFromDatabase = implode(',', ($chunks)->pluck('identifier')->toArray());
 
-                // Filter via 'schedule' based on $subDay and $addDay
-                $dbCollectionFilterScheduled = $dbCollection->whereBetween('schedule', [$subDay, $addDay])->pluck('identifier');
-                $dbCollectionResultScheduled = $dbCollectionFilterScheduled->all();
+                    if(($chunks) && isset($chunks) && ($chunks->count() >= 1)){
+                        // Make an api call
+                        $http = YoutubeAPIRepositories::fetchVideos($videoIDFromDatabase);
+                        $httpCollection = collect($http['items']);
+                        $httpCollectionResult = $httpCollection->all();
 
-                // Merge the filter result...
-                $mergeResult = array_merge($dbCollectionResultPublished, $dbCollectionResultScheduled);
-                
-                // ...and make it unique
-                $uniqueResult = array_unique($mergeResult);
-                
-                // Final video id from database that will be processed
-                $videoIDFromDatabase = implode(',', ($uniqueResult));
+                        // Video ID from Youtube, to be used for comparison to Video ID from Dabatase
+                        $httpCollectionPlucker = collect($httpCollectionResult)->pluck('id');
+                        $httpCollectionPluckerResult = $httpCollectionPlucker->all();
+                        $videoIDFromYoutube = implode(',', ($httpCollectionPluckerResult));
 
-                // Only doing a check if filtered `$uniqueResult` returning at least a single record
-                if(($uniqueResult) && isset($uniqueResult) && (count($uniqueResult) >= 1)){
-                    // Make an api call
-                    $http = YoutubeAPIRepositories::fetchVideos($videoIDFromDatabase);
-                    $httpCollection = collect($http['items']);
-                    $httpCollectionResult = $httpCollection->all();
+                        // We do the fun update
+                        foreach($httpCollectionResult as $possibleArchiveItem){
+                            $userF = self::userFeed($possibleArchiveItem['id']);
 
-                    // Video ID from Youtube, to be used for comparison to Video ID from Dabatase
-                    $httpCollectionPlucker = collect($httpCollectionResult)->pluck('id');
-                    $httpCollectionPluckerResult = $httpCollectionPlucker->all();
-                    $videoIDFromYoutube = implode(',', ($httpCollectionPluckerResult));
-
-                    // We do fun update
-                    foreach($httpCollectionResult as $possibleArchiveItem){
-                        $userF = self::userFeed($possibleArchiveItem['id']);
-
-                        $userF->update([
-                            'base_status_id'    => self::userFeedStatus($possibleArchiveItem),
-                            'concurrent'        => isset($possibleArchiveItem['liveStreamingDetails']['concurrentViewers']) ? $possibleArchiveItem['liveStreamingDetails']['concurrentViewers'] : 0,
-                            'thumbnail'         => self::userThumbnailMultiple($possibleArchiveItem),
-                            'title'             => $possibleArchiveItem['snippet']['title'],
-                            'description'       => isset($possibleArchiveItem['snippet']['description']) ? $possibleArchiveItem['snippet']['description'] : null,
-                            'actual_start'      => isset($possibleArchiveItem['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($possibleArchiveItem['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
-                            'actual_end'        => isset($possibleArchiveItem['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($possibleArchiveItem['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
-                            'duration'          => isset($possibleArchiveItem['contentDetails']['duration']) ? $possibleArchiveItem['contentDetails']['duration'] : "P0D",
-                        ]);
-
-                        if((isset($possibleArchiveItem['liveStreamingDetails']['actualEndTime'])) && (Carbon::parse($possibleArchiveItem['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString() >= $userF->belongsToUserLinkTracker()->select('updated_at')->first()->updated_at)){
-                            $userF->belongsToUserLinkTracker()->update([
-                                'updated_at' => Carbon::parse($possibleArchiveItem['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString(),
+                            $userF->update([
+                                'base_status_id'    => self::userFeedStatus($possibleArchiveItem),
+                                'concurrent'        => isset($possibleArchiveItem['liveStreamingDetails']['concurrentViewers']) ? $possibleArchiveItem['liveStreamingDetails']['concurrentViewers'] : 0,
+                                'thumbnail'         => self::userThumbnailMultiple($possibleArchiveItem),
+                                'title'             => $possibleArchiveItem['snippet']['title'],
+                                'description'       => isset($possibleArchiveItem['snippet']['description']) ? $possibleArchiveItem['snippet']['description'] : null,
+                                'actual_start'      => isset($possibleArchiveItem['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($possibleArchiveItem['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
+                                'actual_end'        => isset($possibleArchiveItem['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($possibleArchiveItem['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
+                                'duration'          => isset($possibleArchiveItem['contentDetails']['duration']) ? $possibleArchiveItem['contentDetails']['duration'] : "P0D",
                             ]);
+
+                            if((isset($possibleArchiveItem['liveStreamingDetails']['actualEndTime'])) && (Carbon::parse($possibleArchiveItem['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString() >= $userF->belongsToUserLinkTracker()->select('updated_at')->first()->updated_at)){
+                                $userF->belongsToUserLinkTracker()->update([
+                                    'updated_at' => Carbon::parse($possibleArchiveItem['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString(),
+                                ]);
+                            }
+                        }
+
+                        // Comparing Video ID from Database and Video ID from Youtube
+                        $missingVideo = array_diff(
+                            explode(',', $videoIDFromDatabase), explode(',', $videoIDFromYoutube)
+                        );
+
+                        // If Video is being unavailable midway (not being able to changed from 'Live' to 'Archived') then it will be deleted
+                        if(($missingVideo) && isset($missingVideo) && (count($missingVideo) >= 1)){
+                            UserFeed::where('base_status_id', '=', 8)->whereIn('identifier', $missingVideo)->delete();
                         }
                     }
-
-                    // Comparing Video ID from Database and Video ID from Youtube
-                    $missingVideo = array_diff(
-                        explode(',', $videoIDFromDatabase), explode(',', $videoIDFromYoutube)
-                    );
-
-                    // If Video is being unavailable midway (not being able to changed from 'Live' to 'Archived') then it will be deleted
-                    if(($missingVideo) && isset($missingVideo) && (count($missingVideo) >= 1)){
-                        UserFeed::where('base_status_id', '=', 8)->whereIn('identifier', $missingVideo)->delete();
-                    }
-                }
-            });
+                });
+            }
         }
         catch(\Throwable $th){
-            // throw $th;
+            //throw $th;
         }
     }
 
