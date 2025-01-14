@@ -550,7 +550,10 @@ class YoutubeRepositories{
 
                         // If Video is being unavailable midway (not being able to changed from 'Live' to 'Archived') then it will be deleted
                         if(($missingVideo) && isset($missingVideo) && (count($missingVideo) >= 1)){
-                            UserFeed::where('base_status_id', '=', 8)->whereIn('identifier', $missingVideo)->delete();
+                            UserFeed::where([
+                                ['base_link_id', '=', 2],
+                                ['base_status_id', '=', 8],
+                            ])->whereIn('identifier', $missingVideo)->delete();
                         }
                     }
                 });

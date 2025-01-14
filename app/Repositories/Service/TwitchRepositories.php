@@ -410,6 +410,11 @@ class TwitchRepositories{
                         $dbCollection, $inactiveStream
                     );
 
+                    dd([
+                        'active'    => $activeStream,
+                        'inactive'  => $inactiveStream
+                    ]);
+
                     // Processing live streaming data
                     $activeStreamCollection = collect($fetchStreamCollection)->whereIn('user_id', $activeStream)->all();
 
@@ -475,7 +480,7 @@ class TwitchRepositories{
             });
         }
         catch(\Throwable $th){
-            // throw $th;
+            throw $th;
         }
     }
 
