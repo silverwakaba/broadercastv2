@@ -410,7 +410,13 @@ class TwitchRepositories{
                         $dbCollection, $inactiveStream
                     );
 
-                    // Processing live streaming data
+                    // Thid dd is just need to be commented/uncommented, since we're going to back a lot of this forest trip anyway.
+                    // dd([
+                    //     'active'    => $activeStream,
+                    //     'inactive'  => $inactiveStream,
+                    // ]);
+
+                    // Processing live streaming data | Latest test on: Jan 16, 2025. Status: Ok.
                     $activeStreamCollection = collect($fetchStreamCollection)->whereIn('user_id', $activeStream)->all();
 
                     if(($activeStreamCollection) && isset($activeStreamCollection) && (count($activeStreamCollection) >= 1)){
@@ -430,13 +436,22 @@ class TwitchRepositories{
                         }
                     }
 
-                    // Processing offline live streaming
+                    // Processing offline live streaming | Latest test on: Jan 16, 2025. Status: ???.
                     $inactiveStreamCollection = collect($combinedData)->whereIn('videos_reference', $inactiveStream)->all();
 
                     if(($inactiveStreamCollection) && isset($inactiveStreamCollection) && (count($inactiveStreamCollection) >= 1)){
                         foreach($inactiveStreamCollection as $archive){
+                            // Another forest trip. Let them be.
+                            // dd([
+                            //     'userID'    => $archive['user_identifier'],
+                            //     'videoID'   => $archive['videos_id'],
+                            //     'twitchAPI' => TwitchAPIRepositories::fetchVideo($archive['user_identifier']),
+                            // ]);
+
+                            // Check the video stream via Twitch API
                             $fetchVideo = TwitchAPIRepositories::fetchVideo($archive['user_identifier'], 'stream', $archive['videos_id']);
 
+                            // Check the video stream via database
                             $userFeedArchive = UserFeed::where([
                                 ['identifier', '=', $fetchVideo['stream_id']],
                             ])->first();
@@ -465,7 +480,7 @@ class TwitchRepositories{
                                 }
                             }
 
-                            // If not it will be deleted
+                            // If not then it will also be deleted. But did this works? Did something blocking again like what YouTube used to be?
                             else{
                                 $userFeedArchive->delete();
                             }
