@@ -32,7 +32,7 @@ class AffiliationController extends Controller{
         return view('pages/apps/base/affiliation/add');
     }
 
-    public function addPost(AffiliationRequest $request){
+    public function addPost(Request $request){
         $explode = explode(PHP_EOL, $request->name);
 
         if(count($explode) == 1){
