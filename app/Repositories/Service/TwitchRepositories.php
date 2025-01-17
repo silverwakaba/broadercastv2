@@ -427,7 +427,7 @@ class TwitchRepositories{
 
                             $userFeedStreaming->update([
                                 'base_status_id'    => 8,
-                                'identifier'        => $stream['id'],
+                                'identifier'        => (int) $stream['id'],
                                 'concurrent'        => $stream['viewer_count'],
                                 'title'             => $stream['title'],
                                 'published'         => Carbon::parse($stream['started_at'])->timezone(config('app.timezone'))->toDateTimeString(),
@@ -462,7 +462,7 @@ class TwitchRepositories{
                                 if(($userFeedArchive->base_status_id == 8)){
                                     $userFeedArchive->update([
                                         'base_status_id'    => 9,
-                                        'identifier'        => $fetchVideo['id'], // the identifier will change from stream_id to video_id afterward
+                                        'identifier'        => (int) $fetchVideo['id'], // the identifier will change from stream_id to video_id afterward
                                         'concurrent'        => 0,
                                         'thumbnail'         => self::userAvatarBanner(Str::replace('%{width}x%{height}', '1280x720', $fetchVideo['thumbnail_url'])),
                                         'title'             => $fetchVideo['title'],
@@ -480,7 +480,7 @@ class TwitchRepositories{
                                 }
                             }
 
-                            // If not then it will also be deleted. But did this works? Did something blocking again like what YouTube used to be?
+                            // If not then it will also be deleted
                             else{
                                 $userFeedArchive->delete();
                             }
