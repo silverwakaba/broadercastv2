@@ -31,6 +31,8 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@1.5.2/dist/select2-bootstrap4.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2.0/dist/css/adminlte.min.css">
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-EX07DV1G2P"></script>
+        <script>function gtag(){dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-EX07DV1G2P")</script>
     </head>
     <body @class(["hold-transition", "dark-mode", "layout-navbar-fixed", "layout-top-nav" => !request()->routeIs('apps.*')])>
         <div class="wrapper">
