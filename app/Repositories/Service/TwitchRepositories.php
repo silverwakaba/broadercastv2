@@ -345,7 +345,7 @@ class TwitchRepositories{
                             'base_status_id'        => 6,
                             'base_feed_type_id'     => null,
                             'concurrent'            => 0,
-                            'identifier'            => BaseHelper::adler32($tmpID),
+                            'identifier'            => BaseHelper::adler32($tmpID), // this sometimes fucked up
                             'thumbnail'             => null,
                             'title'                 => $title,
                             'published'             => Carbon::now()->timezone(config('app.timezone'))->toDateTimeString(),
@@ -410,13 +410,7 @@ class TwitchRepositories{
                         $dbCollection, $inactiveStream
                     );
 
-                    // Thid dd is just need to be commented/uncommented, since we're going to back a lot of this forest trip anyway.
-                    // dd([
-                    //     'active'    => $activeStream,
-                    //     'inactive'  => $inactiveStream,
-                    // ]);
-
-                    // Processing live streaming data | Latest test on: Jan 16, 2025. Status: Ok.
+                    // Processing live streaming data
                     $activeStreamCollection = collect($fetchStreamCollection)->whereIn('user_id', $activeStream)->all();
 
                     if(($activeStreamCollection) && isset($activeStreamCollection) && (count($activeStreamCollection) >= 1)){
@@ -436,18 +430,11 @@ class TwitchRepositories{
                         }
                     }
 
-                    // Processing offline live streaming | Latest test on: Jan 16, 2025. Status: ???.
+                    // Processing offline live streaming
                     $inactiveStreamCollection = collect($combinedData)->whereIn('videos_reference', $inactiveStream)->all();
 
                     if(($inactiveStreamCollection) && isset($inactiveStreamCollection) && (count($inactiveStreamCollection) >= 1)){
                         foreach($inactiveStreamCollection as $archive){
-                            // Another forest trip. Let them be.
-                            // dd([
-                            //     'userID'    => $archive['user_identifier'],
-                            //     'videoID'   => $archive['videos_id'],
-                            //     'twitchAPI' => TwitchAPIRepositories::fetchVideo($archive['user_identifier']),
-                            // ]);
-
                             // Check the video stream via Twitch API
                             $fetchVideo = TwitchAPIRepositories::fetchVideo($archive['user_identifier'], 'stream', $archive['videos_id']);
 
@@ -462,7 +449,7 @@ class TwitchRepositories{
                                 if(($userFeedArchive->base_status_id == 8)){
                                     $userFeedArchive->update([
                                         'base_status_id'    => 9,
-                                        'identifier'        => (int) $fetchVideo['id'], // the identifier will change from stream_id to video_id afterward
+                                        'identifier'        => (int) $fetchVideo['id'],
                                         'concurrent'        => 0,
                                         'thumbnail'         => self::userAvatarBanner(Str::replace('%{width}x%{height}', '1280x720', $fetchVideo['thumbnail_url'])),
                                         'title'             => $fetchVideo['title'],
