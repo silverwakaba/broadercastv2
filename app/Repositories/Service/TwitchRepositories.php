@@ -23,6 +23,9 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 
+// Debug-related
+use Illuminate\Support\Facades\Log;
+
 class TwitchRepositories{
     /**
      * ----------------------------
@@ -373,7 +376,7 @@ class TwitchRepositories{
                 ['base_link_id', '=', 1],
                 ['actual_end', '=', null],
                 ['duration', '=', "P0D"],
-            ])->whereIn('base_status_id', ['6', '8'])->select('id', 'identifier', 'users_id', 'base_status_id', 'users_link_tracker_id', 'reference')->chunkById(100, function(Collection $chunks) use(&$combinedData){
+            ])->whereIn('base_status_id', [6, 8])->select('id', 'identifier', 'users_id', 'base_status_id', 'users_link_tracker_id', 'reference')->chunkById(100, function(Collection $chunks) use(&$combinedData){
                 // Do a looping to chunks and store it to $combinedData as an array
                 foreach($chunks as $feed){
                     $combinedData[] = [
@@ -438,13 +441,13 @@ class TwitchRepositories{
                             // Check the video stream via Twitch API
                             $fetchVideo = TwitchAPIRepositories::fetchVideo($archive['user_identifier'], 'stream', $archive['videos_id']);
 
-                            // Check the video stream via database
-                            $userFeedArchive = UserFeed::where([
-                                ['identifier', '=', $fetchVideo['stream_id']],
-                            ])->first();
-
                             // If the video is found then we do an update to the feed
                             if(($fetchVideo) && isset($fetchVideo) && (count($fetchVideo) >= 1)){
+                                $userFeedArchive = UserFeed::where([
+                                    // ['base_status_id', '=', 8],
+                                    ['identifier', '=', $fetchVideo['stream_id']],
+                                ])->first();
+
                                 // If the feed is a live streaming, it will be updated afterward
                                 if(($userFeedArchive->base_status_id == 8)){
                                     $userFeedArchive->update([
@@ -465,11 +468,6 @@ class TwitchRepositories{
                                 else{
                                     $userFeedArchive->delete();
                                 }
-                            }
-
-                            // If not then it will also be deleted
-                            else{
-                                $userFeedArchive->delete();
                             }
                         }
                     }
