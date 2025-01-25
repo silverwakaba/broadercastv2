@@ -3,7 +3,7 @@
 @section('description', "Explore comprehensive profiles of $profile->name on vTual! You can access their biodata, video collections, ongoing livestreams and past livestream archive. Stay informed about $profile->name activity schedules and receive their latest updates.")
 @section('image', $profile->avatar->path)
 @section('content')
-    <x-Adminlte.Content>
+    <x-Adminlte.Content :title="$profile->name">
         <div class="row">
             <div class="col-xl-4">
                 <x-Adminlte.CardProfile :profile="$profile" :links="$link" :channels="$tracker" />

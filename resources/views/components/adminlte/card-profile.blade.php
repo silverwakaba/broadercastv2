@@ -29,7 +29,7 @@
             </li>
             <li class="list-group-item">
                 <strong>Nickname</strong>
-                @if($profile->biodata->nickname)
+                @if(isset($profile->biodata->nickname) && ($profile->biodata->nickname))
                     <ul class="list-inline m-0">
                         @foreach($profile->biodata->nickname AS $nickname)
                             <li class="list-inline-item">{{ $nickname }}</li>
@@ -41,13 +41,13 @@
             </li>
             <li class="list-group-item">
                 <strong>Debut Date</strong>
-                @if($profile->biodata->dod)
+                @if(isset($profile->biodata->dod) && ($profile->biodata->dod))
                     <p class="m-0">{{ $profile->biodata->dod }}</p>
                 @else
                     <p class="m-0">Unknown</p>
                 @endif
             </li>
-            @if($profile->biodata->dor)
+            @if(isset($profile->biodata->dor) && ($profile->biodata->dor))
                 <li class="list-group-item">
                     <strong>Retirement Date</strong>
                     <p class="m-0">{{ $profile->biodata->dor }}</p>
@@ -55,7 +55,7 @@
             @endif
             <li class="list-group-item">
                 <strong>About</strong>
-                @if($profile->biodata->biography)
+                @if(isset($profile->biodata->biography) && ($profile->biodata->biography))
                     <div>{!! $profile->biodata->biography !!}</div>
                 @else
                     <p class="m-0">Nothing known about this creator</p>
@@ -66,7 +66,7 @@
             </li>
             <li class="list-group-item">
                 <strong>Affiliation <sup>[<a href="https://help.silverspoon.me/docs/vtual/app/manager/affiliation#limitation" target="_blank">?</a>]</sup></strong>
-                @if($profile->affiliation)
+                @if(isset($profile->affiliation) && ($profile->affiliation))
                     <ul class="list-inline m-0">
                         @foreach($profile->affiliation AS $affiliation)
                             <li class="list-inline-item"><u><a href="{{ route('creator.index', ['affiliation[]' => $affiliation->id]) }}" class="text-light">{{ $affiliation->name }}</a></u></li>
@@ -78,7 +78,7 @@
             </li>
             <li class="list-group-item">
                 <strong>Gender</strong>
-                @if($profile->gender)
+                @if(isset($profile->gender) && ($profile->gender))
                     <ul class="list-inline m-0">
                         @foreach($profile->gender AS $gender)
                             <li class="list-inline-item"><u><a href="{{ route('creator.index', ['gender[]' => $gender->id]) }}" class="text-light">{{ $gender->name }}</a></u></li>
@@ -90,7 +90,7 @@
             </li>
             <li class="list-group-item">
                 <strong>Birthday</strong>
-                @if($profile->biodata->dob)
+                @if(isset($profile->biodata->dob) && ($profile->biodata->dob))
                     <p class="m-0">{{ $profile->biodata->dob }}</p>
                 @else
                     <p class="m-0">Unknown</p>
@@ -98,7 +98,7 @@
             </li>
             <li class="list-group-item">
                 <strong>Content</strong>
-                @if($profile->content)
+                @if(isset($profile->content) && ($profile->content))
                     <ul class="list-inline m-0">
                         @foreach($profile->content AS $content)
                             <li class="list-inline-item"><u><a href="{{ route('creator.index', ['content[]' => $content->id]) }}" class="text-light">{{ $content->name }}</a></u></li>
@@ -110,7 +110,7 @@
             </li>
             <li class="list-group-item">
                 <strong>Language</strong>
-                @if($profile->language)
+                @if(isset($profile->language) && ($profile->language))
                     <ul class="list-inline m-0">
                         @foreach($profile->language AS $language)
                             <li class="list-inline-item"><u><a href="{{ route('creator.index', ['language[]' => $language->id]) }}" class="text-light">{{ $language->name }}</a></u></li>
@@ -122,7 +122,7 @@
             </li>
             <li class="list-group-item">
                 <strong>Persona</strong>
-                @if($profile->race)
+                @if(isset($profile->race) && ($profile->race))
                     <ul class="list-inline m-0">
                         @foreach($profile->race AS $race)
                             <li class="list-inline-item"><u><a href="{{ route('creator.index', ['persona[]' => $race->id]) }}" class="text-light">{{ $race->name }}</a></u></li>
@@ -132,11 +132,17 @@
                     <p class="m-0">No character persona</p>
                 @endif
             </li>
+            @if(isset($profile->base_status_id) && ($profile->base_status_id == 11))
+                <li class="list-group-item">
+                    <strong>Special Notes</strong>
+                    <p class="m-0">This content creator is added directly by the system. Some personal information may be obsolete or completely wrong.</p>
+                </li>
+            @endif
             <li class="list-group-item text-center bg-secondary">
                 <strong>Resource</strong>
             </li>
             <li class="list-group-item">
-                @if($links)
+                @if(isset($links) && ($links))
                     <div class="text-center">
                         <strong>External Link</strong>
                         <ul class="list-inline m-0 my-3">
@@ -155,7 +161,7 @@
                 @endif
             </li>
             <li class="list-group-item">
-                @if($channels)
+                @if(isset($channels) && ($channels))
                     <strong class="text-center"><p>Channel</p></strong>
                     <x-Adminlte.CardChannel :channels="$channels" />
                 @else
