@@ -152,7 +152,7 @@ class BaseRepositories{
             $existingUserSitemap = Storage::disk(self::sitemapDisk())->files('/');
 
             $existingUserSitemapCollection = collect($existingUserSitemap)->filter(function ($item){
-                if(!Str::contains($item, ['sitemap-index-main.xml', 'sitemap-index-user.xml'])){
+                if(!Str::contains($item, ['.gitignore', 'sitemap-index-main.xml', 'sitemap-index-user.xml'])){
                     return $item;
                 }
             })->all();
