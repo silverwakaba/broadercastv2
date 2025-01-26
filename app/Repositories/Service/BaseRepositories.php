@@ -127,7 +127,7 @@ class BaseRepositories{
     public static function sitemapUserDaily(){
         try{
             $addToSitemap = User::where([
-                // ['sitemaped', '=', false],
+                ['sitemaped', '=', false],
             ])->select('id', 'identifier')->whereHas('belongsToManyUserLinkTrackerAsSitemapableQuery')->whereHas('belongsToManyUserFeedAsSitemapableQuery')->get();
 
             if(isset($addToSitemap) && ($addToSitemap) && ($addToSitemap->count() >= 1)){
