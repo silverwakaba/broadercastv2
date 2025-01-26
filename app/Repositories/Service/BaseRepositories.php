@@ -83,15 +83,11 @@ class BaseRepositories{
 
     /**
      * Sitemap-related function
-     * We're using internal cdn from Cloudflare R2, that won't leave residue when the file is overwritten, unlike Blackblaze
+     * We're reverting to internal public sitemap because Google don't accept different url between mainsite and cdn
     **/
 
     public static function sitemapDisk(){
         return "public";
-    }
-
-    public static function sitemapPath(){
-        return "sitemap";
     }
 
     public static function sitemapMainIndex(){
@@ -121,7 +117,7 @@ class BaseRepositories{
                 }
             }
     
-            $datas = $createSitemap->writeToDisk(self::sitemapDisk(), self::sitemapPath() . 'sitemap-index-main.xml', true);
+            $datas = $createSitemap->writeToDisk(self::sitemapDisk(), 'sitemap-index-main.xml', true);
         }
         catch(\Throwable $th){
             // 
@@ -131,13 +127,13 @@ class BaseRepositories{
     public static function sitemapUserDaily(){
         try{
             $addToSitemap = User::where([
-                ['sitemaped', '=', false],
+                // ['sitemaped', '=', false],
             ])->select('id', 'identifier')->whereHas('belongsToManyUserLinkTrackerAsSitemapableQuery')->whereHas('belongsToManyUserFeedAsSitemapableQuery')->get();
 
             if(isset($addToSitemap) && ($addToSitemap) && ($addToSitemap->count() >= 1)){
                 $sitemapUser = Sitemap::create()
                     ->add($addToSitemap)
-                ->writeToDisk(self::sitemapDisk(), self::sitemapPath() . 'sitemap-user-' . Carbon::now()->format('Y-m-d-his') .'.xml', true);
+                ->writeToDisk(self::sitemapDisk(), 'sitemap-user-' . Carbon::now()->format('Y-m-d-his') .'.xml', true);
         
                 $updateUserAddToSitemap = User::where([
                     ['sitemaped', '=', false],
@@ -153,7 +149,7 @@ class BaseRepositories{
 
     public static function sitemapUserIndex(){
         try{
-            $existingUserSitemap = Storage::disk(self::sitemapDisk())->files(self::sitemapPath());
+            $existingUserSitemap = Storage::disk(self::sitemapDisk())->files('/');
 
             $existingUserSitemapCollection = collect($existingUserSitemap)->filter(function ($item){
                 if(!Str::contains($item, ['sitemap-index-main.xml', 'sitemap-index-user.xml'])){
@@ -167,10 +163,10 @@ class BaseRepositories{
                 $createSitemap = SitemapIndex::create();
 
                 foreach($existingUserSitemaps as $key => $url){
-                    $createSitemap->add(Str::of(config('app.cdn_internal_url') . '/')->append($url));
+                    $createSitemap->add(asset('storage/' . $url));
                 }
         
-                $datas = $createSitemap->writeToDisk(self::sitemapDisk(), self::sitemapPath() . 'sitemap-index-user.xml', true);
+                $datas = $createSitemap->writeToDisk(self::sitemapDisk(), 'sitemap-index-user.xml', true);
             }
         }
         catch(\Throwable $th){
