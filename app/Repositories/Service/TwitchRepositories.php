@@ -86,6 +86,23 @@ class TwitchRepositories{
         ])->select('identifier')->get()->count();
     }
 
+    // Clean up Twitch older archive > 14 days
+    public static function olderArchivesCleanup(){
+        $carbon = new Carbon();
+
+        $data = UserFeed::where([
+            ['base_link_id', '=', 1],
+        ])->whereIn('base_status_id', [6, 9])->select('id', 'published')->chunkById(100, function(Collection $chunks) use($carbon){
+            $compareData = $carbon->now()->subDays(14)->timezone(config('app.timezone'))->timestamp;
+            
+            foreach($chunks as $key => $chunk){
+                if($carbon->parse($chunk->published)->timestamp <= $compareData){
+                    dd($chunk);
+                }
+            }
+        });
+    }
+
     /**
      * ----------------------------
      * Verify
@@ -367,7 +384,7 @@ class TwitchRepositories{
         }
     }
 
-    // Update Channel Activity
+    // Update Channel Activity | Brace for clogging checker due to collection, just like previous YouTube checker!
     public static function updateChannelActivity(){
         try{
             UserFeed::with([
@@ -413,6 +430,12 @@ class TwitchRepositories{
                         $dbCollection, $inactiveStream
                     );
 
+                    // Don't delete this debugger
+                    // dd([
+                    //     'active'    => $activeStream,
+                    //     'inactive'  => $inactiveStream,
+                    // ]);
+
                     // Processing live streaming data
                     $activeStreamCollection = collect($fetchStreamCollection)->whereIn('user_id', $activeStream)->all();
 
@@ -444,9 +467,8 @@ class TwitchRepositories{
                             // If the video is found then we do an update to the feed
                             if(($fetchVideo) && isset($fetchVideo) && (count($fetchVideo) >= 1)){
                                 $userFeedArchive = UserFeed::where([
-                                    // ['base_status_id', '=', 8],
                                     ['identifier', '=', $fetchVideo['stream_id']],
-                                ])->first();
+                                ])->select('id')->first();
 
                                 // If the feed is a live streaming, it will be updated afterward
                                 if(($userFeedArchive->base_status_id == 8)){
@@ -468,6 +490,15 @@ class TwitchRepositories{
                                 else{
                                     $userFeedArchive->delete();
                                 }
+                            }
+
+                            // Delete the video if not found
+                            else{
+                                $userFeedArchive = UserFeed::where([
+                                    ['identifier', '=', $archive['videos_id']],
+                                ])->select('id')->first();
+
+                                $userFeedArchive->delete();
                             }
                         }
                     }

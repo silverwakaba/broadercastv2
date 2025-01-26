@@ -41,4 +41,9 @@ class TwitchCron extends Controller{
 
         TwitchRepositories::updateSubscriber(true);
     }
+
+    // Clean up
+    public function cleanUp(){
+        TwitchRepositories::olderArchivesCleanup();
+    }
 }

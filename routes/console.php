@@ -29,3 +29,4 @@ Schedule::command('app:cron-twitch-initial')->everyTenMinutes()->timezone('Asia/
 Schedule::command('app:cron-twitch-checker')->everyThreeMinutes()->timezone('Asia/Jakarta')->withoutOverlapping()->runInBackground(); // everyThreeMinutes
 Schedule::command('app:cron-twitch-fetch-profile')->daily()->timezone('Asia/Jakarta')->withoutOverlapping()->runInBackground(); // daily
 Schedule::command('app:cron-twitch-fetch-misc')->everySixHours($minutes = 0)->timezone('Asia/Jakarta')->withoutOverlapping()->runInBackground(); // everySixHours, because once daily isn't enough
+Schedule::command('app:cron-twitch-old-feed-cleanup')->hourly()->timezone('Asia/Jakarta')->withoutOverlapping()->runInBackground(); // hourly
