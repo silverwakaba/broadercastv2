@@ -5,15 +5,18 @@ namespace App\Models;
 use App\Observers\UserObserver;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
-// use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
+// Extra lib for sitemap
+use Spatie\Sitemap\Contracts\Sitemapable;
+use Spatie\Sitemap\Tags\Url;
+use Carbon\Carbon;
+
 #[ObservedBy([UserObserver::class])]
-class User extends Authenticatable{
-    // use SoftDeletes;
+class User extends Authenticatable implements Sitemapable{
     use HasFactory, Notifiable, HasRoles;
 
     /**
@@ -25,6 +28,7 @@ class User extends Authenticatable{
         'base_status_id',
         '2fa',
         'confirmed',
+        'sitemaped',
         'identifier',
         'name',
         'email',
@@ -52,6 +56,15 @@ class User extends Authenticatable{
             'email_verified_at' => 'datetime',
             'password'          => 'hashed',
         ];
+    }
+
+    public function toSitemapTag() : Url | string | array{
+        $sitemapable = Url::create(route('creator.profile', $this->identifier))
+            ->setLastModificationDate(Carbon::create($this->updated_at))
+            ->setChangeFrequency(Url::CHANGE_FREQUENCY_YEARLY)
+            ->setPriority(0.5);
+        
+        return $sitemapable;
     }
 
     public function belongsToBaseStatus(){
@@ -86,9 +99,9 @@ class User extends Authenticatable{
         return $this->belongsToMany(BaseLink::class, 'users_link', 'users_id', 'base_link_id')->withPivot('link');
     }
     
-    // Gak dipake
-    public function belongsToManyUserLinkTracker(){
-        return $this->belongsToMany(BaseLink::class, 'users_link_tracker', 'users_id', 'base_link_id')->withPivot('id', 'identifier', 'name', 'avatar', 'view', 'subscriber', 'joined');
+    // Is now used exclusively as sitemapable component
+    public function belongsToManyUserLinkTrackerAsSitemapableQuery(){
+        return $this->belongsToMany(BaseLink::class, 'users_link_tracker', 'users_id', 'base_link_id');//->withPivot('id', 'identifier', 'name', 'avatar', 'view', 'subscriber', 'joined');
     }
 
     public function belongsToManyUserLinkDecision(){
@@ -103,9 +116,9 @@ class User extends Authenticatable{
         return $this->hasOne(UserRequest::class, 'users_id');
     }
 
-    // Gak dipake, gak bisa diakses via datatable
-    public function belongsToManyUserFeed(){
-        return $this->belongsToMany(BaseLink::class, 'users_feed', 'users_id', 'base_link_id')->withPivot('identifier', 'title', 'published');
+    // Is now used exclusively as sitemapable component
+    public function belongsToManyUserFeedAsSitemapableQuery(){
+        return $this->belongsToMany(BaseLink::class, 'users_feed', 'users_id', 'base_link_id');//->withPivot('identifier', 'title', 'published');
     }
 
     public function belongsToUserRelationFollowed(){ // Can be used through "has('belongsToUserRelationFollowed')" method

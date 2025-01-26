@@ -478,7 +478,7 @@ class TwitchRepositories{
                                         'concurrent'        => 0,
                                         'thumbnail'         => self::userAvatarBanner(Str::replace('%{width}x%{height}', '1280x720', $fetchVideo['thumbnail_url'])),
                                         'title'             => $fetchVideo['title'],
-                                        'description'       => $fetchVideo['description'],
+                                        // 'description'       => $fetchVideo['description'],
                                         'published'         => Carbon::parse($fetchVideo['created_at'])->timezone(config('app.timezone'))->toDateTimeString(),
                                         'actual_start'      => Carbon::parse($fetchVideo['created_at'])->timezone(config('app.timezone'))->toDateTimeString(),
                                         'duration'          => Str::of('PT')->append(Str::of($fetchVideo['duration'])->upper()),

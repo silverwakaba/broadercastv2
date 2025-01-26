@@ -446,7 +446,7 @@ class YoutubeRepositories{
                             ])->update([
                                 'base_status_id' => self::userFeedStatus($video),
                                 'thumbnail'      => self::userThumbnailMultiple($video),
-                                'description'    => isset($video['snippet']['description']) ? $video['snippet']['description'] : null,
+                                // 'description'    => isset($video['snippet']['description']) ? $video['snippet']['description'] : null,
                                 'concurrent'     => isset($video['liveStreamingDetails']['concurrentViewers']) ? $video['liveStreamingDetails']['concurrentViewers'] : 0,
                                 'schedule'       => isset($video['liveStreamingDetails']['scheduledStartTime']) ? Carbon::parse($video['liveStreamingDetails']['scheduledStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
                                 'actual_start'   => isset($video['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($video['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
@@ -530,7 +530,7 @@ class YoutubeRepositories{
                                 'concurrent'        => isset($possibleArchiveItem['liveStreamingDetails']['concurrentViewers']) ? $possibleArchiveItem['liveStreamingDetails']['concurrentViewers'] : 0,
                                 'thumbnail'         => self::userThumbnailMultiple($possibleArchiveItem),
                                 'title'             => $possibleArchiveItem['snippet']['title'],
-                                'description'       => isset($possibleArchiveItem['snippet']['description']) ? $possibleArchiveItem['snippet']['description'] : null,
+                                // 'description'       => isset($possibleArchiveItem['snippet']['description']) ? $possibleArchiveItem['snippet']['description'] : null,
                                 'actual_start'      => isset($possibleArchiveItem['liveStreamingDetails']['actualStartTime']) ? Carbon::parse($possibleArchiveItem['liveStreamingDetails']['actualStartTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
                                 'actual_end'        => isset($possibleArchiveItem['liveStreamingDetails']['actualEndTime']) ? Carbon::parse($possibleArchiveItem['liveStreamingDetails']['actualEndTime'])->timezone(config('app.timezone'))->toDateTimeString() : null,
                                 'duration'          => isset($possibleArchiveItem['contentDetails']['duration']) ? $possibleArchiveItem['contentDetails']['duration'] : "P0D",

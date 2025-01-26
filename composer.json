@@ -12,6 +12,7 @@
         "pusher/pusher-php-server": "^7.2",
         "scyllaly/hcaptcha": "^4.4",
         "spatie/laravel-permission": "^6.4",
+        "spatie/laravel-sitemap": "^7.3",
         "yajra/laravel-datatables-fractal": "11.0",
         "yajra/laravel-datatables-oracle": "11"
     },

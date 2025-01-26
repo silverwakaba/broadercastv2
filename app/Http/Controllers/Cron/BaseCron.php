@@ -21,6 +21,15 @@ class BaseCron extends Controller{
 
     // Clean up user request
     public function userRequestCleanup(){
-        return BaseRepositories::userRequestCleanup();
+        BaseRepositories::userRequestCleanup();
+    }
+
+    // Handling sitemap
+    public function sitemap(){
+        BaseRepositories::sitemapMainIndex();
+
+        BaseRepositories::sitemapUserDaily();
+
+        BaseRepositories::sitemapUserIndex();
     }
 }

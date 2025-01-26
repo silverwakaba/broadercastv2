@@ -30,17 +30,17 @@ return [
 
     'disks' => [
         'local' => [
-            'driver' => 'local',
-            'root' => storage_path('app'),
-            'throw' => false,
+            'driver'    => 'local',
+            'root'      => storage_path('app'),
+            'throw'     => false,
         ],
 
         'public' => [
-            'driver' => 'local',
-            'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
-            'visibility' => 'public',
-            'throw' => false,
+            'driver'        => 'local',
+            'root'          => storage_path('app/public'),
+            'url'           => env('APP_URL').'/storage',
+            'visibility'    => 'public',
+            'throw'         => false,
         ],
 
         's3public' => [
@@ -61,6 +61,16 @@ return [
             'secret'        => env('B2_SECRET'),
             'endpoint'      => env('B2_ENDPOINT', 'https://s3.us-west-002.backblazeb2.com'),
             'visibility'    => 'private',
+        ],
+
+        's3publicinternal' => [
+            'driver'        => 's3',
+            'bucket'        => env('R2_BUCKET_1'),
+            'region'        => env('R2_REGION'),
+            'key'           => env('R2_KEY'),
+            'secret'        => env('R2_SECRET'),
+            'endpoint'      => env('R2_ENDPOINT', 'https://s3.us-west-002.backblazeb2.com'),
+            'visibility'    => 'public',
         ],
     ],
 

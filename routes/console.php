@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Schedule;
 
 // Schedule::command('app:cron-proxy-host-checker')->everyFiveMinutes()->timezone('Asia/Jakarta')->runInBackground(); // everyFiveMinutes
 Schedule::command('app:cron-user-request-cleanup')->hourly()->timezone('Asia/Jakarta')->withoutOverlapping()->runInBackground(); // hourly
+Schedule::command('app:cron-sitemap-manager')->daily()->timezone('Asia/Jakarta')->withoutOverlapping()->runInBackground(); // daily
 
 /**
  * YouTube Block
