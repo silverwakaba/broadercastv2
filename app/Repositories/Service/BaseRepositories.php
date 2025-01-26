@@ -87,11 +87,11 @@ class BaseRepositories{
     **/
 
     public static function sitemapDisk(){
-        return "s3publicinternal";
+        return "public";
     }
 
     public static function sitemapPath(){
-        return "system/sitemap/vtual/";
+        return "sitemap";
     }
 
     public static function sitemapMainIndex(){
