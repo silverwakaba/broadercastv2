@@ -39,10 +39,11 @@ class Navigation extends Component{
 
             $array = [
                 'user'      => BaseHelper::resourceToJson($user),
-                'logoApps'  => ImageHandlerRepositories::logo('apps'),
-                'logoFront' => ImageHandlerRepositories::logo('darkmode'),
             ];
         }
+
+        $array['logoApps'] = ImageHandlerRepositories::logo('apps');
+        $array['logoFront'] = ImageHandlerRepositories::logo('darkmode');
 
         return view('components.adminlte.navigation', $array);
     }
