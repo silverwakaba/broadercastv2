@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
 
+use App\Repositories\Base\ImageHandlerRepositories;
+
 class UserLinkTrackerResource extends JsonResource{
     /**
      * Transform the resource into an array.
@@ -15,32 +17,13 @@ class UserLinkTrackerResource extends JsonResource{
      * @return array<string, mixed>
      */
     public function toArray(Request $request) : array{
-        $data = BaseLink::where([
-            ['id', '=', $this->base_link_id],
-        ])->select('name')->first();
-
-        $null = config('app.cdn_static_url') . "/system/internal/image/misc/placeholder/banner.jpg";
-
-        if($data->name == 'YouTube'){
-            $avatar = $this->avatar ? Str::of(config('app.cdn_cache_youtube_profile') . '/')->append($this->avatar) : $null;
-            $banner = $this->banner ? Str::of(config('app.cdn_cache_youtube_profile') . '/')->append(Str::of($this->banner)->append('=w1080-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj')) : $null;
-        }
-        elseif($data->name == 'Twitch'){
-            $avatar = $this->avatar ? Str::of(config('app.cdn_cache_twitch') . '/')->append($this->avatar) : $null;
-            $banner = $this->banner ? Str::of(config('app.cdn_cache_twitch') . '/')->append($this->banner) : $null;
-        }
-        else{
-            $avatar = $null;
-            $banner = $null;
-        }
-
         return [
             'id'            => $this->id,
             'identifier'    => $this->identifier,
             'name'          => $this->name,
             'name_preview'  => Str::limit($this->name, 15, ' (...)'),
-            'avatar'        => $avatar,
-            'banner'        => $banner,
+            'avatar'        => ImageHandlerRepositories::channelAvatar($this->base_link_id, $this->avatar),
+            'banner'        => ImageHandlerRepositories::channelBanner($this->base_link_id, $this->banner),
             'view'          => $this->view,
             'content'       => $this->content,
             'subscriber'    => $this->subscriber,

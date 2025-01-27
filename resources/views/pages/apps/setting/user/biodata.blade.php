@@ -15,9 +15,9 @@
         <x-Adminlte.CardForm button="Change">
             <x-Form.Input name="name" type="text" text="Name" :value="$datas->name" placeholder="Your stage or real name is fine..." />
             <x-Form.Textarea name="nickname" text="Nickname" :value="$datas->hasOneUserBiodata->nickname" placeholder="Have another name? Separate into new lines!" />
-            <x-Form.Input name="dob" type="date" text="Date of Birth" :value="$datas->hasOneUserBiodata->dob" />
-            <x-Form.Input name="dod" type="date" text="Date of Debut" :value="$datas->hasOneUserBiodata->dod" />
-            <x-Form.Input name="dor" type="date" text="Date of Retirement (As content creator)" :value="$datas->hasOneUserBiodata->dor" />
+            <x-Form.Input col="6" name="dob" type="date" text="Date of Birth" :value="$datas->hasOneUserBiodata->dob" />
+            <x-Form.Input col="6" name="dod" type="date" text="Date of Debut" :value="$datas->hasOneUserBiodata->dod" />
+            <x-Form.Input my="2" name="dor" type="date" text="Date of Retirement (As content creator, if applicable)" :value="$datas->hasOneUserBiodata->dor" />
             <x-Form.Textarea name="biography" text="Biography" :value="$datas->hasOneUserBiodata->biography" placeholder="Tell us about yourself..." />
         </x-Adminlte.CardForm>
     </x-Adminlte.Content>

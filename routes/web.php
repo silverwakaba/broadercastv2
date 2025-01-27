@@ -253,7 +253,7 @@ Route::group(['prefix' => '/'], function(){
             Route::post('persona', [ManagerUserController::class, 'racePost']);
         });
 
-        // Master Data - Need to be secured using WAF
+        // Master Data - Need to be secured using Cloudflare Zerotrust
         Route::group(['prefix' => 'master-data', 'middleware' => ['role:Admin']], function(){
             // Master data index
             Route::get('/', [AppsController::class, 'master'])->name('apps.master.index');
@@ -492,6 +492,9 @@ Route::group(['prefix' => '/'], function(){
     Route::group(['prefix' => 'go'], function(){
         // Bsky
         Route::get('bsky', [RedirectController::class, 'bsky'])->name('go.bsky');
+
+        // Twitter
+        Route::get('twitter', [RedirectController::class, 'twitter'])->name('go.twitter');
 
         // Discord
         // TBA

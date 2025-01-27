@@ -9,10 +9,15 @@ use App\Models\User;
 
 class UserRaceRepositories{
     public static function sync(array $data){
-        $user = User::find($data['id']);
+        try{
+            $user = User::find($data['id']);
 
-        $user->belongsToManyUserRace()->sync($data['data']);
+            $user->belongsToManyUserRace()->sync($data['data']);
 
-        return RedirectHelper::routeBack(null, 'success', 'Your Character Persona', 'update');
+            return RedirectHelper::routeBack(null, 'success', 'Your Character Persona', 'update');
+        }
+        catch(\Throwable $th){
+            return RedirectHelper::routeBack(null, 'error', 'Your Character Persona', 'update');
+        }
     }
 }

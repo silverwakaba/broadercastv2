@@ -6,6 +6,8 @@ use Faker\Factory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+use App\Repositories\Base\ImageHandlerRepositories;
+
 class UserAvatarResource extends JsonResource{
     /**
      * Transform the resource into an array.
@@ -16,13 +18,7 @@ class UserAvatarResource extends JsonResource{
         return [
             'id'        => $this->id,
             'users_id'  => $this->users_id,
-            'path'      => $this->path ? config('app.cdn_public_url') . "/project/vtual/system/avatar/$this->path" : config('app.cdn_static_url') . "/system/internal/image/avatar/avatar-" . $this->randomAvatar() . ".png",
+            'path'      => ImageHandlerRepositories::avatar($this->path),
         ];
-    }
-    
-    public function randomAvatar(){
-        $faker = Factory::create();
-
-        return $faker->numberBetween(1, 5);
     }
 }

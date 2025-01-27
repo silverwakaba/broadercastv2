@@ -19,7 +19,7 @@ class UserAvatarRequest extends FormRequest{
      */
     public function rules() : array{
         return [
-            'avatar' => ['required', 'image', 'max:512'],
+            'avatar' => ['required', 'image', 'min:5', 'max:512'],
         ];
     }
 }

@@ -9,10 +9,15 @@ use App\Models\User;
 
 class UserLanguageRepositories{
     public static function sync(array $data){
-        $user = User::find($data['id']);
+        try{
+            $user = User::find($data['id']);
 
-        $user->belongsToManyUserLanguage()->sync($data['data']);
+            $user->belongsToManyUserLanguage()->sync($data['data']);
 
-        return RedirectHelper::routeBack(null, 'success', 'Your Main Language', 'update');
+            return RedirectHelper::routeBack(null, 'success', 'Your Main Language', 'update');
+        }
+        catch(\Throwable $th){
+            return RedirectHelper::routeBack(null, 'error', 'Your Main Language', 'update');
+        }
     }
 }

@@ -13,7 +13,9 @@ return [
     |
     */
 
-    'default' => env('FILESYSTEM_DISK', 'local'),
+    'default'   => env('FILESYSTEM_DISK', 'local'),
+    'public'    => env('FILESYSTEM_DISK_PUBLIC', 'vtlPublicS3'),
+    'private'   => env('FILESYSTEM_DISK_PRIVATE', 'vtlPrivateS3'),
 
     /*
     |--------------------------------------------------------------------------
@@ -43,34 +45,76 @@ return [
             'throw'         => false,
         ],
 
-        's3public' => [
-            'driver'        => 's3',
-            'bucket'        => env('B2_BUCKET_1'),
-            'region'        => env('B2_REGION'),
-            'key'           => env('B2_KEY'),
-            'secret'        => env('B2_SECRET'),
-            'endpoint'      => env('B2_ENDPOINT', 'https://s3.us-west-002.backblazeb2.com'),
-            'visibility'    => 'public',
-        ],
+        // Backblaze B2 - Discontinued
 
-        's3private' => [
-            'driver'        => 's3',
-            'bucket'        => env('B2_BUCKET_2'),
-            'region'        => env('B2_REGION'),
-            'key'           => env('B2_KEY'),
-            'secret'        => env('B2_SECRET'),
-            'endpoint'      => env('B2_ENDPOINT', 'https://s3.us-west-002.backblazeb2.com'),
-            'visibility'    => 'private',
-        ],
+        // 's3public' => [
+        //     'driver'        => 's3',
+        //     'bucket'        => env('B2_BUCKET_1'),
+        //     'region'        => env('B2_REGION'),
+        //     'key'           => env('B2_KEY'),
+        //     'secret'        => env('B2_SECRET'),
+        //     'endpoint'      => env('B2_ENDPOINT', 'https://s3.us-west-002.backblazeb2.com'),
+        //     'visibility'    => 'public',
+        //     'throw'         => true,
+        // ],
 
-        's3publicinternal' => [
+        // 's3private' => [
+        //     'driver'        => 's3',
+        //     'bucket'        => env('B2_BUCKET_2'),
+        //     'region'        => env('B2_REGION'),
+        //     'key'           => env('B2_KEY'),
+        //     'secret'        => env('B2_SECRET'),
+        //     'endpoint'      => env('B2_ENDPOINT', 'https://s3.us-west-002.backblazeb2.com'),
+        //     'visibility'    => 'private',
+        //     'throw'         => true,
+        // ],
+
+        // 's3publicinternal' => [
+        //     'driver'        => 's3',
+        //     'bucket'        => env('R2_BUCKET_1'),
+        //     'region'        => env('R2_REGION'),
+        //     'key'           => env('R2_KEY'),
+        //     'secret'        => env('R2_SECRET'),
+        //     'endpoint'      => env('R2_ENDPOINT', 'https://s3.us-west-002.backblazeb2.com'),
+        //     'visibility'    => 'public',
+        // ],
+
+        // Cloudflare R2
+        // The endpoint 'c3f9b55c216de42fca1d1579c5b41ac3' bound to specific account
+
+        // Silverspoon
+        'spnPublicS3'   => [
             'driver'        => 's3',
             'bucket'        => env('R2_BUCKET_1'),
             'region'        => env('R2_REGION'),
             'key'           => env('R2_KEY'),
             'secret'        => env('R2_SECRET'),
-            'endpoint'      => env('R2_ENDPOINT', 'https://s3.us-west-002.backblazeb2.com'),
+            'endpoint'      => env('R2_ENDPOINT'),
             'visibility'    => 'public',
+        ],
+
+        // vTual Public
+        'vtlPublicS3'   => [
+            'driver'        => 's3',
+            'bucket'        => env('R2_BUCKET_2'),
+            'region'        => env('R2_REGION'),
+            'key'           => env('R2_KEY'),
+            'secret'        => env('R2_SECRET'),
+            'endpoint'      => env('R2_ENDPOINT'),
+            'visibility'    => 'public',
+            'throw'         => true,
+        ],
+
+        // vTual Private
+        'vtlPrivateS3'  => [
+            'driver'        => 's3',
+            'bucket'        => env('R2_BUCKET_3'),
+            'region'        => env('R2_REGION'),
+            'key'           => env('R2_KEY'),
+            'secret'        => env('R2_SECRET'),
+            'endpoint'      => env('R2_ENDPOINT'),
+            'visibility'    => 'private',
+            'throw'         => true,
         ],
     ],
 

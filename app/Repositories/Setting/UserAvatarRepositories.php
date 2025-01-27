@@ -12,22 +12,27 @@ use Illuminate\Support\Facades\Storage;
 
 class UserAvatarRepositories{
     public static function change($data){
-        $dir = 'project/vtual/system/avatar';
+        try{
+            $dir = 'app/avatar';
 
-        $user = User::find(auth()->user()->id);
+            $user = User::find(auth()->user()->id);
 
-        $storage = Storage::disk('s3public');
+            $storage = Storage::disk(config('filesystems.public'));
 
-        if($user->hasOneUserAvatar->path){
-            $storage->delete($dir . '/' . $user->hasOneUserAvatar->path);
+            if($user->hasOneUserAvatar->path){
+                $storage->delete($dir . '/' . $user->hasOneUserAvatar->path);
+            }
+
+            $avatar = $storage->put($dir, $data);
+
+            $user->hasOneUserAvatar()->update([
+                'path' => Str::of($avatar)->basename(),
+            ]);
+
+            return RedirectHelper::routeBack(null, 'success', 'Avatar', 'update');
         }
-
-        $avatar = $storage->put($dir, $data);
-
-        $user->hasOneUserAvatar()->update([
-            'path' => Str::of($avatar)->basename(),
-        ]);
-
-        return RedirectHelper::routeBack(null, 'success', 'Avatar', 'update');
+        catch(\Throwable $th){
+            return RedirectHelper::routeBack(null, 'error', 'Avatar', 'update');
+        }
     }
 }

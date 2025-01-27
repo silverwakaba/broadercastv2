@@ -10,6 +10,8 @@ use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
+use App\Repositories\Base\ImageHandlerRepositories;
+
 class Navigation extends Component{
     /**
      * Create a new component instance.
@@ -28,7 +30,6 @@ class Navigation extends Component{
 
         $datas = User::with([
             'hasOneUserAvatar',
-            // 'hasOneUserBiodata'
         ])->where([
             ['id', '=', $uid],
         ])->first();
@@ -37,7 +38,9 @@ class Navigation extends Component{
             $user = (new UserResource($datas));
 
             $array = [
-                'user' => BaseHelper::resourceToJson($user),
+                'user'      => BaseHelper::resourceToJson($user),
+                'logoApps'  => ImageHandlerRepositories::logo('apps'),
+                'logoFront' => ImageHandlerRepositories::logo('darkmode'),
             ];
         }
 

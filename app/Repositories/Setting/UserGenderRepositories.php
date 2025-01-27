@@ -9,10 +9,15 @@ use App\Models\User;
 
 class UserGenderRepositories{
     public static function sync(array $data){
-        $user = User::find($data['id']);
+        try{
+            $user = User::find($data['id']);
 
-        $user->belongsToManyUserGender()->sync($data['data']);
-        
-        return RedirectHelper::routeBack(null, 'success', 'Your Gender Representation', 'update');
+            $user->belongsToManyUserGender()->sync($data['data']);
+            
+            return RedirectHelper::routeBack(null, 'success', 'Your Gender Representation', 'update');
+        }
+        catch(\Throwable $th){
+            return RedirectHelper::routeBack(null, 'error', 'Your Gender Representation', 'update');
+        }
     }
 }

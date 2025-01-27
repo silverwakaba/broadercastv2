@@ -11,12 +11,18 @@ use Illuminate\Support\Str;
 
 class UserHandlerRepositories{
     public static function update(array $data){
-        $user = User::find($data['id']);
+        try{
+            $user = User::find($data['id']);
 
-        $user->update([
-            'identifier' => BaseHelper::setIdentifier($data['handler'], $user->identifier, $user->name),
-        ]);
+            $user->update([
+                'sitemaped'     => false,
+                'identifier'    => BaseHelper::setIdentifier($data['handler'], $user->identifier, $user->name),
+            ]);
 
-        return RedirectHelper::routeBack(null, 'success', 'Handler', 'update');
+            return RedirectHelper::routeBack(null, 'success', 'Handler', 'update');
+        }
+        catch(\Throwable $th){
+            return RedirectHelper::routeBack(null, 'error', 'Handler', 'update');
+        }
     }
 }

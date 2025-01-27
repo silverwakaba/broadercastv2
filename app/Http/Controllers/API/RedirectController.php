@@ -20,4 +20,9 @@ class RedirectController extends Controller{
     public function status(){
         return redirect('https://status.silverspoon.me');
     }
+
+    // Twitter
+    public function twitter(){
+        return redirect('https://x.com/waka377');
+    }
 }

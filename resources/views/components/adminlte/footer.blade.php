@@ -30,7 +30,7 @@
                             <a href="https://help.silverspoon.me/docs/silverspoon/contact" target="_blank" class="text-light">Contact Us</a>
                         </li>
                         <li>
-                            <a href="https://help.silverspoon.me/docs/category/vtual" target="_blank" class="text-light">Get, Get Some Help</a>
+                            <a href="https://help.silverspoon.me/docs/category/vtual" target="_blank" class="text-light">Get Some Help</a>
                         </li>
                     </ul>
                 </div>
@@ -55,10 +55,10 @@
                     <h4>External</h4>
                     <ul class="list-unstyled">
                         <li>
-                            <a href="{{ route('go.bsky') }}" target="_blank" class="text-light">Bluesky</a>
+                            <a href="#" class="text-light">Discord</a>
                         </li>
                         <li>
-                            <a href="#" class="text-light">Discord</a>
+                            <a href="{{ route('go.twitter') }}" target="_blank" class="text-light">Twitter</a>
                         </li>
                         <li>
                             <a href="{{ route('go.status') }}" target="_blank" class="text-light">Status History</a>

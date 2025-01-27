@@ -6,6 +6,8 @@ use Faker\Factory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+use App\Repositories\Base\ImageHandlerRepositories;
+
 class UserAvatarFanboxResource extends JsonResource{
     protected $anonymous;
 
@@ -28,13 +30,11 @@ class UserAvatarFanboxResource extends JsonResource{
     public function avatar(){
         $anonymous = $this->anonymous;
 
-        $avatarNo = Factory::create()->numberBetween(1, 5);
-
         if($anonymous == true){
-            $avatar = config('app.cdn_static_url') . "/system/internal/image/avatar/avatar-" . $avatarNo . ".png";
+            $avatar = ImageHandlerRepositories::avatarDefault();
         }
         else{
-            $avatar = $this->path ? config('app.cdn_public_url') . "/project/vtual/system/avatar/$this->path" : config('app.cdn_static_url') . "/system/internal/image/avatar/avatar-" . $avatarNo . ".png";
+            $avatar = ImageHandlerRepositories::avatar($this->path);
         }
 
         return $avatar;

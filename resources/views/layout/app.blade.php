@@ -8,9 +8,9 @@
         <meta name="description" content="@yield('description', 'description')">
         <meta name="keywords" content="@yield('keywords', config('app.keywords'))">
         <meta name="robots" content="index, follow">
-        <link rel="shortcut icon" href="https://static.pub.spnd.uk/system/internal/image/logo/vtual/logo-50.png">
-        <link rel="apple-touch-icon" sizes="120x120" href="https://static.pub.spnd.uk/system/internal/image/logo/vtual/logo-120.png">
-        <link rel="apple-touch-icon" sizes="152x152" href="https://static.pub.spnd.uk/system/internal/image/logo/vtual/logo-152.png">
+        <link rel="shortcut icon" href="https://cdn.vtual.net/system/image/logo/logo-50.webp">
+        <link rel="apple-touch-icon" sizes="120x120" href="https://cdn.vtual.net/system/image/logo/logo-120.webp">
+        <link rel="apple-touch-icon" sizes="152x152" href="https://cdn.vtual.net/system/image/logo/logo-152.webp">
         <meta property="og:title" content="@yield('title', 'Page Title') | {{ config('app.name', 'vTual') }}">
         <meta property="og:type" content="website">
         <meta property="og:url" content="{{ url()->current() }}">

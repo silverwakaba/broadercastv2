@@ -66,8 +66,8 @@ class UserLinkRepositories{
             return [
                 'datas'  => UserLinkResource::make($datas)->resolve(),
                 'action' => view('datatable.action-user-link', [
-                    'did'        => BaseHelper::encrypt($datas->id),
-                    'uid'        => isset($data['uid']) ? BaseHelper::encrypt($datas->users_id) : null,
+                    'did'       => BaseHelper::encrypt($datas->id),
+                    'uid'       => isset($data['uid']) ? BaseHelper::encrypt($datas->users_id) : null,
                     'decision'  => $datas->base_decision_id,
                     'protected' => in_array($datas->base_link_id, BaseHelper::getCheckedBaseLink()),
                     'route'     => $data['route'],
@@ -77,53 +77,68 @@ class UserLinkRepositories{
     }
     
     public static function upsert(array $data, $back = null, $id = null){
-        $checking = BaseLink::select('checking')->where([
-            ['id', '=', $data['base_link_id']]
-        ])->first();
-
-        $default = [
-            'base_decision_id' => $checking->checking == true ? 1 : 2,
-        ];
-
-        if($id && $id !== null){
-            $id = BaseHelper::decrypt($id);
-
-            $upsert = $data;
+        try{
+            $checking = BaseLink::select('checking')->where([
+                ['id', '=', $data['base_link_id']]
+            ])->first();
+    
+            $default = [
+                'base_decision_id' => $checking->checking == true ? 1 : 2,
+            ];
+    
+            if($id && $id !== null){
+                $id = BaseHelper::decrypt($id);
+    
+                $upsert = $data;
+            }
+            else{
+                $upsert = array_merge($data, $default);
+            }
+    
+            $state = $id ? 'update' : 'create';
+    
+            UserLink::updateOrCreate(['id' => $id], $upsert);
+    
+            return RedirectHelper::routeBack($back, 'success', 'External Link', $state);
         }
-        else{
-            $upsert = array_merge($data, $default);
+        catch(\Throwable $th){
+            return RedirectHelper::routeBack($back, 'error', 'External Link', $state);
         }
-
-        $state = $id ? 'update' : 'create';
-
-        UserLink::updateOrCreate(['id' => $id], $upsert);
-
-        return RedirectHelper::routeBack($back, 'success', 'External Link', $state);
     }
 
     public static function delete(array $data, $back = null){
-        $datas = UserLink::where([
-            ['id', '=', BaseHelper::decrypt($data['did'])],
-            ['users_id', '=', $data['uid']],
-        ])->firstOrFail();
-
-        $datas->forceDelete();
-
-        return RedirectHelper::routeBack($back, 'success', 'External Link', 'delete');
+        try{
+            $datas = UserLink::where([
+                ['id', '=', BaseHelper::decrypt($data['did'])],
+                ['users_id', '=', $data['uid']],
+            ])->firstOrFail();
+    
+            $datas->forceDelete();
+    
+            return RedirectHelper::routeBack($back, 'success', 'External Link', 'delete');
+        }
+        catch(\Throwable $th){
+            return RedirectHelper::routeBack($back, 'error', 'External Link', 'delete');
+        }
     }
 
     public static function deleteChannel(array $data, $back = null){
-        $datas = UserLink::where([
-            ['id', '=', BaseHelper::decrypt($data['did'])],
-            ['users_id', '=', $data['uid']],
-        ])->firstOrFail();
-
-        $datas->hasOneUserLinkTracker()->where('identifier', '=', $data['identifier'])->firstOrFail()->update([
-            'users_feed_id' => null,
-        ]);
-
-        $datas->forceDelete();
-
-        return RedirectHelper::routeBack($back, 'success', 'External Link and Channel', 'delete');
+        try{
+            $datas = UserLink::where([
+                ['id', '=', BaseHelper::decrypt($data['did'])],
+                ['users_id', '=', $data['uid']],
+            ])->firstOrFail();
+    
+            $datas->hasOneUserLinkTracker()->where('identifier', '=', $data['identifier'])->firstOrFail()->update([
+                'users_feed_id' => null,
+            ]);
+    
+            $datas->forceDelete();
+    
+            return RedirectHelper::routeBack($back, 'success', 'External Link and Channel', 'delete');
+        }
+        catch(\Throwable $th){
+            return RedirectHelper::routeBack($back, 'error', 'External Link and Channel', 'delete');
+        }
     }
 }

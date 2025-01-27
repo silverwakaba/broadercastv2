@@ -27,15 +27,6 @@ class UserChannelActivityResource extends JsonResource{
             elseif(($this->base_status_id == 9) && ($this->thumbnail != null)){
                 $link = Str::of('https://www.twitch.tv/videos/')->append($this->identifier);
 
-                // We don't need this anymore, since: Twitch thumbnail will return to 404_preview by default, as we don't use internal caching anymore trough the Workers
-                // But don't remove this code since probably needed in the future
-                // if(Carbon::now()->subDays(7)->timestamp >= Carbon::parse($this->actual_start)->timestamp){
-                //     $thumbnail = Str::of(config('app.cdn_cache_twitch'))->append('/ttv-static/404_preview-1280x720.jpg');
-                // }
-                // else{
-                //     $thumbnail = Str::of(config('app.cdn_cache_twitch') . '/')->append($this->thumbnail);
-                // }
-
                 $thumbnail = Str::of(config('app.cdn_cache_twitch') . '/')->append($this->thumbnail);
             }
             else{
@@ -53,7 +44,7 @@ class UserChannelActivityResource extends JsonResource{
         // What the fuck are you?
         else{
             $link = '#';
-            $thumbnail = 'https://static.silverspoon.me/system/internal/image/misc/placeholder/404.webp';
+            $thumbnail = 'https://cdn.vtual.net/system/image/placeholder/404.webp';
         }
 
         return [

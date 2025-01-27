@@ -11,7 +11,7 @@ return [
     |
     */
 
-    'version' => env('APP_VERSION', 'v.0.1.0'),
+    'version' => env('APP_VERSION', 'v.0.1.1'),
 
     /*
     |--------------------------------------------------------------------------
@@ -27,6 +27,10 @@ return [
     'cdn_private_url'               => env('APP_PRIVATE_CDN_URL',           'https://vault.spnd.uk'),
     'cdn_static_url'                => env('APP_STATIC_CDN_URL',            'https://static.pub.spnd.uk'),
     'cdn_internal_url'              => env('APP_INTERNAL_CDN_URL',          'https://cdn.silverspoon.me'),
+
+    // Internal New
+    'cdn_public_url_r2'             => env('APP_PUBLIC_CDN_URL',            'https://cdn.vtual.net'),
+    'cdn_private_url_r2'            => env('APP_PRIVATE_CDN_URL',           'https://cdns.vtual.net'),
     
     // Provider
     'cdn_cache_twitch'              => env('APP_CDN_CACHE_TWITCH',          'https://static-cdn.jtvnw.net'),

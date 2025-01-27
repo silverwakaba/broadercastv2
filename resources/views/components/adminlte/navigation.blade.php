@@ -37,7 +37,7 @@
         </ul>
     @else
         <a href="{{ route('index') }}" class="navbar-brand">
-            <img src="{{ config('app.cdn_static_url') . '/system/internal/image/logo/vtual/full-light-50-transparent.png' }}" class="brand-image">
+            <img src="{{ $logoFront }}" class="brand-image">
         </a>
         <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -123,7 +123,7 @@
 @if(request()->routeIs('apps.*'))
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <a href="{{ route('index') }}" class="brand-link">
-            <img src="{{ config('app.cdn_static_url') . '/system/internal/image/logo/vtual/logo-50.png' }}" class="brand-image elevation-3">
+            <img src="{{ $logoApps }}" class="brand-image elevation-3">
             <span class="brand-text">{{ config('app.name', 'vTual') }}</span>
         </a>
         <div class="sidebar">

@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 
 class FileVaultRepositories{
     public static function disk(){
-        return "s3private";
+        return config('filesystems.private');
     }
 
     public static function expire(){
@@ -15,7 +15,7 @@ class FileVaultRepositories{
     }
 
     public static function endpointNew(){
-        return config('app.cdn_private_url');
+        return config('app.cdn_private_url_r2');
     }
 
     public static function endpointOld(){
@@ -31,21 +31,19 @@ class FileVaultRepositories{
         return Str::replace('+', '_', urlencode($name));
     }
 
-    public static function download($path, $name = null){
+    public static function download($path, $expire = 1, $name = null){
         $newName = $name ? $name : $path;
 
-        return self::view($path, [
+        return self::view($path, $expire = 1, [
             'ResponseContentType'           => 'application/octet-stream',
             'ResponseContentDisposition'    => 'attachment; filename=' . self::newName($newName),
         ]);
     }
 
-    public static function view($path, $params = null){
+    public static function view($path, $expire = 1, $params = null){
         return Str::replace(
-            self::endpointOld(), self::endpointNew(),
-            
-            Storage::disk(self::disk())->temporaryUrl(
-                $path, now()->addMinutes(self::expire()), ($params ? $params : [])
+            self::endpointOld(), self::endpointNew(), Storage::disk(self::disk())->temporaryUrl(
+                $path, now()->addMinutes(self::expire() * $expire), ($params ? $params : [])
             ),
         );
     }

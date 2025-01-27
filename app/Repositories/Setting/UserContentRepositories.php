@@ -9,10 +9,15 @@ use App\Models\User;
 
 class UserContentRepositories{
     public static function sync(array $data){
-        $user = User::find($data['id']);
+        try{
+            $user = User::find($data['id']);
 
-        $user->belongsToManyUserContent()->sync($data['data']);
+            $user->belongsToManyUserContent()->sync($data['data']);
 
-        return RedirectHelper::routeBack(null, 'success', 'Your Focus Content', 'update');
+            return RedirectHelper::routeBack(null, 'success', 'Your Focus Content', 'update');
+        }
+        catch(\Throwable $th){
+            return RedirectHelper::routeBack(null, 'error', 'Your Focus Content', 'update');
+        }
     }
 }
