@@ -43,11 +43,12 @@
                         <li>
                             <a href="https://help.silverspoon.me/docs/vtual/privacy" target="_blank" class="text-light">Privacy Policy</a>
                         </li>
+
                         <li>
-                            <a href="https://help.silverspoon.me/docs/silverspoon/report" target="_blank" class="text-light">Report</a>
+                            <a href="{{ route('go.feedback') }}" target="_blank" class="text-light">Feedback</a>
                         </li>
                         <li>
-                            <a href="https://help.silverspoon.me/docs/silverspoon/feedback" target="_blank" class="text-light">Feedback</a>
+                            <a href="{{ route('go.revision') }}" target="_blank" class="text-light">Revision</a>
                         </li>
                     </ul>
                 </div>

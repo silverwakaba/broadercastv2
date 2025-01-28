@@ -25,4 +25,14 @@ class RedirectController extends Controller{
     public function twitter(){
         return redirect('https://x.com/waka377');
     }
+
+    // Feedback
+    public function feedback(){
+        return redirect('https://forms.gle/kyv9Jtb8z62wBvyNA');
+    }
+
+    // Revision
+    public function revision(){
+        return redirect('https://forms.gle/FjS4wM3oqgbhC7jE6');
+    }
 }

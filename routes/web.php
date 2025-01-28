@@ -504,5 +504,11 @@ Route::group(['prefix' => '/'], function(){
 
         // Status
         Route::get('status', [RedirectController::class, 'status'])->name('go.status');
+
+        // Status
+        Route::get('feedback', [RedirectController::class, 'feedback'])->name('go.feedback');
+
+        // Status
+        Route::get('cc-revision', [RedirectController::class, 'revision'])->name('go.revision');
     });
 });
