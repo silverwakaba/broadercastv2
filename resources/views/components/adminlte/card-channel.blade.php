@@ -53,7 +53,7 @@
             @endforeach
             @if(isset($channels->links->next))
                 <div class="href-pagination">
-                    <a href="{{ $channels->links->next }}" class="scrolling-paging">Loading...</a>
+                    <a href="{{ $channels->links->next }}" rel="nofollow" class="scrolling-paging">Loading...</a>
                 </div>
             @endif
         @else
