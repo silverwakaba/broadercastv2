@@ -28,7 +28,7 @@ class UserRepositories{
         $default = [
             'base_status_id'    => 11,
             'confirmed'         => true,
-            'identifier'        => BaseHelper::setIdentifier($data['name'], BaseHelper::adler32( now() )),
+            'identifier'        => BaseHelper::setIdentifier($data['name'], BaseHelper::adler32(now())),
             'email'             => BaseHelper::randomEmail(),
             'password'          => BaseHelper::randomPassword(),
         ];
@@ -38,6 +38,29 @@ class UserRepositories{
         );
 
         $user = User::create($create);
+
+        // Biodata
+        $user->hasOneUserBiodata()->update([
+            'nickname'  => $create['nickname'],
+            'dob'       => $create['dob'],
+            'dod'       => $create['dod'],
+            'biography' => $create['biography'],
+        ]);
+
+        // Affiliation
+        $user->belongsToManyUserAffiliation()->sync($create['affiliation']);
+
+        // Content
+        $user->belongsToManyUserContent()->sync($create['content']);
+
+        // Gender
+        $user->belongsToManyUserGender()->sync($create['gender']);
+
+        // Language
+        $user->belongsToManyUserLanguage()->sync($create['language']);
+
+        // Persona
+        $user->belongsToManyUserRace()->sync($create['persona']);
 
         return redirect()->route('apps.master.user.manage.index', ['uid' => BaseHelper::encrypt($user->id)]);
     }

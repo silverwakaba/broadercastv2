@@ -55,14 +55,34 @@ class UserController extends Controller{
         return view('pages/apps/master-data/user/index');
     }
 
-    // Add
+    // Add | Unified-ready
     public function add(){
-        return view('pages/apps/master-data/user/add');
+        return view('pages/apps/master-data/user/add', [
+            'affiliation'   => BasedataHelper::baseAffiliation(),
+            'content'       => BasedataHelper::baseContent(),
+            'gender'        => BasedataHelper::baseGender(),
+            'language'      => BasedataHelper::baseLanguage(),
+            'persona'       => BasedataHelper::baseRace(),
+            'value'         => collect(null)->pluck('id')->toArray(), // this placeholder shit's dope
+        ]);
     }
 
     public function addPost(UserRequest $request){
         return MasterUserRepositories::create([
-            'name' => $request->name,
+            // Biodata
+            'name'          => $request->name,
+            'nickname'      => $request->nickname,
+            'dob'           => $request->dob,
+            'dod'           => $request->dod,
+            'dor'           => $request->dor,
+            'biography'     => $request->biography,
+            
+            // Base data
+            'affiliation'   => $request->affiliation,
+            'content'       => $request->content,
+            'gender'        => $request->gender,
+            'language'      => $request->language,
+            'persona'       => $request->persona,
         ]);
     }
 
