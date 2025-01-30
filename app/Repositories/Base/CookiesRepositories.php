@@ -34,7 +34,7 @@ class CookiesRepositories{
     public static function language(){
         $cookies = request()->cookie('language');
 
-        if(isset($cookies) && ($cookies) && ($cookies == 'null')){
+        if(isset($cookies) && ($cookies) && ($cookies != 'null')){
             $theCookies = json_decode(request()->cookie('language'));
         }
         else{
