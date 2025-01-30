@@ -213,6 +213,20 @@ class UserProfileRepositories{
             isset($data['query']) ? $data['query'] : []
         );
 
+        // Order with concurrent option
+        if((CookiesRepositories::concurrent() == true) && (CookiesRepositories::concurrent() != null)){
+            $datas->orderBy('concurrent', CookiesRepositories::concurrent());
+        }
+
+        // Show content only in specific languages
+        if((CookiesRepositories::language() == true) && (CookiesRepositories::language() != null)){
+            $cookiesLanguage = CookiesRepositories::language();
+
+            $datas->whereHas('hasManyThroughhUserLanguage', function($query) use($cookiesLanguage){
+                $query->whereIn('base_language_id', $cookiesLanguage);
+            });
+        }
+
         // Simping Mode
         if((isset($data['option']['simping'])) && ($data['option']['simping'] == true)){
             $datas->has('belongsToUserRelationFollowed');

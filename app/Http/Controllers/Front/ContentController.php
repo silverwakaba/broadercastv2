@@ -126,20 +126,29 @@ class ContentController extends Controller{
 
     // Setting
     public function setting(Request $request){
+        // return request()->cookie('language');
+
         $sort = BasedataHelper::baseSort();
         $timezone = BasedataHelper::baseTimezone();
+        $language = BasedataHelper::baseLanguage();
+        
         $timezone_value = CookiesRepositories::timezone();
         $live_value = CookiesRepositories::actualStart();
         $schedule_value = CookiesRepositories::schedule();
         $vod_value = CookiesRepositories::published();
+        $concurrent_value = CookiesRepositories::concurrent();
+        $language_value = CookiesRepositories::language();
 
         return view('pages/front/content/setting', [
             'sort'              => $sort,
             'timezone'          => $timezone,
+            'language'          => $language,
             'timezone_value'    => $timezone_value,
             'live_value'        => $live_value,
             'schedule_value'    => $schedule_value,
             'vod_value'         => $vod_value,
+            'concurrent_value'  => $concurrent_value,
+            'language_value'    => $language_value,
         ]);
     }
 
@@ -150,6 +159,8 @@ class ContentController extends Controller{
         Cookie::queue('actual_start', $request->live_content, $expire);
         Cookie::queue('schedule', $request->schedule_content, $expire);
         Cookie::queue('published', $request->vod_content, $expire);
+        Cookie::queue('concurrent', $request->concurrent, $expire);
+        Cookie::queue('language', json_encode($request->language), $expire);
 
         return RedirectHelper::routeBack(null, 'success', 'Content preference', 'update');
     }

@@ -26,4 +26,21 @@ class CookiesRepositories{
     public static function timezone(){
         return request()->cookie('timezone') ? request()->cookie('timezone') : 'Asia/Jakarta';
     }
+
+    public static function concurrent(){
+        return request()->cookie('concurrent') ? request()->cookie('concurrent') : null;
+    }
+
+    public static function language(){
+        $cookies = request()->cookie('language');
+
+        if($cookies == 'null'){
+            $theCookies = [];
+        }
+        else{
+            $theCookies = json_decode(request()->cookie('language'));
+        }
+
+        return $theCookies;
+    }
 }

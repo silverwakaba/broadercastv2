@@ -40,6 +40,10 @@ class UserFeed extends Model{
     //     return $this->hasOneThrough(UserBiodata::class, User::class, 'users_id', 'users_id', 'users_id', 'users_id');
     // }
 
+    public function hasManyThroughhUserLanguage(){
+        return $this->hasManyThrough(UserLanguage::class, User::class, 'id', 'users_id', 'users_id', 'id');
+    }
+
     public function belongsToBaseLink(){
         return $this->belongsTo(BaseLink::class, 'base_link_id');
     }
