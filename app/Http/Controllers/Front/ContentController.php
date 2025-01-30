@@ -126,8 +126,6 @@ class ContentController extends Controller{
 
     // Setting
     public function setting(Request $request){
-        // return request()->cookie('language');
-
         $sort = BasedataHelper::baseSort();
         $timezone = BasedataHelper::baseTimezone();
         $language = BasedataHelper::baseLanguage();
