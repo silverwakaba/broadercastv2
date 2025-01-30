@@ -17,8 +17,8 @@
             <ol>
                 <li>Asc refers to ascending, where sorting will start from smallest to largest. For example from A - Z or from 1 - 9.</li>
                 <li>Desc refers to descending, where sorting will start from largest to smallest. For example from Z - A or from 9 - 1.</li>
-                <li>For example, if you want to see live content from oldest to newest, please set it to asc.</li>
-                <li>Another example, if you want to see the content with number of live concurrent viewers from smallest to largest, please set it to desc.</li>
+                <li>For example, if you want to see live content from newest to oldest, please set it to desc.</li>
+                <li>Another example, if you want to see the content with number of live concurrent viewers from smallest to largest, please set it to asc.</li>
                 <li>Language options refer to the language used by a content creator and are sensitive. For example, if you only enter Indonesian, then content from content creators who do not speak Indonesian will not be displayed.</li>
             </ol>
             <p><strong>Special Notes</strong></p>
