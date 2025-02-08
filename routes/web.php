@@ -490,6 +490,9 @@ Route::group(['prefix' => '/'], function(){
 
     // Redirect
     Route::group(['prefix' => 'go'], function(){
+        // Index
+        Route::get('/', [RedirectController::class, 'index'])->name('go.index');
+
         // Bsky
         Route::get('bsky', [RedirectController::class, 'bsky'])->name('go.bsky');
 
@@ -510,5 +513,8 @@ Route::group(['prefix' => '/'], function(){
 
         // Status
         Route::get('cc-revision', [RedirectController::class, 'revision'])->name('go.revision');
+
+        // Out
+        Route::get('out', [RedirectController::class, 'outExt'])->name('go.out')->middleware(['signed']);
     });
 });

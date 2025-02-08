@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\URL;
 
 class RedirectHelper{
     public static function routeBackWithErrors(array $data){
@@ -115,5 +116,15 @@ class RedirectHelper{
 
     public static function routeIntended($route){
         return redirect()->intended($route);
+    }
+
+    public static function route($route, $param = null){
+        return route($route, $param);
+    }
+
+    public static function routeSign($route, $expire, $param = null){
+        return URL::temporarySignedRoute(
+            $route, now()->addHours($expire), $param
+        );
     }
 }

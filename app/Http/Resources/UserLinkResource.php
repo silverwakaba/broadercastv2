@@ -5,9 +5,11 @@ namespace App\Http\Resources;
 use App\Http\Resources\BaseDecisionResource;
 use App\Http\Resources\BaseLinkResource;
 
-use Illuminate\Support\Str;
+use App\Helpers\RedirectHelper;
+
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Str;
 
 class UserLinkResource extends JsonResource{
     /**
@@ -16,20 +18,16 @@ class UserLinkResource extends JsonResource{
      * @return array<string, mixed>
      */
     public function toArray(Request $request) : array{
-        if(($this->icon == null || $this->icon !== null) && ($this->icon !== '404')){
-            $logo = $this->icon == null ? Str::lower($this->name) : Str::lower($this->icon);
-        }
-        elseif($this->icon == '404'){
-            $logo = 'googlechrome';
-        }
-
         return [
             'id'            => $this->id,
             'name'          => $this->name,
-            'link'          => $this->link,
+            'link'          => RedirectHelper::routeSign('go.out', 1, [
+                'plain'         => (bool) Str::contains($this->link, 'https://'),
+                'destination'   => (string) Str::chopStart($this->link, ['http://', 'https://']),
+            ]),
             'icon'          => $this->icon,
             'color'         => $this->color,
-            'logo'          => 'https://cdn.simpleicons.org/' . ($logo) . '?viewbox=auto',
+            'logo'          => $this->logo, //'https://cdn.simpleicons.org/' . ($logo) . '?viewbox=auto&bj=yes',
             'link_pivot'    => isset($this->pivot->link) ? $this->pivot->link : null,
             'decision'      => new BaseDecisionResource($this->whenLoaded('belongsToBaseDecision')),
             'service'       => new BaseLinkResource($this->whenLoaded('belongsToBaseLink')),

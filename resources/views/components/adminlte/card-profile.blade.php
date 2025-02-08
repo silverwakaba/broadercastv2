@@ -16,10 +16,13 @@
             @auth
                 <p class="text-center">
                     @if((isset($profile->followed->followed)) && ($profile->followed->followed == true))
-                        <a href="{{ $profile->rels }}" class="btn btn-block btn-danger" data-toggle="tooltip" data-placement="top" title="Stop showing their activity from your timeline">Unfollow</a>
+                        <a href="{{ $profile->rels }}" rel="nofollow" class="btn btn-block btn-danger" data-toggle="tooltip" data-placement="top" title="Stop showing their activity from your timeline">Unfollow</a>
                     @else
-                        <a href="{{ $profile->rels }}" class="btn btn-block btn-success" data-toggle="tooltip" data-placement="top" title="Start showing their activity to your timeline">Follow</a>
+                        <a href="{{ $profile->rels }}" rel="nofollow" class="btn btn-block btn-success" data-toggle="tooltip" data-placement="top" title="Start showing their activity to your timeline">Follow</a>
                     @endif
+                    @role('Admin')
+                        <a href="{{ $edit }}" class="btn btn-block btn-info" target="_blank">Edit</a>
+                    @endrole
                 </p>
             @endauth
         </div>
@@ -69,7 +72,7 @@
                 @if(isset($profile->affiliation) && ($profile->affiliation))
                     <ul class="list-inline m-0">
                         @foreach($profile->affiliation AS $affiliation)
-                            <li class="list-inline-item"><u><a href="{{ route('creator.index', ['affiliation[]' => $affiliation->id]) }}" class="text-light">{{ $affiliation->name }}</a></u></li>
+                            <li class="list-inline-item"><u><a href="{{ route('creator.index', ['affiliation[]' => $affiliation->id]) }}" rel="nofollow" class="text-light">{{ $affiliation->name }}</a></u></li>
                         @endforeach
                     </ul>
                 @else
@@ -81,7 +84,7 @@
                 @if(isset($profile->gender) && ($profile->gender))
                     <ul class="list-inline m-0">
                         @foreach($profile->gender AS $gender)
-                            <li class="list-inline-item"><u><a href="{{ route('creator.index', ['gender[]' => $gender->id]) }}" class="text-light">{{ $gender->name }}</a></u></li>
+                            <li class="list-inline-item"><u><a href="{{ route('creator.index', ['gender[]' => $gender->id]) }}" rel="nofollow" class="text-light">{{ $gender->name }}</a></u></li>
                         @endforeach
                     </ul>
                 @else
@@ -101,7 +104,7 @@
                 @if(isset($profile->content) && ($profile->content))
                     <ul class="list-inline m-0">
                         @foreach($profile->content AS $content)
-                            <li class="list-inline-item"><u><a href="{{ route('creator.index', ['content[]' => $content->id]) }}" class="text-light">{{ $content->name }}</a></u></li>
+                            <li class="list-inline-item"><u><a href="{{ route('creator.index', ['content[]' => $content->id]) }}" rel="nofollow" class="text-light">{{ $content->name }}</a></u></li>
                         @endforeach
                     </ul>
                 @else
@@ -113,7 +116,7 @@
                 @if(isset($profile->language) && ($profile->language))
                     <ul class="list-inline m-0">
                         @foreach($profile->language AS $language)
-                            <li class="list-inline-item"><u><a href="{{ route('creator.index', ['language[]' => $language->id]) }}" class="text-light">{{ $language->name }}</a></u></li>
+                            <li class="list-inline-item"><u><a href="{{ route('creator.index', ['language[]' => $language->id]) }}" rel="nofollow" class="text-light">{{ $language->name }}</a></u></li>
                         @endforeach
                     </ul>
                 @else
@@ -125,7 +128,7 @@
                 @if(isset($profile->race) && ($profile->race))
                     <ul class="list-inline m-0">
                         @foreach($profile->race AS $race)
-                            <li class="list-inline-item"><u><a href="{{ route('creator.index', ['persona[]' => $race->id]) }}" class="text-light">{{ $race->name }}</a></u></li>
+                            <li class="list-inline-item"><u><a href="{{ route('creator.index', ['persona[]' => $race->id]) }}" rel="nofollow" class="text-light">{{ $race->name }}</a></u></li>
                         @endforeach
                     </ul>
                 @else
@@ -135,7 +138,8 @@
             @if(isset($profile->base_status_id) && ($profile->base_status_id == 11))
                 <li class="list-group-item">
                     <strong>Special Notes</strong>
-                    <p class="m-0">This content creator is added directly by the system. Some personal information may be obsolete or completely wrong.</p>
+                    <p class="mt-0">This content creator is added directly to the system. Some personal information may be obsolete or completely wrong.</p>
+                    <p class="mb-0">You can <u><a href="{{ $claim }}" class="text-light" target="_blank">claim this profile</a></u> if you are the owner or <u><a href="{{ route('go.revision') }}" class="text-light" target="_blank">contributed to revisions</a></u> to correct any possible error.</p>
                 </li>
             @endif
             <li class="list-group-item text-center bg-secondary">
@@ -148,7 +152,7 @@
                         <ul class="list-inline m-0 my-3">
                             @foreach($links AS $link)
                                 <li class="list-inline-item bg-white">
-                                    <a href="{{ $link->link }}" class="btn btn-sm btn-link border p-2" data-toggle="tooltip" data-placement="top" title="{{ $link->service->name }}" target="_blank">
+                                    <a href="{{ $link->link }}" rel="nofollow" class="btn btn-sm btn-link border p-2" data-toggle="tooltip" data-placement="top" title="{{ $link->service->name }}" target="_blank">
                                         <img height="25" width="25" src="{{ $link->service->logo }}">
                                     </a>
                                 </li>

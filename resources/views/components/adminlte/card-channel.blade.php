@@ -43,7 +43,7 @@
                                 @endif
                                 @if(isset($data->channel->link))
                                     <div class="col">
-                                        <a href="{{ $data->channel->link }}" class="btn btn-sm btn-outline-light btn-block" target="_blank">CHANNEL</a>
+                                        <a href="{{ $data->visit }}" rel="nofollow" class="btn btn-sm btn-outline-light btn-block" target="_blank">CHANNEL</a>
                                     </div>
                                 @endif
                             </div>

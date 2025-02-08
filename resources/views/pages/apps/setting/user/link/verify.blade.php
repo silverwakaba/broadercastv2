@@ -6,7 +6,7 @@
             <div class="lead">
                 <p>Please read the guidelines and requirements regarding the process of verifying the {{ $datas->belongsToBaseLink->name }} link that you have added, so that it can be included in our future crawler distribution:</p>
                 <ol>
-                    <li>To maintain security, account privacy and trust; <u>This process <em class="text-danger">does not implement or require</em> any form of authentication process</u> between {{ $datas->belongsToBaseLink->name }} and {{ config('app.name') }}, such as <a href="https://en.wikipedia.org/wiki/OAuth" target="_blank">OAuth</a>. This means <u>we do not have any access to your account in any way possible</u>, both now and in the future. <a href="#" target="_blank">Why no OAuth?</a></li>
+                    <li>To maintain security, account privacy and trust; <u>This process <em class="text-danger">does not implement or require</em> any form of authentication process</u> between {{ $datas->belongsToBaseLink->name }} and {{ config('app.name') }}, such as <a href="https://en.wikipedia.org/wiki/OAuth" target="_blank">OAuth</a>. This means <u>we do not have any access to your account in any way possible</u>, both now and in the future. <a href="https://help.silverspoon.me/docs/vtual/app/account-manager/link#no-oauth" target="_blank">Why no OAuth?</a></li>
                     <li>Instead we need you to <u>add an unique detail</u>, specifically in the <u>description section</u> of your channel.</li>
                     <li>After that, <u>our crawler will try to match</u> the data. If a match is found, then your {{ $datas->belongsToBaseLink->name }} channel will <u>automatically be marked as verified</u> and will start to be <u>crawled on our timeline</u>.</li>
                     <li>The verification <u>process will take place automatically</u> and the <u>results will appear immediately</u>. No need to wait for manual approval.</li>
@@ -23,7 +23,7 @@
                     <li>If the link structure doesn't match as in the example, you can still <u><a href="{{ route('apps.manager.link.edit', ['did' => request()->did]) }}">make a changes</a></u> before submitting. Do it <u>before the number of attempts runs out</u>!</li>
                     <li><u>The link structure must be alphabetical</u>. if it contains non-alphabetical, such as kanji/hangul/etc writing system, our decoder cannot process it - Thus causes error.</li>
                     <li>To avoid the possibility of abuse, the <u>submission process can only be done twice every hour</u>. Please use this feature wisely.</li>
-                    <li>If the verification attempt reaches the limit, <u>you have to wait until the number of attempts is reset</u> in the next period (every 1 hours, since the last time you tried to verify). <sup><a href="#">[?]</a></sup></li>
+                    <li>If the verification attempt reaches the limit, <u>you have to wait until the number of attempts is reset</u> in the next period (every 1 hours, since the last time you tried to verify). <sup><a href="https://help.silverspoon.me/docs/vtual/app/account-manager/link#known-and-set-limit" target="_blank">[?]</a></sup></li>
                     <li>
                         <span>Your unique detail is:</span>
                         <blockquote class="blockquote m-0">

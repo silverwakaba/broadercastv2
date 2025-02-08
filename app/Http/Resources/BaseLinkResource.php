@@ -28,7 +28,7 @@ class BaseLinkResource extends JsonResource{
             'name'      => $this->name,
             'icon'      => $this->icon,
             'color'     => $this->color,
-            'logo'      => 'https://cdn.simpleicons.org/' . ($logo) . '?viewbox=auto',
+            'logo'      => Str::of('https://cdn.simpleicons.org/')->append(($logo) . '?viewbox=auto'),
             'checking'  => $this->checking,
             'user'      => new UserResource($this->whenLoaded('hasOneUser')),
             'decision'  => new BaseDecisionResource($this->whenLoaded('belongsToBaseDecision')),
