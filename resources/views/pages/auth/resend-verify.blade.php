@@ -10,7 +10,7 @@
                 <div class="row">
                     <div class="col-md-8">
                         <input type="hidden" name="_token" class="d-none" value="{{ csrf_token() }}" readonly />
-                        <x-form.checkbox name="terms" value="1">I agree to <a href="https://help.silverspoon.me/docs/vtual/authentication/recovery" target="_blank">Account Verify</a> policy</x-form.checkbox>
+                        <x-form.checkbox name="terms" value="1">I Know What I'm Doing</x-form.checkbox>
                     </div>
                     <div class="col-md-4">
                         <x-Form.Hcaptcha id="theResendForm" button="Resend" class="btn btn-block btn-primary" />

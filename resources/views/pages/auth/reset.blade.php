@@ -23,7 +23,7 @@
                     <div class="col-md-8">
                         <input type="hidden" name="_token" class="d-none" value="{{ csrf_token() }}" readonly />
                         <input type="hidden" name="email" class="d-none" value="{{ $datas->belongsToUser->email }}" readonly />
-                        <x-form.checkbox name="terms" value="1">I agree to <a href="https://help.silverspoon.me/docs/vtual/authentication/recovery" target="_blank">Account Recovery</a> policy</x-form.checkbox>
+                        <x-form.checkbox name="terms" value="1">I agree to <a href="https://help.silverspoon.me/docs/vtual/authentication#reset-password" rel="nofollow" target="_blank">Reset Password</a> policy</x-form.checkbox>
                     </div>
                     <div class="col-md-4">
                         <x-Form.Hcaptcha id="theResetForm" button="Reset" class="btn btn-block btn-primary" />

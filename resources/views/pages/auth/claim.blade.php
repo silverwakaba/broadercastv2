@@ -6,8 +6,14 @@
             <div class="lead">
                 <p>Thank you for following all the necessary procedures in the SGU account claim process. We are pleased to inform you that you have successfully completed the verification claim.</p>
                 <p>On this page, you are required to set up a unique email address and a strong password that will be used to access your "<strong><u>{{ $datas->belongsToUser->name }}</u></strong>" account from now. It is important to choose an email that is distinct and to create a robust password to ensure the security of your account.</p>
-                <p>In the event that you lose access to your account due to a forgotten password, please refer to the established regulations for recovery options. Your attention to these details will help safeguard your account and enhance your overall experience.</p>
-                <p>If you have concerns about sharing your email address with us, plase read our statement about <a href="https://help.silverspoon.me/docs/vtual/privacy#registering" target="_blank">registering anonymously</a>.</p>
+                <p>For account security, the password you use must meet the following requirements:</p>
+                <ol>
+                    <li>Password must be at least 8 characters.</li>
+                    <li>Password must be at least contain a symbol.</li>
+                    <li>Password must be at least contain one uppercase and one lowercase letter.</li>
+                </ol>
+                <p>In the event that you lose access to your account due to a forgotten password, please refer to the established regulations for <a href="https://help.silverspoon.me/docs/vtual/authentication#account-recovery" rel="nofollow" target="_blank">recovery options</a> . Your attention to these details will help safeguard your account and enhance your overall experience.</p>
+                <p>If you have concerns about sharing your email address with us, plase read our statement about <a href="https://help.silverspoon.me/docs/vtual/privacy#registering" rel="nofollow" target="_blank">registering anonymously</a>.</p>
             </div>
         </x-Adminlte.Card>
         <x-Adminlte.Card title="Claim">
@@ -22,7 +28,7 @@
                     <div class="col-md-8">
                         <input type="hidden" name="_token" class="d-none" value="{{ csrf_token() }}" readonly />
                         <input type="hidden" name="email" class="d-none" value="{{ $datas->belongsToUser->email }}" readonly />
-                        <x-form.checkbox name="terms" value="1">I agree to <a href="https://help.silverspoon.me/docs/vtual/authentication/claim" target="_blank">Account Claim</a> policy</x-form.checkbox>
+                        <x-form.checkbox name="terms" value="1">Let Me Continue</x-form.checkbox>
                     </div>
                     <div class="col-md-4">
                         <x-Form.Hcaptcha id="theClaimForm" button="Claim" class="btn btn-block btn-primary" />

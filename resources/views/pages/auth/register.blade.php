@@ -22,7 +22,7 @@
                 <div class="row">
                     <div class="col-md-8">
                         <input type="hidden" name="_token" class="d-none" value="{{ csrf_token() }}" readonly />
-                        <x-form.checkbox name="terms" value="1">I agree to <a href="https://help.silverspoon.me/docs/vtual/tos" target="_blank">Terms</a> and <a href="https://help.silverspoon.me/docs/vtual/privacy" target="_blank">Privacy</a></x-form.checkbox>
+                        <x-form.checkbox name="terms" value="1">I agree to <a href="https://help.silverspoon.me/docs/vtual/tos" rel="nofollow" target="_blank">Terms</a> and <a href="https://help.silverspoon.me/docs/vtual/privacy" rel="nofollow" target="_blank">Privacy</a></x-form.checkbox>
                     </div>
                     <div class="col-md-4">
                         <x-Form.Hcaptcha id="theRegisterForm" button="Register" class="btn btn-block btn-primary" />
@@ -37,7 +37,7 @@
                     </div>
                 </div>
             </div>
-            <p>Have concerns about registering using email? Read our statement about <a href="https://help.silverspoon.me/docs/vtual/privacy#registering" target="_blank">registering anonymously</a>.</p>
+            <p>Have concerns about registering using email? Read our statement about <a href="https://help.silverspoon.me/docs/vtual/privacy#registering" rel="nofollow" target="_blank">registering anonymously</a>.</p>
         </x-Adminlte.Card>
     </x-Adminlte.Content>
 @endsection
