@@ -37,7 +37,7 @@
                     data: "datas.decision.name",
                 },
                 {
-                    data: "datas.link",
+                    data: "datas.link_plain",
                 },
                 {
                     data: "action",

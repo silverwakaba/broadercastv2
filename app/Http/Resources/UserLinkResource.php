@@ -25,6 +25,7 @@ class UserLinkResource extends JsonResource{
                 'plain'         => (bool) Str::contains($this->link, 'https://'),
                 'destination'   => (string) Str::chopStart($this->link, ['http://', 'https://']),
             ]),
+            'link_plain'    => $this->link,
             'icon'          => $this->icon,
             'color'         => $this->color,
             'logo'          => $this->logo, //'https://cdn.simpleicons.org/' . ($logo) . '?viewbox=auto&bj=yes',
