@@ -1,14 +1,8 @@
 <form id="{{ $formID }}" action="{{ $action }}" method="{{ $method }}" enctype="{{ $encode }}">
     <div @class(["card", "card-outline card-$outline" => $outline])>
         @if($title)
-            <div class="card-header p-0 border-bottom-0">
-                <ul class="nav nav-tabs" role="tablist">
-                    @if($title)
-                        <li class="nav-item">
-                            <h3 class="nav-link card-title h3 pt-2">{{ $title }}</h3>
-                        </li>
-                    @endif
-                </ul>
+            <div class="card-header">
+                <h3 class="card-title">{{ $title }}</h3>
             </div>
         @endif
         <div class="card-body">
